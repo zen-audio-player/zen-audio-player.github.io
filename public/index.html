@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Zen YouTube Audio Player</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+</head>
+<body>
+    <div id="hero">
+        <h1>Zen YouTube Audio Player</h1>
+        <div>
+            <input type="text" id="query" placeholder="YouTube video ID here">
+            <br>
+            <br>
+            <button id="submit">Submit</button>
+        </div>
+        <br>
+        <br>
+        <br>
+
+        <iframe id="player" type="text/html" width="400" height="30" src="about:blank" frameborder="0"></iframe>
+    </div>
+
+    <script type="text/javascript">
+        var head = "http://www.youtube.com/embed/";
+        var tail = "?enablejsapi=1&origin=http://example.com&autoplay=1";
+
+        $(function() {
+            $("#submit").click(function() {
+                var formValue = $("#query").val();
+                if (formValue) {
+                    var url = head + formValue + tail;
+                    $("#player").attr("src", url);
+                }
+                else {
+                    alert("Try entering a value!");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

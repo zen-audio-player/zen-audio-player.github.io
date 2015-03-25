@@ -1,2 +1,2 @@
-# zen-youtube-audio-player
+# Zen YouTube Audio Player
 An experiment in creating a minimalist web app to play audio from YouTube videos
