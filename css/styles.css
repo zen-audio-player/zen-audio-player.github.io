@@ -1,20 +1,21 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
 
 body {
-  padding:50px;
-  font:14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: black;
-  font-weight:300;
+    padding: 50px;
+    font: 14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: black;
+    font-weight: 400;
 }
 
 #hero {
     margin: 0 auto;
-    padding-top: 50px;
+    padding-top: 10%;
     text-align: center;
+    max-width: 400px;
 }
 
 #query {
     text-align: center;
-    min-width: 200px;
-    width: 200px;
+    margin: 0 auto;
+    width: 100%;
 }

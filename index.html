@@ -13,7 +13,9 @@
     <div id="hero">
         <h1>Zen YouTube Audio Player</h1>
         <div>
-            <input type="text" id="query" placeholder="YouTube video ID here">
+            <label for="query">Enter a YouTube video ID or URL</label>
+            <br>
+            <input type="text" id="query" name="query" placeholder="YouTube video ID or URL here">
             <br>
             <br>
             <button id="submit">Submit</button>
@@ -26,6 +28,13 @@
     </div>
 
     <script type="text/javascript">
+        function getParameterByName(url, name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(url);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
         var head = "http://www.youtube.com/embed/";
         var tail = "?enablejsapi=1&origin=http://example.com&autoplay=1";
 
@@ -33,8 +42,17 @@
             $("#submit").click(function() {
                 var formValue = $("#query").val();
                 if (formValue) {
-                    var url = head + formValue + tail;
-                    $("#player").attr("src", url);
+                    var url = head;
+                    // YouTube video ID string
+                    if (formValue.indexOf("youtube.com") === -1) {
+                         url += formValue;
+                    }
+                    // YouTube video URL string, parse the v parameter
+                    else {
+                        url += getParameterByName(formValue, "v");
+                    }
+                    
+                    $("#player").attr("src", url + tail);
                 }
                 else {
                     alert("Try entering a value!");
