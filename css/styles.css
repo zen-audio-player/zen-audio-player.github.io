@@ -19,3 +19,9 @@ body {
     margin: 0 auto;
     width: 100%;
 }
+
+#player {
+    text-align: center;
+    min-width: 100%;
+    width: 100%;
+}
