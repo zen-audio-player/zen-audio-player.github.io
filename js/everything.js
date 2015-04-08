@@ -6,7 +6,7 @@ function getParameterByName(url, name) {
 }
 
 var head = "http://www.youtube.com/embed/";
-var tail = "?enablejsapi=1&origin=http://example.com&autoplay=1";
+var tail = "?enablejsapi=1&origin=shakeelmohamed.com&autoplay=1";
 
 $(function() {
     $("#form").submit(function(event) {
@@ -26,11 +26,12 @@ $(function() {
             $("#player").attr("src", url + tail);
         }
         else {
-            alert("Try entering a value!");
+            alert("Try entering a YouTube video id or URL!");
         }
     });
 });
 
+// Google Analytics goodness
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
