@@ -8,17 +8,20 @@
 
     <link rel="stylesheet" href="css/styles.css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="js/everything.js"></script>
 </head>
 <body>
     <div id="hero">
         <h1>Zen YouTube Audio Player</h1>
         <div>
-            <label for="query">Enter a YouTube video ID or URL</label>
-            <br>
-            <input type="text" id="query" name="query" placeholder="YouTube video ID or URL here">
-            <br>
-            <br>
-            <button id="submit">Submit</button>
+            <form id="form">
+                <label for="query">Enter a YouTube video ID or URL</label>
+                <br>
+                <input type="text" id="query" name="query" placeholder="YouTube video ID or URL here">
+                <br>
+                <br>
+                <input type="submit" id="submit">
+            </form>
         </div>
         <br>
         <iframe id="player" type="text/html" width="400" height="30" src="http://www.youtube.com/embed/" frameborder="0"></iframe>
@@ -26,47 +29,5 @@
         <p>Created by <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a></p>
         <p>Source available on <a href="https://github.com/ShakeelMohamed" target="_blank">GitHub</a></p>
     </div>
-
-    <script type="text/javascript">
-        function getParameterByName(url, name) {
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                results = regex.exec(url);
-            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        }
-
-        var head = "http://www.youtube.com/embed/";
-        var tail = "?enablejsapi=1&origin=http://example.com&autoplay=1";
-
-        $(function() {
-            $("#submit").click(function() {
-                var formValue = $("#query").val();
-                if (formValue) {
-                    var url = head;
-                    // YouTube video ID string
-                    if (formValue.indexOf("youtube.com") === -1) {
-                         url += formValue;
-                    }
-                    // YouTube video URL string, parse the v parameter
-                    else {
-                        url += getParameterByName(formValue, "v");
-                    }
-                    
-                    $("#player").attr("src", url + tail);
-                }
-                else {
-                    alert("Try entering a value!");
-                }
-            });
-        });
-
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-        ga('create', 'UA-36907845-2', 'shakeelmohamed.com');
-        ga('require', 'displayfeatures');
-        ga('send', 'pageview');
-    </script>
 </body>
 </html>
