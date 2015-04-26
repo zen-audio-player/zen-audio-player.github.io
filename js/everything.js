@@ -8,29 +8,50 @@ function getParameterByName(url, name) {
 var head = "http://www.youtube.com/embed/";
 var tail = "?enablejsapi=1&origin=shakeelmohamed.com&autoplay=1";
 
+function getCurrentVideoID() {
+    return getParameterByName(window.location.search, "v");
+}
+
 $(function() {
+
+    if (getCurrentVideoID()) {
+        $("#player").attr("src", head + getCurrentVideoID() + tail);
+        $("#query").attr("value", getCurrentVideoID());
+    }
+
     $("#form").submit(function(event) {
         event.preventDefault();
         var formValue = $("#query").val();
         if (formValue) {
             var shortUrlDomain = "youtu.be";
-            var url = head;
+            var videoID = null;
             
             // YouTube video URL string, parse the v parameter
             if (formValue.indexOf("youtube.com") !== -1) {
-                 url += getParameterByName(formValue, "v");
+                 videoID = getParameterByName(formValue, "v");
             }
             else if (formValue.indexOf(shortUrlDomain) !== -1) {
                 var endPosition = formValue.indexOf("?") === -1 ? formValue.length : formValue.indexOf("?");
                 var offset = formValue.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
-                url += formValue.substring(offset, endPosition);
+                videoID = formValue.substring(offset, endPosition);
             }
             else {
                 // YouTube video ID string
-                url += formValue;
+                videoID = formValue;
             }
-            
-            $("#player").attr("src", url + tail);
+            if (videoID) {
+                // $("#player").attr("src", head + videoID + tail);
+                // Do redirect
+                var url = window.location.href;
+                if (window.location.search.length !== 0) {
+                    url = window.location.href.replace(window.location.search, "");
+                }
+                window.location.href = url + "?v=" + videoID;
+
+            }
+            else {
+                alert("Wow you found a weird bug, please report it on GitHub!");
+            }
         }
         else {
             alert("Try entering a YouTube video id or URL!");
