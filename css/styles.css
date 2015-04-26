@@ -14,6 +14,12 @@ body {
     max-width: 400px;
 }
 
+#hero #title a {
+    color: black;
+    font-style: normal;
+    text-decoration: none;
+}
+
 #query {
     text-align: center;
     margin: 0 auto;
