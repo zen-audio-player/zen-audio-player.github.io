@@ -13,14 +13,21 @@ $(function() {
         event.preventDefault();
         var formValue = $("#query").val();
         if (formValue) {
+            var shortUrlDomain = "youtu.be";
             var url = head;
-            // YouTube video ID string
-            if (formValue.indexOf("youtube.com") === -1) {
-                 url += formValue;
-            }
+            
             // YouTube video URL string, parse the v parameter
+            if (formValue.indexOf("youtube.com") !== -1) {
+                 url += getParameterByName(formValue, "v");
+            }
+            else if (formValue.indexOf(shortUrlDomain) !== -1) {
+                var endPosition = formValue.indexOf("?") === -1 ? formValue.length : formValue.indexOf("?");
+                var offset = formValue.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
+                url += formValue.substring(offset, endPosition);
+            }
             else {
-                url += getParameterByName(formValue, "v");
+                // YouTube video ID string
+                url += formValue;
             }
             
             $("#player").attr("src", url + tail);
