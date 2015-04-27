@@ -5,53 +5,76 @@ function getParameterByName(url, name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var head = "http://www.youtube.com/embed/";
-var tail = "?enablejsapi=1&origin=shakeelmohamed.com&autoplay=1";
-
 function getCurrentVideoID() {
-    return getParameterByName(window.location.search, "v");
+    var v = getParameterByName(window.location.search, "v");
+    if (v.length > 0) {
+        return parseYoutubeVideoID(v);
+    }
+    return v;
+}
+
+function makeYoutubeEmbedURL(videoID) {
+    var head = "http://www.youtube.com/embed/";
+    var tail = "?enablejsapi=1&origin=shakeelmohamed.com&autoplay=1";
+    if (videoID) {
+        return head + videoID + tail;
+    }
+    else {
+        // Swallow error
+        console.log("The videoID in makeYoutubeEmbedURL was bad");
+    }
+}
+
+function makeListenURL(videoID) {
+    var url = window.location.href;
+    if (window.location.search.length !== 0) {
+        url = window.location.href.replace(window.location.search, "");
+    }
+    return url + "?v=" + videoID;
+}
+
+// The url parameter could be the video ID
+function parseYoutubeVideoID(url) {
+    var videoID = null;
+
+    var shortUrlDomain = "youtu.be";
+    var longUrlDomain = "youtube.com";
+
+    if (url) {
+        // youtube.com format
+        if (url.indexOf(longUrlDomain) !== -1) {
+             videoID = getParameterByName(url, "v");
+        }
+        // youtu.be format
+        else if (url.indexOf(shortUrlDomain) !== -1) {
+            var endPosition = url.indexOf("?") === -1 ? url.length : url.indexOf("?");
+            var offset = url.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
+            videoID = url.substring(offset, endPosition);
+        }
+        // Assume YouTube video ID string
+        else {
+            videoID = url;
+        }
+        return videoID;
+    }
+    alert("Failed to parse the video ID.");
 }
 
 $(function() {
-
-    if (getCurrentVideoID()) {
-        $("#player").attr("src", head + getCurrentVideoID() + tail);
-        $("#query").attr("value", getCurrentVideoID());
+    // Parse the querystring and populate the video when loading the page
+    var currentVideoID = getCurrentVideoID();
+    if (currentVideoID) {
+        $("#player").attr("src", makeYoutubeEmbedURL(currentVideoID));
+        $("#query").attr("value", currentVideoID);
     }
 
+    // Handle form submission
     $("#form").submit(function(event) {
         event.preventDefault();
         var formValue = $("#query").val();
         if (formValue) {
-            var shortUrlDomain = "youtu.be";
-            var videoID = null;
-            
-            // YouTube video URL string, parse the v parameter
-            if (formValue.indexOf("youtube.com") !== -1) {
-                 videoID = getParameterByName(formValue, "v");
-            }
-            else if (formValue.indexOf(shortUrlDomain) !== -1) {
-                var endPosition = formValue.indexOf("?") === -1 ? formValue.length : formValue.indexOf("?");
-                var offset = formValue.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
-                videoID = formValue.substring(offset, endPosition);
-            }
-            else {
-                // YouTube video ID string
-                videoID = formValue;
-            }
-            if (videoID) {
-                // $("#player").attr("src", head + videoID + tail);
-                // Do redirect
-                var url = window.location.href;
-                if (window.location.search.length !== 0) {
-                    url = window.location.href.replace(window.location.search, "");
-                }
-                window.location.href = url + "?v=" + videoID;
-
-            }
-            else {
-                alert("Wow you found a weird bug, please report it on GitHub!");
-            }
+            var videoID = parseYoutubeVideoID(formValue);
+            window.location.href = makeListenURL(videoID);
         }
         else {
             alert("Try entering a YouTube video id or URL!");
