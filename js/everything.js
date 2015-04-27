@@ -15,7 +15,7 @@ function getCurrentVideoID() {
 
 function makeYoutubeEmbedURL(videoID) {
     var head = "http://www.youtube.com/embed/";
-    var tail = "?enablejsapi=1&origin=shakeelmohamed.com&autoplay=1";
+    var tail = "?enablejsapi=1&origin=http://shakeelmohamed.com&autoplay=1";
     if (videoID) {
         return head + videoID + tail;
     }
