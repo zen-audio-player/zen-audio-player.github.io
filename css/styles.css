@@ -20,7 +20,7 @@ body {
     text-decoration: none;
 }
 
-#query {
+#v {
     text-align: center;
     margin: 0 auto;
     width: 100%;
@@ -30,4 +30,13 @@ body {
     text-align: center;
     min-width: 100%;
     width: 100%;
+}
+
+#zen-video-error {
+    color: red;
+}
+
+#zen-video-title {
+    font-weight: bold;
+    word-wrap: break-word;
 }

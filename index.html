@@ -15,17 +15,18 @@
         <h1 id="title"><a href="http://shakeelmohamed.com/zen-youtube-audio-player">Zen YouTube Audio Player</a></h1>
         <div>
             <form id="form">
-                <label for="query">Enter a YouTube video ID or URL</label>
+                <label for="v">Enter a YouTube video ID or URL</label>
                 <br>
-                <input type="text" id="query" name="query" placeholder="YouTube video ID or URL here">
+                <input type="text" id="v" name="v" placeholder="YouTube video ID or URL here">
                 <br>
                 <br>
                 <input type="submit" id="submit">
             </form>
         </div>
         <br>
-        <iframe id="player" type="text/html" width="400" height="30" src="http://www.youtube.com/embed/" frameborder="0"></iframe>
-        <br>
+        <p id="zen-video-error"></p>
+        <div id="player"></div>
+        <p id="zen-video-title"></p>
         <p>Created by <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a></p>
         <p>Source available on <a href="https://github.com/ShakeelMohamed" target="_blank">GitHub</a></p>
     </div>
