@@ -164,6 +164,12 @@ $(function() {
             alert("Try entering a YouTube video id or URL!");
         }
     });
+
+    $("#demo").click(function(event) {
+        event.preventDefault();
+        var starveTheEgoFeedTheSould_GlitchMob = "koJv-j1usoI";
+        window.location.href = makeListenURL(starveTheEgoFeedTheSould_GlitchMob);
+    });
 });
 
 // Google Analytics goodness
