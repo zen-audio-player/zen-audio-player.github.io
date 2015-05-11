@@ -23,6 +23,6 @@
   "homepage": "https://github.com/shakeelmohamed/zen-youtube-audio-player",
   "dependencies": {
     "mocha": "^2.2.4",
-    "zombie": "3.x.x"
+    "zombie": "2.5.1"
   }
 }
