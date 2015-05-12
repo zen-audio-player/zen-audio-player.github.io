@@ -80,7 +80,7 @@ function stopVideo() {
 
 
 /**
- * Zen YouTube Audio Player functions
+ * Zen Audio Player functions
  */
 
 function getParameterByName(url, name) {
@@ -160,14 +160,14 @@ $(function() {
             window.location.href = makeListenURL(videoID);
         }
         else {
-            alert("Try entering a YouTube video id or URL!");
+            alert("Try entering a YouTube video ID or URL!");
         }
     });
 
     $("#demo").click(function(event) {
         event.preventDefault();
-        var starveTheEgoFeedTheSould_GlitchMob = "koJv-j1usoI";
-        window.location.href = makeListenURL(starveTheEgoFeedTheSould_GlitchMob);
+        var starveTheEgoFeedTheSoul_GlitchMob = "koJv-j1usoI";
+        window.location.href = makeListenURL(starveTheEgoFeedTheSoul_GlitchMob);
     });
 });
 

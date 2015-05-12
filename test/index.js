@@ -23,7 +23,10 @@ describe("Tests", function () {
         });
         it("should have expected metadata", function (done) {
             assert.equal(browser.url, indexHTMLURL);
-            assert.equal(browser.query("title").text, "Zen YouTube Audio Player");
+            assert.equal(browser.query("title").text, "Zen Audio Player");
+            assert.equal(browser.query("#title > a").href, "http://zen-audio-player.github.io/");
+            // TODO: figure out how to get browser.query("#title > a").text correctly
+            // TODO: more tests for link validation
             done();
         });
         it("should have expected elements", function (done) {
