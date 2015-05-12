@@ -164,6 +164,7 @@ $(function() {
         }
     });
 
+    // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
         var starveTheEgoFeedTheSoul_GlitchMob = "koJv-j1usoI";
