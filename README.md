@@ -1,4 +1,5 @@
-# Zen Audio Player
+![Zen Audio Player](img/zen-audio-player.png)
+
 Listen to YouTube videos, without the distracting visuals.
 
 ## Chrome Extension
