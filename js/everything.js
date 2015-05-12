@@ -114,7 +114,6 @@ function parseYoutubeVideoID(url) {
     var longUrlDomain = "youtube.com";
 
     if (url && url.length > 0) {
-        console.log(url);
         // youtube.com format
         if (url.indexOf(longUrlDomain) !== -1) {
             videoID = getParameterByName(url, "v");
