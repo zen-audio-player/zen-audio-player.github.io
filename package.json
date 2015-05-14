@@ -1,26 +1,27 @@
 {
-  "name": "zen-youtube-audio-player",
-  "version": "1.0.0",
-  "description": "An experiment in creating a minimalist web app to play audio from YouTube videos",
+  "name": "zen-audio-player",
+  "version": "1.1.0",
+  "description": "Listen to YouTube videos, without the distracting visuals.",
   "main": "tests.js",
   "scripts": {
     "test": "mocha test/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/shakeelmohamed/zen-youtube-audio-player.git"
+    "url": "https://github.com/zen-audio-player/zen-audio-player.github.io.git"
   },
   "keywords": [
     "youtube",
     "audio",
-    "zen"
+    "zen",
+    "player"
   ],
   "author": "Shakeel Mohamed",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/shakeelmohamed/zen-youtube-audio-player/issues"
+    "url": "https://github.com/zen-audio-player/zen-audio-player.github.io/issues"
   },
-  "homepage": "https://github.com/shakeelmohamed/zen-youtube-audio-player",
+  "homepage": "https://zen-audio-player.github.io",
   "dependencies": {
     "mocha": "^2.2.4",
     "zombie": "2.5.1"

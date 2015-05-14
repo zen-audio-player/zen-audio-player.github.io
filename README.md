@@ -1,5 +1,6 @@
-# Zen YouTube Audio Player
-An experiment in creating a minimalist web app to play audio from YouTube videos
+![Zen Audio Player](img/zen-audio-player.png)
+
+Listen to YouTube videos, without the distracting visuals.
 
 ## Chrome Extension
 
@@ -7,6 +8,6 @@ Install the [Chrome extension](https://chrome.google.com/webstore/detail/zen-you
 
 ## Demo
 
-* Listen to [Starve the Ego, Feed the Soul by The Glitch Mob](http://shakeelmohamed.com/zen-youtube-audio-player/?v=koJv-j1usoI)
-* Try it out on [GitHub pages](http://shakeelmohamed.com/zen-youtube-audio-player)
+* Listen to [Starve the Ego, Feed the Soul by The Glitch Mob](http://zen-audio-player.github.io/?v=koJv-j1usoI)
+* Try it out on [zen-audio-player.github.io](http://zen-audio-player.github.io)
 * Clone the project and open `index.html`.

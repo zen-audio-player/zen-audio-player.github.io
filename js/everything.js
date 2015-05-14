@@ -80,7 +80,7 @@ function stopVideo() {
 
 
 /**
- * Zen YouTube Audio Player functions
+ * Zen Audio Player functions
  */
 
 function getParameterByName(url, name) {
@@ -114,7 +114,6 @@ function parseYoutubeVideoID(url) {
     var longUrlDomain = "youtube.com";
 
     if (url && url.length > 0) {
-        console.log(url);
         // youtube.com format
         if (url.indexOf(longUrlDomain) !== -1) {
             videoID = getParameterByName(url, "v");
@@ -161,14 +160,15 @@ $(function() {
             window.location.href = makeListenURL(videoID);
         }
         else {
-            alert("Try entering a YouTube video id or URL!");
+            alert("Try entering a YouTube video ID or URL!");
         }
     });
 
+    // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
-        var starveTheEgoFeedTheSould_GlitchMob = "koJv-j1usoI";
-        window.location.href = makeListenURL(starveTheEgoFeedTheSould_GlitchMob);
+        var starveTheEgoFeedTheSoul_GlitchMob = "koJv-j1usoI";
+        window.location.href = makeListenURL(starveTheEgoFeedTheSoul_GlitchMob);
     });
 });
 

@@ -1,7 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
 
 body {
-    padding: 50px;
     font: 14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: black;
     font-weight: 400;
@@ -9,7 +8,6 @@ body {
 
 #hero {
     margin: 0 auto;
-    padding-top: 10%;
     text-align: center;
     max-width: 400px;
 }
@@ -18,6 +16,13 @@ body {
     color: black;
     font-style: normal;
     text-decoration: none;
+}
+
+.logo {
+    max-width: 300px;
+    max-height: 300px;
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
 
 #v {
