@@ -24,15 +24,18 @@ describe("Tests", function () {
         it("should have expected metadata", function (done) {
             assert.equal(browser.url, indexHTMLURL);
             assert.equal(browser.query("title").text, "Zen Audio Player");
-            assert.equal(browser.query("#title > a").href, "http://zen-audio-player.github.io/");
-            // TODO: figure out how to get browser.query("#title > a").text correctly
+            assert.equal(browser.query("#hero > a").href, "http://zen-audio-player.github.io/");
+            assert.ok(browser.query("#hero > a > img.logo").src.indexOf("img/zen-audio-player.png") !== -1);
+            assert.equal(browser.query("#hero > a > img.logo").alt, "Zen Audio Player");
             // TODO: more tests for link validation
             done();
         });
         it("should have expected elements", function (done) {
             assert.ok(browser.query("#hero"), "Couldn't find #hero");
-            assert.ok(browser.query("#title"), "Couldn't find #title");
+            assert.ok(browser.query("#hero > a"), "Couldn't hero <a>");
+            assert.ok(browser.query("#hero > a > img.logo"), "Couldn't hero <a><img class=\"logo\">");
             assert.ok(browser.query("#form"), "Couldn't find #form");
+            // TODO: validate the rest of the form
             assert.ok(browser.query("#demo"), "Couldn't find #demo");
             assert.ok(browser.query("#submit"), "Couldn't find #submit");
             assert.ok(browser.query("#zen-video-error"), "Couldn't find #zen-video-error");
