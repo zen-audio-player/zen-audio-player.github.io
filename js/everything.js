@@ -52,7 +52,7 @@ function onYouTubeIframeAPIReady() {
 
                 // Update the UI w/ error
                 $("#zen-video-error").text("ERROR: " + message);
-
+                ga("send", "event", "YouTube iframe API error", verboseMessage);
 
                 // Log debug info
                 console.log("Verbose debug error message: ", verboseMessage);
@@ -66,6 +66,9 @@ function onPlayerReady(event) {
     if (getCurrentVideoID()) {
         $("#zen-video-error").text("");
         event.target.playVideo();
+        ga("send", "event", "Playing YouTube video title", player.getVideoData().title);
+        ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
+        ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
         $("#zen-video-title").text(player.getVideoData().title);
     }
     else {
@@ -116,6 +119,7 @@ function parseYoutubeVideoID(url) {
     if (url && url.length > 0) {
         // youtube.com format
         if (url.indexOf(longUrlDomain) !== -1) {
+            ga("send", "event", "video ID format", longUrlDomain);
             videoID = getParameterByName(url, "v");
             // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
             if (videoID === "") {
@@ -124,12 +128,14 @@ function parseYoutubeVideoID(url) {
         }
         // youtu.be format
         else if (url.indexOf(shortUrlDomain) !== -1) {
+            ga("send", "event", "video ID format", shortUrlDomain);
             var endPosition = url.indexOf("?") === -1 ? url.length : url.indexOf("?");
             var offset = url.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
             videoID = url.substring(offset, endPosition);
         }
         // Assume YouTube video ID string
         else {
+            ga("send", "event", "video ID format", "video ID");
             videoID = url;
         }
 
@@ -157,6 +163,7 @@ $(function() {
         var formValue = $("#v").val();
         if (formValue) {
             var videoID = parseYoutubeVideoID(formValue);
+            ga("send", "event", "form submitted", videoID);
             window.location.href = makeListenURL(videoID);
         }
         else {
@@ -168,6 +175,7 @@ $(function() {
     $("#demo").click(function(event) {
         event.preventDefault();
         var starveTheEgoFeedTheSoul_GlitchMob = "koJv-j1usoI";
+        ga("send", "event", "demo", "clicked");
         window.location.href = makeListenURL(starveTheEgoFeedTheSoul_GlitchMob);
     });
 });
