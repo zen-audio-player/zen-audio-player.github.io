@@ -24,7 +24,7 @@ describe("Tests", function () {
         it("should have expected metadata", function (done) {
             assert.equal(browser.url, indexHTMLURL);
             assert.equal(browser.query("title").text, "Zen Audio Player");
-            assert.equal(browser.query("#hero > a").href, "http://zen-audio-player.github.io/");
+            assert.equal(browser.query("#hero > a").href, "https://zen-audio-player.github.io/");
             assert.ok(browser.query("#hero > a > img.logo").src.indexOf("img/zen-audio-player.png") !== -1);
             assert.equal(browser.query("#hero > a > img.logo").alt, "Zen Audio Player");
             // TODO: more tests for link validation
