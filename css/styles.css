@@ -9,7 +9,7 @@ body {
 #hero {
     margin: 0 auto;
     text-align: center;
-    max-width: 400px;
+    max-width: 450px;
 }
 
 #hero #title a {
@@ -22,7 +22,6 @@ body {
     max-width: 300px;
     max-height: 300px;
     padding-top: 30px;
-    padding-bottom: 30px;
 }
 
 #v {
@@ -42,6 +41,7 @@ body {
 }
 
 #zen-video-title {
+    margin-top: 5px;
     font-weight: bold;
     word-wrap: break-word;
 }
