@@ -176,7 +176,16 @@ $(function() {
         event.preventDefault();
         var starveTheEgoFeedTheSoul_GlitchMob = "koJv-j1usoI";
         ga("send", "event", "demo", "clicked");
-        window.location.href = makeListenURL(starveTheEgoFeedTheSoul_GlitchMob);
+
+        // Don't continue appending to the URL if it appears "good enough".
+        // This is likely only a problem if the demo link didn't work right the first time
+        if (window.location.href.indexOf(starveTheEgoFeedTheSoul_GlitchMob) === -1) {
+            ga("send", "event", "demo", "already had video ID in URL");
+        }
+        else {
+            window.location.href = makeListenURL(starveTheEgoFeedTheSoul_GlitchMob);    
+        }
+        
     });
 });
 
