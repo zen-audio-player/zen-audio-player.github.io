@@ -11,3 +11,7 @@ Install the [Chrome extension](https://chrome.google.com/webstore/detail/zen-you
 * Listen to [Starve the Ego, Feed the Soul by The Glitch Mob](http://zen-audio-player.github.io/?v=koJv-j1usoI)
 * Try it out on [zen-audio-player.github.io](http://zen-audio-player.github.io)
 * Clone the project and open `index.html`.
+
+## Screenshot
+
+![screenshot 1](img/screenshot-1.png)
