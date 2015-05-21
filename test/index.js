@@ -6,9 +6,8 @@ var path = require("path");
 
 var browser = new Browser();
 
-var dir = path.join(__dirname, "..");
 // TODO: tests may break on Windows because of this magic
-var indexHTMLURL = "file:" + dir + "/index.html";
+var indexHTMLURL = "file:" + path.join(__dirname, "..", "index.html");
 
 describe("Tests", function () {
     describe("Splash page", function () {
