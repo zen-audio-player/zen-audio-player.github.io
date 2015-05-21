@@ -1,4 +1,4 @@
-![Zen Audio Player](img/zen-audio-player.png)
+![Zen Audio Player](img/zen-audio-player-113.png)
 
 Listen to YouTube videos, without the distracting visuals.
 
