@@ -69,7 +69,7 @@ function onPlayerReady(event) {
         ga("send", "event", "Playing YouTube video title", player.getVideoData().title);
         ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
         ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
-        $("#zen-video-title").text(player.getVideoData().title);
+        $("#zen-video-title").text("Now playing: " + player.getVideoData().title);
     }
     else {
         // Clear the now playing text
@@ -180,12 +180,12 @@ $(function() {
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
         if (window.location.href.indexOf(starveTheEgoFeedTheSoul_GlitchMob) === -1) {
-            ga("send", "event", "demo", "already had video ID in URL");
+            window.location.href = makeListenURL(starveTheEgoFeedTheSoul_GlitchMob);
         }
         else {
-            window.location.href = makeListenURL(starveTheEgoFeedTheSoul_GlitchMob);    
+            ga("send", "event", "demo", "already had video ID in URL");
+            
         }
-        
     });
 });
 
