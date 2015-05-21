@@ -1,10 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">  
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Zen Audio Player</title>
+
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -12,13 +15,16 @@
 </head>
 <body>
     <div id="hero">
-        <a href="https://zen-audio-player.github.io" title="Zen Audio Player"><img src="img/zen-audio-player-905.png" class="logo" alt="Zen Audio Player"></a>
+        <figure>
+            <a href="https://zen-audio-player.github.io" title="Zen Audio Player"><img src="img/zen-audio-player-905.png" class="logo" alt="Zen Audio Player"></a>
+            <figcaption>Listen to YouTube videos, without the distracting visuals.</figcaption>
+            <a href="#" id="demo">Demo</a>
+        </figure>
         <div>
             <form id="form">
-                <label for="v">Enter a YouTube video ID or URL, or <a href="#" id="demo">click to demo</a></label>
+                <label for="v">Enter a YouTube link or video ID.</label>
                 <br>
                 <input type="text" id="v" name="v" placeholder="YouTube video ID or URL here">
-                <br>
                 <br>
                 <input type="submit" id="submit">
             </form>

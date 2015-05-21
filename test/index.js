@@ -1,6 +1,8 @@
 var assert = require("assert");
 var Browser = require("zombie");
 var path = require("path");
+var fs = require("fs");
+var path = require("path");
 
 var browser = new Browser();
 
@@ -21,19 +23,38 @@ describe("Tests", function () {
                 done();
             });
         });
-        it("should have expected metadata", function (done) {
+        it("should have expected metadata", function () {
             assert.equal(browser.url, indexHTMLURL);
+            assert.equal(browser.query("meta ~ meta").name, "viewport");
+            assert.equal(browser.query("meta ~ meta").content, "width=device-width, initial-scale=1");
             assert.equal(browser.query("title").text, "Zen Audio Player");
-            assert.equal(browser.query("#hero > a").href, "https://zen-audio-player.github.io/");
-            assert.ok(browser.query("#hero > a > img.logo").src.indexOf("img/zen-audio-player-905.png") !== -1);
-            assert.equal(browser.query("#hero > a > img.logo").alt, "Zen Audio Player");
+
             // TODO: more tests for link validation
-            done();
         });
-        it("should have expected elements", function (done) {
+        it("should have favicon configured correctly", function () {
+            var faviconPath = path.join(__filename, "..", "..", "img", "favicon.ico");
+            assert.ok(fs.existsSync(faviconPath));
+            assert.equal(browser.query("link").href, "img/favicon.ico");
+            assert.equal(browser.query("link").type, "image/x-icon");
+            assert.equal(browser.query("link").rel, "shortcut icon");
+            assert.equal(browser.query("link ~ link").href, "img/favicon.ico");
+            assert.equal(browser.query("link ~ link").type, "image/x-icon");
+            assert.equal(browser.query("link ~ link").rel, "icon");
+        });
+        it("should have logo configured correctly", function () {
+            var imgFolderPath = path.join(__filename, "..", "..", "img") + path.sep;
+            assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-113.png");
+            assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-453.png");
+            assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-905.png");
+            assert.equal(browser.query("#hero > figure > a").href, "https://zen-audio-player.github.io/");
+            assert.ok(browser.query("#hero > figure > a > img.logo").src.indexOf("img/zen-audio-player-905.png") !== -1);
+            assert.equal(browser.query("#hero > figure > a > img.logo").alt, "Zen Audio Player");
+        });
+        it("should have expected elements", function () {
             assert.ok(browser.query("#hero"), "Couldn't find #hero");
-            assert.ok(browser.query("#hero > a"), "Couldn't hero <a>");
-            assert.ok(browser.query("#hero > a > img.logo"), "Couldn't hero <a><img class=\"logo\">");
+            assert.ok(browser.query("#hero > figure"), "Couldn't find hero <figure>");
+            assert.ok(browser.query("#hero > figure > a"), "Couldn't find hero <figure><a>");
+            assert.ok(browser.query("#hero > figure > a > img.logo"), "Couldn't find hero <figure><a><img>");
             assert.ok(browser.query("#form"), "Couldn't find #form");
             // TODO: validate the rest of the form
             assert.ok(browser.query("#demo"), "Couldn't find #demo");
@@ -41,16 +62,14 @@ describe("Tests", function () {
             assert.ok(browser.query("#zen-video-error"), "Couldn't find #zen-video-error");
             assert.ok(browser.query("#zen-video-title"), "Couldn't find #zen-video-title");
             assert.ok(browser.query("#player"), "Couldn't find #player");
-            done();
         });
-        it("should not have strange HTML elements", function (done) {
+        it("should not have strange HTML elements", function () {
             // These are more of a sanity check than anything else
             assert.ok(!browser.query("chicken"), "Found unexpected <chicken> element");
             assert.ok(!browser.query("soup"), "Found unexpected <soup> element");
             assert.ok(!browser.query("for"), "Found unexpected <for> element");
             assert.ok(!browser.query("the"), "Found unexpected <the> element");
             assert.ok(!browser.query("code"), "Found unexpected <code> element");
-            done();
         });
     });
 });
