@@ -70,6 +70,7 @@ function onPlayerReady(event) {
         ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
         ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
         $("#zen-video-title").text("Now playing: " + player.getVideoData().title);
+        $("#zen-video-title").attr("href", player.getVideoUrl());
     }
     else {
         // Clear the now playing text
