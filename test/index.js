@@ -40,6 +40,17 @@ describe("Tests", function () {
             assert.equal(browser.query("link ~ link").type, "image/x-icon");
             assert.equal(browser.query("link ~ link").rel, "icon");
         });
+        it("should have CSS files configured correctly", function () {
+            assert.equal(browser.query("link ~ link ~ link").rel, "stylesheet");
+            assert.equal(browser.query("link ~ link ~ link").href, "css/styles.css");
+
+            assert.equal(browser.query("link ~ link ~ link  ~ link").rel, "stylesheet");
+            assert.equal(browser.query("link ~ link ~ link ~ link").href, "bower_components/primer-css/css/primer.css");
+
+            assert.equal(browser.query("link ~ link ~ link ~ link ~ link").rel, "stylesheet");
+            assert.equal(browser.query("link ~ link ~ link ~ link ~ link").href, "bower_components/octicons/octicons/octicons.css");
+        });
+        // TODO: validate JS files, might have some funky action w/ the YouTube iFrame API though
         it("should have logo configured correctly", function () {
             var imgFolderPath = path.join(__filename, "..", "..", "img") + path.sep;
             assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-113.png");
@@ -60,6 +71,7 @@ describe("Tests", function () {
             assert.ok(browser.query("#submit"), "Couldn't find #submit");
             assert.ok(browser.query("#zen-video-error"), "Couldn't find #zen-video-error");
             assert.ok(browser.query("#zen-video-title"), "Couldn't find #zen-video-title");
+            assert.ok(browser.query("a#zen-video-title"), "Couldn't find a#zen-video-title");
             assert.ok(browser.query("#player"), "Couldn't find #player");
         });
         it("should not have strange HTML elements", function () {
