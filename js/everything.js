@@ -51,7 +51,7 @@ function onYouTubeIframeAPIReady() {
                 }
 
                 // Update the UI w/ error
-                $("#zen-video-error").text("ERROR: " + message);
+                showErrorMessage(message);
                 ga("send", "event", "YouTube iframe API error", verboseMessage);
 
                 // Log debug info
@@ -86,6 +86,10 @@ function stopVideo() {
 /**
  * Zen Audio Player functions
  */
+function showErrorMessage(message) {
+    $("#zen-video-error").text("ERROR: " + message);
+    $("#zen-video-error").show();
+}
 
 function getParameterByName(url, name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -148,7 +152,7 @@ function parseYoutubeVideoID(url) {
         }
         return videoID;
     }
-    alert("Failed to parse the video ID.");
+    showErrorMessage("Failed to parse the video ID.");
 }
 
 $(function() {
@@ -162,7 +166,7 @@ $(function() {
 
     // Hide the demo link if playing the demo video's audio
     if (currentVideoID === starveTheEgoFeedTheSoul_GlitchMob) {
-        $("#demo").hide();    
+        $("#demo").hide();
     }
 
     // Handle form submission
@@ -175,7 +179,7 @@ $(function() {
             window.location.href = makeListenURL(videoID);
         }
         else {
-            alert("Try entering a YouTube video ID or URL!");
+            showErrorMessage("Try entering a YouTube video ID or URL!");
         }
     });
 
