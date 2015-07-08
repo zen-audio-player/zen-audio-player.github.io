@@ -10,32 +10,51 @@
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Use GitHub's Primer CSS library -->
+    <link rel="stylesheet" href="bower_components/primer-css/css/primer.css">
+    <link rel="stylesheet" href="bower_components/octicons/octicons/octicons.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="js/everything.js"></script>
 </head>
 <body>
-    <div id="hero">
+    <header>
+        <!-- The logo & description -->
         <figure>
-            <a href="https://zen-audio-player.github.io" title="Zen Audio Player"><img src="img/zen-audio-player-905.png" class="logo" alt="Zen Audio Player"></a>
+            <a href="https://zen-audio-player.github.io" title="Zen Audio Player">
+                <img src="img/zen-audio-player-905.png" class="logo" alt="Zen Audio Player logo">
+            </a>
             <figcaption>Listen to YouTube videos, without the distracting visuals.</figcaption>
-            <a href="#" id="demo">Demo</a>
         </figure>
-        <div>
-            <form id="form">
-                <label for="v">Enter a YouTube link or video ID</label>
-                <br>
-                <input type="text" id="v" name="v" placeholder="YouTube video ID or URL here">
-                <br>
-                <input type="submit" id="submit">
-            </form>
-        </div>
+    </header>
+    <div id="container">
+        <!-- The form -->
+        <form id="form">
+            <div class="input-group">
+                <input type="text" id="v" name="v" placeholder="Enter a YouTube video ID or URL">
+                <span class="input-group-button">
+                    <button class="btn" id="submit">
+                        <span class="octicon octicon-search"></span>
+                    </button>
+                </span>
+            </div>
+        </form>
         <br>
-        <p id="zen-video-error"></p>
-        <div id="player"></div>
-        <p id="zen-video-title"></p>
+
+        <!-- The video, along with related content & messages -->
+        <div id="audioplayer">
+            <div id="zen-video-error" class="flash flash-error"></div>
+            <br>
+            <div id="player"></div>
+            <h3><a id="zen-video-title"></a></h3>
+            <br>
+            <a id="demo" href="#">Click for Demo</a>
+        </div>
+    </div>
+    <footer>
+        <!-- Attribution, and links -->
         <p>Created by <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a></p>
         <p>Source available on <a href="https://github.com/zen-audio-player/zen-audio-player.github.io" target="_blank">GitHub</a></p>
         <p><a href="https://chrome.google.com/webstore/detail/zen-youtube-audio-player/jlkomkpeedajclllhhfkloddbihmcjlm" target="_blank">Get the Chrome extension</a> - (<a href="https://github.com/shakeelmohamed/zen-youtube-chrome" target="_blank">source</a>)</p>
-    </div>
+    </footer>
 </body>
 </html>

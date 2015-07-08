@@ -51,7 +51,7 @@ function onYouTubeIframeAPIReady() {
                 }
 
                 // Update the UI w/ error
-                $("#zen-video-error").text("ERROR: " + message);
+                showErrorMessage(message);
                 ga("send", "event", "YouTube iframe API error", verboseMessage);
 
                 // Log debug info
@@ -70,6 +70,7 @@ function onPlayerReady(event) {
         ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
         ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
         $("#zen-video-title").text("Now playing: " + player.getVideoData().title);
+        $("#zen-video-title").attr("href", player.getVideoUrl());
     }
     else {
         // Clear the now playing text
@@ -85,6 +86,10 @@ function stopVideo() {
 /**
  * Zen Audio Player functions
  */
+function showErrorMessage(message) {
+    $("#zen-video-error").text("ERROR: " + message);
+    $("#zen-video-error").show();
+}
 
 function getParameterByName(url, name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -147,14 +152,21 @@ function parseYoutubeVideoID(url) {
         }
         return videoID;
     }
-    alert("Failed to parse the video ID.");
+    showErrorMessage("Failed to parse the video ID.");
 }
 
 $(function() {
+    var starveTheEgoFeedTheSoul_GlitchMob = "koJv-j1usoI";
+
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
         $("#v").attr("value", currentVideoID);
+    }
+
+    // Hide the demo link if playing the demo video's audio
+    if (currentVideoID === starveTheEgoFeedTheSoul_GlitchMob) {
+        $("#demo").hide();
     }
 
     // Handle form submission
@@ -167,14 +179,13 @@ $(function() {
             window.location.href = makeListenURL(videoID);
         }
         else {
-            alert("Try entering a YouTube video ID or URL!");
+            showErrorMessage("Try entering a YouTube video ID or URL!");
         }
     });
 
     // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
-        var starveTheEgoFeedTheSoul_GlitchMob = "koJv-j1usoI";
         ga("send", "event", "demo", "clicked");
 
         // Don't continue appending to the URL if it appears "good enough".

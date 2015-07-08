@@ -40,27 +40,45 @@ describe("Tests", function () {
             assert.equal(browser.query("link ~ link").type, "image/x-icon");
             assert.equal(browser.query("link ~ link").rel, "icon");
         });
+        it("should have CSS files configured correctly", function () {
+            assert.equal(browser.query("link ~ link ~ link").rel, "stylesheet");
+            assert.equal(browser.query("link ~ link ~ link").href, "css/styles.css");
+
+            assert.equal(browser.query("link ~ link ~ link  ~ link").rel, "stylesheet");
+            assert.equal(browser.query("link ~ link ~ link ~ link").href, "bower_components/primer-css/css/primer.css");
+
+            assert.equal(browser.query("link ~ link ~ link ~ link ~ link").rel, "stylesheet");
+            assert.equal(browser.query("link ~ link ~ link ~ link ~ link").href, "bower_components/octicons/octicons/octicons.css");
+        });
+        // TODO: validate JS files, might have some funky action w/ the YouTube iFrame API though
         it("should have logo configured correctly", function () {
             var imgFolderPath = path.join(__filename, "..", "..", "img") + path.sep;
             assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-113.png");
             assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-453.png");
             assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-905.png");
-            assert.equal(browser.query("#hero > figure > a").href, "https://zen-audio-player.github.io/");
-            assert.ok(browser.query("#hero > figure > a > img.logo").src.indexOf("img/zen-audio-player-905.png") !== -1);
-            assert.equal(browser.query("#hero > figure > a > img.logo").alt, "Zen Audio Player");
+            assert.equal(browser.query("header > figure > a").href, "https://zen-audio-player.github.io/");
+            assert.ok(browser.query("header > figure > a > img.logo").src.indexOf("img/zen-audio-player-905.png") !== -1);
+            assert.equal(browser.query("header > figure > a > img.logo").alt, "Zen Audio Player logo");
         });
         it("should have expected elements", function () {
-            assert.ok(browser.query("#hero"), "Couldn't find #hero");
-            assert.ok(browser.query("#hero > figure"), "Couldn't find hero <figure>");
-            assert.ok(browser.query("#hero > figure > a"), "Couldn't find hero <figure><a>");
-            assert.ok(browser.query("#hero > figure > a > img.logo"), "Couldn't find hero <figure><a><img>");
+            assert.ok(browser.query("header"), "Couldn't find header");
+            assert.ok(browser.query("header > figure"), "Couldn't find <header><figure>");
+            assert.ok(browser.query("header > figure > a"), "Couldn't find <header><figure><a>");
+            assert.ok(browser.query("header > figure > a > img.logo"), "Couldn't find <header><figure><a><img>");
             assert.ok(browser.query("#form"), "Couldn't find #form");
             // TODO: validate the rest of the form
             assert.ok(browser.query("#demo"), "Couldn't find #demo");
             assert.ok(browser.query("#submit"), "Couldn't find #submit");
             assert.ok(browser.query("#zen-video-error"), "Couldn't find #zen-video-error");
             assert.ok(browser.query("#zen-video-title"), "Couldn't find #zen-video-title");
+            assert.ok(browser.query("h3 > a#zen-video-title"), "Couldn't find a h3 > a#zen-video-title");
             assert.ok(browser.query("#player"), "Couldn't find #player");
+            assert.ok(browser.query("#v"), "Couldn't find #v");
+
+            assert.ok(browser.query("footer"), "Couldn't find footer");
+            assert.ok(browser.query("footer > p"), "Couldn't find footer<p>Created by");
+            assert.ok(browser.query("footer > p ~ p"), "Couldn't find footer<p>Created by...</p><p>");
+            assert.ok(browser.query("footer > p ~ p ~ p"), "Couldn't find footer<p>Created by...</p><p>Source available...</p><p>");
         });
         it("should not have strange HTML elements", function () {
             // These are more of a sanity check than anything else
