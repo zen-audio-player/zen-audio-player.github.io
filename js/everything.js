@@ -152,10 +152,17 @@ function parseYoutubeVideoID(url) {
 }
 
 $(function() {
+    var starveTheEgoFeedTheSoul_GlitchMob = "koJv-j1usoI";
+
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
         $("#v").attr("value", currentVideoID);
+    }
+
+    // Hide the demo link if playing the demo video's audio
+    if (currentVideoID === starveTheEgoFeedTheSoul_GlitchMob) {
+        $("#demo").hide();    
     }
 
     // Handle form submission
@@ -175,7 +182,6 @@ $(function() {
     // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
-        var starveTheEgoFeedTheSoul_GlitchMob = "koJv-j1usoI";
         ga("send", "event", "demo", "clicked");
 
         // Don't continue appending to the URL if it appears "good enough".

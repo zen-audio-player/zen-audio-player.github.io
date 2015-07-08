@@ -40,7 +40,7 @@ body {
     color: red;
 }
 
-#zen-video-title {
+#zen-video-title #demo {
     margin-top: 5px;
     font-weight: bold;
     word-wrap: break-word;
