@@ -1,11 +1,6 @@
 /**
  * YouTube iframe API required setup
  */
-var tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
 var player;
 var hasError = false;
 function onYouTubeIframeAPIReady() {
@@ -114,6 +109,7 @@ function makeListenURL(videoID) {
     return url + "?v=" + videoID;
 }
 
+// TODO: this function can go away, the YouTube API will let you play video by URL
 // The url parameter could be the video ID
 function parseYoutubeVideoID(url) {
     var videoID = null;
