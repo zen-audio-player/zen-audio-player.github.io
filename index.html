@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Listen to YouTube videos, without the distracting visuals">
+    <meta name="author" content="Shakeel Mohamed">
 
     <title>Zen Audio Player</title>
 
@@ -11,9 +12,9 @@
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="css/styles.css">
-    <!-- Use GitHub's Primer CSS library -->
     <link rel="stylesheet" href="bower_components/primer-css/css/primer.css">
     <link rel="stylesheet" href="bower_components/octicons/octicons/octicons.css">
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="js/everything.js"></script>
@@ -23,9 +24,9 @@
         <!-- The logo & description -->
         <figure>
             <a href="https://zen-audio-player.github.io" title="Zen Audio Player">
-                <img src="img/zen-audio-player-905.png" class="logo" alt="Zen Audio Player logo" itemprop="logo">
+                <img src="img/zen-audio-player-905.png" class="logo" alt="Zen Audio Player logo">
             </a>
-            <figcaption itemprop="description">Listen to YouTube videos, without the distracting visuals.</figcaption>
+            <figcaption>Listen to YouTube videos, without the distracting visuals.</figcaption>
         </figure>
     </header>
     <div id="container">
@@ -58,5 +59,14 @@
         <p>Source available on <a href="https://github.com/zen-audio-player/zen-audio-player.github.io" target="_blank">GitHub</a></p>
         <p><a href="https://chrome.google.com/webstore/detail/zen-youtube-audio-player/jlkomkpeedajclllhhfkloddbihmcjlm" target="_blank">Get the Chrome extension</a> - (<a href="https://github.com/shakeelmohamed/zen-youtube-chrome" target="_blank">source</a>)</p>
     </footer>
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+        {
+            "@context": "http://schema.org",
+            "@type": "Organization",
+            "url": "http://zen-audio-player.github.io",
+            "logo": "http://zen-audio-player.github.io/img/zen-audio-player-905.png"
+        }
+    </script>
 </body>
 </html>
