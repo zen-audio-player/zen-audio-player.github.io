@@ -31,8 +31,14 @@ describe("Splash Page", function () {
     });
     it("should have expected metadata", function () {
         assert.equal(browser.url, indexHTMLURL);
-        assert.equal(browser.query("meta ~ meta").name, "viewport");
-        assert.equal(browser.query("meta ~ meta").content, "width=device-width, initial-scale=1");
+        assert.equal(browser.query("meta ~ meta").name, "description");
+        assert.equal(browser.query("meta ~ meta").content, "Listen to YouTube videos, without the distracting visuals");
+        assert.equal(browser.query("meta ~ meta ~ meta").name, "author");
+        assert.equal(browser.query("meta ~ meta ~ meta").content, "Shakeel Mohamed");
+        assert.equal(browser.query("meta ~ meta ~ meta ~ meta").name, "viewport");
+        assert.equal(browser.query("meta ~ meta ~ meta ~ meta").content, "width=device-width, initial-scale=1");
+        assert.equal(browser.query("meta ~ meta ~ meta ~ meta ~ meta").name, "google-site-verification");
+        assert.equal(browser.query("meta ~ meta ~ meta ~ meta ~ meta").content, "D3SjNR3tmNYOusESQijh_oH5SGmU9QsAIVwlqizwRBU");
         assert.equal(browser.query("title").text, "Zen Audio Player");
     });
     it("should have favicon configured correctly", function () {
@@ -108,6 +114,15 @@ describe("Demo", function () {
             
             // TODO: once upon a time, using browser.evaluate("player") would give meaningful
             //     : info. But there's a race condition where sometimes the player object isn't ready yet...
+            done();
         });
     });
 });
+
+// TODO: this test isn't working correctly either...
+// describe("Form", function () {
+//     it("should break with nonsense", function (done) {
+//         browser.fill("#v", "absolute rubbish");
+//         browser.pressButton("#submit");
+//     });
+// });
