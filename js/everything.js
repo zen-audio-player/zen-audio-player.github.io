@@ -56,6 +56,64 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
+
+function togglePlayer() {
+    // TODO: google analytics
+    var p = $("#player");
+    p.toggle();
+    if (p.is(":visible")) {
+        $("#togglePlayer").text("Hide Player");
+    }
+    else {
+        $("#togglePlayer").text("Show Player");
+    }
+}
+
+function togglePlayPause() {
+    // TODO: google analytics
+    if ($("#play").is(":visible")) {
+        player.playVideo();
+        $("#play").toggle();
+        $("#pause").toggle();
+    }
+    else {
+        player.pauseVideo();
+        $("#play").toggle();
+        $("#pause").toggle();
+    }
+}
+
+// Takes seconds as a Number, returns a : delimited string
+function cleanTime(time) {
+    // Awesome hack for int->double cast http://stackoverflow.com/a/8388831/2785681
+    var t = ~~time;
+
+    var seconds = t % 60;
+    var mins = (t - seconds) % (60 * 60 ) / 60;
+    var hours = (t - mins*60 - seconds) % (60 * 60 * 60);
+
+    var ret = "";
+    if (hours > 0) {
+        ret += hours + ":";
+        if (mins < 10) {
+            ret += "0";
+        }
+    }
+    ret += mins + ":";
+    if (seconds < 10) {
+        ret += "0";
+    }
+    ret += seconds;
+
+    return ret;
+}
+
+function updatePlayerTime() {
+    $("#currentTime").text(cleanTime(player.getCurrentTime()));
+    // TODO: after the video loads, player.getDuration() may have changed +/- 1
+    $("#totalTime").text(cleanTime(player.getDuration()));
+}
+
 function onPlayerReady(event) {
     // Only play the video if it's actually there
     if (getCurrentVideoID()) {
@@ -64,19 +122,27 @@ function onPlayerReady(event) {
         ga("send", "event", "Playing YouTube video title", player.getVideoData().title);
         ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
         ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
-        $("#zen-video-title").text("Now playing: " + player.getVideoData().title);
+        $("#zen-video-title").html("<i class=\"fa fa-music\"></i> " + player.getVideoData().title);
         $("#zen-video-title").attr("href", player.getVideoUrl());
+        togglePlayPause();
+
+        $("#playerTime").show();
+
+        // Update the time(s) every 100ms
+        setInterval(function() {
+            updatePlayerTime();
+        }, 100);
     }
     else {
         // Clear the now playing text
-        $("#zen-video-title").text("");   
+        $("#zen-video-title").text("");
+        $("#playerTime").hide();
     }
 }
 
 function stopVideo() {
     player.stopVideo();
 }
-
 
 /**
  * Zen Audio Player functions
@@ -191,11 +257,19 @@ $(function() {
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
-            
         }
+    });
+
+    // Media controls
+    $("#playPause").click(function(event) {
+        togglePlayPause();
+    });
+    $("#togglePlayer").click(function(event) {
+        togglePlayer();
     });
 });
 
+/* jshint ignore:start */
 // Google Analytics goodness
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -203,3 +277,4 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 ga('create', 'UA-62983413-1', 'auto');
 ga('send', 'pageview');
+/* jshint ignore:end */

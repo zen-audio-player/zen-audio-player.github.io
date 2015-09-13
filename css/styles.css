@@ -28,6 +28,7 @@ header, footer {
     text-align: center;
     min-width: 100%;
     width: 100%;
+    display: none;
 }
 
 #zen-video-title #demo {
@@ -38,5 +39,10 @@ header, footer {
 
 #zen-video-error {
     /* By default, hide the error div. */
+    display: none;
+}
+
+/* Media controls */
+#pause {
     display: none;
 }

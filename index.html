@@ -14,7 +14,7 @@
 
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="bower_components/primer-css/css/primer.css">
-    <link rel="stylesheet" href="bower_components/octicons/octicons/octicons.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -37,7 +37,7 @@
                 <input type="text" id="v" name="v" placeholder="Enter a YouTube video ID or URL">
                 <span class="input-group-button">
                     <button class="btn" id="submit">
-                        <span class="octicon octicon-search"></span>
+                        <i class="fa fa-search"></i>
                     </button>
                 </span>
             </div>
@@ -47,9 +47,22 @@
         <!-- The video, along with related content & messages -->
         <div id="audioplayer">
             <div id="zen-video-error" class="flash flash-error"></div>
-            <br>
-            <div id="player"></div>
+            <div id="player">
+                <br>
+            </div>
             <h3><a id="zen-video-title"></a></h3>
+            <div id="playerTime">
+                <span id="currentTime"></span> / <span id="totalTime"></span>
+            </div>
+            <div id="playerControls">
+                <button class="btn" id="playPause">
+                    <i class="fa fa-play" id="play"></i>
+                    <i class="fa fa-pause" id="pause"></i>
+                </button>
+                <button class="btn" id="togglePlayer">
+                    Show Player
+                </button>
+            </div>
             <br>
             <a id="demo" href="#">Click for Demo</a>
         </div>
