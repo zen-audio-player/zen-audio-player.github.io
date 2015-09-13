@@ -6,7 +6,6 @@ var path = require("path");
 
 var browser = new Browser();
 
-// TODO: tests may break on Windows because of this magic
 var indexHTMLURL = "file:" + path.join(__dirname, "..", "index.html");
 
 /** Utilities **/
@@ -59,7 +58,7 @@ describe("Splash Page", function () {
         assert.equal(browser.query("link ~ link ~ link ~ link").href, "bower_components/primer-css/css/primer.css");
 
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link").rel, "stylesheet");
-        assert.equal(browser.query("link ~ link ~ link ~ link ~ link").href, "bower_components/octicons/octicons/octicons.css");
+        assert.equal(browser.query("link ~ link ~ link ~ link ~ link").href, "bower_components/font-awesome/css/font-awesome.min.css");
     });
     // TODO: validate JS files, might have some funky action w/ the YouTube iFrame API though
     it("should have logo configured correctly", function () {
@@ -113,7 +112,9 @@ describe("Demo", function () {
             assert.equal("koJv-j1usoI", browser.query("#v").value);
             
             // TODO: once upon a time, using browser.evaluate("player") would give meaningful
-            //     : info. But there's a race condition where sometimes the player object isn't ready yet...
+            //     : info. But there's a race condition where sometimes the player object isn't ready yet...?
+            //     : looks like can't rely on global variables.
+            browser.assert.text("#togglePlayer", "Show Player");
             done();
         });
     });
@@ -124,5 +125,7 @@ describe("Demo", function () {
 //     it("should break with nonsense", function (done) {
 //         browser.fill("#v", "absolute rubbish");
 //         browser.pressButton("#submit");
+//         console.log(browser.location.href);
+//         done();
 //     });
 // });
