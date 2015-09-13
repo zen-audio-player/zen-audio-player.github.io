@@ -14,4 +14,4 @@ Install the [Chrome extension](https://chrome.google.com/webstore/detail/zen-you
 
 ## Screenshot
 
-![screenshot 1](img/screenshot-1.png)
+![screenshot](img/screenshot.png)
