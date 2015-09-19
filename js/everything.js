@@ -5,7 +5,7 @@ var player;
 var hasError = false;
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
-        height: '30',
+        height: '300',
         width: '400',
         // Parse the querystring and populate the video when loading the page
         videoId: getCurrentVideoID(),
