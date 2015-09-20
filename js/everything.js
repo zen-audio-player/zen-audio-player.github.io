@@ -89,8 +89,8 @@ function cleanTime(time) {
     var t = ~~time;
 
     var seconds = t % 60;
-    var mins = (t - seconds) % (60 * 60 ) / 60;
-    var hours = (t - mins*60 - seconds) % (60 * 60 * 60);
+    var mins = (t - seconds) % (60 * 60) / 60;
+    var hours = (t - mins*60 - seconds) % (60 * 60);
 
     var ret = "";
     if (hours > 0) {
