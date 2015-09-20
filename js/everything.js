@@ -90,7 +90,12 @@ function cleanTime(time) {
 
     var seconds = t % 60;
     var mins = (t - seconds) % (60 * 60) / 60;
-    var hours = (t - mins*60 - seconds) % (60 * 60);
+    var hours = 0;
+
+    var potentialHours = t - mins*60 - seconds;
+    if (!isNaN(parseInt(potentialHours / 3600))) {
+        hours = potentialHours / 3600;
+    }
 
     var ret = "";
     if (hours > 0) {
