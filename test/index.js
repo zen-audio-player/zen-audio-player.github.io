@@ -52,13 +52,16 @@ describe("Splash Page", function () {
     });
     it("should have CSS files configured correctly", function () {
         assert.equal(browser.query("link ~ link ~ link").rel, "stylesheet");
-        assert.equal(browser.query("link ~ link ~ link").href, "css/styles.css");
+        assert.equal(browser.query("link ~ link ~ link").href, "bower_components/primer-css/css/primer.css");
 
-        assert.equal(browser.query("link ~ link ~ link  ~ link").rel, "stylesheet");
-        assert.equal(browser.query("link ~ link ~ link ~ link").href, "bower_components/primer-css/css/primer.css");
+        assert.equal(browser.query("link ~ link ~ link ~ link").rel, "stylesheet");
+        assert.equal(browser.query("link ~ link ~ link ~ link").href, "bower_components/font-awesome/css/font-awesome.min.css");
 
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link").rel, "stylesheet");
-        assert.equal(browser.query("link ~ link ~ link ~ link ~ link").href, "bower_components/font-awesome/css/font-awesome.min.css");
+        assert.equal(browser.query("link ~ link ~ link ~ link ~ link").href, "bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css");
+
+        assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").rel, "stylesheet");
+        assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").href, "css/styles.css");
     });
     // TODO: validate JS files, might have some funky action w/ the YouTube iFrame API though
     it("should have logo configured correctly", function () {
