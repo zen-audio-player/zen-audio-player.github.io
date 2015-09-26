@@ -73,13 +73,22 @@ function togglePlayPause() {
     // TODO: google analytics
     if ($("#play").is(":visible")) {
         player.playVideo();
-        $("#play").toggle();
-        $("#pause").toggle();
+        // Autoplay is disabled on mobile, double check before toggling
+        setTimeout(function() {
+            if (player.getPlayerState() === 1) {
+                $("#play").toggle();
+                $("#pause").toggle();
+            }
+        }, 1000);
     }
     else {
         player.pauseVideo();
-        $("#play").toggle();
-        $("#pause").toggle();
+        setTimeout(function() {
+            if (player.getPlayerState() === 2) {
+                $("#play").toggle();
+                $("#pause").toggle();
+            }
+        }, 1000);
     }
 }
 
