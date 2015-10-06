@@ -46,3 +46,8 @@ header, footer {
 #pause {
     display: none;
 }
+
+.slider-handle {
+    background-color: black;
+    background-image: none;
+}

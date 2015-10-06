@@ -9,7 +9,7 @@ function onYouTubeIframeAPIReady() {
         width: '400',
         // Parse the querystring and populate the video when loading the page
         videoId: getCurrentVideoID(),
-        playerVars: { 'autoplay': 1, 'cc_load_policy': 0},
+        playerVars: { 'autoplay': 0, 'cc_load_policy': 0},
         events: {
             'onReady': onPlayerReady,
             'onStateChange': function onPlayerStateChange(event) {
@@ -73,13 +73,22 @@ function togglePlayPause() {
     // TODO: google analytics
     if ($("#play").is(":visible")) {
         player.playVideo();
-        $("#play").toggle();
-        $("#pause").toggle();
+        // Autoplay is disabled on mobile, double check before toggling
+        setTimeout(function() {
+            if (player.getPlayerState() === 1) {
+                $("#play").toggle();
+                $("#pause").toggle();
+            }
+        }, 1000);
     }
     else {
         player.pauseVideo();
-        $("#play").toggle();
-        $("#pause").toggle();
+        setTimeout(function() {
+            if (player.getPlayerState() === 2) {
+                $("#play").toggle();
+                $("#pause").toggle();
+            }
+        }, 1000);
     }
 }
 
@@ -119,6 +128,9 @@ function updatePlayerTime() {
     $("#totalTime").text(cleanTime(player.getDuration()));
 }
 
+// Lock for updating the volume
+var VOLUME_LOCKED = false;
+
 function onPlayerReady(event) {
     // Only play the video if it's actually there
     if (getCurrentVideoID()) {
@@ -135,6 +147,9 @@ function onPlayerReady(event) {
 
         // Update the time(s) every 100ms
         setInterval(function() {
+            if (!VOLUME_LOCKED) {
+                $("#volume").slider("setValue", player.getVolume());
+            }
             updatePlayerTime();
         }, 100);
     }
@@ -265,12 +280,41 @@ $(function() {
         }
     });
 
+    // Initialize volume slider
+    $("#volume").slider({
+        min: 0,
+        max: 100,
+        setp: 1,
+        value: 50,
+        tooltip: "hide",
+        id: "volumeSliderControl",
+        formatter: function(){}
+    });
+
     // Media controls
     $("#playPause").click(function(event) {
         togglePlayPause();
     });
     $("#togglePlayer").click(function(event) {
         togglePlayer();
+    });
+
+    function updateVolumeFromSlider() {
+        if (player) {
+            player.setVolume($("#volume").slider("getValue"));
+        }
+    }
+
+    $("#volume").on("slideStart", function() {
+        VOLUME_LOCKED = true;
+        updateVolumeFromSlider();
+    });
+    $("#volume").on("change", function() {
+        updateVolumeFromSlider();
+    });
+    $("#volume").on("slideStop", function() {
+        updateVolumeFromSlider();
+        VOLUME_LOCKED = false;
     });
 });
 
