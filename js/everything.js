@@ -19,8 +19,7 @@ function onYouTubeIframeAPIReady() {
 
                  if(playerState === 0) 
                  {
-                    $("#play").toggle();
-                    $("#pause").toggle();
+                    showPlayButton();
                  }
             },
             'onError': function(event) {
@@ -63,6 +62,15 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
+function showPlayButton() {
+    $("#play").show();
+    $("#pause").hide();
+}
+
+function showPauseButton() {
+    $("#pause").show();
+    $("#play").hide();
+}
 
 function togglePlayer() {
     // TODO: google analytics
@@ -83,8 +91,7 @@ function togglePlayPause() {
         // Autoplay is disabled on mobile, double check before toggling
         setTimeout(function() {
             if (player.getPlayerState() === 1) {
-                $("#play").toggle();
-                $("#pause").toggle();
+                showPauseButton();
             }
         }, 1000);
     }
@@ -92,8 +99,7 @@ function togglePlayPause() {
         player.pauseVideo();
         setTimeout(function() {
             if (player.getPlayerState() === 2) {
-                $("#play").toggle();
-                $("#pause").toggle();
+                showPlayButton();
             }
         }, 1000);
     }
