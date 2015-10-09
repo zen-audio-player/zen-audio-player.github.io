@@ -14,7 +14,14 @@ function onYouTubeIframeAPIReady() {
             'onReady': onPlayerReady,
             'onStateChange': function onPlayerStateChange(event) {
                 // Uncomment for debugging
-                // console.log("State changed to " + event.data);
+                //console.log("State changed to " + event.data);				 
+				var playerState = event.data;
+				 
+				 if(playerState === 0) 
+				 {
+					$("#play").toggle();
+					$("#pause").toggle();
+				 }				 
             },
             'onError': function(event) {
                 var message = "Got an unknown error, check the JS console.";
