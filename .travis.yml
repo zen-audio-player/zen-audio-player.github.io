@@ -1,6 +1,12 @@
 language: node_js
 notifications:
-    email: false
+  email: false
+  slack:
+    rooms:
+      - zenaudioplayer:iG3Ruk5ozKHuqkhmsbeK7xpaM//ytoHqifDxMJiJPCVy7Q3foLtt+nOfE/XJ0ebfuir2iHtjZn+S7gVIOI+n/rGKPgO/wgxkuPVB30y1S6DBSIwn7DSO8ydfiZ3VTqhWARtIpNsJhWu4KTl2vEwub6AtVuXtOuZP3j/VpTHyNw3YNIhc4oW4Qd/rXyH/oPUysKUoqQ/OyZOWPkDlJAQ/lRskGohH480j51vjY9AaMqodVeYpV82VW4v+vgCsQNXtq2oX0BqVQExZtFMZcsuTAJERKP75EEbDvresTFd1JUzbpELbbMymq0lQ8lsWTwpBwnha2jAGsQHn4csAHYFZnVZuPO+g5lVvCVf8rjohS4z0+kudXqASvQp1IEhyn2P0CQzSPP5quOw5MXq+agXf2nrynCu2XPBdDGCo/Fy4pz0feRLmDJxmCwuSyOhAgHSCPSB+5IxW2XXG0yi3D/uenxpO/WfC8R9WlpK2n5csuXVdyt1vkevnQ7CTedgZOXr02jn3UrB913r6z3t7+HXgkfUfA3cRHN+qhiGbuLIA3UOJplzwSLFsaslYysqe98SvWeR2qPgOYd73C+EGxxii6M+0Epf4J6Y6GpOVTDYEeicBRA7YdjVenoUdDQUoHD5vQ6ftARbXej2PpmHWq2kaicijUbFUTLsfeq7akkezSsI=#general
 node_js:
+- '4'
+- iojs
+- '0.12'
 - '0.11'
 - '0.10'
