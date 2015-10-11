@@ -1,6 +1,6 @@
 ![Zen Audio Player](img/zen-audio-player-113.png)
 
-[![Join the chat at https://gitter.im/zen-audio-player](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kayakr/ndf2015?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/zen-audio-player](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/zen-audio-player)
 
 Listen to YouTube videos, without the distracting visuals.
 
