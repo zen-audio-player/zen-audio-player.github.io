@@ -3,11 +3,9 @@ notifications:
   email: false
   webhooks:
     urls:
-      - https://webhooks.gitter.im/e/44de3da44f4cbb9a4bbd
+      - https://webhooks.gitter.im/e/789c495ac457dab0ae54
   on_success: always
   on_failure: always
-  slack:
-    secure: G4BwLSAo0qJ5dulOHOGE2fQg42lpXyRgKKLfUDrm6UYbFlL41JOlX6sWjjbAuJR7maJVI7wukctv36jWXSom0otHWh3x2OuZRxYWRpYs1KMloKtmujfrywHRn2cW2FBdmiSI883l83GknhtEOVTl0fZ/UjD0f2pEx/5AVPdFoYABAA22qRLGhtEbrfNSyUH2VYKu6akPQP3x0tGslZ9r12CV/fHfWhxGeCfSwN6IKqSdgzImy4VWg9t4nA2ts1k8OkVTgx6u3yLoCu163qHMUpNYY+ZQY56zfViMjQT1mzxMzfiLsIERZ75+cMVLR00Tofj1lLhKv+uUOJJuHODNV5CFTHlop/Kmox8X2g6Pd0qUDOHy4M7bE5CfCNxoR5QXL2LCZ52cBfvCS17yh2C6qMHnho5LoTiIBSv+fcqG6Fn7SpoRzGveCK6B4+cepLZCyEWh44XSOiR9IX+U68wwMhgDPB+C/J/FFPZEsDMm0hv6Q6lvOQI9e3/HP68OVqE+qdGqX9O8W/H6rlxIH86D0ej2n5JI1BS5y2W8HSYd3USqrgX1uPGO+KPH9MDc0foGPbgdd74lcmlSBaI26Db5LxGshRW0lpha5a5VNJ9A+uOYbRj0K3RPG9tcCQKO5HY7j4JqvCw9EWPulg5jA2w2JQ8Vr8/HbS1XsS4pHn16mK0=
 node_js:
 - '0.12'
 - '0.11'
