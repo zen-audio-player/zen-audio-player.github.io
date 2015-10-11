@@ -205,6 +205,8 @@ function makeListenURL(videoID) {
     if (window.location.search.length !== 0) {
         url = window.location.href.replace(window.location.search, "");
     }
+    // Remove any #s which break functionality
+    url = url.replace("#", "");
     return url + "?v=" + videoID;
 }
 
