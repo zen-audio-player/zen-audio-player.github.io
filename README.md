@@ -1,5 +1,7 @@
 ![Zen Audio Player](img/zen-audio-player-113.png)
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/zen-audio-player/zen-audio-player.github.io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 Listen to YouTube videos, without the distracting visuals.
 
 ## Chrome Extension
