@@ -15,6 +15,7 @@
   "dependencies": {
     "seiyria-bootstrap-slider": "*",
     "font-awesome": "~4.4.0",
-    "primer-css": "~2.3.3"
+    "primer-css": "~2.3.3",
+    "keen-js": "~3.2.7"
   }
 }
