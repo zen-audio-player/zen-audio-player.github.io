@@ -148,7 +148,7 @@ var VOLUME_LOCKED = false;
 function onPlayerReady(event) {
     // Only play the video if it's actually there
     if (getCurrentVideoID()) {
-        $("#zen-video-error").text("");
+        hideErrorMessage();
         event.target.playVideo();
         ga("send", "event", "Playing YouTube video title", player.getVideoData().title);
         ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
@@ -184,6 +184,10 @@ function stopVideo() {
 function showErrorMessage(message) {
     $("#zen-video-error").text("ERROR: " + message);
     $("#zen-video-error").show();
+}
+
+function hideErrorMessage() {
+    $("#zen-video-error").text("").hide();
 }
 
 function getParameterByName(url, name) {
