@@ -225,7 +225,8 @@ function getVideoDescription(videoID) {
         }
         $("#zen-video-description").text(data.items[0].snippet.description);
     }).fail(function(jqXHR, textStatus, errorThrown) {
-        showErrorMessage(jqXHR.responseText || errorThrown || textStatus);
+        var responseText = JSON.parse(jqXHR.error().responseText);
+        showErrorMessage(responseText.error.errors[0].message);
     });
 }
 
