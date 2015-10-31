@@ -220,7 +220,7 @@ function getVideoDescription(videoID) {
         id: videoID
     }, function(data) {
         if (data.items.length === 0) {
-            showErrorMessage("Video not found");
+            showErrorMessage("Video description not found");
             return;
         }
         $("#zen-video-description").text(data.items[0].snippet.description);
