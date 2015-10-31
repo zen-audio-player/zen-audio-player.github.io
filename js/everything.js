@@ -3,6 +3,7 @@
  */
 var player;
 var hasError = false;
+var youTubeDataApiKey = "AIzaSyA00vECS-NqLdnWYOv5rLWOwLamPNdUMFI"; // Setup to work on 127.0.0.1/ScratchBoard and https://zen-audio-player.github.io/
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '300',
@@ -207,7 +208,25 @@ function makeListenURL(videoID) {
     }
     // Remove any #s which break functionality
     url = url.replace("#", "");
+
     return url + "?v=" + videoID;
+}
+
+function getVideoDescription(videoID) {
+    $.getJSON("https://www.googleapis.com/youtube/v3/videos", {
+        key: youTubeDataApiKey,
+        part: "snippet",
+        fields: "items/snippet/description",
+        id: videoID
+    }, function(data) {
+        if (data.items.length === 0) {
+            showErrorMessage("Video not found");
+            return;
+        }
+        $("#zen-video-description").text(data.items[0].snippet.description);
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        showErrorMessage(jqXHR.responseText || errorThrown || textStatus);
+    });
 }
 
 // TODO: this function can go away, the YouTube API will let you play video by URL
@@ -259,6 +278,7 @@ $(function() {
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
         $("#v").attr("value", currentVideoID);
+        getVideoDescription(currentVideoID);
     }
 
     // Hide the demo link if playing the demo video's audio
