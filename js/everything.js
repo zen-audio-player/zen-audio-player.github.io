@@ -3,7 +3,7 @@
  */
 var player;
 var hasError = false;
-var youTubeDataApiKey = "AIzaSyA00vECS-NqLdnWYOv5rLWOwLamPNdUMFI"; // Setup to work on 127.0.0.1/ScratchBoard and https://zen-audio-player.github.io/
+var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '300',
