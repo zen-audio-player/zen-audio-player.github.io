@@ -42,6 +42,10 @@ header, footer {
     display: none;
 }
 
+#zen-video-description {
+    white-space: pre;
+}
+
 /* Media controls */
 #pause {
     display: none;
