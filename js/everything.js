@@ -85,6 +85,17 @@ function togglePlayer() {
     }
 }
 
+function toggleDescription() {
+    var descriptionElement = $('#zen-video-description');
+    descriptionElement.toggle();
+
+    if(descriptionElement.is(':visible'))
+        $('#toggleDescription').text("Hide Description")
+    else {
+        $('#toggleDescription').text("Show Description")
+    }
+}
+
 function togglePlayPause() {
     // TODO: google analytics
     if ($("#play").is(":visible")) {
@@ -157,6 +168,7 @@ function onPlayerReady(event) {
         $("#zen-video-title").attr("href", player.getVideoUrl());
         togglePlayPause();
 
+        $('#zen-video-description').hide();
         $("#playerTime").show();
 
         // Update the time(s) every 100ms
@@ -338,6 +350,10 @@ $(function() {
     $("#togglePlayer").click(function(event) {
         togglePlayer();
     });
+
+	$('#toggleDescription').click(function(event) {
+        toggleDescription();
+	});
 
     function updateVolumeFromSlider() {
         if (player) {
