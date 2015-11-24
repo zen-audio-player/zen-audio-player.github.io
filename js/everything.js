@@ -294,7 +294,7 @@ $(function() {
     // Handle form submission
     $("#form").submit(function(event) {
         event.preventDefault();
-        var formValue = $("#v").val();
+        var formValue = $.trim($("#v").val());
         if (formValue) {
             var videoID = parseYoutubeVideoID(formValue);
             ga("send", "event", "form submitted", videoID);
