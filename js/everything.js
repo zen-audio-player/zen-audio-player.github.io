@@ -73,7 +73,7 @@ function updateTweetMessage() {
 
     var id = getCurrentVideoID();
     if (id) {
-        url += "/?v=" + id;
+        opts.url += "/?v=" + id;
         opts.text = "I'm listening to " + player.getVideoData().title;
     }
 
@@ -194,6 +194,8 @@ function onPlayerReady(event) {
         // Clear the now playing text
         $("#zen-video-title").text("");
         $("#playerTime").hide();
+
+        updateTweetMessage();
     }
 }
 
