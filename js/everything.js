@@ -229,6 +229,11 @@ function makeListenURL(videoID) {
 }
 
 function getVideoDescription(videoID) {
+    if(window.location.protocol === "file:") {
+        console.log("Skipping video description request as we're running the site locally");
+        return;
+    }
+
     $.getJSON("https://www.googleapis.com/youtube/v3/videos", {
         key: youTubeDataApiKey,
         part: "snippet",
