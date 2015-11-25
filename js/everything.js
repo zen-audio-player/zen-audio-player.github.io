@@ -181,8 +181,37 @@ function onPlayerReady(event) {
         client.addEvent("Playing YouTube video", {
             author: player.getVideoData().author,
             title: player.getVideoData().title,
-            seconds: player.getDuration()
-        });
+            seconds: player.getDuration(),
+            // Keen stuff
+            page_url: window.location.href,
+            user_agent: "${keen.user_agent}",
+            ip_address: "${keen.ip}",
+            keen: {
+                addons: [
+                    {
+                        name: "keen:ip_to_geo",
+                        input: {
+                            ip: "ip_address"
+                        },
+                        output: "ip_geo_info"
+                    },
+                    {
+                        name: "keen:ua_parser",
+                        input: {
+                            ua_string: "user_agent"
+                        },
+                        output: "parsed_user_agent"
+                    },
+                    {
+                        name: "keen:url_parser",
+                        input: {
+                            url: "page_url"
+                        },
+                        output: "parsed_page_url"
+                    }
+                ]
+            }
+        }, function() { console.log(arguments);});
 
         $("#zen-video-title").html("<i class=\"fa fa-music\"></i> " + player.getVideoData().title);
         $("#zen-video-title").attr("href", player.getVideoUrl());
