@@ -199,7 +199,9 @@ function showErrorMessage(message) {
 }
 
 function hideErrorMessage() {
-    $("#zen-video-error").text("").hide();
+    if(!hasError) {
+        $("#zen-video-error").text("").hide();
+    }
 }
 
 function getParameterByName(url, name) {
@@ -247,6 +249,7 @@ function getVideoDescription(videoID) {
         $("#zen-video-description").text(data.items[0].snippet.description);
     }).fail(function(jqXHR, textStatus, errorThrown) {
         var responseText = JSON.parse(jqXHR.error().responseText);
+        hasError = true;
         showErrorMessage(responseText.error.errors[0].message);
     });
 }
