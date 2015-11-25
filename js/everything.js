@@ -90,9 +90,9 @@ function toggleDescription() {
     descriptionElement.toggle();
 
     if(descriptionElement.is(':visible'))
-        $('#toggleDescription').text("Hide Description")
+        $('#toggleDescription').text("Hide Description");
     else {
-        $('#toggleDescription').text("Show Description")
+        $('#toggleDescription').text("Show Description");
     }
 }
 
