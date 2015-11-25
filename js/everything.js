@@ -211,7 +211,7 @@ function onPlayerReady(event) {
                     }
                 ]
             }
-        }, function() { console.log(arguments);});
+        });
 
         $("#zen-video-title").html("<i class=\"fa fa-music\"></i> " + player.getVideoData().title);
         $("#zen-video-title").attr("href", player.getVideoUrl());
