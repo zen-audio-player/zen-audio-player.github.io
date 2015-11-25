@@ -1,3 +1,6 @@
+// Pointer to Keen client
+var client;
+
 /**
  * YouTube iframe API required setup
  */
@@ -17,8 +20,7 @@ function onYouTubeIframeAPIReady() {
                 //console.log("State changed to " + event.data);
                 var playerState = event.data;
 
-                 if(playerState === YT.PlayerState.ENDED)
-                 {
+                 if (playerState === YT.PlayerState.ENDED) {
                     showPlayButton();
                  }
             },
@@ -54,6 +56,7 @@ function onYouTubeIframeAPIReady() {
                 // Update the UI w/ error
                 showErrorMessage(message);
                 ga("send", "event", "YouTube iframe API error", verboseMessage);
+                client.addEvent("YouTube iframe API error", {verbose: verboseMessage, message: message, code: event.data});
 
                 // Log debug info
                 console.log("Verbose debug error message: ", verboseMessage);
@@ -174,6 +177,13 @@ function onPlayerReady(event) {
         ga("send", "event", "Playing YouTube video title", player.getVideoData().title);
         ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
         ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
+
+        client.addEvent("Playing YouTube video", {
+            author: player.getVideoData().author,
+            title: player.getVideoData().title,
+            seconds: player.getDuration()
+        });
+
         $("#zen-video-title").html("<i class=\"fa fa-music\"></i> " + player.getVideoData().title);
         $("#zen-video-title").attr("href", player.getVideoUrl());
         togglePlayPause();
@@ -248,6 +258,7 @@ function parseYoutubeVideoID(url) {
         // youtube.com format
         if (url.indexOf(longUrlDomain) !== -1) {
             ga("send", "event", "video ID format", longUrlDomain);
+            client.addEvent("Video ID format", {format: longUrlDomain});
             videoID = getParameterByName(url, "v");
             // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
             if (videoID === "") {
@@ -257,6 +268,7 @@ function parseYoutubeVideoID(url) {
         // youtu.be format
         else if (url.indexOf(shortUrlDomain) !== -1) {
             ga("send", "event", "video ID format", shortUrlDomain);
+            client.addEvent("Video ID format", {format: shortUrlDomain});
             var endPosition = url.indexOf("?") === -1 ? url.length : url.indexOf("?");
             var offset = url.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
             videoID = url.substring(offset, endPosition);
@@ -264,6 +276,7 @@ function parseYoutubeVideoID(url) {
         // Assume YouTube video ID string
         else {
             ga("send", "event", "video ID format", "video ID");
+            client.addEvent("Video ID format", {format: "video ID"});
             videoID = url;
         }
 
@@ -279,6 +292,17 @@ function parseYoutubeVideoID(url) {
 }
 
 $(function() {
+    // Keen.io
+    client = new Keen({
+        projectId: "561c5bdf2fd4b1643d829323", // String (required always)
+        writeKey: "63a4473df5ec83ea8494a5845e2b46501238f6d5580f4953933ebd0cef786409716832cd147b09a29a5b2a80830f8154b772f88e55fd29d92022922993b96eac42cf8497db411a0831fd631e097b9711172b7210a0178b778b69f8ab60fa7eb9c37fdd949ec45d6791700575739dda15",   // String (required for sending data)
+        // readKey: "YOUR_READ_KEY"      // String (required for querying data)
+
+        // protocol: "https",         // String (optional: https | http | auto)
+        // host: "api.keen.io/3.0",   // String (optional)
+        // requestType: "jsonp"       // String (optional: jsonp, xhr, beacon)
+    });
+    
     var starveTheEgoFeedTheSoul_GlitchMob = "koJv-j1usoI";
 
     // Preload the form from the URL
@@ -299,6 +323,7 @@ $(function() {
         if (formValue) {
             var videoID = parseYoutubeVideoID(formValue);
             ga("send", "event", "form submitted", videoID);
+            client.addEvent("Form submitted", {videoID: videoID});
             window.location.href = makeListenURL(videoID);
         }
         else {
@@ -310,6 +335,7 @@ $(function() {
     $("#demo").click(function(event) {
         event.preventDefault();
         ga("send", "event", "demo", "clicked");
+        client.addEvent("Demo", {action: "clicked"});
 
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
@@ -318,6 +344,7 @@ $(function() {
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
+            client.addEvent("demo", {action: "already had video ID in URL"});
         }
     });
 
