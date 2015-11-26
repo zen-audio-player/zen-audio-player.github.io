@@ -24,8 +24,11 @@
   },
   "homepage": "https://zen-audio-player.github.io",
   "devDependencies": {
-    "mocha": "^2.2.4",
-    "zombie": "2.5.1",
-    "jshint": "<2.5.0"
+    "mocha": "2.3.x",
+    "zombie": "4.x",
+    "jshint": "^2.9.1-rc1"
+  },
+  "engines": {
+    "node": ">=4.x"
   }
 }
