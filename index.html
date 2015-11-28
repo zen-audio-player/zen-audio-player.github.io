@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css">
     <link rel="stylesheet" href="css/styles.css">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="js/everything.js"></script>
@@ -80,11 +80,10 @@
         </div>
     </div>
     <footer>
+        <br>
         <!-- Twitter hashtag button: #ZenAudioPlayer -->
-        <p>
-            <a href="https://twitter.com/intent/tweet?button_hashtag=ZenAudioPlayer&text=Listen%20to%20YouTube%20videos%2C%20without%20the%20distracting%20visuals" class="twitter-hashtag-button" data-related="_shakeel" data-url="http://zen-audio-player.github.io/">Tweet #ZenAudioPlayer</a>
-            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-        </p>
+        <div id="tweetButton"></div>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
         <!-- Attribution, and links -->
         <p>Created by <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a></p>
         <p>Source available on <a href="https://github.com/zen-audio-player/zen-audio-player.github.io" target="_blank">GitHub</a></p>

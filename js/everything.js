@@ -63,6 +63,28 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
+function updateTweetMessage() {
+    var url = "https://zen-audio-player.github.io";
+
+    var opts = {
+        text: "Listen to YouTube videos without the distracting visuals",
+        hashTags: "ZenAudioPlayer",
+        url: url
+    };
+
+    var id = getCurrentVideoID();
+    if (id) {
+        opts.url += "/?v=" + id;
+        opts.text = "I'm listening to " + player.getVideoData().title;
+    }
+
+    twttr.widgets.createHashtagButton(
+        "ZenAudioPlayer",
+        document.getElementById("tweetButton"),
+        opts
+    );
+}
+
 function showPlayButton() {
     $("#play").show();
     $("#pause").hide();
@@ -171,6 +193,8 @@ function onPlayerReady(event) {
         $('#zen-video-description').hide();
         $("#playerTime").show();
 
+        updateTweetMessage();
+
         // Update the time(s) every 100ms
         setInterval(function() {
             if (!VOLUME_LOCKED) {
@@ -183,6 +207,8 @@ function onPlayerReady(event) {
         // Clear the now playing text
         $("#zen-video-title").text("");
         $("#playerTime").hide();
+
+        updateTweetMessage();
     }
 }
 

@@ -4,9 +4,9 @@ var path = require("path");
 var fs = require("fs");
 var path = require("path");
 
-var browser = new Browser();
+const browser = new Browser();
 
-var indexHTMLURL = "file:" + path.join(__dirname, "..", "index.html");
+var indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
 /** Utilities **/
 function getParameterByName(url, name) {
@@ -19,8 +19,6 @@ function getParameterByName(url, name) {
 describe("Splash Page", function () {
     it("should have required HTML elements", function (done) {
         browser.visit(indexHTMLURL, function (e) {
-            // 404 for Google Analytics is expected locally
-            assert.equal(e.message, "Server returned status code 404 from file://www.google-analytics.com/analytics.js");
             assert.ok(browser.query("html"), "Couldn't find <html>, wow!");
             assert.ok(browser.query("head"), "Couldn't find <head>, wow!");
             assert.ok(browser.query("body"), "Couldn't find <body>, wow!");
@@ -117,18 +115,21 @@ describe("Demo", function () {
             // TODO: once upon a time, using browser.evaluate("player") would give meaningful
             //     : info. But there's a race condition where sometimes the player object isn't ready yet...?
             //     : looks like can't rely on global variables.
+            browser.assert.element("#player");
             browser.assert.text("#togglePlayer", "Show Player");
+            browser.assert.text("#zen-video-error", "");
             done();
         });
     });
 });
 
-// TODO: this test isn't working correctly either...
-// describe("Form", function () {
-//     it("should break with nonsense", function (done) {
-//         browser.fill("#v", "absolute rubbish");
-//         browser.pressButton("#submit");
-//         console.log(browser.location.href);
-//         done();
-//     });
-// });
+describe("Form", function () {
+    it("should break with nonsense input", function (done) {
+        browser.assert.text("#zen-video-error", "");
+        browser.fill("#v", "absolute rubbish");
+        browser.pressButton("#submit", function() {
+            // TODO: add tests for the error message, time, play/pause button, etc
+            done();
+        });
+    });
+});
