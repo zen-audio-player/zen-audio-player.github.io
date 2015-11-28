@@ -3,6 +3,7 @@
  */
 var player;
 var hasError = false;
+var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '300',
@@ -106,6 +107,17 @@ function togglePlayer() {
     }
 }
 
+function toggleDescription() {
+    var descriptionElement = $('#zen-video-description');
+    descriptionElement.toggle();
+
+    if(descriptionElement.is(':visible'))
+        $('#toggleDescription').text("Hide Description");
+    else {
+        $('#toggleDescription').text("Show Description");
+    }
+}
+
 function togglePlayPause() {
     // TODO: google analytics
     if ($("#play").is(":visible")) {
@@ -169,7 +181,7 @@ var VOLUME_LOCKED = false;
 function onPlayerReady(event) {
     // Only play the video if it's actually there
     if (getCurrentVideoID()) {
-        $("#zen-video-error").text("");
+        hideErrorMessage();
         event.target.playVideo();
         ga("send", "event", "Playing YouTube video title", player.getVideoData().title);
         ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
@@ -178,6 +190,7 @@ function onPlayerReady(event) {
         $("#zen-video-title").attr("href", player.getVideoUrl());
         togglePlayPause();
 
+        $('#zen-video-description').hide();
         $("#playerTime").show();
 
         updateTweetMessage();
@@ -211,6 +224,12 @@ function showErrorMessage(message) {
     $("#zen-video-error").show();
 }
 
+function hideErrorMessage() {
+    if(!hasError) {
+        $("#zen-video-error").text("").hide();
+    }
+}
+
 function getParameterByName(url, name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -233,7 +252,32 @@ function makeListenURL(videoID) {
     }
     // Remove any #s which break functionality
     url = url.replace("#", "");
+
     return url + "?v=" + videoID;
+}
+
+function getVideoDescription(videoID) {
+    if(window.location.protocol === "file:") {
+        console.log("Skipping video description request as we're running the site locally");
+        return;
+    }
+
+    $.getJSON("https://www.googleapis.com/youtube/v3/videos", {
+        key: youTubeDataApiKey,
+        part: "snippet",
+        fields: "items/snippet/description",
+        id: videoID
+    }, function(data) {
+        if (data.items.length === 0) {
+            showErrorMessage("Video description not found");
+            return;
+        }
+        $("#zen-video-description").text(data.items[0].snippet.description);
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        var responseText = JSON.parse(jqXHR.error().responseText);
+        hasError = true;
+        showErrorMessage(responseText.error.errors[0].message);
+    });
 }
 
 // TODO: this function can go away, the YouTube API will let you play video by URL
@@ -285,6 +329,7 @@ $(function() {
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
         $("#v").attr("value", currentVideoID);
+        getVideoDescription(currentVideoID);
     }
 
     // Hide the demo link if playing the demo video's audio
@@ -339,6 +384,10 @@ $(function() {
     $("#togglePlayer").click(function(event) {
         togglePlayer();
     });
+
+	$('#toggleDescription').click(function(event) {
+        toggleDescription();
+	});
 
     function updateVolumeFromSlider() {
         if (player) {
