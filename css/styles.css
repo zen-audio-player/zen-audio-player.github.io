@@ -2,6 +2,10 @@ header, footer {
     text-align: center;
 }
 
+.hide {
+    display: none;
+}
+
 #audioplayer {
     text-align: center;
 }
@@ -37,14 +41,8 @@ header, footer {
     word-wrap: break-word;
 }
 
-#zen-video-error {
-    /* By default, hide the error div. */
-    display: none;
-}
-
 #zen-video-description {
     white-space: pre;
-    display: none;
 }
 
 /* Media controls */
