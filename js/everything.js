@@ -190,7 +190,6 @@ function onPlayerReady(event) {
         $("#zen-video-title").attr("href", player.getVideoUrl());
         togglePlayPause();
 
-        $('#zen-video-description').hide();
         $("#playerTime").show();
 
         updateTweetMessage();
