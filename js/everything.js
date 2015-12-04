@@ -271,12 +271,25 @@ function getVideoDescription(videoID) {
             showErrorMessage("Video description not found");
             return;
         }
-        $("#zen-video-description").text(data.items[0].snippet.description);
+        var description = data.items[0].snippet.description;
+        description = anchorURLs(description);
+        $("#zen-video-description").html(description);
     }).fail(function(jqXHR, textStatus, errorThrown) {
         var responseText = JSON.parse(jqXHR.error().responseText);
         hasError = true;
         showErrorMessage(responseText.error.errors[0].message);
     });
+}
+
+function anchorURLs(text) {
+    /* RegEx to match http or https addresses
+    * This will currently only match TLD of two or three letters
+    * Ends capture when:
+    *    (1) it encounters a TLD
+    *    (2) it encounters a period (.) or whitespace, if the TLD was followed by a forwardslash (/) */
+    var re = /((?:http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*[^\.\s])?)/g;
+    /* Wraps all found URLs in <a> tags */
+    return text.replace(re, '<a href="$1" target="_blank">$1</a>');
 }
 
 // TODO: this function can go away, the YouTube API will let you play video by URL
