@@ -179,7 +179,7 @@ function storeTime(time) {
 function updatePlayerTime() {
     var currentTime = player.getCurrentTime();
     $("#currentTime").text(cleanTime(currentTime));
-    // TODO: after the video loads, player.getDuration() may have changed +/- 1
+    // after the video loads, player.getDuration() may have changed +/- 1
     $("#totalTime").text(cleanTime(player.getDuration()));
     storeTime(currentTime);
 }
