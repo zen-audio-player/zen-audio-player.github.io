@@ -189,7 +189,7 @@ function loadTime() {
     if (window.sessionStorage && window.sessionStorage.hasOwnProperty(videoID)) {
         time = window.sessionStorage[videoID];
         if (!isNaN(time)) {
-            return parseInt(time);
+            return parseInt(time, 10);
         }
     }
     else {
