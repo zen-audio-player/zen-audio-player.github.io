@@ -169,10 +169,32 @@ function cleanTime(time) {
     return ret;
 }
 
+function storeTime(time) {
+    var videoID = getCurrentVideoID();
+    if (window.sessionStorage && videoID) {
+        window.sessionStorage[videoID] = time;
+    }
+}
+
 function updatePlayerTime() {
-    $("#currentTime").text(cleanTime(player.getCurrentTime()));
-    // TODO: after the video loads, player.getDuration() may have changed +/- 1
+    var currentTime = player.getCurrentTime();
+    $("#currentTime").text(cleanTime(currentTime));
+    // after the video loads, player.getDuration() may have changed +/- 1
     $("#totalTime").text(cleanTime(player.getDuration()));
+    storeTime(currentTime);
+}
+
+function loadTime() {
+    var videoID = getCurrentVideoID();
+    if (window.sessionStorage && window.sessionStorage.hasOwnProperty(videoID)) {
+        time = window.sessionStorage[videoID];
+        if (!isNaN(time)) {
+            return parseInt(time, 10);
+        }
+    }
+    else {
+        return 0;
+    }
 }
 
 // Lock for updating the volume
@@ -188,6 +210,7 @@ function onPlayerReady(event) {
         ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
         $("#zen-video-title").html("<i class=\"fa fa-music\"></i> " + player.getVideoData().title);
         $("#zen-video-title").attr("href", player.getVideoUrl());
+        player.seekTo(loadTime());
         togglePlayPause();
 
         $("#playerTime").show();
