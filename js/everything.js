@@ -200,6 +200,9 @@ function loadTime() {
 // Lock for updating the volume
 var VOLUME_LOCKED = false;
 
+// Lock for updating the playertime
+var TIME_LOCKED = false;
+
 function onPlayerReady(event) {
     // Only play the video if it's actually there
     if (getCurrentVideoID()) {
@@ -211,6 +214,7 @@ function onPlayerReady(event) {
         $("#zen-video-title").html("<i class=\"fa fa-music\"></i> " + player.getVideoData().title);
         $("#zen-video-title").attr("href", player.getVideoUrl());
         player.seekTo(loadTime());
+        $("#timeSeek").slider("setAttribute", "max", player.getDuration());
         togglePlayPause();
 
         $("#playerTime").show();
@@ -221,6 +225,9 @@ function onPlayerReady(event) {
         setInterval(function() {
             if (!VOLUME_LOCKED) {
                 $("#volume").slider("setValue", player.getVolume());
+            }
+            if (!TIME_LOCKED) {
+                $("#timeSeek").slider("setValue", player.getCurrentTime());
             }
             updatePlayerTime();
         }, 100);
@@ -412,6 +419,16 @@ $(function() {
         formatter: function(){}
     });
 
+    // Initialize timeSeek slider
+    $("#timeSeek").slider({
+        min: 0,
+        max: 100,
+        value: 0,
+        tooltip: "hide",
+        id: "timeSeekSliderControl",
+        formatter: function(){}
+    });
+
     // Media controls
     $("#playPause").click(function(event) {
         togglePlayPause();
@@ -441,6 +458,25 @@ $(function() {
         updateVolumeFromSlider();
         VOLUME_LOCKED = false;
     });
+
+    function updateTimeFromSlider() {
+        if (player) {
+            player.seekTo($("#timeSeek").slider("getValue"));
+        }
+    }
+
+    $("#timeSeek").on("slideStart", function() {
+        TIME_LOCKED = true;
+        updateTimeFromSlider();
+    });
+    $("#timeSeek").on("change", function() {
+        updateTimeFromSlider();
+    });
+    $("#timeSeek").on("slideStop", function() {
+        updateTimeFromSlider();
+        TIME_LOCKED = false;
+    });
+
 });
 
 /* jshint ignore:start */
