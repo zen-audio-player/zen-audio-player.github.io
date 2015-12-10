@@ -467,6 +467,7 @@ $(function() {
 
     $("#timeSeek").on("slideStart", function() {
         TIME_LOCKED = true;
+        player.pauseVideo();
         updateTimeFromSlider();
     });
     $("#timeSeek").on("change", function() {
@@ -474,6 +475,7 @@ $(function() {
     });
     $("#timeSeek").on("slideStop", function() {
         updateTimeFromSlider();
+        player.playVideo();
         TIME_LOCKED = false;
     });
 
