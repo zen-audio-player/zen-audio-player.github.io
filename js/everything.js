@@ -4,32 +4,35 @@
 var player;
 var hasError = false;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-        height: '300',
-        width: '400',
+
+function onYouTubeIframeAPIReady() {/* jshint ignore:line */
+    player = new YT.Player("player", {
+        height: "300",
+        width: "400",
         // Parse the querystring and populate the video when loading the page
         videoId: getCurrentVideoID(),
-        playerVars: { 'autoplay': 0, 'cc_load_policy': 0},
+        playerVars: {
+            "autoplay": 0,
+            "cc_load_policy": 0
+        },
         events: {
-            'onReady': onPlayerReady,
-            'onStateChange': function onPlayerStateChange(event) {
+            "onReady": onPlayerReady,
+            "onStateChange": function onPlayerStateChange(event) {
                 // Uncomment for debugging
                 //console.log("State changed to " + event.data);
                 var playerState = event.data;
 
-                 if(playerState === YT.PlayerState.ENDED)
-                 {
+                 if (playerState === YT.PlayerState.ENDED) {
                     showPlayButton();
                  }
             },
-            'onError': function(event) {
+            "onError": function(event) {
                 var message = "Got an unknown error, check the JS console.";
                 var verboseMessage = message;
                 hasError = true;
 
                 // Handle the different error codes
-                switch(event.data) {
+                switch (event.data) {
                     case 2:
                         verboseMessage = "The request contains an invalid parameter value. For example, this error occurs if you specify a video ID that does not have 11 characters, or if the video ID contains invalid characters, such as exclamation points or asterisks.";
                         message = "looks like an invalid video ID";
@@ -108,13 +111,14 @@ function togglePlayer() {
 }
 
 function toggleDescription() {
-    var descriptionElement = $('#zen-video-description');
+    var descriptionElement = $("#zen-video-description");
     descriptionElement.toggle();
 
-    if(descriptionElement.is(':visible'))
-        $('#toggleDescription').text("Hide Description");
+    if (descriptionElement.is(":visible")) {
+        $("#toggleDescription").text("Hide Description");
+    }
     else {
-        $('#toggleDescription').text("Show Description");
+        $("#toggleDescription").text("Show Description");
     }
 }
 
@@ -234,10 +238,6 @@ function onPlayerReady(event) {
     }
 }
 
-function stopVideo() {
-    player.stopVideo();
-}
-
 /**
  * Zen Audio Player functions
  */
@@ -301,6 +301,7 @@ function getVideoDescription(videoID) {
         var responseText = JSON.parse(jqXHR.error().responseText);
         hasError = true;
         showErrorMessage(responseText.error.errors[0].message);
+        console.log("Video Description error", errorThrown);
     });
 }
 
@@ -312,7 +313,7 @@ function anchorURLs(text) {
     *    (2) it encounters a period (.) or whitespace, if the TLD was followed by a forwardslash (/) */
     var re = /((?:http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*[^\.\s])?)/g;
     /* Wraps all found URLs in <a> tags */
-    return text.replace(re, '<a href="$1" target="_blank">$1</a>');
+    return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
 }
 
 // TODO: this function can go away, the YouTube API will let you play video by URL
@@ -358,7 +359,7 @@ function parseYoutubeVideoID(url) {
 }
 
 $(function() {
-    var starveTheEgoFeedTheSoul_GlitchMob = "koJv-j1usoI";
+    var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
 
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
@@ -368,7 +369,7 @@ $(function() {
     }
 
     // Hide the demo link if playing the demo video's audio
-    if (currentVideoID === starveTheEgoFeedTheSoul_GlitchMob) {
+    if (currentVideoID === starveTheEgoFeedTheSoulGlitchMob) {
         $("#demo").hide();
     }
 
@@ -393,8 +394,8 @@ $(function() {
 
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
-        if (window.location.href.indexOf(starveTheEgoFeedTheSoul_GlitchMob) === -1) {
-            window.location.href = makeListenURL(starveTheEgoFeedTheSoul_GlitchMob);
+        if (window.location.href.indexOf(starveTheEgoFeedTheSoulGlitchMob) === -1) {
+            window.location.href = makeListenURL(starveTheEgoFeedTheSoulGlitchMob);
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
@@ -414,13 +415,16 @@ $(function() {
 
     // Media controls
     $("#playPause").click(function(event) {
+        event.preventDefault();
         togglePlayPause();
     });
     $("#togglePlayer").click(function(event) {
+        event.preventDefault();
         togglePlayer();
     });
 
-	$('#toggleDescription').click(function(event) {
+	$("#toggleDescription").click(function(event) {
+        event.preventDefault();
         toggleDescription();
 	});
 
@@ -445,10 +449,10 @@ $(function() {
 
 /* jshint ignore:start */
 // Google Analytics goodness
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-ga('create', 'UA-62983413-1', 'auto');
-ga('send', 'pageview');
+})(window,document,"script","//www.google-analytics.com/analytics.js","ga");
+ga("create", "UA-62983413-1", "auto");
+ga("send", "pageview");
 /* jshint ignore:end */
