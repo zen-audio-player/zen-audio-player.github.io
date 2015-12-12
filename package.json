@@ -5,7 +5,7 @@
   "main": "tests.js",
   "scripts": {
     "pretest": "jshint js test",
-    "test": "mocha test/index.js"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -24,11 +24,25 @@
   },
   "homepage": "https://zen-audio-player.github.io",
   "devDependencies": {
+    "html5-lint": "^0.2.5",
+    "jshint": "^2.9.1-rc1",
     "mocha": "2.3.x",
-    "zombie": "4.x",
-    "jshint": "^2.9.1-rc1"
+    "zombie": "4.x"
   },
   "engines": {
     "node": ">=4.x"
+  },
+  "jshintConfig": {
+    "curly": true,
+    "camelcase": true,
+    "indent": 4,
+    "loopfunc": true,
+    "newcap": true,
+    "node": true,
+    "quotmark": "double",
+    "trailing": true,
+    "unused": true,
+    "white": true,
+    "esversion": 6
   }
 }
