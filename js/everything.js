@@ -206,7 +206,7 @@ function onPlayerReady(event) {
         ga("send", "event", "Playing YouTube video title", player.getVideoData().title);
         ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
         ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
-        $("#zen-video-title").html("<i class=\"fa fa-music\"></i> " + player.getVideoData().title.replace(/^\u266B+/g, ''));
+        $("#zen-video-title").html("<i class=\"fa fa-music\"></i> " + player.getVideoData().title.replace(/^\u266B+/g, ""));
         $("#zen-video-title").attr("href", player.getVideoUrl());
         player.seekTo(loadTime());
         togglePlayPause();
