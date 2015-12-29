@@ -22,9 +22,13 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
                 //console.log("State changed to " + event.data);
                 var playerState = event.data;
 
-                 if (playerState === YT.PlayerState.ENDED) {
-                    showPlayButton();
-                 }
+                switch (playerState) {
+                    case YT.PlayerState.PLAYING:
+                        showPauseButton();
+                        break;
+                    default:
+                        showPlayButton();
+                }
             },
             "onError": function(event) {
                 var message = "Got an unknown error, check the JS console.";
@@ -127,19 +131,9 @@ function togglePlayPause() {
     if ($("#play").is(":visible")) {
         player.playVideo();
         // Autoplay is disabled on mobile, double check before toggling
-        setTimeout(function() {
-            if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-                showPauseButton();
-            }
-        }, 1000);
     }
     else {
         player.pauseVideo();
-        setTimeout(function() {
-            if (player.getPlayerState() === YT.PlayerState.PAUSED) {
-                showPlayButton();
-            }
-        }, 1000);
     }
 }
 
