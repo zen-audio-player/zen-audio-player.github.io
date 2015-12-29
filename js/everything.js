@@ -23,15 +23,11 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
                 var playerState = event.data;
 
                 switch (playerState) {
-                    case YT.PlayerState.ENDED:
-                        showPlayButton();
-                        break;
-                    case YT.PlayerState.PAUSED:
-                        showPlayButton();
-                        break;
                     case YT.PlayerState.PLAYING:
                         showPauseButton();
                         break;
+                    default:
+                        showPlayButton();
                 }
             },
             "onError": function(event) {
