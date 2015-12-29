@@ -206,7 +206,12 @@ function onPlayerReady(event) {
         ga("send", "event", "Playing YouTube video title", player.getVideoData().title);
         ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
         ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
-        $("#zen-video-title").html("<i class=\"fa fa-music\"></i> " + player.getVideoData().title.replace(/^\u266B+/g, ""));
+        // Prepend music note only if title does not already begin with one.
+        var videotitle = player.getVideoData().title;
+        if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(videotitle)) {
+            videotitle = "<i class=\"fa fa-music\"></i> " + videotitle;
+        }
+        $("#zen-video-title").html(videotitle);
         $("#zen-video-title").attr("href", player.getVideoUrl());
         player.seekTo(loadTime());
         togglePlayPause();
