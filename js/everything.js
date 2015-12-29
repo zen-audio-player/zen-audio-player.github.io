@@ -22,14 +22,16 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
                 //console.log("State changed to " + event.data);
                 var playerState = event.data;
 
-                if (playerState === YT.PlayerState.ENDED) {
-                    showPlayButton();
-                }
-                else if (playerState === YT.PlayerState.PAUSED) {
-                    showPlayButton();
-                }
-                else if (playerState === YT.PlayerState.PLAYING) {
-                    showPauseButton();
+                switch (playerState) {
+                    case YT.PlayerState.ENDED:
+                        showPlayButton();
+                        break;
+                    case YT.PlayerState.PAUSED:
+                        showPlayButton();
+                        break;
+                    case YT.PlayerState.PLAYING:
+                        showPauseButton();
+                        break;
                 }
             },
             "onError": function(event) {
