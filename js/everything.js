@@ -363,6 +363,7 @@ $(function() {
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
+        $("#playerControls").show();
         $("#v").attr("value", currentVideoID);
         getVideoDescription(currentVideoID);
     }
