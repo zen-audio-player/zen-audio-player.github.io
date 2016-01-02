@@ -103,7 +103,7 @@ describe("Splash Page", function () {
 });
 
 describe("Demo", function () {
-    it("should play the demo when demo link is clicked", function (done) {
+    it("should play the demo when demo button is clicked", function (done) {
         var oldUrl = browser.location.href;
         browser.click("#demo", function() {
             // Make sure the URL changed
