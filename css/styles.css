@@ -41,8 +41,8 @@ header, footer {
     word-wrap: break-word;
 }
 #demo {
-    margin-top: 5%;
-    margin-left: 36%;
+    display: block;
+    margin: 0 auto;
 }
 
 #zen-video-description {
