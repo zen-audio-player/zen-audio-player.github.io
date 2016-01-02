@@ -105,7 +105,7 @@ describe("Splash Page", function () {
 describe("Demo", function () {
     it("should play the demo when demo link is clicked", function (done) {
         var oldUrl = browser.location.href;
-        browser.clickLink("#demo", function() {
+        browser.click("#demo", function() {
             // Make sure the URL changed
             assert.notEqual(oldUrl, browser.location.href);
             // Check for demo video ID in the URL
