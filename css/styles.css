@@ -8,6 +8,7 @@ header, footer {
 
 #audioplayer {
     text-align: center;
+    display: none;
 }
 
 #container {
@@ -34,10 +35,6 @@ header, footer {
     width: 100%;
     display: none;
 }
-#audioplayer {
-    display: none;
-}
-
 #zen-video-title #demo {
     margin-top: 5px;
     font-weight: bold;
