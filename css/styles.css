@@ -34,7 +34,7 @@ header, footer {
     width: 100%;
     display: none;
 }
-#playerControls {
+#audioplayer {
     display: none;
 }
 
@@ -42,6 +42,10 @@ header, footer {
     margin-top: 5px;
     font-weight: bold;
     word-wrap: break-word;
+}
+#demo {
+    margin-top: 5%;
+    margin-left: 36%;
 }
 
 #zen-video-description {
