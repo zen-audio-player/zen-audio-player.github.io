@@ -243,6 +243,7 @@ function onPlayerReady(event) {
 function showErrorMessage(message) {
     $("#zen-video-error").text("ERROR: " + message);
     $("#zen-video-error").show();
+    $("#audioplayer").hide();
 }
 
 function hideErrorMessage() {
@@ -363,7 +364,7 @@ $(function() {
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
-        $("#playerControls").show();
+        $("#audioplayer").show();
         $("#v").attr("value", currentVideoID);
         getVideoDescription(currentVideoID);
     }
@@ -401,7 +402,6 @@ $(function() {
             ga("send", "event", "demo", "already had video ID in URL");
         }
     });
-
     // Initialize volume slider
     $("#volume").slider({
         min: 0,

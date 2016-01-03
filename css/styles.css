@@ -8,6 +8,7 @@ header, footer {
 
 #audioplayer {
     text-align: center;
+    display: none;
 }
 
 #container {
@@ -34,14 +35,18 @@ header, footer {
     width: 100%;
     display: none;
 }
-#playerControls {
-    display: none;
-}
-
 #zen-video-title #demo {
     margin-top: 5px;
     font-weight: bold;
     word-wrap: break-word;
+}
+#zen-video-error {
+    text-align: center;
+    margin-top: 20px;
+}
+#demo {
+    display: block;
+    margin: 0 auto;
 }
 
 #zen-video-description {
