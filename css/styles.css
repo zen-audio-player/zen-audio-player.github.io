@@ -40,6 +40,10 @@ header, footer {
     font-weight: bold;
     word-wrap: break-word;
 }
+#zen-video-error {
+    text-align: center;
+    margin-top: 5%;
+}
 #demo {
     display: block;
     margin: 0 auto;
