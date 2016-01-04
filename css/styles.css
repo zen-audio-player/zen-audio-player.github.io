@@ -42,7 +42,6 @@ header, footer {
 }
 #zen-video-error {
     text-align: center;
-    margin-top: 20px;
 }
 #demo {
     display: block;
@@ -53,6 +52,9 @@ header, footer {
     white-space: pre;
 }
 
+#form{
+    margin-bottom: 20px;
+}
 /* Media controls */
 #pause {
     display: none;
