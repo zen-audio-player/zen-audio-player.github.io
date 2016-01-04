@@ -36,16 +36,24 @@
     </header>
     <div id="container">
         <!-- The form -->
-        <form id="form">
+        <div id="form">
             <div class="input-group">
-                <input type="text" id="v" name="v" placeholder="Enter a YouTube video ID or URL">
+                <input type="text" id="value" name="value" placeholder="Enter a YouTube video ID or URL">
                 <span class="input-group-button">
                     <button class="btn" id="submit">
                         <i class="fa fa-search"></i>
                     </button>
                 </span>
+                <span class="input-group-button">
+                    <button class="btn" id="mysearch">
+                        <i class="fa fa-map">TMPSEARCHBUTTON</i>
+                    </button>
+                </span>
             </div>
-        </form>
+        </div>
+        <br>
+        <div id="search-results">
+        </div>
         <div id="zen-video-error" class="hide flash flash-error"></div>
         <!-- The video, along with related content & messages -->
         <div id="audioplayer">

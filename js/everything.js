@@ -31,6 +31,9 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
                 }
             },
             "onError": function(event) {
+//XXX FIXME goes through this code multiple times when search by pressing 'enter' in text box
+//type 'test' in the box and press enter
+//related to #73
                 var message = "Got an unknown error, check the JS console.";
                 var verboseMessage = message;
                 hasError = true;
@@ -40,6 +43,7 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
                     case 2:
                         verboseMessage = "The request contains an invalid parameter value. For example, this error occurs if you specify a video ID that does not have 11 characters, or if the video ID contains invalid characters, such as exclamation points or asterisks.";
                         message = "looks like an invalid video ID";
+                        getSearchResults(getCurrentSearchQuery());
                         break;
                     case 5:
                         verboseMessage = "The requested content cannot be played in an HTML5 player or another error related to the HTML5 player has occurred.";
@@ -267,6 +271,11 @@ function getCurrentVideoID() {
     return v;
 }
 
+function getCurrentSearchQuery() {
+    var q = getParameterByName(window.location.search, "q");
+    return q;
+}
+
 function makeListenURL(videoID) {
     var url = window.location.href;
     if (window.location.search.length !== 0) {
@@ -276,6 +285,17 @@ function makeListenURL(videoID) {
     url = url.replace("#", "");
 
     return url + "?v=" + videoID;
+}
+
+function makeSearchURL(searchQuery) {
+    var url = window.location.href;
+    if (window.location.search.length !== 0) {
+        url = window.location.href.replace(window.location.search, "");
+    }
+    // Remove any #s which break functionality
+    url = url.replace("#", "");
+
+    return url + "?q=" + searchQuery;
 }
 
 function getVideoDescription(videoID) {
@@ -358,15 +378,53 @@ function parseYoutubeVideoID(url) {
     showErrorMessage("Failed to parse the video ID.");
 }
 
+//XXX It only displays 5 results right now.
+//There is a bug:
+//When pressing 'enter' key in the text box to search, it will repeat the same entries.
+//related to #73
+function getSearchResults(query) {
+    if (query.length > 0) {
+        $.getJSON("https://www.googleapis.com/youtube/v3/search", {
+            key: youTubeDataApiKey,
+            part: "snippet",
+            q: query,
+        }, function(data) {
+            if (data.pageInfo.totalResults === 0) {
+                showErrorMessage("No results.");
+                return;
+            }
+            console.log(data.pageInfo.totalResults);
+            $("#search-results").append("<ul></ul>");
+            $.each(data.items, function(index, result) {
+                console.log(result.id.videoId);
+                $("#search-results ul").append("<li><a href=?v=" + result.id.videoId + ">" + result.snippet.title + "</a></li>")
+            });
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            var responseText = JSON.parse(jqXHR.error().responseText);
+            hasError = true;
+            showErrorMessage(responseText.error.errors[0].message);
+            console.log("Search error", errorThrown);
+        });
+    }
+}
+
 $(function() {
     var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
 
     // Preload the form from the URL
+    // Load v or q
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
         $("#audioplayer").show();
-        $("#v").attr("value", currentVideoID);
+        $("#value").attr("value", currentVideoID);
         getVideoDescription(currentVideoID);
+    }
+    else {
+        var currentSearchQuery = getCurrentSearchQuery();
+        if (currentSearchQuery) {
+            $("#value").attr("value", currentSearchQuery);
+            getSearchResults(currentSearchQuery);
+        }
     }
 
     // Hide the demo link if playing the demo video's audio
@@ -374,17 +432,46 @@ $(function() {
         $("#demo").hide();
     }
 
-    // Handle form submission
-    $("#form").submit(function(event) {
+    // Listen for 'search' button click. Search for videos using text box value as query.
+    $("#mysearch").click(function(event) {
         event.preventDefault();
-        var formValue = $.trim($("#v").val());
+        var formValue = $.trim($("#value").val());
+        if (formValue) {
+            window.location.href = makeSearchURL(formValue);
+        }   
+        else {
+            showErrorMessage("Try entering a search query!");
+        }   
+    }); 
+ 
+    // Listen for 'submit' button click. Play the video using text box value as videoID or URL.
+    $("#submit").click(function(event) {
+        console.log("CLICKED");
+        event.preventDefault();
+        var formValue = $.trim($("#value").val());
         if (formValue) {
             var videoID = parseYoutubeVideoID(formValue);
             ga("send", "event", "form submitted", videoID);
             window.location.href = makeListenURL(videoID);
-        }
+        }   
         else {
             showErrorMessage("Try entering a YouTube video ID or URL!");
+        }   
+    }); 
+
+    // Listen for 'enter' keypress in text box. Try to play the video. If failed, search for videos using value.
+    $("#value").bind("keypress", function(event) {
+        if (event.which == 13) {
+            event.preventDefault();
+            console.log("ENTER");
+            var formValue = $.trim($("#value").val());
+            if (formValue) {
+                var videoID = parseYoutubeVideoID(formValue);
+                window.location.href = makeListenURL(videoID) + "&?q=" + formValue;
+            }
+            else {
+                showErrorMessage("Try entering a YouTube video ID or URL!");
+            }
         }
     });
 
