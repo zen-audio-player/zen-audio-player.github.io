@@ -4,6 +4,10 @@
 var player;
 var hasError = false;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
+var prevState = -1;
+
+// Lock for updating the volume
+var VOLUME_LOCKED = false;
 
 function onYouTubeIframeAPIReady() {/* jshint ignore:line */
     player = new YT.Player("player", {
@@ -12,28 +16,13 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
         // Parse the querystring and populate the video when loading the page
         videoId: getCurrentVideoID(),
         playerVars: {
-            "autoplay": 0,
+            "autoplay": 1,
             "cc_load_policy": 0
         },
         events: {
             "onReady": onPlayerReady,
-            "onStateChange": function onPlayerStateChange(event) {
-                // Uncomment for debugging
-                //console.log("State changed to " + event.data);
-                var playerState = event.data;
-
-                switch (playerState) {
-                    case YT.PlayerState.PLAYING:
-                        showPauseButton();
-                        break;
-                    default:
-                        showPlayButton();
-                }
-            },
+            "onStateChange": onPlayerStateChange,
             "onError": function(event) {
-//XXX FIXME goes through this code multiple times when search by pressing 'enter' in text box
-//type 'test' in the box and press enter
-//related to #73
                 var message = "Got an unknown error, check the JS console.";
                 var verboseMessage = message;
                 hasError = true;
@@ -43,7 +32,6 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
                     case 2:
                         verboseMessage = "The request contains an invalid parameter value. For example, this error occurs if you specify a video ID that does not have 11 characters, or if the video ID contains invalid characters, such as exclamation points or asterisks.";
                         message = "looks like an invalid video ID";
-                        getSearchResults(getCurrentSearchQuery());
                         break;
                     case 5:
                         verboseMessage = "The requested content cannot be played in an HTML5 player or another error related to the HTML5 player has occurred.";
@@ -106,6 +94,16 @@ function showPauseButton() {
     $("#play").hide();
 }
 
+function togglePlayPause() {
+    // TODO: google analytics
+    if ($("#play").is(":visible")) {
+        player.playVideo();
+    }
+    else {
+        player.pauseVideo();
+    }
+}
+
 function togglePlayer() {
     // TODO: google analytics
     var p = $("#player");
@@ -127,17 +125,6 @@ function toggleDescription() {
     }
     else {
         $("#toggleDescription").text("Show Description");
-    }
-}
-
-function togglePlayPause() {
-    // TODO: google analytics
-    if ($("#play").is(":visible")) {
-        player.playVideo();
-        // Autoplay is disabled on mobile, double check before toggling
-    }
-    else {
-        player.pauseVideo();
     }
 }
 
@@ -199,46 +186,144 @@ function loadTime() {
     }
 }
 
-// Lock for updating the volume
-var VOLUME_LOCKED = false;
+function initPlayer(currentVideoID) {
+    $("#audioplayer").show();
+
+    // Title
+    // Prepend music note only if title does not already begin with one.
+    var videotitle = player.getVideoData().title;
+    if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(videotitle)) {
+        videotitle = "<i class=\"fa fa-music\"></i> " + videotitle;
+    }
+    $("#zen-video-title").html(videotitle);
+    $("#zen-video-title").attr("href", player.getVideoUrl());
+
+    // Description
+    getVideoDescription(currentVideoID);
+
+    $("#toggleDescription").click(function(event) {
+        event.preventDefault();
+        toggleDescription();
+    });
+
+    // 
+    //player.seekTo(loadTime());
+    $("#playerTime").show();
+
+    // Google Analytics
+    ga("send", "event", "Playing YouTube video title", player.getVideoData().title);
+    ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
+    ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
+}
+
+function initVolumeSlider() {
+    // Initialize volume slider
+    $("#volume").slider({
+        min: 0,
+        max: 100,
+        setp: 1,
+        value: 50,
+        tooltip: "hide",
+        id: "volumeSliderControl",
+        formatter: function(){}
+    });
+
+    function updateVolumeFromSlider() {
+        if (player) {
+            player.setVolume($("#volume").slider("getValue"));
+        }
+    }
+
+    $("#volume").on("slideStart", function() {
+        VOLUME_LOCKED = true;
+        updateVolumeFromSlider();
+    });
+    $("#volume").on("change", function() {
+        updateVolumeFromSlider();
+    });
+    $("#volume").on("slideStop", function() {
+        updateVolumeFromSlider();
+        VOLUME_LOCKED = false;
+    });
+
+    // Update the time(s) every 100ms
+    setInterval(function() {
+        if (!VOLUME_LOCKED) {
+            $("#volume").slider("setValue", player.getVolume());
+        }
+        updatePlayerTime();
+    }, 100);
+}
+
+function initMediaControls() {
+    // Media controls
+    $("#playPause").click(function(event) {
+        event.preventDefault();
+        togglePlayPause();
+    });
+    $("#togglePlayer").click(function(event) {
+        event.preventDefault();
+        togglePlayer();
+    });
+}
 
 function onPlayerReady(event) {
-    // Only play the video if it's actually there
-    if (getCurrentVideoID()) {
-        hideErrorMessage();
-        event.target.playVideo();
-        ga("send", "event", "Playing YouTube video title", player.getVideoData().title);
-        ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
-        ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
-        // Prepend music note only if title does not already begin with one.
-        var videotitle = player.getVideoData().title;
-        if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(videotitle)) {
-            videotitle = "<i class=\"fa fa-music\"></i> " + videotitle;
+    var currentVideoID = getCurrentVideoID();
+    var currentSearchQuery = getCurrentSearchQuery();
+
+    updateTweetMessage();
+
+    // If the video isn't going to play, then return.
+    if (player.getPlayerState() != YT.PlayerState.BUFFERING) {
+        // "autoplay" doesn't trigger onError when video failed to play, so force one.
+        if (currentVideoID.length > 0) {
+            showErrorMessage("Invalid YouTube videoID or URL.");
         }
-        $("#zen-video-title").html(videotitle);
-        $("#zen-video-title").attr("href", player.getVideoUrl());
-        player.seekTo(loadTime());
-        togglePlayPause();
+        return;
+    }
 
-        $("#playerTime").show();
+    // Setup player
+    if (currentVideoID) {
+        initPlayer(currentVideoID);
+        initVolumeSlider();
+        initMediaControls();
+    }
 
-        updateTweetMessage();
+    // After this function ends, video will play.
+}
 
-        // Update the time(s) every 100ms
-        setInterval(function() {
-            if (!VOLUME_LOCKED) {
-                $("#volume").slider("setValue", player.getVolume());
+function onPlayerStateChange(event) {
+    // Uncomment for debugging
+    //console.log("State changed to " + event.data);
+    var playerState = event.data;
+
+    var formValue = $.trim($("#value").val());
+    if (formValue) {
+        var videoID = parseYoutubeVideoID(formValue);
+    }
+
+    switch (playerState) {
+        case YT.PlayerState.PLAYING:
+            showPauseButton();
+            break;
+        case YT.PlayerState.BUFFERING:
+            // Calling player.loadVideoById will enter here and the next state is -1
+            break;
+        case -1: // unstarted state
+            if (prevState == YT.PlayerState.BUFFERING && hasError) {
+                if (hasError) {
+                    window.location.href = makeSearchURL(formValue);
+                }
+                else {
+                    window.location.href = makeListenURL(videoID);
+                }
             }
-            updatePlayerTime();
-        }, 100);
+            break;
+        default:
+            showPlayButton();
     }
-    else {
-        // Clear the now playing text
-        $("#zen-video-title").text("");
-        $("#playerTime").hide();
-
-        updateTweetMessage();
-    }
+    // Keep track of this state
+    prevState = playerState;
 }
 
 /**
@@ -301,7 +386,6 @@ function makeSearchURL(searchQuery) {
 function getVideoDescription(videoID) {
     if(window.location.protocol === "file:") {
         console.log("Skipping video description request as we're running the site locally");
-        $("#zen-video-description").hide();
         return;
     }
 
@@ -380,57 +464,42 @@ function parseYoutubeVideoID(url) {
 }
 
 //XXX It only displays 5 results right now.
-//There is a bug:
-//When pressing 'enter' key in the text box to search, it will repeat the same entries.
-//related to #73
 function getSearchResults(query) {
-    if (query.length > 0) {
-        $.getJSON("https://www.googleapis.com/youtube/v3/search", {
-            key: youTubeDataApiKey,
-            part: "snippet",
-            q: query,
-        }, function(data) {
-            if (data.pageInfo.totalResults === 0) {
-                showErrorMessage("No results.");
-                return;
-            }
-            console.log(data.pageInfo.totalResults);
-            $("#search-results").append("<ul></ul>");
-            $.each(data.items, function(index, result) {
-                console.log(result.id.videoId);
-                $("#search-results ul").append("<li><a href=?v=" + result.id.videoId + ">" + result.snippet.title + "</a></li>")
-            });
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            var responseText = JSON.parse(jqXHR.error().responseText);
-            hasError = true;
-            showErrorMessage(responseText.error.errors[0].message);
-            console.log("Search error", errorThrown);
+    $.getJSON("https://www.googleapis.com/youtube/v3/search", {
+        key: youTubeDataApiKey,
+        part: "snippet",
+        q: query,
+    }, function(data) {
+        if (data.pageInfo.totalResults === 0) {
+            showErrorMessage("No results.");
+            return;
+        }
+        console.log(data.pageInfo.totalResults);
+        $("#search-results").append("<ul></ul>");
+        $.each(data.items, function(index, result) {
+            console.log(result.id.videoId);
+            $("#search-results ul").append("<li><a href=?v=" + result.id.videoId + ">" + result.snippet.title + "</a></li>");
         });
-    }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        var responseText = JSON.parse(jqXHR.error().responseText);
+        showErrorMessage(responseText.error.errors[0].message);
+        console.log("Search error", errorThrown);
+    });
 }
 
 $(function() {
-    var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
-
     // Preload the form from the URL
     // Load v or q
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
-        $("#audioplayer").show();
         $("#value").attr("value", currentVideoID);
-        getVideoDescription(currentVideoID);
     }
     else {
         var currentSearchQuery = getCurrentSearchQuery();
         if (currentSearchQuery) {
             $("#value").attr("value", currentSearchQuery);
-            getSearchResults(currentSearchQuery);
+            getSearchResults(getCurrentSearchQuery());
         }
-    }
-
-    // Hide the demo link if playing the demo video's audio
-    if (currentVideoID === starveTheEgoFeedTheSoulGlitchMob) {
-        $("#demo").hide();
     }
 
     // Listen for 'search' button click. Search for videos using text box value as query.
@@ -439,42 +508,54 @@ $(function() {
         var formValue = $.trim($("#value").val());
         if (formValue) {
             window.location.href = makeSearchURL(formValue);
-        }   
+        }
         else {
             showErrorMessage("Try entering a search query!");
-        }   
+        }
     }); 
  
     // Listen for 'submit' button click. Play the video using text box value as videoID or URL.
     $("#submit").click(function(event) {
-        console.log("CLICKED");
         event.preventDefault();
         var formValue = $.trim($("#value").val());
         if (formValue) {
             var videoID = parseYoutubeVideoID(formValue);
             ga("send", "event", "form submitted", videoID);
             window.location.href = makeListenURL(videoID);
-        }   
+        }
         else {
             showErrorMessage("Try entering a YouTube video ID or URL!");
-        }   
+        }
     }); 
 
-    // Listen for 'enter' keypress in text box. Try to play the video. If failed, search for videos using value.
+    // Listen for 'enter' keypress in text box. Plays the video if it's valid. Otherwise search using value.
     $("#value").bind("keypress", function(event) {
         if (event.which == 13) {
             event.preventDefault();
-            console.log("ENTER");
             var formValue = $.trim($("#value").val());
             if (formValue) {
                 var videoID = parseYoutubeVideoID(formValue);
-                window.location.href = makeListenURL(videoID) + "&?q=" + formValue;
+                // Dummy video loading to get into buffering state
+                // From buffering state, we can use error to determine if the videoID is valid or not
+                // Then use the subsequent -1 (unstarted) state to redirect with v or q query strings
+                // Player never enters playing state
+                if (player) {
+                    player.loadVideoById({videoId:videoID});
+                }
             }
             else {
                 showErrorMessage("Try entering a YouTube video ID or URL!");
             }
         }
     });
+
+    // DEMO
+    var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
+
+    // Hide the demo link if playing the demo video's audio
+    if (currentVideoID === starveTheEgoFeedTheSoulGlitchMob) {
+        $("#demo").hide();
+    }
 
     // Handle demo link click
     $("#demo").click(function(event) {
@@ -489,49 +570,6 @@ $(function() {
         else {
             ga("send", "event", "demo", "already had video ID in URL");
         }
-    });
-    // Initialize volume slider
-    $("#volume").slider({
-        min: 0,
-        max: 100,
-        setp: 1,
-        value: 50,
-        tooltip: "hide",
-        id: "volumeSliderControl",
-        formatter: function(){}
-    });
-
-    // Media controls
-    $("#playPause").click(function(event) {
-        event.preventDefault();
-        togglePlayPause();
-    });
-    $("#togglePlayer").click(function(event) {
-        event.preventDefault();
-        togglePlayer();
-    });
-
-	$("#toggleDescription").click(function(event) {
-        event.preventDefault();
-        toggleDescription();
-	});
-
-    function updateVolumeFromSlider() {
-        if (player) {
-            player.setVolume($("#volume").slider("getValue"));
-        }
-    }
-
-    $("#volume").on("slideStart", function() {
-        VOLUME_LOCKED = true;
-        updateVolumeFromSlider();
-    });
-    $("#volume").on("change", function() {
-        updateVolumeFromSlider();
-    });
-    $("#volume").on("slideStop", function() {
-        updateVolumeFromSlider();
-        VOLUME_LOCKED = false;
     });
 });
 
