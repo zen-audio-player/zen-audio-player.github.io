@@ -112,7 +112,7 @@ describe("Demo", function () {
             assert.equal("koJv-j1usoI", getParameterByName(browser.location.search, "v"));
             // Check for demo video ID in the textbox
             assert.equal("koJv-j1usoI", browser.query("#v").value);
-            
+
             // TODO: once upon a time, using browser.evaluate("player") would give meaningful
             //     : info. But there's a race condition where sometimes the player object isn't ready yet...?
             //     : looks like can't rely on global variables.
