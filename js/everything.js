@@ -301,6 +301,7 @@ function makeSearchURL(searchQuery) {
 function getVideoDescription(videoID) {
     if(window.location.protocol === "file:") {
         console.log("Skipping video description request as we're running the site locally");
+        $("#zen-video-description").hide();
         return;
     }
 
