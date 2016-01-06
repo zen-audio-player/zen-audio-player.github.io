@@ -4,7 +4,9 @@
   "description": "Listen to YouTube videos, without the distracting visuals.",
   "main": "tests.js",
   "scripts": {
-    "pretest": "jshint js test",
+    "lint:js": "jshint js test",
+    "lint:html": "htmlhint index.html",
+    "pretest": "npm run lint:js && npm run lint:html",
     "test": "mocha"
   },
   "repository": {
@@ -24,7 +26,7 @@
   },
   "homepage": "https://zen-audio-player.github.io",
   "devDependencies": {
-    "html5-lint": "^0.2.5",
+    "htmlhint": "0.9.x",
     "jshint": "^2.9.1-rc1",
     "mocha": "2.3.x",
     "zombie": "4.x"
