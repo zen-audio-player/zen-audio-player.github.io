@@ -9,6 +9,163 @@ var prevState = -1;
 // Lock for updating the volume
 var VOLUME_LOCKED = false;
 
+
+var zenPlayer = {
+    // get functions might make youtube api request
+    // setup functions are for setting stuff on the html page
+
+    name: "test",
+    videoTitle: "",
+    videoAuthor: "",
+    videoDuration: "",
+    videoDescription: "",
+    videoUrl: "",
+    init: function(videoID) {
+        // Call this function first to init zenPlayer
+        // This function sets up related things to zen player display
+
+        // Gather video info
+        this.videoTitle = player.getVideoData().title;
+        this.videoAuthor = player.getVideoData().author;
+        this.videoDuration = player.getDuration();
+        this.videoDescription = this.getVideoDescription(videoID);
+        this.videoUrl = player.getVideoUrl();
+
+
+        // Place stuff on page
+        this.setupTitle();
+        this.setupVideoDescription();
+        this.setupMediaControls();
+        this.setupVolumeSlider();
+
+
+        // what does this do?
+        //player.seekTo(loadTime());
+
+
+        // Google Analytics
+        ga("send", "event", "Playing YouTube video title", this.videoTitle);
+        ga("send", "event", "Playing YouTube video author", this.videoAuthor);
+        ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
+
+
+        // Everything available, ready to show now
+        $("#player").hide();
+        $("#audioplayer").show();
+
+    },
+    setupTitle: function() {
+        // Prepend music note only if title does not already begin with one.
+        var tmpVideoTitle = this.videoTitle;
+        if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(tmpVideoTitle)) {
+            tmpVideoTitle = "<i class=\"fa fa-music\"></i> " + tmpVideoTitle;
+        }
+        $("#zen-video-title").html(tmpVideoTitle);
+        $("#zen-video-title").attr("href", this.videoUrl);
+    },
+    setupVideoDescription: function() {
+        var description = anchorURLs(this.videoDescription);
+        $("#zen-video-description").html(description);
+        $("#zen-video-description").hide();
+
+        $("#toggleDescription").click(function(event) {
+            event.preventDefault();
+            var descriptionElement = $("#zen-video-description");
+            descriptionElement.toggle();
+
+            if (descriptionElement.is(":visible")) {
+                $("#toggleDescription").text("Hide Description");
+            }
+            else {
+                $("#toggleDescription").text("Show Description");
+            }
+        });
+
+    },
+    setupMediaControls: function() {
+
+        $("#playPause").click(function(event) {
+            event.preventDefault();
+            togglePlayPause();
+        });
+        $("#togglePlayer").click(function(event) {
+            event.preventDefault();
+            togglePlayer();
+        });
+    },
+    setupVolumeSlider: function() {
+       $("#volume").slider({
+           min: 0,
+           max: 100,
+           setp: 1,
+           value: 50,
+           tooltip: "hide",
+           id: "volumeSliderControl",
+           formatter: function(){}
+       });
+
+       function updateVolumeFromSlider() {
+           if (player) {
+               player.setVolume($("#volume").slider("getValue"));
+           }
+       }
+
+       $("#volume").on("slideStart", function() {
+           VOLUME_LOCKED = true;
+           updateVolumeFromSlider();
+       });
+       $("#volume").on("change", function() {
+           updateVolumeFromSlider();
+       });
+       $("#volume").on("slideStop", function() {
+           updateVolumeFromSlider();
+           VOLUME_LOCKED = false;
+       });
+
+       // Update the time(s) every 100ms
+       setInterval(function() {
+           if (!VOLUME_LOCKED) {
+               $("#volume").slider("setValue", player.getVolume());
+           }
+           updatePlayerTime();
+       }, 100);
+
+
+    },
+    getVideoDescription: function(videoID) {
+        //XXX move this function?
+
+        if (window.location.protocol === "file:") {
+            console.log("Skipping video description request as we're running the site locally");
+            return "";
+        }
+
+        var description;
+
+        $.ajax({
+            url:'https://www.googleapis.com/youtube/v3/videos',
+            dataType: 'json',
+            async: false,
+            data: { key: youTubeDataApiKey, part: "snippet", fields: "items/snippet/description", id:videoID},
+            success: function(data) {
+                if (data.items.length === 0) {
+                    showErrorMessage("Video description not found");
+                }
+                else {
+                    description = data.items[0].snippet.description;
+                }
+            }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            var responseText = JSON.parse(jqXHR.error().responseText);
+            hasError = true;
+            showErrorMessage(responseText.error.errors[0].message);
+            console.log("Video Description error", errorThrown);
+        });
+
+        return description;
+    }
+};
+
 function onYouTubeIframeAPIReady() {/* jshint ignore:line */
     player = new YT.Player("player", {
         height: "300",
@@ -116,17 +273,7 @@ function togglePlayer() {
     }
 }
 
-function toggleDescription() {
-    var descriptionElement = $("#zen-video-description");
-    descriptionElement.toggle();
 
-    if (descriptionElement.is(":visible")) {
-        $("#toggleDescription").text("Hide Description");
-    }
-    else {
-        $("#toggleDescription").text("Show Description");
-    }
-}
 
 // Takes seconds as a Number, returns a : delimited string
 function cleanTime(time) {
@@ -186,95 +333,21 @@ function loadTime() {
     }
 }
 
-function initPlayer(currentVideoID) {
-    $("#audioplayer").show();
 
-    // Title
-    // Prepend music note only if title does not already begin with one.
-    var videotitle = player.getVideoData().title;
-    if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(videotitle)) {
-        videotitle = "<i class=\"fa fa-music\"></i> " + videotitle;
-    }
-    $("#zen-video-title").html(videotitle);
-    $("#zen-video-title").attr("href", player.getVideoUrl());
 
-    // Description
-    getVideoDescription(currentVideoID);
 
-    $("#toggleDescription").click(function(event) {
-        event.preventDefault();
-        toggleDescription();
-    });
-
-    // 
-    //player.seekTo(loadTime());
-    $("#playerTime").show();
-
-    // Google Analytics
-    ga("send", "event", "Playing YouTube video title", player.getVideoData().title);
-    ga("send", "event", "Playing YouTube video author", player.getVideoData().author);
-    ga("send", "event", "Playing YouTube video duration (seconds)", player.getDuration());
-}
-
-function initVolumeSlider() {
-    // Initialize volume slider
-    $("#volume").slider({
-        min: 0,
-        max: 100,
-        setp: 1,
-        value: 50,
-        tooltip: "hide",
-        id: "volumeSliderControl",
-        formatter: function(){}
-    });
-
-    function updateVolumeFromSlider() {
-        if (player) {
-            player.setVolume($("#volume").slider("getValue"));
-        }
-    }
-
-    $("#volume").on("slideStart", function() {
-        VOLUME_LOCKED = true;
-        updateVolumeFromSlider();
-    });
-    $("#volume").on("change", function() {
-        updateVolumeFromSlider();
-    });
-    $("#volume").on("slideStop", function() {
-        updateVolumeFromSlider();
-        VOLUME_LOCKED = false;
-    });
-
-    // Update the time(s) every 100ms
-    setInterval(function() {
-        if (!VOLUME_LOCKED) {
-            $("#volume").slider("setValue", player.getVolume());
-        }
-        updatePlayerTime();
-    }, 100);
-}
-
-function initMediaControls() {
-    // Media controls
-    $("#playPause").click(function(event) {
-        event.preventDefault();
-        togglePlayPause();
-    });
-    $("#togglePlayer").click(function(event) {
-        event.preventDefault();
-        togglePlayer();
-    });
-}
 
 function onPlayerReady(event) {
     var currentVideoID = getCurrentVideoID();
     var currentSearchQuery = getCurrentSearchQuery();
 
+console.log("ONREADY STATE " +player.getPlayerState());
+
     updateTweetMessage();
 
     // If the video isn't going to play, then return.
     if (player.getPlayerState() != YT.PlayerState.BUFFERING) {
+//XXX come back here.. after commit, buggy
         // "autoplay" doesn't trigger onError when video failed to play, so force one.
         if (currentVideoID.length > 0) {
             showErrorMessage("Invalid YouTube videoID or URL.");
@@ -284,17 +357,15 @@ function onPlayerReady(event) {
 
     // Setup player
     if (currentVideoID) {
-        initPlayer(currentVideoID);
-        initVolumeSlider();
-        initMediaControls();
+
+        zenPlayer.init(currentVideoID);
     }
 
-    // After this function ends, video will play.
 }
 
 function onPlayerStateChange(event) {
     // Uncomment for debugging
-    //console.log("State changed to " + event.data);
+    console.log("State changed to " + event.data);
     var playerState = event.data;
 
     var formValue = $.trim($("#value").val());
@@ -383,32 +454,8 @@ function makeSearchURL(searchQuery) {
     return url + "?q=" + searchQuery;
 }
 
-function getVideoDescription(videoID) {
-    if(window.location.protocol === "file:") {
-        console.log("Skipping video description request as we're running the site locally");
-        return;
-    }
 
-    $.getJSON("https://www.googleapis.com/youtube/v3/videos", {
-        key: youTubeDataApiKey,
-        part: "snippet",
-        fields: "items/snippet/description",
-        id: videoID
-    }, function(data) {
-        if (data.items.length === 0) {
-            showErrorMessage("Video description not found");
-            return;
-        }
-        var description = data.items[0].snippet.description;
-        description = anchorURLs(description);
-        $("#zen-video-description").html(description);
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-        var responseText = JSON.parse(jqXHR.error().responseText);
-        hasError = true;
-        showErrorMessage(responseText.error.errors[0].message);
-        console.log("Video Description error", errorThrown);
-    });
-}
+
 
 function anchorURLs(text) {
     /* RegEx to match http or https addresses
@@ -498,7 +545,7 @@ $(function() {
         var currentSearchQuery = getCurrentSearchQuery();
         if (currentSearchQuery) {
             $("#value").attr("value", currentSearchQuery);
-            getSearchResults(getCurrentSearchQuery());
+            getSearchResults(currentSearchQuery);
         }
     }
 
