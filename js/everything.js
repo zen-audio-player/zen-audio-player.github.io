@@ -9,6 +9,22 @@ var prevState = -1;
 // Lock for updating the volume
 var VOLUME_LOCKED = false;
 
+var errorMessage = {
+    init: function() {
+        this.hide();
+    },
+    show: function(message) {
+        $("#zen-video-error").text("ERROR: " + message);
+        $("#zen-video-error").show();
+
+        // When the error message is shown, also hide the player
+        $("#audioplayer").hide();
+    },
+    hide: function() {
+        $("#zen-video-error").text("").hide();
+    }
+};
+
 
 var zenPlayer = {
     // get functions might make youtube api request
@@ -22,7 +38,7 @@ var zenPlayer = {
     videoUrl: "",
     init: function(videoID) {
         // Call this function first to init zenPlayer
-        // This function sets up related things to zen player display
+        // This function sets up related things to zen player
 
         // Gather video info
         this.videoTitle = player.getVideoData().title;
@@ -31,28 +47,39 @@ var zenPlayer = {
         this.videoDescription = this.getVideoDescription(videoID);
         this.videoUrl = player.getVideoUrl();
 
-
         // Place stuff on page
         this.setupTitle();
         this.setupVideoDescription();
         this.setupMediaControls();
         this.setupVolumeSlider();
 
-
-        // what does this do?
-        //player.seekTo(loadTime());
-
+        // Start video from where we left off
+        player.seekTo(loadTime());
 
         // Google Analytics
         ga("send", "event", "Playing YouTube video title", this.videoTitle);
         ga("send", "event", "Playing YouTube video author", this.videoAuthor);
         ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
 
+        // When it is the player's first play, hide the youtube video
+        $("#player").hide();
 
         // Everything available, ready to show now
-        $("#player").hide();
+        this.show();
+    },
+    show: function() {
         $("#audioplayer").show();
-
+    },
+    hide: function() {
+        $("#audioplayer").hide();
+    },
+    showPlayButton: function() {
+        $("#pause").show();
+        $("#play").hide();
+    },
+    showPauseButton: function() {
+        $("#play").show();
+        $("#pause").hide();
     },
     setupTitle: function() {
         // Prepend music note only if title does not already begin with one.
@@ -83,14 +110,30 @@ var zenPlayer = {
 
     },
     setupMediaControls: function() {
-
+        // play/pause button click event
         $("#playPause").click(function(event) {
             event.preventDefault();
-            togglePlayPause();
+
+            if ($("#play").is(":visible")) {
+                player.pause();
+            }
+            else {
+                player.play();
+            }
         });
+
+        // Show player button click event
         $("#togglePlayer").click(function(event) {
             event.preventDefault();
-            togglePlayer();
+
+            var p = $("#player");
+            p.toggle();
+            if (p.is(":visible")) {
+                $("#togglePlayer").text("Hide Player");
+            }
+            else {
+                $("#togglePlayer").text("Show Player");
+            }
         });
     },
     setupVolumeSlider: function() {
@@ -129,8 +172,6 @@ var zenPlayer = {
            }
            updatePlayerTime();
        }, 100);
-
-
     },
     getVideoDescription: function(videoID) {
         //XXX move this function?
@@ -142,6 +183,7 @@ var zenPlayer = {
 
         var description;
 
+        // Request the video description
         $.ajax({
             url:'https://www.googleapis.com/youtube/v3/videos',
             dataType: 'json',
@@ -149,7 +191,7 @@ var zenPlayer = {
             data: { key: youTubeDataApiKey, part: "snippet", fields: "items/snippet/description", id:videoID},
             success: function(data) {
                 if (data.items.length === 0) {
-                    showErrorMessage("Video description not found");
+                    errorMessage.show("Video description not found");
                 }
                 else {
                     description = data.items[0].snippet.description;
@@ -158,7 +200,7 @@ var zenPlayer = {
         }).fail(function(jqXHR, textStatus, errorThrown) {
             var responseText = JSON.parse(jqXHR.error().responseText);
             hasError = true;
-            showErrorMessage(responseText.error.errors[0].message);
+            errorMessage.show(responseText.error.errors[0].message);
             console.log("Video Description error", errorThrown);
         });
 
@@ -183,6 +225,7 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
                 var message = "Got an unknown error, check the JS console.";
                 var verboseMessage = message;
                 hasError = true;
+            console.log(event.data + "ER");
 
                 // Handle the different error codes
                 switch (event.data) {
@@ -209,7 +252,7 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
                 }
 
                 // Update the UI w/ error
-                showErrorMessage(message);
+                errorMessage.show(message);
                 ga("send", "event", "YouTube iframe API error", verboseMessage);
 
                 // Log debug info
@@ -240,39 +283,6 @@ function updateTweetMessage() {
         opts
     );
 }
-
-function showPlayButton() {
-    $("#play").show();
-    $("#pause").hide();
-}
-
-function showPauseButton() {
-    $("#pause").show();
-    $("#play").hide();
-}
-
-function togglePlayPause() {
-    // TODO: google analytics
-    if ($("#play").is(":visible")) {
-        player.playVideo();
-    }
-    else {
-        player.pauseVideo();
-    }
-}
-
-function togglePlayer() {
-    // TODO: google analytics
-    var p = $("#player");
-    p.toggle();
-    if (p.is(":visible")) {
-        $("#togglePlayer").text("Hide Player");
-    }
-    else {
-        $("#togglePlayer").text("Show Player");
-    }
-}
-
 
 
 // Takes seconds as a Number, returns a : delimited string
@@ -350,7 +360,7 @@ console.log("ONREADY STATE " +player.getPlayerState());
 //XXX come back here.. after commit, buggy
         // "autoplay" doesn't trigger onError when video failed to play, so force one.
         if (currentVideoID.length > 0) {
-            showErrorMessage("Invalid YouTube videoID or URL.");
+            errorMessage.show("Invalid YouTube videoID or URL.");
         }
         return;
     }
@@ -375,42 +385,17 @@ function onPlayerStateChange(event) {
 
     switch (playerState) {
         case YT.PlayerState.PLAYING:
-            showPauseButton();
-            break;
-        case YT.PlayerState.BUFFERING:
-            // Calling player.loadVideoById will enter here and the next state is -1
-            break;
-        case -1: // unstarted state
-            if (prevState == YT.PlayerState.BUFFERING && hasError) {
-                if (hasError) {
-                    window.location.href = makeSearchURL(formValue);
-                }
-                else {
-                    window.location.href = makeListenURL(videoID);
-                }
-            }
+
+            zenPlayer.showPauseButton();
             break;
         default:
-            showPlayButton();
+            zenPlayer.showPlayButton();
     }
-    // Keep track of this state
-    prevState = playerState;
 }
 
 /**
  * Zen Audio Player functions
  */
-function showErrorMessage(message) {
-    $("#zen-video-error").text("ERROR: " + message);
-    $("#zen-video-error").show();
-    $("#audioplayer").hide();
-}
-
-function hideErrorMessage() {
-    if(!hasError) {
-        $("#zen-video-error").text("").hide();
-    }
-}
 
 function getParameterByName(url, name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -507,7 +492,7 @@ function parseYoutubeVideoID(url) {
         }
         return videoID;
     }
-    showErrorMessage("Failed to parse the video ID.");
+    errorMessage.show("Failed to parse the video ID.");
 }
 
 //XXX It only displays 5 results right now.
@@ -518,7 +503,7 @@ function getSearchResults(query) {
         q: query,
     }, function(data) {
         if (data.pageInfo.totalResults === 0) {
-            showErrorMessage("No results.");
+            errorMessage.show("No results.");
             return;
         }
         console.log(data.pageInfo.totalResults);
@@ -529,12 +514,14 @@ function getSearchResults(query) {
         });
     }).fail(function(jqXHR, textStatus, errorThrown) {
         var responseText = JSON.parse(jqXHR.error().responseText);
-        showErrorMessage(responseText.error.errors[0].message);
+        errorMessage.show(responseText.error.errors[0].message);
         console.log("Search error", errorThrown);
     });
 }
 
 $(function() {
+    errorMessage.init();
+
     // Preload the form from the URL
     // Load v or q
     var currentVideoID = getCurrentVideoID();
@@ -557,7 +544,7 @@ $(function() {
             window.location.href = makeSearchURL(formValue);
         }
         else {
-            showErrorMessage("Try entering a search query!");
+            errorMessage.show("Try entering a search query!");
         }
     }); 
  
@@ -571,7 +558,7 @@ $(function() {
             window.location.href = makeListenURL(videoID);
         }
         else {
-            showErrorMessage("Try entering a YouTube video ID or URL!");
+            errorMessage.show("Try entering a YouTube video ID or URL!");
         }
     }); 
 
@@ -582,16 +569,30 @@ $(function() {
             var formValue = $.trim($("#value").val());
             if (formValue) {
                 var videoID = parseYoutubeVideoID(formValue);
-                // Dummy video loading to get into buffering state
-                // From buffering state, we can use error to determine if the videoID is valid or not
-                // Then use the subsequent -1 (unstarted) state to redirect with v or q query strings
-                // Player never enters playing state
                 if (player) {
-                    player.loadVideoById({videoId:videoID});
+
+                    $.ajax({
+                        url:'https://www.googleapis.com/youtube/v3/videos',
+                        dataType: 'json',
+                        async: false,
+                        data: { key: youTubeDataApiKey, part: "snippet", fields: "items/snippet/description", id:videoID},
+                        success: function(data) {
+                            if (data.items.length === 0) {
+                                window.location.href = makeSearchURL(formValue);
+                            }
+                            else {
+                                window.location.href = makeListenURL(videoID);
+                            }
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        var responseText = JSON.parse(jqXHR.error().responseText);
+                        hasError = true;
+                        errorMessage.show(responseText.error.errors[0].message);
+                    });
                 }
             }
             else {
-                showErrorMessage("Try entering a YouTube video ID or URL!");
+                errorMessage.show("Try entering a YouTube video ID or URL!");
             }
         }
     });
