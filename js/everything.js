@@ -5,7 +5,7 @@ var player;
 var hasError = false;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 
-function onYouTubeIframeAPIReady() {/* jshint ignore:line */
+function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
     player = new YT.Player("player", {
         height: "300",
         width: "400",
@@ -146,7 +146,7 @@ function cleanTime(time) {
     var mins = (t - seconds) % (60 * 60) / 60;
     var hours = 0;
 
-    var potentialHours = t - mins*60 - seconds;
+    var potentialHours = t - mins * 60 - seconds;
     if (!isNaN(parseInt(potentialHours / 3600))) {
         hours = potentialHours / 3600;
     }
@@ -247,7 +247,7 @@ function showErrorMessage(message) {
 }
 
 function hideErrorMessage() {
-    if(!hasError) {
+    if (!hasError) {
         $("#zen-video-error").text("").hide();
     }
 }
@@ -279,7 +279,7 @@ function makeListenURL(videoID) {
 }
 
 function getVideoDescription(videoID) {
-    if(window.location.protocol === "file:") {
+    if (window.location.protocol === "file:") {
         console.log("Skipping video description request as we're running the site locally");
         $("#zen-video-description").hide();
         return;
@@ -308,10 +308,10 @@ function getVideoDescription(videoID) {
 
 function anchorURLs(text) {
     /* RegEx to match http or https addresses
-    * This will currently only match TLD of two or three letters
-    * Ends capture when:
-    *    (1) it encounters a TLD
-    *    (2) it encounters a period (.) or whitespace, if the TLD was followed by a forwardslash (/) */
+     * This will currently only match TLD of two or three letters
+     * Ends capture when:
+     *    (1) it encounters a TLD
+     *    (2) it encounters a period (.) or whitespace, if the TLD was followed by a forwardslash (/) */
     var re = /((?:http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*[^\.\s])?)/g;
     /* Wraps all found URLs in <a> tags */
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
@@ -411,7 +411,7 @@ $(function() {
         value: 50,
         tooltip: "hide",
         id: "volumeSliderControl",
-        formatter: function(){}
+        formatter: function() {}
     });
 
     // Media controls
@@ -424,10 +424,10 @@ $(function() {
         togglePlayer();
     });
 
-	$("#toggleDescription").click(function(event) {
+    $("#toggleDescription").click(function(event) {
         event.preventDefault();
         toggleDescription();
-	});
+    });
 
     function updateVolumeFromSlider() {
         if (player) {
@@ -448,7 +448,7 @@ $(function() {
     });
 });
 
-/* jshint ignore:start */
+/*eslint-disable */
 // Google Analytics goodness
 (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -456,4 +456,4 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,"script","//www.google-analytics.com/analytics.js","ga");
 ga("create", "UA-62983413-1", "auto");
 ga("send", "pageview");
-/* jshint ignore:end */
+/*eslint-enable */

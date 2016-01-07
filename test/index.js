@@ -2,7 +2,6 @@ var assert = require("assert");
 var Browser = require("zombie");
 var path = require("path");
 var fs = require("fs");
-var path = require("path");
 
 const browser = new Browser();
 
