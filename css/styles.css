@@ -63,3 +63,12 @@ header, footer {
     background-color: black;
     background-image: none;
 }
+
+#search-results {
+    text-align: center;
+    display: none;
+}
+
+#search-results li {
+    list-style-type: none;
+}

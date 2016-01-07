@@ -506,11 +506,13 @@ function getSearchResults(query) {
             errorMessage.show("No results.");
             return;
         }
-        console.log(data.pageInfo.totalResults);
-        $("#search-results").append("<ul></ul>");
+        console.log(data);
+        $("#search-results").show();
+        // Clear out results
+        $("#search-results ul").html("");
         $.each(data.items, function(index, result) {
             console.log(result.id.videoId);
-            $("#search-results ul").append("<li><a href=?v=" + result.id.videoId + ">" + result.snippet.title + "</a></li>");
+            $("#search-results ul").append("<li><h4><a href=?v=" + result.id.videoId + ">" + result.snippet.title  + "</a></h4></li>");
         });
     }).fail(function(jqXHR, textStatus, errorThrown) {
         var responseText = JSON.parse(jqXHR.error().responseText);
