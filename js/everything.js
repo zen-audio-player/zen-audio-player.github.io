@@ -4,10 +4,60 @@
 var player;
 var hasError = false;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
-var prevState = -1;
 
-// Lock for updating the volume
-var VOLUME_LOCKED = false;
+function onYouTubeIframeAPIReady() {/* jshint ignore:line */
+    player = new YT.Player("player", {
+        height: "300",
+        width: "400",
+        // Parse the querystring and populate the video when loading the page
+        videoId: getCurrentVideoID(),
+        playerVars: {
+            "autoplay": 1,
+            "cc_load_policy": 0
+        },
+        events: {
+            "onReady": onPlayerReady,
+            "onStateChange": onPlayerStateChange,
+            "onError": function(event) {
+                var message = "Got an unknown error, check the JS console.";
+                var verboseMessage = message;
+                hasError = true;
+            console.log(event.data + "ER");
+
+                // Handle the different error codes
+                switch (event.data) {
+                    case 2:
+                        verboseMessage = "The request contains an invalid parameter value. For example, this error occurs if you specify a video ID that does not have 11 characters, or if the video ID contains invalid characters, such as exclamation points or asterisks.";
+                        message = "looks like an invalid video ID";
+                        break;
+                    case 5:
+                        verboseMessage = "The requested content cannot be played in an HTML5 player or another error related to the HTML5 player has occurred.";
+                        message = "we can't play that video here, or something is wrong with YouTube's iframe API";
+                        break;
+                    case 100:
+                        verboseMessage = "The video requested was not found. This error occurs when a video has been removed (for any reason) or has been marked as private.";
+                        message = "we can't find that video, it might be private or removed";
+                        break;
+                    case 101:
+                        verboseMessage = "The owner of the requested video does not allow it to be played in embedded players.";
+                        message = "the video owner won't allow us to play that video";
+                        break;
+                    case 150:
+                        verboseMessage = "This error is the same as 101. It's just a 101 error in disguise!";
+                        message = "the video owner won't allow us to play that video";
+                        break;
+                }
+
+                // Update the UI w/ error
+                errorMessage.show(message);
+                ga("send", "event", "YouTube iframe API error", verboseMessage);
+
+                // Log debug info
+                console.log("Verbose debug error message: ", verboseMessage);
+            }
+        }
+    });
+}
 
 var errorMessage = {
     init: function() {
@@ -18,23 +68,17 @@ var errorMessage = {
         $("#zen-video-error").show();
 
         // When the error message is shown, also hide the player
-        $("#audioplayer").hide();
+        zenPlayer.hide();
     },
     hide: function() {
         $("#zen-video-error").text("").hide();
     }
 };
 
-var zenPlayer = {
-    // get functions might make youtube api request
-    // setup functions are for setting stuff on the html page
+// Lock for updating the volume
+var VOLUME_LOCKED = false;
 
-    name: "test",
-    videoTitle: "",
-    videoAuthor: "",
-    videoDuration: "",
-    videoDescription: "",
-    videoUrl: "",
+var zenPlayer = {
     init: function(videoID) {
         // Call this function first to init zenPlayer
         // This function sets up related things to zen player
@@ -71,6 +115,8 @@ var zenPlayer = {
     },
     hide: function() {
         $("#audioplayer").hide();
+    },
+    setupPlayPauseButton: function () {
     },
     showPlayButton: function() {
         $("#pause").show();
@@ -114,10 +160,10 @@ var zenPlayer = {
             event.preventDefault();
 
             if ($("#play").is(":visible")) {
-                player.pause();
+                player.pauseVideo();
             }
             else {
-                player.play();
+                player.playVideo();
             }
         });
 
@@ -207,60 +253,6 @@ var zenPlayer = {
     }
 };
 
-function onYouTubeIframeAPIReady() {/* jshint ignore:line */
-    player = new YT.Player("player", {
-        height: "300",
-        width: "400",
-        // Parse the querystring and populate the video when loading the page
-        videoId: getCurrentVideoID(),
-        playerVars: {
-            "autoplay": 1,
-            "cc_load_policy": 0
-        },
-        events: {
-            "onReady": onPlayerReady,
-            "onStateChange": onPlayerStateChange,
-            "onError": function(event) {
-                var message = "Got an unknown error, check the JS console.";
-                var verboseMessage = message;
-                hasError = true;
-            console.log(event.data + "ER");
-
-                // Handle the different error codes
-                switch (event.data) {
-                    case 2:
-                        verboseMessage = "The request contains an invalid parameter value. For example, this error occurs if you specify a video ID that does not have 11 characters, or if the video ID contains invalid characters, such as exclamation points or asterisks.";
-                        message = "looks like an invalid video ID";
-                        break;
-                    case 5:
-                        verboseMessage = "The requested content cannot be played in an HTML5 player or another error related to the HTML5 player has occurred.";
-                        message = "we can't play that video here, or something is wrong with YouTube's iframe API";
-                        break;
-                    case 100:
-                        verboseMessage = "The video requested was not found. This error occurs when a video has been removed (for any reason) or has been marked as private.";
-                        message = "we can't find that video, it might be private or removed";
-                        break;
-                    case 101:
-                        verboseMessage = "The owner of the requested video does not allow it to be played in embedded players.";
-                        message = "the video owner won't allow us to play that video";
-                        break;
-                    case 150:
-                        verboseMessage = "This error is the same as 101. It's just a 101 error in disguise!";
-                        message = "the video owner won't allow us to play that video";
-                        break;
-                }
-
-                // Update the UI w/ error
-                errorMessage.show(message);
-                ga("send", "event", "YouTube iframe API error", verboseMessage);
-
-                // Log debug info
-                console.log("Verbose debug error message: ", verboseMessage);
-            }
-        }
-    });
-}
-
 function updateTweetMessage() {
     var url = "https://zen-audio-player.github.io";
 
@@ -282,7 +274,6 @@ function updateTweetMessage() {
         opts
     );
 }
-
 
 // Takes seconds as a Number, returns a : delimited string
 function cleanTime(time) {
@@ -437,8 +428,6 @@ function makeSearchURL(searchQuery) {
 
     return url + "?q=" + searchQuery;
 }
-
-
 
 
 function anchorURLs(text) {
