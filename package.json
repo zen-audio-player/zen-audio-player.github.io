@@ -6,7 +6,10 @@
   "scripts": {
     "lint:js": "jshint js test",
     "lint:html": "htmlhint index.html",
-    "pretest": "npm run lint:js && npm run lint:html",
+    "lint:css": "csslint --format=compact --warnings=box-model,ids css/*.css",
+    "stylelint:css": "stylelint css/*.css",
+    "lint": "npm run lint:js && npm run lint:html && npm run lint:css",
+    "pretest": "npm run stylelint:css && npm run lint",
     "test": "mocha"
   },
   "repository": {
@@ -29,7 +32,9 @@
     "htmlhint": "0.9.x",
     "jshint": "^2.9.1-rc1",
     "mocha": "2.3.x",
-    "zombie": "4.x"
+    "zombie": "4.x",
+    "csslint": "0.10.x",
+    "stylelint": "3.2.x"
   },
   "engines": {
     "node": ">=4.x"
