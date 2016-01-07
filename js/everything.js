@@ -11,7 +11,7 @@ var VOLUME_LOCKED = false;
 
 var errorMessage = {
     init: function() {
-        this.hide();
+        // nothing for now
     },
     show: function(message) {
         $("#zen-video-error").text("ERROR: " + message);
@@ -24,7 +24,6 @@ var errorMessage = {
         $("#zen-video-error").text("").hide();
     }
 };
-
 
 var zenPlayer = {
     // get functions might make youtube api request
@@ -538,18 +537,6 @@ $(function() {
         }
     }
 
-    // Listen for 'search' button click. Search for videos using text box value as query.
-    $("#mysearch").click(function(event) {
-        event.preventDefault();
-        var formValue = $.trim($("#value").val());
-        if (formValue) {
-            window.location.href = makeSearchURL(formValue);
-        }
-        else {
-            errorMessage.show("Try entering a search query!");
-        }
-    }); 
- 
     // Listen for 'submit' button click. Play the video using text box value as videoID or URL.
     $("#submit").click(function(event) {
         event.preventDefault();
