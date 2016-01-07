@@ -22,7 +22,6 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
                 var message = "Got an unknown error, check the JS console.";
                 var verboseMessage = message;
                 hasError = true;
-            console.log(event.data + "ER");
 
                 // Handle the different error codes
                 switch (event.data) {
@@ -152,7 +151,6 @@ var zenPlayer = {
                 $("#toggleDescription").text("Show Description");
             }
         });
-
     },
     setupMediaControls: function() {
         // play/pause button click event
@@ -230,8 +228,8 @@ var zenPlayer = {
 
         // Request the video description
         $.ajax({
-            url:'https://www.googleapis.com/youtube/v3/videos',
-            dataType: 'json',
+            url: "https://www.googleapis.com/youtube/v3/videos",
+            dataType: "json",
             async: false,
             data: { key: youTubeDataApiKey, part: "snippet", fields: "items/snippet/description", id:videoID},
             success: function(data) {
@@ -333,22 +331,13 @@ function loadTime() {
     }
 }
 
-
-
-
-
 function onPlayerReady(event) {
     var currentVideoID = getCurrentVideoID();
-    var currentSearchQuery = getCurrentSearchQuery();
-
-console.log("ONREADY STATE " +player.getPlayerState());
 
     updateTweetMessage();
 
     // If the video isn't going to play, then return.
-    if (player.getPlayerState() != YT.PlayerState.BUFFERING) {
-//XXX come back here.. after commit, buggy
-        // "autoplay" doesn't trigger onError when video failed to play, so force one.
+    if (event.target.getPlayerState() != YT.PlayerState.BUFFERING) {
         if (currentVideoID.length > 0) {
             errorMessage.show("Invalid YouTube videoID or URL.");
         }
@@ -357,7 +346,6 @@ console.log("ONREADY STATE " +player.getPlayerState());
 
     // Setup player
     if (currentVideoID) {
-
         zenPlayer.init(currentVideoID);
     }
 
@@ -365,17 +353,11 @@ console.log("ONREADY STATE " +player.getPlayerState());
 
 function onPlayerStateChange(event) {
     // Uncomment for debugging
-    console.log("State changed to " + event.data);
+    //console.log("State changed to " + event.data);
     var playerState = event.data;
-
-    var formValue = $.trim($("#value").val());
-    if (formValue) {
-        var videoID = parseYoutubeVideoID(formValue);
-    }
 
     switch (playerState) {
         case YT.PlayerState.PLAYING:
-
             zenPlayer.showPauseButton();
             break;
         default:
@@ -499,7 +481,7 @@ function getSearchResults(query) {
         // Clear out results
         $("#search-results ul").html("");
         $.each(data.items, function(index, result) {
-            console.log(result.id.videoId);
+            //console.log(result.id.videoId);
             $("#search-results ul").append("<li><h4><a href=?v=" + result.id.videoId + ">" + result.snippet.title  + "</a></h4></li>");
         });
     }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -516,12 +498,12 @@ $(function() {
     // Load v or q
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
-        $("#value").attr("value", currentVideoID);
+        $("#v").attr("value", currentVideoID);
     }
     else {
         var currentSearchQuery = getCurrentSearchQuery();
         if (currentSearchQuery) {
-            $("#value").attr("value", currentSearchQuery);
+            $("#v").attr("value", currentSearchQuery);
             getSearchResults(currentSearchQuery);
         }
     }
@@ -529,7 +511,7 @@ $(function() {
     // Listen for 'submit' button click. Play the video using text box value as videoID or URL.
     $("#submit").click(function(event) {
         event.preventDefault();
-        var formValue = $.trim($("#value").val());
+        var formValue = $.trim($("#v").val());
         if (formValue) {
             var videoID = parseYoutubeVideoID(formValue);
             ga("send", "event", "form submitted", videoID);
@@ -541,17 +523,17 @@ $(function() {
     }); 
 
     // Listen for 'enter' keypress in text box. Plays the video if it's valid. Otherwise search using value.
-    $("#value").bind("keypress", function(event) {
+    $("#v").bind("keypress", function(event) {
         if (event.which == 13) {
             event.preventDefault();
-            var formValue = $.trim($("#value").val());
+            var formValue = $.trim($("#v").val());
             if (formValue) {
                 var videoID = parseYoutubeVideoID(formValue);
                 if (player) {
 
                     $.ajax({
-                        url:'https://www.googleapis.com/youtube/v3/videos',
-                        dataType: 'json',
+                        url: "https://www.googleapis.com/youtube/v3/videos",
+                        dataType: "json",
                         async: false,
                         data: { key: youTubeDataApiKey, part: "snippet", fields: "items/snippet/description", id:videoID},
                         success: function(data) {
@@ -566,6 +548,7 @@ $(function() {
                         var responseText = JSON.parse(jqXHR.error().responseText);
                         hasError = true;
                         errorMessage.show(responseText.error.errors[0].message);
+                        console.log("Search error", errorThrown);
                     });
                 }
             }
