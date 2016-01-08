@@ -4,13 +4,15 @@
   "description": "Listen to YouTube videos, without the distracting visuals.",
   "main": "tests.js",
   "scripts": {
-    "lint:js": "jshint js test",
+    "lint:js": "eslint js/*.js",
+    "lint:tests":"eslint test/*.js",
     "lint:html": "htmlhint index.html",
     "lint:css": "csslint --format=compact --warnings=box-model,ids css/*.css",
     "stylelint:css": "stylelint css/*.css",
-    "lint": "npm run lint:js && npm run lint:html && npm run lint:css",
+    "lint": "npm run lint:js && npm run lint:html && npm run lint:css && npm run lint:tests",
     "pretest": "npm run stylelint:css && npm run lint",
-    "test": "mocha"
+    "test": "mocha",
+    "exp-fix:js": "eslint js/everything.js --fix"
   },
   "repository": {
     "type": "git",
@@ -29,8 +31,8 @@
   },
   "homepage": "https://zen-audio-player.github.io",
   "devDependencies": {
+    "eslint": "1.10.x",
     "htmlhint": "0.9.x",
-    "jshint": "^2.9.1-rc1",
     "mocha": "2.3.x",
     "zombie": "4.x",
     "csslint": "0.10.x",
@@ -38,18 +40,5 @@
   },
   "engines": {
     "node": ">=4.x"
-  },
-  "jshintConfig": {
-    "curly": true,
-    "camelcase": true,
-    "indent": 4,
-    "loopfunc": true,
-    "newcap": true,
-    "node": true,
-    "quotmark": "double",
-    "trailing": true,
-    "unused": true,
-    "white": true,
-    "esversion": 6
   }
 }
