@@ -2,11 +2,10 @@ var assert = require("assert");
 var Browser = require("zombie");
 var path = require("path");
 var fs = require("fs");
-var path = require("path");
 
-var browser = new Browser();
+const browser = new Browser();
 
-var indexHTMLURL = "file:" + path.join(__dirname, "..", "index.html");
+var indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
 /** Utilities **/
 function getParameterByName(url, name) {
@@ -16,11 +15,10 @@ function getParameterByName(url, name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-describe("Splash Page", function () {
+describe("Page Structure", function () {
     it("should have required HTML elements", function (done) {
         browser.visit(indexHTMLURL, function (e) {
-            // 404 for Google Analytics is expected locally
-            assert.equal(e.message, "Server returned status code 404 from file://www.google-analytics.com/analytics.js");
+            assert.ok(!e);
             assert.ok(browser.query("html"), "Couldn't find <html>, wow!");
             assert.ok(browser.query("head"), "Couldn't find <head>, wow!");
             assert.ok(browser.query("body"), "Couldn't find <body>, wow!");
@@ -63,7 +61,6 @@ describe("Splash Page", function () {
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").rel, "stylesheet");
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").href, "css/styles.css");
     });
-    // TODO: validate JS files, might have some funky action w/ the YouTube iFrame API though
     it("should have logo configured correctly", function () {
         var imgFolderPath = path.join(__filename, "..", "..", "img") + path.sep;
         assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-113.png");
@@ -103,32 +100,57 @@ describe("Splash Page", function () {
     });
 });
 
+describe("JavaScript components", function() {
+    it("should load TrackJS token", function() {
+        var trackjs = browser.evaluate("window._trackJs");
+        assert.strictEqual(Object.keys(trackjs).length, 1);
+        assert.ok(trackjs.token);
+        assert.strictEqual(trackjs.token.length, 32);
+    });
+    it("should load jQuery", function() {
+        assert.ok(browser.evaluate("$"));
+    });
+    // TODO: test bootstrap-slider
+    it("should load YouTube iframe API", function() {
+        assert.ok(browser.evaluate("YT"));
+    });
+    it("should load ZenPlayer from everything.js", function() {
+        assert.ok(browser.evaluate("ZenPlayer"));
+    });
+});
+
 describe("Demo", function () {
-    it("should play the demo when demo link is clicked", function (done) {
+    it("should play the demo when demo button is clicked", function (done) {
         var oldUrl = browser.location.href;
-        browser.clickLink("#demo", function() {
+        browser.click("#demo", function() {
             // Make sure the URL changed
             assert.notEqual(oldUrl, browser.location.href);
             // Check for demo video ID in the URL
             assert.equal("koJv-j1usoI", getParameterByName(browser.location.search, "v"));
             // Check for demo video ID in the textbox
             assert.equal("koJv-j1usoI", browser.query("#v").value);
-            
+
             // TODO: once upon a time, using browser.evaluate("player") would give meaningful
             //     : info. But there's a race condition where sometimes the player object isn't ready yet...?
             //     : looks like can't rely on global variables.
+            // TODO: How do we inspect the player object (title, etc.)?
+            browser.assert.element("#player");
+            assert.ok(browser.evaluate("window.player"));
             browser.assert.text("#togglePlayer", "Show Player");
+            browser.assert.text("#zen-video-error", "");
             done();
         });
     });
 });
 
-// TODO: this test isn't working correctly either...
-// describe("Form", function () {
-//     it("should break with nonsense", function (done) {
-//         browser.fill("#v", "absolute rubbish");
-//         browser.pressButton("#submit");
-//         console.log(browser.location.href);
-//         done();
-//     });
-// });
+describe("Form", function () {
+    it("should break with nonsense input", function (done) {
+        browser.assert.text("#zen-video-error", "");
+        browser.fill("#v", "absolute rubbish");
+        browser.pressButton("#submit", function() {
+            // TODO: add tests for the error message, time, play/pause button, etc
+            browser.assert.text("#zen-video-error", "ERROR: Skipping video lookup request as we're running the site locally.");
+            done();
+        });
+    });
+});

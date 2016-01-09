@@ -18,3 +18,7 @@ Install the [Chrome extension](https://chrome.google.com/webstore/detail/zen-you
 ## Screenshot
 
 ![screenshot](img/screenshot.png)
+
+## Contributing to Zen Audio Player
+
+If you would like to contribute to this project please read the [guidelines on contributing](CONTRIBUTING.md) before doing so.
