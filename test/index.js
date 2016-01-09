@@ -15,7 +15,7 @@ function getParameterByName(url, name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-describe("Splash Page", function () {
+describe("Page Structure", function () {
     it("should have required HTML elements", function (done) {
         browser.visit(indexHTMLURL, function (e) {
             assert.ok(!e);
@@ -61,7 +61,6 @@ describe("Splash Page", function () {
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").rel, "stylesheet");
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").href, "css/styles.css");
     });
-    // TODO: validate JS files, might have some funky action w/ the YouTube iFrame API though
     it("should have logo configured correctly", function () {
         var imgFolderPath = path.join(__filename, "..", "..", "img") + path.sep;
         assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-113.png");
@@ -101,6 +100,25 @@ describe("Splash Page", function () {
     });
 });
 
+describe("JavaScript components", function() {
+    it("should load TrackJS token", function() {
+        var trackjs = browser.evaluate("window._trackJs");
+        assert.strictEqual(Object.keys(trackjs).length, 1);
+        assert.ok(trackjs.token);
+        assert.strictEqual(trackjs.token.length, 32);
+    });
+    it("should load jQuery", function() {
+        assert.ok(browser.evaluate("$"));
+    });
+    // TODO: test bootstrap-slider
+    it("should load YouTube iframe API", function() {
+        assert.ok(browser.evaluate("YT"));
+    });
+    it("should load ZenPlayer from everything.js", function() {
+        assert.ok(browser.evaluate("ZenPlayer"));
+    });
+});
+
 describe("Demo", function () {
     it("should play the demo when demo button is clicked", function (done) {
         var oldUrl = browser.location.href;
@@ -115,7 +133,9 @@ describe("Demo", function () {
             // TODO: once upon a time, using browser.evaluate("player") would give meaningful
             //     : info. But there's a race condition where sometimes the player object isn't ready yet...?
             //     : looks like can't rely on global variables.
+            // TODO: How do we inspect the player object (title, etc.)?
             browser.assert.element("#player");
+            assert.ok(browser.evaluate("window.player"));
             browser.assert.text("#togglePlayer", "Show Player");
             browser.assert.text("#zen-video-error", "");
             done();
@@ -129,6 +149,7 @@ describe("Form", function () {
         browser.fill("#v", "absolute rubbish");
         browser.pressButton("#submit", function() {
             // TODO: add tests for the error message, time, play/pause button, etc
+            browser.assert.text("#zen-video-error", "ERROR: Skipping video lookup request as we're running the site locally.");
             done();
         });
     });
