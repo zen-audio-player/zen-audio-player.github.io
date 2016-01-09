@@ -84,6 +84,53 @@ function onPlayerReady(event) {
         }
         return;
     }
+    else if (event.target.getPlayerState() === YT.PlayerState.PLAYING) {
+        // Google Analytics
+        ga("send", "event", "Playing YouTube video title", this.videoTitle);
+        ga("send", "event", "Playing YouTube video author", this.videoAuthor);
+        ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
+
+        // Anonymize local file paths
+        var url = window.location.href;
+        if (url.indexOf("file://") === 0) {
+            url = "localhost";
+        }
+
+        client.addEvent("Playing YouTube video", {
+            author: player.getVideoData().author,
+            title: player.getVideoData().title,
+            seconds: player.getDuration(),
+            // Keen stuff
+            page_url: url,
+            user_agent: "${keen.user_agent}",
+            ip_address: "${keen.ip}",
+            keen: {
+                addons: [
+                    {
+                        name: "keen:ip_to_geo",
+                        input: {
+                            ip: "ip_address"
+                        },
+                        output: "ip_geo_info"
+                    },
+                    {
+                        name: "keen:ua_parser",
+                        input: {
+                            ua_string: "user_agent"
+                        },
+                        output: "parsed_user_agent"
+                    },
+                    {
+                        name: "keen:url_parser",
+                        input: {
+                            url: "page_url"
+                        },
+                        output: "parsed_page_url"
+                    }
+                ]
+            }
+        });
+    }
 
     // Setup player
     if (currentVideoID) {
@@ -133,11 +180,6 @@ var ZenPlayer = {
 
         // Start video from where we left off
         player.seekTo(loadTime());
-
-        // Google Analytics
-        ga("send", "event", "Playing YouTube video title", this.videoTitle);
-        ga("send", "event", "Playing YouTube video author", this.videoAuthor);
-        ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
 
         // When it is the player's first play, hide the youtube video
         $("#player").hide();
@@ -496,13 +538,8 @@ function getSearchResults(query) {
 $(function() {
     // Keen.io
     client = new Keen({
-        projectId: "561c5bdf2fd4b1643d829323", // String (required always)
-        writeKey: "63a4473df5ec83ea8494a5845e2b46501238f6d5580f4953933ebd0cef786409716832cd147b09a29a5b2a80830f8154b772f88e55fd29d92022922993b96eac42cf8497db411a0831fd631e097b9711172b7210a0178b778b69f8ab60fa7eb9c37fdd949ec45d6791700575739dda15",   // String (required for sending data)
-        // readKey: "YOUR_READ_KEY"      // String (required for querying data)
-
-        // protocol: "https",         // String (optional: https | http | auto)
-        // host: "api.keen.io/3.0",   // String (optional)
-        // requestType: "jsonp"       // String (optional: jsonp, xhr, beacon)
+        projectId: "561c5bdf2fd4b1643d829323",
+        writeKey: "63a4473df5ec83ea8494a5845e2b46501238f6d5580f4953933ebd0cef786409716832cd147b09a29a5b2a80830f8154b772f88e55fd29d92022922993b96eac42cf8497db411a0831fd631e097b9711172b7210a0178b778b69f8ab60fa7eb9c37fdd949ec45d6791700575739dda15",
     });
     
     errorMessage.init();
