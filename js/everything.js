@@ -17,7 +17,19 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
         },
         events: {
             "onReady": onPlayerReady,
-            "onStateChange": onPlayerStateChange,
+            "onStateChange": function(event) {
+                // Uncomment for debugging
+                //console.log("State changed to " + event.data);
+                var playerState = event.data;
+
+                switch (playerState) {
+                    case YT.PlayerState.PLAYING:
+                        zenPlayer.showPauseButton();
+                        break;
+                    default:
+                        zenPlayer.showPlayButton();
+                }
+            },
             "onError": function(event) {
                 var message = "Got an unknown error, check the JS console.";
                 var verboseMessage = message;
@@ -58,6 +70,25 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
     });
 }
 
+function onPlayerReady(event) {
+    var currentVideoID = getCurrentVideoID();
+
+    updateTweetMessage();
+
+    // If the video isn't going to play, then return.
+    if (event.target.getPlayerState() != YT.PlayerState.BUFFERING) {
+        if (currentVideoID.length > 0) {
+            errorMessage.show("Invalid YouTube videoID or URL.");
+        }
+        return;
+    }
+
+    // Setup player
+    if (currentVideoID) {
+        zenPlayer.init(currentVideoID);
+    }
+}
+
 var errorMessage = {
     init: function() {
         // nothing for now
@@ -79,8 +110,7 @@ var VOLUME_LOCKED = false;
 
 var zenPlayer = {
     init: function(videoID) {
-        // Call this function first to init zenPlayer
-        // This function sets up related things to zen player
+        // This should be called when the youtube player is done loading
 
         // Gather video info
         this.videoTitle = player.getVideoData().title;
@@ -115,13 +145,11 @@ var zenPlayer = {
     hide: function() {
         $("#audioplayer").hide();
     },
-    setupPlayPauseButton: function () {
-    },
-    showPlayButton: function() {
+    showPauseButton: function() {
         $("#pause").show();
         $("#play").hide();
     },
-    showPauseButton: function() {
+    showPlayButton: function() {
         $("#play").show();
         $("#pause").hide();
     },
@@ -158,10 +186,10 @@ var zenPlayer = {
             event.preventDefault();
 
             if ($("#play").is(":visible")) {
-                player.pauseVideo();
+                player.playVideo();
             }
             else {
-                player.playVideo();
+                player.pauseVideo();
             }
         });
 
@@ -231,7 +259,12 @@ var zenPlayer = {
             url: "https://www.googleapis.com/youtube/v3/videos",
             dataType: "json",
             async: false,
-            data: { key: youTubeDataApiKey, part: "snippet", fields: "items/snippet/description", id:videoID},
+            data: {
+                key: youTubeDataApiKey,
+                part: "snippet",
+                fields: "items/snippet/description",
+                id: videoID
+            },
             success: function(data) {
                 if (data.items.length === 0) {
                     errorMessage.show("Video description not found");
@@ -331,44 +364,6 @@ function loadTime() {
     }
 }
 
-function onPlayerReady(event) {
-    var currentVideoID = getCurrentVideoID();
-
-    updateTweetMessage();
-
-    // If the video isn't going to play, then return.
-    if (event.target.getPlayerState() != YT.PlayerState.BUFFERING) {
-        if (currentVideoID.length > 0) {
-            errorMessage.show("Invalid YouTube videoID or URL.");
-        }
-        return;
-    }
-
-    // Setup player
-    if (currentVideoID) {
-        zenPlayer.init(currentVideoID);
-    }
-
-}
-
-function onPlayerStateChange(event) {
-    // Uncomment for debugging
-    //console.log("State changed to " + event.data);
-    var playerState = event.data;
-
-    switch (playerState) {
-        case YT.PlayerState.PLAYING:
-            zenPlayer.showPauseButton();
-            break;
-        default:
-            zenPlayer.showPlayButton();
-    }
-}
-
-/**
- * Zen Audio Player functions
- */
-
 function getParameterByName(url, name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -410,7 +405,6 @@ function makeSearchURL(searchQuery) {
 
     return url + "?q=" + searchQuery;
 }
-
 
 function anchorURLs(text) {
     /* RegEx to match http or https addresses
@@ -465,18 +459,18 @@ function parseYoutubeVideoID(url) {
     errorMessage.show("Failed to parse the video ID.");
 }
 
-//XXX It only displays 5 results right now.
 function getSearchResults(query) {
     $.getJSON("https://www.googleapis.com/youtube/v3/search", {
         key: youTubeDataApiKey,
         part: "snippet",
         q: query,
+        type: "video"
     }, function(data) {
         if (data.pageInfo.totalResults === 0) {
             errorMessage.show("No results.");
             return;
         }
-        console.log(data);
+        //console.log(data);
         $("#search-results").show();
         // Clear out results
         $("#search-results ul").html("");
@@ -495,7 +489,6 @@ $(function() {
     errorMessage.init();
 
     // Preload the form from the URL
-    // Load v or q
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
         $("#v").attr("value", currentVideoID);
@@ -508,57 +501,44 @@ $(function() {
         }
     }
 
-    // Listen for 'submit' button click. Play the video using text box value as videoID or URL.
-    $("#submit").click(function(event) {
+    // Handle form submission
+    $("#form").submit(function(event) {
         event.preventDefault();
+
         var formValue = $.trim($("#v").val());
         if (formValue) {
             var videoID = parseYoutubeVideoID(formValue);
             ga("send", "event", "form submitted", videoID);
-            window.location.href = makeListenURL(videoID);
+            $.ajax({
+                url: "https://www.googleapis.com/youtube/v3/videos",
+                dataType: "json",
+                async: false,
+                data: {
+                    key: youTubeDataApiKey,
+                    part: "snippet",
+                    fields: "items/snippet/description",
+                    id: videoID
+                },
+                success: function(data) {
+                    if (data.items.length === 0) {
+                        window.location.href = makeSearchURL(formValue);
+                    }
+                    else {
+                        window.location.href = makeListenURL(videoID);
+                    }
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                var responseText = JSON.parse(jqXHR.error().responseText);
+                hasError = true;
+                errorMessage.show(responseText.error.errors[0].message);
+                console.log("Search error", errorThrown);
+            });
         }
         else {
             errorMessage.show("Try entering a YouTube video ID or URL!");
         }
-    }); 
-
-    // Listen for 'enter' keypress in text box. Plays the video if it's valid. Otherwise search using value.
-    $("#v").bind("keypress", function(event) {
-        if (event.which == 13) {
-            event.preventDefault();
-            var formValue = $.trim($("#v").val());
-            if (formValue) {
-                var videoID = parseYoutubeVideoID(formValue);
-                if (player) {
-
-                    $.ajax({
-                        url: "https://www.googleapis.com/youtube/v3/videos",
-                        dataType: "json",
-                        async: false,
-                        data: { key: youTubeDataApiKey, part: "snippet", fields: "items/snippet/description", id:videoID},
-                        success: function(data) {
-                            if (data.items.length === 0) {
-                                window.location.href = makeSearchURL(formValue);
-                            }
-                            else {
-                                window.location.href = makeListenURL(videoID);
-                            }
-                        }
-                    }).fail(function(jqXHR, textStatus, errorThrown) {
-                        var responseText = JSON.parse(jqXHR.error().responseText);
-                        hasError = true;
-                        errorMessage.show(responseText.error.errors[0].message);
-                        console.log("Search error", errorThrown);
-                    });
-                }
-            }
-            else {
-                errorMessage.show("Try entering a YouTube video ID or URL!");
-            }
-        }
     });
 
-    // DEMO
     var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
 
     // Hide the demo link if playing the demo video's audio
