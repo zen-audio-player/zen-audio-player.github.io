@@ -51,7 +51,7 @@ header, footer {
     white-space: pre;
 }
 
-#form{
+#form {
     margin-bottom: 20px;
 }
 /* Media controls */
@@ -60,7 +60,7 @@ header, footer {
 }
 
 .slider-handle {
-    background-color: black;
+    background-color: #000000;
     background-image: none;
 }
 
