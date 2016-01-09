@@ -1,6 +1,52 @@
 // Pointer to Keen client
 var client;
 
+function anonymizeFileUrl() {
+    var url = window.location.href;
+    if (url.indexOf("file://") === 0) {
+        url = "localhost";
+    }
+    return url;
+}
+
+function sendKeenEvent(_msg, _data) {
+    var d = {
+        page_url: anonymizeFileUrl(),
+        user_agent: "${keen.user_agent}",
+        ip_address: "${keen.ip}",
+        keen: {
+            addons: [
+                {
+                    name: "keen:ip_to_geo",
+                    input: {
+                        ip: "ip_address"
+                    },
+                    output: "ip_geo_info"
+                },
+                {
+                    name: "keen:ua_parser",
+                    input: {
+                        ua_string: "user_agent"
+                    },
+                    output: "parsed_user_agent"
+                },
+                {
+                    name: "keen:url_parser",
+                    input: {
+                        url: "page_url"
+                    },
+                    output: "parsed_page_url"
+                }
+            ]
+        }
+    };
+
+    for (var _d in _data) {
+        d[_d] = _data[_d];
+    }
+    client.addEvent(_msg, d);
+}
+
 /**
  * YouTube iframe API required setup
  */
@@ -63,7 +109,7 @@ function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
                 // Update the UI w/ error
                 errorMessage.show(message);
                 ga("send", "event", "YouTube iframe API error", verboseMessage);
-                client.addEvent("YouTube iframe API error", {verbose: verboseMessage, message: message, code: event.data});
+                sendKeenEvent("YouTube iframe API error", {verbose: verboseMessage, message: message, code: event.data});
 
                 // Log debug info
                 console.log("Verbose debug error message: ", verboseMessage);
@@ -84,58 +130,21 @@ function onPlayerReady(event) {
         }
         return;
     }
-    else if (event.target.getPlayerState() === YT.PlayerState.PLAYING) {
-        // Google Analytics
-        ga("send", "event", "Playing YouTube video title", this.videoTitle);
-        ga("send", "event", "Playing YouTube video author", this.videoAuthor);
-        ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
-
-        // Anonymize local file paths
-        var url = window.location.href;
-        if (url.indexOf("file://") === 0) {
-            url = "localhost";
-        }
-
-        client.addEvent("Playing YouTube video", {
-            author: player.getVideoData().author,
-            title: player.getVideoData().title,
-            seconds: player.getDuration(),
-            // Keen stuff
-            page_url: url,
-            user_agent: "${keen.user_agent}",
-            ip_address: "${keen.ip}",
-            keen: {
-                addons: [
-                    {
-                        name: "keen:ip_to_geo",
-                        input: {
-                            ip: "ip_address"
-                        },
-                        output: "ip_geo_info"
-                    },
-                    {
-                        name: "keen:ua_parser",
-                        input: {
-                            ua_string: "user_agent"
-                        },
-                        output: "parsed_user_agent"
-                    },
-                    {
-                        name: "keen:url_parser",
-                        input: {
-                            url: "page_url"
-                        },
-                        output: "parsed_page_url"
-                    }
-                ]
-            }
-        });
-    }
+    
+    // Google Analytics
+    ga("send", "event", "Playing YouTube video title", this.videoTitle);
+    ga("send", "event", "Playing YouTube video author", this.videoAuthor);
+    ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
 
     // Setup player
     if (currentVideoID) {
         ZenPlayer.init(currentVideoID);
     }
+    sendKeenEvent("Playing YouTube video", {
+        author: player.getVideoData().author,
+        title: player.getVideoData().title,
+        seconds: player.getDuration()
+    });
 }
 
 var errorMessage = {
@@ -476,7 +485,7 @@ function parseYoutubeVideoID(url) {
         // youtube.com format
         if (url.indexOf(longUrlDomain) !== -1) {
             ga("send", "event", "video ID format", longUrlDomain);
-            client.addEvent("Video ID format", {format: longUrlDomain});
+            sendKeenEvent("Video ID format", {format: longUrlDomain});
             videoID = getParameterByName(url, "v");
             // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
             if (videoID === "") {
@@ -486,7 +495,7 @@ function parseYoutubeVideoID(url) {
         // youtu.be format
         else if (url.indexOf(shortUrlDomain) !== -1) {
             ga("send", "event", "video ID format", shortUrlDomain);
-            client.addEvent("Video ID format", {format: shortUrlDomain});
+            sendKeenEvent("Video ID format", {format: shortUrlDomain});
             var endPosition = url.indexOf("?") === -1 ? url.length : url.indexOf("?");
             var offset = url.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
             videoID = url.substring(offset, endPosition);
@@ -494,7 +503,7 @@ function parseYoutubeVideoID(url) {
         // Assume YouTube video ID string
         else {
             ga("send", "event", "video ID format", "video ID");
-            client.addEvent("Video ID format", {format: "video ID"});
+            sendKeenEvent("Video ID format", {format: "video ID"});
             videoID = url;
         }
 
@@ -520,12 +529,11 @@ function getSearchResults(query) {
             errorMessage.show("No results.");
             return;
         }
-        //console.log(data);
+
         $("#search-results").show();
         // Clear out results
         $("#search-results ul").html("");
         $.each(data.items, function(index, result) {
-            //console.log(result.id.videoId);
             $("#search-results ul").append("<li><h4><a href=?v=" + result.id.videoId + ">" + result.snippet.title  + "</a></h4></li>");
         });
     }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -537,11 +545,11 @@ function getSearchResults(query) {
 
 $(function() {
     // Keen.io
-    client = new Keen({
-        projectId: "561c5bdf2fd4b1643d829323",
-        writeKey: "63a4473df5ec83ea8494a5845e2b46501238f6d5580f4953933ebd0cef786409716832cd147b09a29a5b2a80830f8154b772f88e55fd29d92022922993b96eac42cf8497db411a0831fd631e097b9711172b7210a0178b778b69f8ab60fa7eb9c37fdd949ec45d6791700575739dda15",
+    client = new Keen({ // TODO: ignore
+        projectId: "5690c384c1e0ab0c8a6c59c4",
+        writeKey: "630fa16847ce5ffb01c9cc00327498e4e7716e0f324fb14fdf0e83ffc06f9eacff5fad1313c2701efe4a91c88c34b8d8153cbb121c454056bb63caf60a46336dd9c9e9855ecc5202ef3151d798eda40896d5111f44005c707cbfb32c7ae31070d129d6f520d5604fdbce5ad31e9c7232"
     });
-    
+
     errorMessage.init();
 
     // Preload the form from the URL
@@ -565,7 +573,7 @@ $(function() {
         if (formValue) {
             var videoID = parseYoutubeVideoID(formValue);
             ga("send", "event", "form submitted", videoID);
-            client.addEvent("Form submitted", {videoID: videoID});
+            sendKeenEvent("Form submitted", {videoID: videoID});
 
             if (isFileProtocol()) {
                 errorMessage.show("Skipping video lookup request as we're running the site locally.");
@@ -612,7 +620,7 @@ $(function() {
     $("#demo").click(function(event) {
         event.preventDefault();
         ga("send", "event", "demo", "clicked");
-        client.addEvent("Demo", {action: "clicked"});
+        sendKeenEvent("Demo", {action: "clicked"});
 
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
@@ -621,7 +629,7 @@ $(function() {
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
-            client.addEvent("demo", {action: "already had video ID in URL"});
+            sendKeenEvent("demo", {action: "already had video ID in URL"});
         }
     });
 });
