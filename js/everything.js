@@ -4,7 +4,7 @@
 var player;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 
-function onYouTubeIframeAPIReady() {//eslint-disable-line no-unused-vars
+function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
     player = new YT.Player("player", {
         height: "300",
         width: "400",
@@ -23,10 +23,10 @@ function onYouTubeIframeAPIReady() {//eslint-disable-line no-unused-vars
 
                 switch (playerState) {
                     case YT.PlayerState.PLAYING:
-                        zenPlayer.showPauseButton();
+                        ZenPlayer.showPauseButton();
                         break;
                     default:
-                        zenPlayer.showPlayButton();
+                        ZenPlayer.showPlayButton();
                 }
             },
             "onError": function(event) {
@@ -74,7 +74,7 @@ function onPlayerReady(event) {
     updateTweetMessage();
 
     // If the video isn't going to play, then return.
-    if (event.target.getPlayerState() != YT.PlayerState.BUFFERING) {
+    if (event.target.getPlayerState() !== YT.PlayerState.BUFFERING) {
         if (currentVideoID.length > 0) {
             errorMessage.show("Invalid YouTube videoID or URL.");
         }
@@ -83,7 +83,7 @@ function onPlayerReady(event) {
 
     // Setup player
     if (currentVideoID) {
-        zenPlayer.init(currentVideoID);
+        ZenPlayer.init(currentVideoID);
     }
 }
 
@@ -96,7 +96,7 @@ var errorMessage = {
         $("#zen-video-error").show();
 
         // When the error message is shown, also hide the player
-        zenPlayer.hide();
+        ZenPlayer.hide();
     },
     hide: function() {
         $("#zen-video-error").text("").hide();
@@ -110,7 +110,7 @@ function isFileProtocol() {
 // Lock for updating the volume
 var VOLUME_LOCKED = false;
 
-var zenPlayer = {
+var ZenPlayer = {
     init: function(videoID) {
         // This should be called when the youtube player is done loading
 
@@ -171,6 +171,7 @@ var zenPlayer = {
 
         $("#toggleDescription").click(function(event) {
             event.preventDefault();
+
             var descriptionElement = $("#zen-video-description");
             descriptionElement.toggle();
 
