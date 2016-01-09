@@ -2,10 +2,9 @@
  * YouTube iframe API required setup
  */
 var player;
-var hasError = false;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 
-function onYouTubeIframeAPIReady() {/* jshint ignore:line */
+function onYouTubeIframeAPIReady() {//eslint-disable-line no-unused-vars
     player = new YT.Player("player", {
         height: "300",
         width: "400",
@@ -33,7 +32,6 @@ function onYouTubeIframeAPIReady() {/* jshint ignore:line */
             "onError": function(event) {
                 var message = "Got an unknown error, check the JS console.";
                 var verboseMessage = message;
-                hasError = true;
 
                 // Handle the different error codes
                 switch (event.data) {
@@ -208,41 +206,41 @@ var zenPlayer = {
         });
     },
     setupVolumeSlider: function() {
-       $("#volume").slider({
-           min: 0,
-           max: 100,
-           setp: 1,
-           value: 50,
-           tooltip: "hide",
-           id: "volumeSliderControl",
-           formatter: function(){}
-       });
+        $("#volume").slider({
+            min: 0,
+            max: 100,
+            setp: 1,
+            value: 50,
+            tooltip: "hide",
+            id: "volumeSliderControl",
+            formatter: function(){}
+        });
 
-       function updateVolumeFromSlider() {
-           if (player) {
-               player.setVolume($("#volume").slider("getValue"));
-           }
-       }
+        function updateVolumeFromSlider() {
+            if (player) {
+                player.setVolume($("#volume").slider("getValue"));
+            }
+        }
 
-       $("#volume").on("slideStart", function() {
-           VOLUME_LOCKED = true;
-           updateVolumeFromSlider();
-       });
-       $("#volume").on("change", function() {
-           updateVolumeFromSlider();
-       });
-       $("#volume").on("slideStop", function() {
-           updateVolumeFromSlider();
-           VOLUME_LOCKED = false;
-       });
+        $("#volume").on("slideStart", function() {
+            VOLUME_LOCKED = true;
+            updateVolumeFromSlider();
+        });
+        $("#volume").on("change", function() {
+            updateVolumeFromSlider();
+        });
+        $("#volume").on("slideStop", function() {
+            updateVolumeFromSlider();
+            VOLUME_LOCKED = false;
+        });
 
-       // Update the time(s) every 100ms
-       setInterval(function() {
-           if (!VOLUME_LOCKED) {
-               $("#volume").slider("setValue", player.getVolume());
-           }
-           updatePlayerTime();
-       }, 100);
+        // Update the time(s) every 100ms
+        setInterval(function() {
+            if (!VOLUME_LOCKED) {
+                $("#volume").slider("setValue", player.getVolume());
+            }
+            updatePlayerTime();
+        }, 100);
     },
     getVideoDescription: function(videoID) {
         //XXX move this function?
@@ -275,7 +273,6 @@ var zenPlayer = {
             }
         }).fail(function(jqXHR, textStatus, errorThrown) {
             var responseText = JSON.parse(jqXHR.error().responseText);
-            hasError = true;
             errorMessage.show(responseText.error.errors[0].message);
             console.log("Video Description error", errorThrown);
         });
@@ -529,7 +526,6 @@ $(function() {
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 var responseText = JSON.parse(jqXHR.error().responseText);
-                hasError = true;
                 errorMessage.show(responseText.error.errors[0].message);
                 console.log("Search error", errorThrown);
             });
@@ -562,7 +558,7 @@ $(function() {
     });
 });
 
-/* jshint ignore:start */
+/*eslint-disable */
 // Google Analytics goodness
 (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -570,4 +566,4 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,"script","//www.google-analytics.com/analytics.js","ga");
 ga("create", "UA-62983413-1", "auto");
 ga("send", "pageview");
-/* jshint ignore:end */
+/*eslint-enable */
