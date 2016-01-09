@@ -44,7 +44,8 @@
         "semi": [
             2,
             "always"
-        ]
+        ],
+        "eqeqeq": 2
     },
     "extends": "eslint:recommended"
 }
