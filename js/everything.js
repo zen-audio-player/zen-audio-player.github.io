@@ -103,6 +103,10 @@ var errorMessage = {
     }
 };
 
+function isFileProtocol() {
+    return window.location.protocol === "file:";
+}
+
 // Lock for updating the volume
 var VOLUME_LOCKED = false;
 
@@ -243,39 +247,38 @@ var zenPlayer = {
         }, 100);
     },
     getVideoDescription: function(videoID) {
-        //XXX move this function?
+        var description = "";
 
-        if (window.location.protocol === "file:") {
-            console.log("Skipping video description request as we're running the site locally");
-            return "";
+        if (isFileProtocol()) {
+            console.log("Skipping video description request as we're running the site locally.");
+            $("#toggleDescription").hide();
         }
-
-        var description;
-
-        // Request the video description
-        $.ajax({
-            url: "https://www.googleapis.com/youtube/v3/videos",
-            dataType: "json",
-            async: false,
-            data: {
-                key: youTubeDataApiKey,
-                part: "snippet",
-                fields: "items/snippet/description",
-                id: videoID
-            },
-            success: function(data) {
-                if (data.items.length === 0) {
-                    errorMessage.show("Video description not found");
+        else {
+            // Request the video description
+            $.ajax({
+                url: "https://www.googleapis.com/youtube/v3/videos",
+                dataType: "json",
+                async: false,
+                data: {
+                    key: youTubeDataApiKey,
+                    part: "snippet",
+                    fields: "items/snippet/description",
+                    id: videoID
+                },
+                success: function(data) {
+                    if (data.items.length === 0) {
+                        errorMessage.show("Video description not found");
+                    }
+                    else {
+                        description = data.items[0].snippet.description;
+                    }
                 }
-                else {
-                    description = data.items[0].snippet.description;
-                }
-            }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            var responseText = JSON.parse(jqXHR.error().responseText);
-            errorMessage.show(responseText.error.errors[0].message);
-            console.log("Video Description error", errorThrown);
-        });
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                var responseText = JSON.parse(jqXHR.error().responseText);
+                errorMessage.show(responseText.error.errors[0].message);
+                console.log("Video Description error", errorThrown);
+            });
+        }
 
         return description;
     }
@@ -506,29 +509,35 @@ $(function() {
         if (formValue) {
             var videoID = parseYoutubeVideoID(formValue);
             ga("send", "event", "form submitted", videoID);
-            $.ajax({
-                url: "https://www.googleapis.com/youtube/v3/videos",
-                dataType: "json",
-                async: false,
-                data: {
-                    key: youTubeDataApiKey,
-                    part: "snippet",
-                    fields: "items/snippet/description",
-                    id: videoID
-                },
-                success: function(data) {
-                    if (data.items.length === 0) {
-                        window.location.href = makeSearchURL(formValue);
+
+            if (isFileProtocol()) {
+                errorMessage.show("Skipping video lookup request as we're running the site locally.");
+            }
+            else {
+                $.ajax({
+                    url: "https://www.googleapis.com/youtube/v3/videos",
+                    dataType: "json",
+                    async: false,
+                    data: {
+                        key: youTubeDataApiKey,
+                        part: "snippet",
+                        fields: "items/snippet/description",
+                        id: videoID
+                    },
+                    success: function(data) {
+                        if (data.items.length === 0) {
+                            window.location.href = makeSearchURL(formValue);
+                        }
+                        else {
+                            window.location.href = makeListenURL(videoID);
+                        }
                     }
-                    else {
-                        window.location.href = makeListenURL(videoID);
-                    }
-                }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                var responseText = JSON.parse(jqXHR.error().responseText);
-                errorMessage.show(responseText.error.errors[0].message);
-                console.log("Search error", errorThrown);
-            });
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    var responseText = JSON.parse(jqXHR.error().responseText);
+                    errorMessage.show(responseText.error.errors[0].message);
+                    console.log("Search error", errorThrown);
+                });
+            }
         }
         else {
             errorMessage.show("Try entering a YouTube video ID or URL!");
