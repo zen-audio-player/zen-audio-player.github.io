@@ -48,7 +48,7 @@ header, footer {
 }
 
 #zen-video-description {
-    white-space: pre;
+    white-space: pre-line;
 }
 
 #form {
