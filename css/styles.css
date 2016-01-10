@@ -24,9 +24,21 @@ header, footer {
 }
 
 #v {
-    text-align: center;
     margin: 0 auto;
     width: 100%;
+}
+
+#v::-webkit-input-placeholder {
+    text-align: center;
+}
+#v:-moz-placeholder { /* Firefox 18- */
+    text-align: center;
+}
+#v::-moz-placeholder {  /* Firefox 19+ */
+    text-align: center;
+}
+#v:-ms-input-placeholder {
+    text-align: center;
 }
 
 #player {
@@ -71,4 +83,40 @@ header, footer {
 
 #search-results li {
     list-style-type: none;
+}
+
+/* Input field fixes and search suggestion style.
+ * typeahead conflicts with primercss */
+.twitter-typeahead {
+    display: block !important;
+}
+
+.twitter-typeahead input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.tt-hint {
+    color: lightgrey !important;
+}
+
+.tt-menu {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    width: 100%;
+    -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.075);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.075);
+}
+
+.tt-suggestion {
+    padding: 0px 8px;
+    font-weight: bold;
+}
+
+.tt-suggestion strong {
+    font-weight: normal;
+}
+
+.tt-suggestion:hover {
+    background-color: lightgrey;
 }
