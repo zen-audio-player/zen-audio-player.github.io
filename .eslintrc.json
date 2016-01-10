@@ -1,0 +1,51 @@
+{
+    "root": true,
+    "env": {
+        "browser": true,
+        "mocha": true,
+        "jquery": true,
+        "es6": true,
+        "node": true
+    },
+    "globals": {
+        "YT": true,
+        "ga": true,
+        "twttr": true,
+        "time": true
+    },
+    "rules": {
+        "indent": [
+            2,
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "curly": 2,
+        "linebreak-style": [
+            2,
+            "unix"
+        ],
+        "camelcase": [
+            2,
+            {
+                "properties": "always"
+            }
+        ],
+        "no-loop-func": 2,
+        "quotes": [
+            2,
+            "double",
+            "avoid-escape"
+        ],
+        "no-trailing-spaces": 2,
+        "no-unused-expressions": 2,
+        "no-console": 1,
+        "semi": [
+            2,
+            "always"
+        ],
+        "eqeqeq": 2
+    },
+    "extends": "eslint:recommended"
+}
