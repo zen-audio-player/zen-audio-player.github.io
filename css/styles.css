@@ -28,19 +28,6 @@ header, footer {
     width: 100%;
 }
 
-#v::-webkit-input-placeholder {
-    text-align: center;
-}
-#v:-moz-placeholder { /* Firefox 18- */
-    text-align: center;
-}
-#v::-moz-placeholder {  /* Firefox 19+ */
-    text-align: center;
-}
-#v:-ms-input-placeholder {
-    text-align: center;
-}
-
 #player {
     text-align: center;
     min-width: 100%;
@@ -88,7 +75,8 @@ header, footer {
 /* Input field fixes and search suggestion style.
  * typeahead conflicts with primercss */
 .twitter-typeahead {
-    display: block !important;
+    display: block;
+    width:100%;
 }
 
 .twitter-typeahead input {
@@ -96,20 +84,19 @@ header, footer {
     border-bottom-right-radius: 0;
 }
 
-.tt-hint {
-    color: lightgrey !important;
+.twitter-typeahead .tt-hint {
+    color: #c1c1c1;
 }
 
 .tt-menu {
     background-color: #ffffff;
     border: 1px solid #cccccc;
     width: 100%;
-    -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.075);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.075);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
 }
 
 .tt-suggestion {
-    padding: 0px 8px;
+    padding: 0 8px;
     font-weight: bold;
 }
 
@@ -118,5 +105,5 @@ header, footer {
 }
 
 .tt-suggestion:hover {
-    background-color: lightgrey;
+    background-color: #efefef;
 }
