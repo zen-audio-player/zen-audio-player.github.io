@@ -502,6 +502,27 @@ $(function() {
         }
     }
 
+    // Autocomplete with youtube suggested queries
+    $("#v").typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 1
+    }, {
+        source: function (query, processSync, processAsync) {
+            return $.getJSON("http://suggestqueries.google.com/complete/search?callback=?", {
+                q: query,
+                client: "youtube",
+                ds: "yt"
+            }, function(data) {
+                return processAsync($.map(data[1], function(item) {
+                    return item[0];
+                }));
+            });
+        }
+    }).bind("typeahead:selected", function(obj, datum) {
+        window.location.href = makeSearchURL(datum);
+    });
+
     // Handle form submission
     $("#form").submit(function(event) {
         event.preventDefault();
@@ -536,7 +557,7 @@ $(function() {
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     var responseText = JSON.parse(jqXHR.error().responseText);
                     errorMessage.show(responseText.error.errors[0].message);
-                    console.log("Search error", errorThrown);
+                    console.log("Lookup error", errorThrown);
                 });
             }
         }
