@@ -33,7 +33,6 @@ header, footer {
     text-align: center;
     min-width: 100%;
     width: 100%;
-    display: none;
 }
 #zen-video-title #demo {
     margin-top: 5px;
@@ -49,10 +48,10 @@ header, footer {
 }
 
 #zen-video-description {
-    white-space: pre;
+    white-space: pre-line;
 }
 
-#form{
+#form {
     margin-bottom: 20px;
 }
 /* Media controls */
@@ -61,6 +60,15 @@ header, footer {
 }
 
 .slider-handle {
-    background-color: black;
+    background-color: #000000;
     background-image: none;
+}
+
+#search-results {
+    text-align: center;
+    display: none;
+}
+
+#search-results li {
+    list-style-type: none;
 }
