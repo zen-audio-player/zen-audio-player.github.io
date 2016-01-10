@@ -76,7 +76,7 @@ header, footer {
  * typeahead conflicts with primercss */
 .twitter-typeahead {
     display: block;
-    width:100%;
+    width: 100%;
 }
 
 .twitter-typeahead input {
