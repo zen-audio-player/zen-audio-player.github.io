@@ -16,11 +16,12 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css">
     <link rel="stylesheet" href="css/styles.css">
-  
+    <script type="text/javascript">window._trackJs = { token: "f58d0b7c4b4248939fddc582f9e55c9d" };</script>
+    <script src="bower_components/trackjs/tracker.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
-    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="js/everything.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
     <header>
@@ -29,6 +30,7 @@
             <a href="https://zen-audio-player.github.io" title="Zen Audio Player">
                 <img src="img/zen-audio-player-905.png" class="logo" alt="Zen Audio Player logo">
             </a>
+            <h1>Zen Audio Player</h1>
             <figcaption>Listen to YouTube videos, without the distracting visuals.</figcaption>
         </figure>
     </header>
@@ -44,21 +46,21 @@
                 </span>
             </div>
         </form>
-        <br>
-
+        <div id="search-results">
+            <h3>Search Results</h3>
+            <ul></ul>
+        </div>
+        <div id="zen-video-error" class="hide flash flash-error"></div>
         <!-- The video, along with related content & messages -->
         <div id="audioplayer">
-            <div id="zen-video-error" class="hide flash flash-error"></div>
-            <div id="player">
-                <br>
-            </div>
             <h3><a id="zen-video-title"></a></h3>
-            <div id="playerTime" class="hide">
-                <span id="currentTime"></span> / <span id="totalTime"></span>
-                <br>
+            <div id="playerTime">
+                <span id="currentTime"></span>
                 <input id="timeSeek" type="text">
+                <span id="totalTime"></span>
             </div>
             <div id="playerControls">
+                <br>
                 <button class="btn" id="playPause">
                     <i class="fa fa-play" id="play"></i>
                     <i class="fa fa-pause" id="pause"></i>
@@ -76,20 +78,32 @@
                 <i class="fa fa-volume-up fa-lg"></i>
             </div>
             <br>
-            <div id="zen-video-description" class="hide"></div>
+            <div id="player">
+            </div>
+            <div id="zen-video-description"></div>
             <br>
-            <a id="demo" href="#">Click for Demo</a>
         </div>
+        <br>
+        <button id="demo" class="btn">
+            <i class="fa fa-mouse-pointer"></i>
+            Click for Demo
+        </button>
     </div>
     <footer>
         <br>
         <!-- Twitter hashtag button: #ZenAudioPlayer -->
         <div id="tweetButton"></div>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?"http":"https";if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document, "script", "twitter-wjs");</script>
         <!-- Attribution, and links -->
-        <p>Created by <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a></p>
+        <p>Created by <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a> and <a href="https://github.com/zen-audio-player/zen-audio-player.github.io/graphs/contributors" target="_blank">others.</a></p>
         <p>Source available on <a href="https://github.com/zen-audio-player/zen-audio-player.github.io" target="_blank">GitHub</a></p>
         <p><a href="https://chrome.google.com/webstore/detail/zen-youtube-audio-player/jlkomkpeedajclllhhfkloddbihmcjlm" target="_blank">Get the Chrome extension</a> - (<a href="https://github.com/zen-audio-player/extension-chrome" target="_blank">source</a>)</p>
+        <!-- Sponsor links -->
+        <br>
+        <h3>Sponsored by:</h3>
+        <p><a href="https://browserstack.com" target="_blank"><img src="img/browserstack_logo.png" alt="Browserstack logo"></a></p>
+        <p><a href="https://keen.io/" target="_blank"><img src="img/keen_logo.png" alt="Keen Logo"></a></p>
+        <p><a href="https://trackjs.com/" target="_blank"><img src="img/trackjs_logo.png" alt="TrackJS Logo"></a></p>
     </footer>
     <!-- Schema.org structured data -->
     <script type="application/ld+json">

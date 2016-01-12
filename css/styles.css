@@ -8,6 +8,7 @@ header, footer {
 
 #audioplayer {
     text-align: center;
+    display: none;
 }
 
 #container {
@@ -32,25 +33,54 @@ header, footer {
     text-align: center;
     min-width: 100%;
     width: 100%;
-    display: none;
 }
-
 #zen-video-title #demo {
     margin-top: 5px;
     font-weight: bold;
     word-wrap: break-word;
 }
-
-#zen-video-description {
-    white-space: pre;
+#zen-video-error {
+    text-align: center;
+}
+#demo {
+    display: block;
+    margin: 0 auto;
 }
 
+#zen-video-description {
+    white-space: pre-line;
+}
+
+#form {
+    margin-bottom: 20px;
+}
 /* Media controls */
 #pause {
     display: none;
 }
 
 .slider-handle {
-    background-color: black;
+    background-color: #000000;
     background-image: none;
+}
+
+#search-results {
+    text-align: center;
+    display: none;
+}
+
+#search-results li {
+    list-style-type: none;
+}
+
+#timeSeekSliderControl {
+    width: 350px;
+}
+
+#totalTime {
+    padding-left: 10px;
+}
+
+#currentTime {
+    padding-right: 10px;
 }
