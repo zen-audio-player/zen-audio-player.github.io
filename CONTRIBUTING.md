@@ -23,5 +23,6 @@ If you're seeing some unexpected behavior, please create an [issue on GitHub](ht
 
 ## Contact
 
+Join the chat room on Gitter
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/zen-audio-player/zen-audio-player.github.io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 

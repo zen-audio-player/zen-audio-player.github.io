@@ -2,6 +2,7 @@
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/zen-audio-player/zen-audio-player.github.io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Build Status](https://travis-ci.org/zen-audio-player/zen-audio-player.github.io.svg?branch=master)](https://travis-ci.org/zen-audio-player/zen-audio-player.github.io)
+[![GitHub Stats](https://img.shields.io/badge/github-stats-ff5500.svg)](http://githubstats.com/zen-audio-player/zen-audio-player.github.io)
 
 Listen to YouTube videos, without the distracting visuals.
 
@@ -18,3 +19,7 @@ Install the [Chrome extension](https://chrome.google.com/webstore/detail/zen-you
 ## Screenshot
 
 ![screenshot](img/screenshot.png)
+
+## Contributing to Zen Audio Player
+
+If you would like to contribute to this project please read the [guidelines on contributing](CONTRIBUTING.md) before doing so.

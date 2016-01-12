@@ -1,0 +1,20 @@
+{
+	"author": "TrackJS <hello@trackjs.com>",
+	"name": "trackjs",
+	"url": "http://trackjs.com",
+	"homepage": "http://trackjs.com",
+	"description": "A JavaScript error tracking service for modern web applications. Signup at http://trackjs.com",
+	"version": "2.1.16",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/trackjs/trackjs-package.git"
+	},
+	"main": "tracker.js",
+	"keywords": [
+		"error",
+		"exception",
+		"tracking",
+		"logging"
+	],
+	"license": "COPYRIGHT (c) 2014 TrackJS LLC ALL RIGHTS RESERVED"
+}
