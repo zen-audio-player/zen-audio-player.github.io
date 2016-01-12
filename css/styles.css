@@ -72,3 +72,15 @@ header, footer {
 #search-results li {
     list-style-type: none;
 }
+
+#timeSeekSliderControl {
+    width: 350px;
+}
+
+#totalTime {
+    padding-left: 10px;
+}
+
+#currentTime {
+    padding-right: 10px;
+}
