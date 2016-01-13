@@ -26,6 +26,7 @@ header, footer {
 #v {
     margin: 0 auto;
     width: 100%;
+    text-align: center;
 }
 
 #player {
@@ -75,17 +76,13 @@ header, footer {
 /* Input field fixes and search suggestion style.
  * typeahead conflicts with primercss */
 .twitter-typeahead {
-    display: block;
+    display: inline;
     width: 100%;
 }
 
 .twitter-typeahead input {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-}
-
-.twitter-typeahead .tt-hint {
-    color: #c1c1c1;
 }
 
 .tt-menu {
@@ -96,14 +93,10 @@ header, footer {
 }
 
 .tt-suggestion {
-    padding: 0 8px;
-    font-weight: bold;
+    text-align: center;
 }
 
-.tt-suggestion strong {
-    font-weight: normal;
-}
-
+.tt-cursor,
 .tt-suggestion:hover {
     background-color: #efefef;
 }

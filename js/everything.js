@@ -504,7 +504,7 @@ $(function() {
 
     // Autocomplete with youtube suggested queries
     $("#v").typeahead({
-        hint: true,
+        hint: false,
         highlight: true,
         minLength: 1
     }, {
