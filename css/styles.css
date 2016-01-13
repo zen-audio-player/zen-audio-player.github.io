@@ -96,7 +96,6 @@ header, footer {
     text-align: center;
 }
 
-.tt-cursor,
-.tt-suggestion:hover {
+.tt-cursor, .tt-suggestion:hover {
     background-color: #efefef;
 }
