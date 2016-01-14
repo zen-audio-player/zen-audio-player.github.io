@@ -221,6 +221,7 @@ var ZenPlayer = {
             setp: 1,
             value: 50,
             tooltip: "hide",
+            handle: "custom",
             id: "volumeSliderControl",
             formatter: function(){}
         });
