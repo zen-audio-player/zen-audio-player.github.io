@@ -78,3 +78,7 @@ header, footer {
 #search-results li {
     list-style-type: none;
 }
+
+#timeSeekSliderControl {
+    width: 350px;
+}
