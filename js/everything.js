@@ -3,6 +3,7 @@
  */
 var player;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
+var currentVideoID;
 
 function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
     player = new YT.Player("player", {
@@ -465,7 +466,12 @@ function anchorURLs(text) {
 // TODO: this function can go away, the YouTube API will let you play video by URL
 // The url parameter could be the video ID
 function parseYoutubeVideoID(url) {
-    var videoID = null;
+    var videoID = currentVideoID;
+
+    // We have already determined the video id
+    if (videoID && url === videoID) {
+        return videoID;
+    }
 
     var shortUrlDomain = "youtu.be";
     var longUrlDomain = "youtube.com";
@@ -499,6 +505,9 @@ function parseYoutubeVideoID(url) {
         if (slashPos !== -1) {
             videoID = videoID.substring(0, slashPos);
         }
+
+        currentVideoID = videoID;
+
         return videoID;
     }
     errorMessage.show("Failed to parse the video ID.");
