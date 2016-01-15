@@ -110,6 +110,9 @@ function isFileProtocol() {
 // Lock for updating the volume
 var VOLUME_LOCKED = false;
 
+// Lock for updating the playertime
+var TIME_LOCKED = false;
+
 var ZenPlayer = {
     init: function(videoID) {
         // This should be called when the youtube player is done loading
@@ -126,6 +129,7 @@ var ZenPlayer = {
         this.setupVideoDescription();
         this.setupMediaControls();
         this.setupVolumeSlider();
+        this.setupTimeSeekSlider();
 
         // Start video from where we left off
         player.seekTo(loadTime());
@@ -217,6 +221,7 @@ var ZenPlayer = {
             setp: 1,
             value: 50,
             tooltip: "hide",
+            handle: "custom",
             id: "volumeSliderControl",
             formatter: function(){}
         });
@@ -239,13 +244,52 @@ var ZenPlayer = {
             VOLUME_LOCKED = false;
         });
 
-        // Update the time(s) every 100ms
+        // Update the volume slider every 100ms
         setInterval(function() {
             if (!VOLUME_LOCKED) {
                 $("#volume").slider("setValue", player.getVolume());
             }
             updatePlayerTime();
         }, 100);
+    },
+    setupTimeSeekSlider: function() {
+        $("#timeSeek").slider({
+            min: 0,
+            max: player.getDuration(),
+            value: player.getCurrentTime(),
+            setp: 1,
+            tooltip: "hide",
+            id: "timeSeekSliderControl",
+            formatter: function(){}
+        });
+
+        function updateTimeFromSlider() {
+            if (player) {
+                player.seekTo($("#timeSeek").slider("getValue"));
+            }
+        }
+
+        $("#timeSeek").on("slideStart", function() {
+            TIME_LOCKED = true;
+            player.pauseVideo();
+            updateTimeFromSlider();
+        });
+        $("#timeSeek").on("change", function() {
+            updateTimeFromSlider();
+        });
+        $("#timeSeek").on("slideStop", function() {
+            updateTimeFromSlider();
+            player.playVideo();
+            TIME_LOCKED = false;
+        });
+
+        // Update the time(s) every 50ms
+        setInterval(function() {
+            if (!TIME_LOCKED) {
+                $("#timeSeek").slider("setValue", player.getCurrentTime());
+            }
+            updatePlayerTime();
+        }, 50);
     },
     getVideoDescription: function(videoID) {
         var description = "";

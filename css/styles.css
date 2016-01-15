@@ -64,6 +64,16 @@ header, footer {
     background-image: none;
 }
 
+#volumeSliderControl .slider-handle.custom::before {
+    /* Unicode bar */
+    content: "\258C";
+    color: #000000;
+}
+
+#timeSeekSliderControl {
+    width: 350px;
+}
+
 #search-results {
     text-align: center;
     display: none;
