@@ -353,7 +353,7 @@ function updateTweetMessage() {
 
 // Takes seconds as a Number, returns a : delimited string
 function cleanTime(time) {
-    // Awesome hack for int->double cast http://stackoverflow.com/a/8388831/2785681
+    // Awesome hack for int->double cast https://stackoverflow.com/a/8388831/2785681
     var t = ~~time;
 
     var seconds = t % 60;
@@ -553,7 +553,7 @@ $(function() {
         minLength: 1
     }, {
         source: function (query, processSync, processAsync) {
-            return $.getJSON("http://suggestqueries.google.com/complete/search?callback=?", {
+            return $.getJSON("https://suggestqueries.google.com/complete/search?callback=?", {
                 q: query,
                 client: "youtube",
                 ds: "yt"

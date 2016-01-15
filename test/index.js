@@ -3,6 +3,8 @@ var Browser = require("zombie");
 var path = require("path");
 var fs = require("fs");
 
+var _js = "";
+
 const browser = new Browser();
 
 var indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
@@ -101,6 +103,10 @@ describe("Page Structure", function () {
 });
 
 describe("JavaScript components", function() {
+    before(function () {
+        _js = fs.readFileSync(path.join(__dirname, "../js", "everything.js"), "utf8");
+    });
+
     it("should load TrackJS token", function() {
         var trackjs = browser.evaluate("window._trackJs");
         assert.strictEqual(Object.keys(trackjs).length, 1);
@@ -116,6 +122,9 @@ describe("JavaScript components", function() {
     });
     it("should load ZenPlayer from everything.js", function() {
         assert.ok(browser.evaluate("ZenPlayer"));
+    });
+    it("should make all requests over https, not http", function() {
+        assert.strictEqual(-1, _js.indexOf("http://"), "Please use HTTPS for all scripts");
     });
 });
 
