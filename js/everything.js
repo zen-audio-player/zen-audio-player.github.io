@@ -553,7 +553,7 @@ $(function() {
         minLength: 1
     }, {
         source: function (query, processSync, processAsync) {
-            return $.getJSON("http://suggestqueries.google.com/complete/search?callback=?", {
+            return $.getJSON("https://suggestqueries.google.com/complete/search?callback=?", {
                 q: query,
                 client: "youtube",
                 ds: "yt"
