@@ -24,9 +24,9 @@ header, footer {
 }
 
 #v {
-    text-align: center;
     margin: 0 auto;
     width: 100%;
+    text-align: center;
 }
 
 #player {
@@ -70,6 +70,10 @@ header, footer {
     color: #000000;
 }
 
+#timeSeekSliderControl {
+    width: 350px;
+}
+
 #search-results {
     text-align: center;
     display: none;
@@ -79,6 +83,29 @@ header, footer {
     list-style-type: none;
 }
 
-#timeSeekSliderControl {
-    width: 350px;
+/* Input field fixes and search suggestion style.
+ * typeahead conflicts with primercss */
+.twitter-typeahead {
+    display: inline;
+    width: 100%;
+}
+
+.twitter-typeahead input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.tt-menu {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+}
+
+.tt-suggestion {
+    text-align: center;
+}
+
+.tt-cursor, .tt-suggestion:hover {
+    background-color: #efefef;
 }

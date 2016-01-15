@@ -354,7 +354,7 @@ function updateTweetMessage() {
 
 // Takes seconds as a Number, returns a : delimited string
 function cleanTime(time) {
-    // Awesome hack for int->double cast http://stackoverflow.com/a/8388831/2785681
+    // Awesome hack for int->double cast https://stackoverflow.com/a/8388831/2785681
     var t = ~~time;
 
     var seconds = t % 60;
@@ -555,6 +555,27 @@ $(function() {
         }
     }
 
+    // Autocomplete with youtube suggested queries
+    $("#v").typeahead({
+        hint: false,
+        highlight: true,
+        minLength: 1
+    }, {
+        source: function (query, processSync, processAsync) {
+            return $.getJSON("https://suggestqueries.google.com/complete/search?callback=?", {
+                q: query,
+                client: "youtube",
+                ds: "yt"
+            }, function(data) {
+                return processAsync($.map(data[1], function(item) {
+                    return item[0];
+                }));
+            });
+        }
+    }).bind("typeahead:selected", function(obj, datum) {
+        window.location.href = makeSearchURL(datum);
+    });
+
     // Handle form submission
     $("#form").submit(function(event) {
         event.preventDefault();
@@ -589,7 +610,7 @@ $(function() {
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     var responseText = JSON.parse(jqXHR.error().responseText);
                     errorMessage.show(responseText.error.errors[0].message);
-                    console.log("Search error", errorThrown);
+                    console.log("Lookup error", errorThrown);
                 });
             }
         }
