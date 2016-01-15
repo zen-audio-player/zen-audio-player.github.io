@@ -124,7 +124,7 @@ describe("JavaScript components", function() {
         assert.ok(browser.evaluate("ZenPlayer"));
     });
     it("should make all requests over https, not http", function() {
-        assert.strictEqual(-1, _js.indexOf("http://", "Please use HTTPS for all scripts"));
+        assert.strictEqual(-1, _js.indexOf("http://"), "Please use HTTPS for all scripts");
     });
 });
 
