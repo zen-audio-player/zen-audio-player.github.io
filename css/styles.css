@@ -29,6 +29,11 @@ header, footer {
     text-align: center;
 }
 
+#v::-ms-clear {
+    width: 0;
+    height: 0;
+}
+
 #player {
     text-align: center;
     min-width: 100%;
