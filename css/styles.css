@@ -30,8 +30,7 @@ header, footer {
 }
 
 #v::-ms-clear {
-    width: 0;
-    height: 0;
+    display: none;
 }
 
 #player {
