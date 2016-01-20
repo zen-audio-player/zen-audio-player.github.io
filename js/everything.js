@@ -18,8 +18,7 @@ function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
         events: {
             "onReady": onPlayerReady,
             "onStateChange": function(event) {
-                // Uncomment for debugging
-                //console.log("State changed to " + event.data);
+                // Look at playerState for debugging
                 var playerState = event.data;
 
                 switch (playerState) {
@@ -383,7 +382,7 @@ function cleanTime(time) {
 }
 
 function storeTime(time) {
-    var videoID = getCurrentVideoID();
+    var videoID = currentVideoID || getCurrentVideoID();
     if (window.sessionStorage && videoID) {
         window.sessionStorage[videoID] = time;
     }
