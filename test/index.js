@@ -10,6 +10,7 @@ const browser = new Browser();
 var indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
 /** Utilities **/
+// TODO: with refactor into a node module, this can go away!
 function getParameterByName(url, name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
