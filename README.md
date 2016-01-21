@@ -25,7 +25,8 @@ Install the [Chrome extension](https://chrome.google.com/webstore/detail/zen-you
 If you would like to contribute to this project please read the [guidelines on contributing](CONTRIBUTING.md) before doing so.
 
 ## Project Sponsors
-
-[![BrowserStack](img/browserstack_logo.png)](https://browserstack.com/)
-[![KeenIO](img/keen_logo.png)](https://keen.io/)
-[![TrackJS](img/trackjs_logo.png)](https://trackjs.com/)
+|Sponsor|Description|
+|:---:|:---|
+|[![BrowserStack](img/browserstack_logo.png)](https://browserstack.com/)  |Live, web-based browser testing. Say goodbye to your lab of devices and virtual machines.|
+|[![KeenIO](img/keen_logo.png)](https://keen.io/)     				      |Deliver fast, flexible analytics to your teams & customers. With Keen’s developer-friendly APIs, it’s easy to embed custom dashboards and reports in any app or website.|
+|[![TrackJS](img/trackjs_logo.png)](https://trackjs.com/)                 |Track Better Errors. Actually Fix Bugs. Know when your users run into errors and fix bugs before they report them.|
