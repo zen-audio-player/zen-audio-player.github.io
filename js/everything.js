@@ -331,7 +331,7 @@ var ZenPlayer = {
 };
 
 function updateTweetMessage() {
-    var url = "https://zen-audio-player.github.io";
+    var url = "https://ZenPlayer.Audio";
 
     var opts = {
         text: "Listen to YouTube videos without the distracting visuals",
