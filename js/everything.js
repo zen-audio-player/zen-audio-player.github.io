@@ -1,4 +1,4 @@
-/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID*/
+/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getVideoDescription*/
 
 /**
  * YouTube iframe API required setup
@@ -301,30 +301,23 @@ var ZenPlayer = {
             $("#toggleDescription").hide();
         }
         else {
-            // Request the video description
-            $.ajax({
-                url: "https://www.googleapis.com/youtube/v3/videos",
-                dataType: "json",
-                async: false,
-                data: {
-                    key: youTubeDataApiKey,
-                    part: "snippet",
-                    fields: "items/snippet/description",
-                    id: videoID
-                },
-                success: function(data) {
+            getYouTubeVideoDescription(
+                videoID,
+                youTubeDataApiKey,
+                function(data) {
                     if (data.items.length === 0) {
                         errorMessage.show("Video description not found");
                     }
                     else {
                         description = data.items[0].snippet.description;
                     }
+                },
+                function(jqXHR, textStatus, errorThrown) {
+                    var responseText = JSON.parse(jqXHR.error().responseText);
+                    errorMessage.show(responseText.error.errors[0].message);
+                    console.log("Video Description error", errorThrown);
                 }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                var responseText = JSON.parse(jqXHR.error().responseText);
-                errorMessage.show(responseText.error.errors[0].message);
-                console.log("Video Description error", errorThrown);
-            });
+            );
         }
 
         return description;

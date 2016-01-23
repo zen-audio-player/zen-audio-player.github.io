@@ -23,6 +23,22 @@ function getAutocompleteSuggestions(query, callback) {
     }, callback);
 }
 
+function getYouTubeVideoDescription(videoID, youTubeDataApiKey, onSuccess, onFail) {
+    // Request the video description
+    $.ajax({
+        url: "https://www.googleapis.com/youtube/v3/videos",
+        dataType: "json",
+        async: false,
+        data: {
+            key: youTubeDataApiKey,
+            part: "snippet",
+            fields: "items/snippet/description",
+            id: videoID
+        },
+        success: onSuccess
+    }).fail(onFail);
+}
+
 // The url parameter could be the video ID
 function parseYoutubeVideoID(url) {
     var videoInfo = {
