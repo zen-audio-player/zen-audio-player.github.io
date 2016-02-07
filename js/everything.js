@@ -449,7 +449,7 @@ function makeSearchURL(searchQuery) {
     // Remove any #s which break functionality
     url = url.replace("#", "");
 
-    return url + "?q=" + searchQuery;
+    return url + "?q=" + encodeURIComponent(searchQuery);
 }
 
 function anchorURLs(text) {
