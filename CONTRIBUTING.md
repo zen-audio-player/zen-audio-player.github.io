@@ -10,6 +10,7 @@
 0. Install test dependencies: `npm install`.
 0. Make your changes.
 0. Run the tests: `npm test`.
+0. Run `git commit -m` and add your message describing what you have changed. If you have made changes that address an issue include the text `Closes #1` (where 1 would be the issue number) to your commit message.
 0. Submit a [pull request](https://github.com/zen-audio-player/zen-audio-player.github.io/pulls) - Travis CI will run tests to make sure nothing broke.
 
 ## Issues & Bug Reports
@@ -25,4 +26,3 @@ If you're seeing some unexpected behavior, please create an [issue on GitHub](ht
 
 Join the chat room on Gitter
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/zen-audio-player/zen-audio-player.github.io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
