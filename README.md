@@ -10,6 +10,17 @@ Listen to YouTube videos, without the distracting visuals.
 
 Install the [Chrome extension](https://chrome.google.com/webstore/detail/zen-youtube-audio-player/jlkomkpeedajclllhhfkloddbihmcjlm) ([source code](https://github.com/zen-audio-player/extension-chrome)) so you can add `&zen` or `/zen` to the end of any YouTube URL to redirect this app!
 
+## Bookmark
+
+Create a bookmark with `javascript: (function () { window.location.href = 'https://zenplayer.audio/?v=' + location.href; }());` as an URL to quickly redirect your YouTube video to this app!
+
+### How to create a custom bookmark in Chrome:  
+1. Click on a star at the right side of the omnibox (you can also press Ctrl+D or choose "Bookmark this page..." from the menu).  
+2. Name your bookmark.  
+3. Click on "Edit".  
+4. Paste `javascript: (function () { window.location.href = 'https://zenplayer.audio/?v=' + location.href; }());` in the URL field.  
+5. Click on "Save".  
+
 ## Demo
 
 * Listen to [Starve the Ego, Feed the Soul by The Glitch Mob](http://zen-audio-player.github.io/?v=koJv-j1usoI)
