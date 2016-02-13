@@ -14,7 +14,7 @@ Install the [Chrome extension](https://chrome.google.com/webstore/detail/zen-you
 
 Create a bookmark with `javascript: (function () { window.location.href = 'https://zenplayer.audio/?v=' + location.href; }());` as an URL to quickly redirect your YouTube video to this app!
 
-How to create a custom bookmark in Chrome:  
+### How to create a custom bookmark in Chrome:  
 1. Click on a star at the right side of the omnibox (you can also press Ctrl+D or choose "Bookmark this page..." from the menu).  
 2. Name your bookmark.  
 3. Click on "Edit".  
