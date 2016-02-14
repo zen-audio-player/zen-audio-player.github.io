@@ -75,7 +75,7 @@ function onPlayerReady(event) {
     updateTweetMessage();
 
     // If the video isn't going to play, then return.
-    if (event.target.getPlayerState() !== YT.PlayerState.BUFFERING) {
+    if (event.target.getPlayerState() == YT.PlayerState.UNSTARTED) {
         if (currentVideoID.length > 0) {
             errorMessage.show("Invalid YouTube videoID or URL.");
         }
