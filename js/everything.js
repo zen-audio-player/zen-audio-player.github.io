@@ -76,10 +76,8 @@ function onPlayerReady(event) {
     updateTweetMessage();
 
     // If the video isn't going to play, then return.
-    if (event.target.getPlayerState() !== YT.PlayerState.BUFFERING) {
-        if (currentVideoID.length > 0) {
-            errorMessage.show("Invalid YouTube videoID or URL.");
-        }
+    if (event.target.getPlayerState() === YT.PlayerState.UNSTARTED) {
+        errorMessage.show("Invalid YouTube videoID or URL.");
         return;
     }
 
@@ -441,7 +439,7 @@ function makeSearchURL(searchQuery) {
     // Remove any #s which break functionality
     url = url.replace("#", "");
 
-    return url + "?q=" + searchQuery;
+    return url + "?q=" + encodeURIComponent(searchQuery);
 }
 
 function anchorURLs(text) {
