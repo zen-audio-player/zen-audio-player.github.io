@@ -1,3 +1,5 @@
+/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription*/
+
 /**
  * YouTube iframe API required setup
  */
@@ -18,8 +20,7 @@ function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
         events: {
             "onReady": onPlayerReady,
             "onStateChange": function(event) {
-                // Uncomment for debugging
-                //console.log("State changed to " + event.data);
+                // Look at playerState for debugging
                 var playerState = event.data;
 
                 switch (playerState) {
@@ -75,10 +76,8 @@ function onPlayerReady(event) {
     updateTweetMessage();
 
     // If the video isn't going to play, then return.
-    if (event.target.getPlayerState() !== YT.PlayerState.BUFFERING) {
-        if (currentVideoID.length > 0) {
-            errorMessage.show("Invalid YouTube videoID or URL.");
-        }
+    if (event.target.getPlayerState() === YT.PlayerState.UNSTARTED) {
+        errorMessage.show("Invalid YouTube videoID or URL.");
         return;
     }
 
@@ -300,30 +299,23 @@ var ZenPlayer = {
             $("#toggleDescription").hide();
         }
         else {
-            // Request the video description
-            $.ajax({
-                url: "https://www.googleapis.com/youtube/v3/videos",
-                dataType: "json",
-                async: false,
-                data: {
-                    key: youTubeDataApiKey,
-                    part: "snippet",
-                    fields: "items/snippet/description",
-                    id: videoID
-                },
-                success: function(data) {
+            getYouTubeVideoDescription(
+                videoID,
+                youTubeDataApiKey,
+                function(data) {
                     if (data.items.length === 0) {
                         errorMessage.show("Video description not found");
                     }
                     else {
                         description = data.items[0].snippet.description;
                     }
+                },
+                function(jqXHR, textStatus, errorThrown) {
+                    var responseText = JSON.parse(jqXHR.error().responseText);
+                    errorMessage.show(responseText.error.errors[0].message);
+                    console.log("Video Description error", errorThrown);
                 }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                var responseText = JSON.parse(jqXHR.error().responseText);
-                errorMessage.show(responseText.error.errors[0].message);
-                console.log("Video Description error", errorThrown);
-            });
+            );
         }
 
         return description;
@@ -383,7 +375,7 @@ function cleanTime(time) {
 }
 
 function storeTime(time) {
-    var videoID = getCurrentVideoID();
+    var videoID = currentVideoID || getCurrentVideoID();
     if (window.sessionStorage && videoID) {
         window.sessionStorage[videoID] = time;
     }
@@ -410,17 +402,15 @@ function loadTime() {
     }
 }
 
-function getParameterByName(url, name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(url);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
-
 function getCurrentVideoID() {
     var v = getParameterByName(window.location.search, "v");
-    if (v.length > 0) {
-        return parseYoutubeVideoID(v);
+    // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
+    var vParams = window.location.search.match(/v=\w+/g);
+    if (vParams && vParams.length > 1) {
+        v = vParams[vParams.length - 1].replace("v=", "");
+    }
+    else if (v.length > 1) {
+        return wrapParseYouTubeVideoID(v);
     }
     return v;
 }
@@ -463,81 +453,26 @@ function anchorURLs(text) {
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
 }
 
+function wrapParseYouTubeVideoID(url) {
+    if (currentVideoID && url === currentVideoID) {
+        // We have already determined the video id
+        return currentVideoID;
+    }
+
+    var info = parseYoutubeVideoID(url);
+
+    if (info.id) {
+        currentVideoID = info.id;
+        ga("send", "event", "video ID format", info.format);
+        return info.id;
+    }
+    else {
+        // TODO: analytics
+        errorMessage.show("Failed to parse the video ID.");
+    }
+}
+
 // TODO: this function can go away, the YouTube API will let you play video by URL
-// The url parameter could be the video ID
-function parseYoutubeVideoID(url) {
-    var videoID = currentVideoID;
-
-    // We have already determined the video id
-    if (videoID && url === videoID) {
-        return videoID;
-    }
-
-    var shortUrlDomain = "youtu.be";
-    var longUrlDomain = "youtube.com";
-
-    if (url && url.length > 0) {
-        // youtube.com format
-        if (url.indexOf(longUrlDomain) !== -1) {
-            ga("send", "event", "video ID format", longUrlDomain);
-            videoID = getParameterByName(url, "v");
-            // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
-            if (videoID === "") {
-                videoID = getParameterByName(window.location.href.substring(window.location.href.indexOf(url)), "v");
-            }
-        }
-        // youtu.be format
-        else if (url.indexOf(shortUrlDomain) !== -1) {
-            ga("send", "event", "video ID format", shortUrlDomain);
-            var endPosition = url.indexOf("?") === -1 ? url.length : url.indexOf("?");
-            var offset = url.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
-            videoID = url.substring(offset, endPosition);
-        }
-        // Assume YouTube video ID string
-        else {
-            ga("send", "event", "video ID format", "video ID");
-            videoID = url;
-        }
-
-        var slashPos = videoID.indexOf("/");
-        // We found a slash in the video ID (ex: real id is ABC123, but saw ABC123/zen)
-        // So, only keep what's before the slash
-        if (slashPos !== -1) {
-            videoID = videoID.substring(0, slashPos);
-        }
-
-        currentVideoID = videoID;
-
-        return videoID;
-    }
-    errorMessage.show("Failed to parse the video ID.");
-}
-
-function getSearchResults(query) {
-    $.getJSON("https://www.googleapis.com/youtube/v3/search", {
-        key: youTubeDataApiKey,
-        part: "snippet",
-        q: query,
-        type: "video"
-    }, function(data) {
-        if (data.pageInfo.totalResults === 0) {
-            errorMessage.show("No results.");
-            return;
-        }
-        //console.log(data);
-        $("#search-results").show();
-        // Clear out results
-        $("#search-results ul").html("");
-        $.each(data.items, function(index, result) {
-            //console.log(result.id.videoId);
-            $("#search-results ul").append("<li><h4><a href=?v=" + result.id.videoId + ">" + result.snippet.title  + "</a></h4></li>");
-        });
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-        var responseText = JSON.parse(jqXHR.error().responseText);
-        errorMessage.show(responseText.error.errors[0].message);
-        console.log("Search error", errorThrown);
-    });
-}
 
 $(function() {
     errorMessage.init();
@@ -551,7 +486,28 @@ $(function() {
         var currentSearchQuery = getCurrentSearchQuery();
         if (currentSearchQuery) {
             $("#v").attr("value", currentSearchQuery);
-            getSearchResults(currentSearchQuery);
+            getSearchResults(
+                currentSearchQuery,
+                youTubeDataApiKey,
+                function(data) {
+                    if (data.pageInfo.totalResults === 0) {
+                        errorMessage.show("No results.");
+                        return;
+                    }
+                    $("#search-results").show();
+                    // Clear out results
+                    $("#search-results ul").html("");
+                    // TODO: refactor this to be less wide
+                    $.each(data.items, function(index, result) {
+                        $("#search-results ul").append("<li><h4><a href=?v=" + result.id.videoId + ">" + result.snippet.title  + "</a></h4></li>");
+                    });
+                },
+                function(jqXHR, textStatus, errorThrown) {
+                    var responseText = JSON.parse(jqXHR.error().responseText);
+                    errorMessage.show(responseText.error.errors[0].message);
+                    console.log("Search error", errorThrown);
+                }
+            );
         }
     }
 
@@ -562,11 +518,7 @@ $(function() {
         minLength: 1
     }, {
         source: function (query, processSync, processAsync) {
-            return $.getJSON("https://suggestqueries.google.com/complete/search?callback=?", {
-                q: query,
-                client: "youtube",
-                ds: "yt"
-            }, function(data) {
+            getAutocompleteSuggestions(query, function(data) {
                 return processAsync($.map(data[1], function(item) {
                     return item[0];
                 }));
@@ -582,7 +534,7 @@ $(function() {
 
         var formValue = $.trim($("#v").val());
         if (formValue) {
-            var videoID = parseYoutubeVideoID(formValue);
+            var videoID = wrapParseYouTubeVideoID(formValue, true);
             ga("send", "event", "form submitted", videoID);
 
             if (isFileProtocol()) {
