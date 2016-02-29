@@ -80,7 +80,7 @@ h2 {
     word-wrap: break-word;
 }
 
-#zen-video-error {
+#zen-video-error, #zen-error {
     text-align: center;
 }
 

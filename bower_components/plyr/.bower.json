@@ -30,8 +30,35 @@
     "url": "git://github.com/selz/plyr.git"
   },
   "license": "MIT",
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
   "version": "1.5.17",
   "_release": "1.5.17",
+=======
+  "version": "1.5.18",
+  "_release": "1.5.18",
+>>>>>>> 72de396... Updated Plyr from bower
+=======
+  "version": "1.5.20",
+  "_release": "1.5.20",
+>>>>>>> 81962a9... Updated Plyr
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.5.20",
+    "commit": "6ae2655923b3f4a74ddf06e99b54a9b7f450c9e8"
+  },
+  "_source": "git://github.com/selz/plyr.git",
+  "_target": "^1.5.16",
+  "_originalSource": "plyr"
+=======
+  "version": "1.5.16",
+  "_release": "1.5.16",
+=======
+  "version": "1.5.17",
+  "_release": "1.5.17",
+>>>>>>> 6ef9c74... Updated Plyr
   "_resolution": {
     "type": "version",
     "tag": "v1.5.17",
@@ -39,5 +66,11 @@
   },
   "_source": "git://github.com/selz/plyr.git",
   "_target": "^1.5.16",
+<<<<<<< HEAD
+  "_originalSource": "plyr",
+  "_direct": true
+>>>>>>> 12c93bb... Added plyr bower components
+=======
   "_originalSource": "plyr"
+>>>>>>> 6ef9c74... Updated Plyr
 }

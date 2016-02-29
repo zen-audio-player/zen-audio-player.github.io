@@ -1,6 +1,22 @@
 {
   "name": "plyr",
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
   "version": "1.5.17",
+=======
+  "version": "1.5.16",
+>>>>>>> 12c93bb... Added plyr bower components
+=======
+  "version": "1.5.17",
+>>>>>>> 6ef9c74... Updated Plyr
+=======
+  "version": "1.5.18",
+>>>>>>> 72de396... Updated Plyr from bower
+=======
+  "version": "1.5.20",
+>>>>>>> 81962a9... Updated Plyr
   "description": "A simple, accessible and customizable HTML5, YouTube and Vimeo media player",
   "homepage": "http://plyr.io",
   "main": "src/js/plyr.js",

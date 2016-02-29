@@ -1,6 +1,22 @@
 // ==========================================================================
 // Plyr
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 // plyr.js v1.5.17
+=======
+// plyr.js v1.5.16
+>>>>>>> 12c93bb... Added plyr bower components
+=======
+// plyr.js v1.5.17
+>>>>>>> 6ef9c74... Updated Plyr
+=======
+// plyr.js v1.5.18
+>>>>>>> 72de396... Updated Plyr from bower
+=======
+// plyr.js v1.5.20
+>>>>>>> 81962a9... Updated Plyr
 // https://github.com/selz/plyr
 // License: The MIT License (MIT)
 // ==========================================================================
@@ -133,7 +149,15 @@
         // URLs
         urls: {
             vimeo: {
+<<<<<<< HEAD
+<<<<<<< HEAD
                 api:            'https://cdn.plyr.io/froogaloop/1.0.1/plyr.froogaloop.js',
+=======
+                api:            'https://cdn.plyr.io/froogaloop/1.0.0/plyr.froogaloop.js',
+>>>>>>> 12c93bb... Added plyr bower components
+=======
+                api:            'https://cdn.plyr.io/froogaloop/1.0.1/plyr.froogaloop.js',
+>>>>>>> 6ef9c74... Updated Plyr
             },
             youtube: {
                 api:            'https://www.youtube.com/iframe_api'
@@ -1242,7 +1266,7 @@
 
         // Toggle style hook
         function _toggleStyleHook() {
-            _toggleClass(plyr.container, defaults.selectors.container.replace('.', ''), plyr.supported.full);
+            _toggleClass(plyr.container, config.selectors.container.replace('.', ''), plyr.supported.full);
         }
 
         // Toggle native controls
@@ -1318,12 +1342,6 @@
 
                 // Clean up
                 plyr.embedId = null;
-            }
-            else {
-                // Autoplay
-                if (config.autoplay) {
-                    _play();
-                }
             }
         }
 
@@ -1415,14 +1433,26 @@
 
         // When embeds are ready
         function _embedReady() {
-            // Setup the UI
-            _setupInterface();
-
             // Set title
             _setTitle(_getElement('iframe'));
+<<<<<<< HEAD
+<<<<<<< HEAD
 
             // Store reference to API
             plyr.container.plyr.embed = plyr.embed;
+<<<<<<< HEAD
+=======
+>>>>>>> 12c93bb... Added plyr bower components
+=======
+
+            // Store reference to API
+            plyr.container.plyr.embed = plyr.embed;
+>>>>>>> 6ef9c74... Updated Plyr
+=======
+
+            // Setup the UI
+            _setupInterface();
+>>>>>>> 81962a9... Updated Plyr
         }
 
         // Handle YouTube API ready
@@ -1438,7 +1468,7 @@
             plyr.embed = new YT.Player(container.id, {
                 videoId: videoId,
                 playerVars: {
-                    autoplay: 0,
+                    autoplay: (config.autoplay ? 1 : 0),
                     controls: (plyr.supported.full ? 0 : 1),
                     rel: 0,
                     showinfo: 0,
@@ -1473,9 +1503,18 @@
                         plyr.media.currentTime = instance.getCurrentTime();
                         plyr.media.muted = instance.isMuted();
 
+<<<<<<< HEAD
+<<<<<<< HEAD
                         // Set title
                         config.title = instance.getVideoData().title;
 
+=======
+>>>>>>> 12c93bb... Added plyr bower components
+=======
+                        // Set title
+                        config.title = instance.getVideoData().title;
+
+>>>>>>> 6ef9c74... Updated Plyr
                         // Trigger timeupdate
                         _triggerEvent(plyr.media, 'timeupdate');
 
@@ -1626,12 +1665,12 @@
                 });
 
                 // Always seek to 0
-                //plyr.embed.api('seekTo', 0);
+                // plyr.embed.api('seekTo', 0);
 
-                // Prevent autoplay if needed (seek will play)
-                //if (!config.autoplay) {
-                //    plyr.embed.api('pause');
-                //}
+                // Autoplay
+                if (config.autoplay) {
+                    plyr.embed.api('play');
+                }
             });
         }
 
@@ -2231,9 +2270,18 @@
                 _remove(plyr.videoContainer);
             }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
             // Remove embed object
             plyr.embed = null;
 
+=======
+>>>>>>> 12c93bb... Added plyr bower components
+=======
+            // Remove embed object
+            plyr.embed = null;
+
+>>>>>>> 6ef9c74... Updated Plyr
             // Cancel current network requests
             _cancelRequests();
 
@@ -2277,6 +2325,11 @@
             // Inject the new element
             _prependChild(plyr.container, plyr.media);
 
+            // Autoplay the new source?
+            if (typeof source.autoplay !== 'undefined') {
+                config.autoplay = source.autoplay;
+            }
+
             // Set attributes for audio video
             if (_inArray(config.types.html5, plyr.type)) {
                 if (config.crossorigin) {
@@ -2300,9 +2353,6 @@
             _toggleClass(plyr.container, config.classes.fullscreen.active, plyr.isFullscreen);
             _toggleClass(plyr.container, config.classes.captions.active, plyr.captionsEnabled);
             _toggleStyleHook();
-
-            // Autoplay the new source?
-            config.autoplay = (source.autoplay || config.autoplay);
 
             // Set new sources for html5
             if (_inArray(config.types.html5, plyr.type)) {
@@ -2329,16 +2379,27 @@
                 _displayDuration();
             }
 
-            // Play if autoplay attribute is present
-            if (config.autoplay) {
-                _play();
-            }
-
             // Set aria title and iframe title
+<<<<<<< HEAD
+<<<<<<< HEAD
             config.title = source.title;
             _setTitle();
 
             // Reset media objects
+=======
+            if ('title' in source) {
+                config.title = source.title;
+                _setTitle();
+            }
+
+            // Reset media object
+>>>>>>> 12c93bb... Added plyr bower components
+=======
+            config.title = source.title;
+            _setTitle();
+
+            // Reset media objects
+>>>>>>> 6ef9c74... Updated Plyr
             plyr.container.plyr.media = plyr.media;
         }
 
@@ -2668,6 +2729,11 @@
 
                 // Set title on button and frame
                 _setTitle();
+
+                // Autoplay
+                if (config.autoplay) {
+                    _play();
+                }
             }
 
             // Successful setup
@@ -2730,6 +2796,9 @@
 
             // Display duration
             _displayDuration();
+
+            // Ready event
+            _triggerEvent(plyr.container, 'ready');
         }
 
         // Initialize instance

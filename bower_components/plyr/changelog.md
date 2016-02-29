@@ -1,10 +1,28 @@
 # Changelog
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 6ef9c74... Updated Plyr
+=======
+## v1.5.18
+- Added 'ready' event for initial setup complete or source change occurs
+- Fixed SASS stylesheet references to transparentize
+- Added default font stack to controls 
+- Docs fixes inc controls HTML (fixes #180)
+
+>>>>>>> 72de396... Updated Plyr from bower
 ## v1.5.17
 - Expose YouTube and Vimeo API (docs update required) (Fixes #176)
 - Auto set title based on YouTube getVideoData() title property
 - Bug fix for Vimeo API change (Uncaught TypeError: Cannot read property 'value' of undefined) due to a change their end
 
+<<<<<<< HEAD
+=======
+>>>>>>> 12c93bb... Added plyr bower components
+=======
+>>>>>>> 6ef9c74... Updated Plyr
 ## v1.5.16
 - Cancel requests on source change (Fixes #174)
 

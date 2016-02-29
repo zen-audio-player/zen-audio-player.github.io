@@ -1,4 +1,3 @@
-
 // Pointer to Keen client
 var client;
 
@@ -135,7 +134,6 @@ function onPlayerReady(event) {
 
     // Setup player
     if (currentVideoID) {
-        ZenPlayer.init(currentVideoID);
         if (plyrPlayer) {
             return;
         }
@@ -144,24 +142,49 @@ function onPlayerReady(event) {
 }
 
 function setupPlyr() {
-    //set up Plyr player
-    plyrPlayer = plyr.setup({
+    plyrPlayer = document.querySelector(".plyr");
+
+    plyr.setup(plyrPlayer, {
         autoplay: true,
         controls:["play", "current-time", "duration", "mute", "volume"]
-    })[0];
+    });
+    //Inject svg with controls' icons
+    $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
+
+    plyrPlayer.addEventListener("ready", function() {
+        onEmbedReady();
+    });
+
     //Load video into Plyr player
-    if (plyrPlayer) {
-        plyrPlayer.source({
+    if (plyrPlayer.plyr) {
+        plyrPlayer.plyr.source({
             type: "video",
-            title: player.getVideoData().title,
+            title: "Title",
             sources: [{
                 src: currentVideoID,
                 type: "youtube"
             }]
         });
+
         //Inject svg with controls' icons
         $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
+		//Load video into Plyr player
+		plyrPlayer.source({
+			type: 'video',
+			title: player.getVideoData().title,
+			sources: [{
+				src: currentVideoID,
+				type: 'youtube'
+			}]
+		});
+		//Hide video; leave only controls
+		$(document.querySelector('.plyr__video-wrapper')).hide();
+        plyrPlayer = document.querySelector('.plyr');
     }
+    //Show player
+    $("#audioplayer").show();
+    // When it is the player's first play, hide the youtube video
+    $(".plyr__video-wrapper").hide();
 }
 
 var errorMessage = {
@@ -185,6 +208,105 @@ var errorMessage = {
         $("#zen-video-error").text("").hide();
     }
 };
+
+function onEmbedReady() {
+    setupSite();
+    updateTweetMessage();
+}
+
+function setupSite() {
+    // Gather video info
+    var videoData = plyrPlayer.plyr.embed.getVideoData();
+    var videoTitle = videoData.title;
+    var videoAuthor = videoData.author;
+    var videoDuration = plyrPlayer.plyr.embed.getDuration();
+    var videoUrl = plyrPlayer.plyr.embed.getVideoUrl();
+    var videoDescription = getVideoDescription(currentVideoID);
+
+    // Google Analytics
+    ga("send", "event", "Playing YouTube video title", videoTitle);
+    ga("send", "event", "Playing YouTube video author", videoAuthor);
+    ga("send", "event", "Playing YouTube video duration (seconds)", videoDuration);
+
+    // Place stuff on page
+    setupTitle(videoTitle, videoUrl);
+    setupVideoDescription(videoDescription);
+
+    // Show player button click event
+    $("#togglePlayer").click(function(event) {
+        event.preventDefault();
+
+        var p = $(".plyr__video-wrapper");
+        p.toggle();
+        if (p.is(":visible")) {
+            $("#togglePlayer").text("Hide Player");
+        }
+        else {
+            $("#togglePlayer").text("Show Player");
+        }
+    });
+
+}
+
+function getVideoDescription(videoID) {
+    var description = "";
+
+    if (isFileProtocol()) {
+        console.log("Skipping video description request as we're running the site locally.");
+        $("#toggleDescription").hide();
+    }
+    else {
+        getYouTubeVideoDescription(
+            videoID,
+            youTubeDataApiKey,
+            function(data) {
+                if (data.items.length === 0) {
+                    errorMessage.show("Video description not found");
+                }
+                else {
+                    description = data.items[0].snippet.description;
+                }
+            },
+            function(jqXHR, textStatus, errorThrown) {
+                var responseText = JSON.parse(jqXHR.error().responseText);
+                errorMessage.show(responseText.error.errors[0].message);
+                console.log("Video Description error", errorThrown);
+            }
+        );
+    }
+
+    return description;
+}
+
+function setupTitle(title, url) {
+    // Prepend music note only if title does not already begin with one.
+    var tmpVideoTitle = title;
+    if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(tmpVideoTitle)) {
+        tmpVideoTitle = "<i class=\"fa fa-music\"></i> " + tmpVideoTitle;
+    }
+    $("#zen-video-title").html(tmpVideoTitle);
+    $("#zen-video-title").attr("href", url);
+}
+
+function setupVideoDescription(videoDescription) {
+    var description = anchorURLs(videoDescription);
+    $("#zen-video-description").html(description);
+    $("#zen-video-description").hide();
+
+    $("#toggleDescription").click(function(event) {
+        event.preventDefault();
+
+        var descriptionElement = $("#zen-video-description");
+        descriptionElement.toggle();
+
+        if (descriptionElement.is(":visible")) {
+            $("#toggleDescription").text("Hide Description");
+        }
+        else {
+            $("#toggleDescription").text("Show Description");
+        }
+    });
+}
 
 function isFileProtocol() {
     return window.location.protocol === "file:";
@@ -404,7 +526,7 @@ function updateTweetMessage() {
     var id = getCurrentVideoID();
     if (id) {
         opts.url += "/?v=" + id;
-        opts.text = "I'm listening to " + player.getVideoData().title;
+        opts.text = "I'm listening to " + plyrPlayer.plyr.embed.getVideoData().title;
     }
 
     twttr.widgets.createHashtagButton(
