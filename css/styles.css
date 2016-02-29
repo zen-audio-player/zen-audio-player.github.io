@@ -224,3 +224,7 @@ h2 {
 .img-100 {
     width: 100%;
 }
+
+.plyr__video-wrapper {
+    display: none;
+}
