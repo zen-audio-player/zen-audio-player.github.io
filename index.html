@@ -16,19 +16,18 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css">
     <link rel="stylesheet" href="css/styles.css">
-	<link rel="stylesheet" href="https://cdn.plyr.io/1.5.16/plyr.css">
-    
+    <link rel="stylesheet" href="https://cdn.plyr.io/1.5.16/plyr.css">
+
     <script type="text/javascript">window._trackJs = { token: "f58d0b7c4b4248939fddc582f9e55c9d" };</script>
     <script src="bower_components/trackjs/tracker.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
     <script src="bower_components/typeahead.js/dist/typeahead.jquery.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://cdn.plyr.io/1.5.16/plyr.js"></script>
     <script src="js/zap-common.js"></script>
     <script src="js/everything.js"></script>
-    <script src="https://www.youtube.com/iframe_api"></script>
-	<script src="https://connect.soundcloud.com/sdk/sdk-3.0.0.js"></script>
-	<script src="https://cdn.plyr.io/1.5.16/plyr.js"></script>
-	
+
 </head>
 <body>
     <header>
@@ -91,8 +90,8 @@
             <br>
         </div>
         <br>
-		<div class="plyr"><audio></audio></div>
-		<br>
+        <div class="plyr"><audio></audio></div>
+        <br>
         <button id="demo" class="btn">
             <i class="fa fa-mouse-pointer"></i>
             Click for Demo
@@ -123,44 +122,44 @@
             "logo": "https://zenplayer.audio/img/zen-audio-player-905.png"
         }
     </script>
-	<!-- Load SVG defs for Plyr-->
-	<script type="text/javascript">
-		(function() {
-			[
-				'https://cdn.plyr.io/1.5.16/sprite.svg',
-				'https://cdn.plyr.io/1.5.16/docs.svg'
-			]
-			.forEach(function(u) {
-				var x = new XMLHttpRequest(),
-					b = document.body;
+    <!-- Load SVG defs for Plyr-->
+    <script type="text/javascript">
+        (function() {
+            [
+                'https://cdn.plyr.io/1.5.16/sprite.svg',
+                'https://cdn.plyr.io/1.5.16/docs.svg'
+            ]
+            .forEach(function(u) {
+                var x = new XMLHttpRequest(),
+                    b = document.body;
 
-				// Check for CORS support
-				// If you're loading from same domain, you can remove the whole if/else statement
-				// XHR for Chrome/Firefox/Opera/Safari/IE10+
-				if ('withCredentials' in x) {
-					x.open('GET', u, true);
-				}
-				// XDomainRequest for IE8 & IE9
-				else if (typeof XDomainRequest == 'function') {
-					x = new XDomainRequest();
-					x.open('GET', u);
-				}
-				else { return; }
+                // Check for CORS support
+                // If you're loading from same domain, you can remove the whole if/else statement
+                // XHR for Chrome/Firefox/Opera/Safari/IE10+
+                if ('withCredentials' in x) {
+                    x.open('GET', u, true);
+                }
+                // XDomainRequest for IE8 & IE9
+                else if (typeof XDomainRequest == 'function') {
+                    x = new XDomainRequest();
+                    x.open('GET', u);
+                }
+                else { return; }
 
-				// Inject hidden div with sprite on load
-				x.onload = function() {
-					var c = document.createElement('div');
-					c.setAttribute('hidden', '');
-					c.innerHTML = x.responseText;
-					b.insertBefore(c, b.childNodes[0]);
-				}
+                // Inject hidden div with sprite on load
+                x.onload = function() {
+                    var c = document.createElement('div');
+                    c.setAttribute('hidden', '');
+                    c.innerHTML = x.responseText;
+                    b.insertBefore(c, b.childNodes[0]);
+                }
 
-				// Timeout for IE9
-				setTimeout(function () {
-					x.send();
-				}, 0);
-			});
-		})();
-	</script>
+                // Timeout for IE9
+                setTimeout(function () {
+                    x.send();
+                }, 0);
+            });
+        })();
+    </script>
 </body>
 </html>
