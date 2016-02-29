@@ -54,6 +54,7 @@ function sendKeenEvent(_msg, _data) {
  * YouTube iframe API required setup
  */
 var player;
+var plyrPlayer;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
 
@@ -135,6 +136,31 @@ function onPlayerReady(event) {
     // Setup player
     if (currentVideoID) {
         ZenPlayer.init(currentVideoID);
+        if (plyrPlayer) {
+            return;
+        }
+        setupPlyr();
+    }
+}
+
+function setupPlyr() {
+    //set up Plyr player
+    plyrPlayer = plyr.setup({
+        autoplay: true,
+        controls:["play", "current-time", "duration", "mute", "volume"]
+    })[0];
+    //Load video into Plyr player
+    if (plyrPlayer) {
+        plyrPlayer.source({
+            type: "video",
+            title: player.getVideoData().title,
+            sources: [{
+                src: currentVideoID,
+                type: "youtube"
+            }]
+        });
+        //Inject svg with controls' icons
+        $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
     }
 }
 
