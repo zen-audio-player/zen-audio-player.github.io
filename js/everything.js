@@ -4,6 +4,7 @@
  * YouTube iframe API required setup
  */
 var player;
+var plyrPlayer;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
 
@@ -84,6 +85,24 @@ function onPlayerReady(event) {
     // Setup player
     if (currentVideoID) {
         ZenPlayer.init(currentVideoID);
+		//set up Plyr player
+		plyrPlayer = plyr.setup({
+			autoplay: true,
+			controls:["play", "current-time", "duration", "mute", "volume", "captions"]
+		})[0];
+		if (plyrPlayer) {
+			//Load video into Plyr player
+			plyrPlayer.source({
+				type: 'video',
+				title: player.getVideoData().title,
+				sources: [{
+					src: currentVideoID,
+					type: 'youtube'
+				}]
+			});
+			//Hide video; leave only controls
+			$(document.querySelector('.plyr__video-wrapper')).hide();
+		}
     }
 }
 
@@ -476,7 +495,7 @@ function wrapParseYouTubeVideoID(url) {
 
 $(function() {
     errorMessage.init();
-
+	
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
