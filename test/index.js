@@ -60,7 +60,7 @@ describe("Page Structure", function () {
 
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link").rel, "stylesheet");
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link").href, "bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css");
-        
+
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").rel, "stylesheet");
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").href, "bower_components/plyr/dist/plyr.css");
 
