@@ -86,7 +86,7 @@ function onPlayerReady(event) {
     if (currentVideoID) {
         ZenPlayer.init(currentVideoID);
         setupPlyr();
-        }
+    }
 }
 
 function setupPlyr() {
