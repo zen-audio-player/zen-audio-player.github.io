@@ -12,7 +12,7 @@
         "ga": true,
         "twttr": true,
         "time": true,
-		"plyr": true
+        "plyr": true
     },
     "rules": {
         "indent": [
