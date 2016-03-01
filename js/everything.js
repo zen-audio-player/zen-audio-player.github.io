@@ -90,8 +90,8 @@ function onPlayerReady(event) {
             autoplay: true,
             controls:["play", "current-time", "duration", "mute", "volume", "captions"]
         })[0];
+        //Load video into Plyr player
         if (plyrPlayer) {
-            //Load video into Plyr player
             plyrPlayer.source({
                 type: "video",
                 title: player.getVideoData().title,
@@ -101,7 +101,12 @@ function onPlayerReady(event) {
                 }]
             });
             //Hide video; leave only controls
-            $(document.querySelector(".plyr__video-wrapper")).hide();
+            $(".plyr__video-wrapper").hide();
+            //Inject svg with controls' icons
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "../bower_components/plyr/dist/sprite.svg", false);
+            xhr.send("");
+            document.getElementById("plyr-svg").appendChild(xhr.responseXML.documentElement);
         }
     }
 }

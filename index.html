@@ -8,7 +8,7 @@
     <meta name="google-site-verification" content="D3SjNR3tmNYOusESQijh_oH5SGmU9QsAIVwlqizwRBU" />
 
     <title>Zen Audio Player</title>
-
+    
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 
@@ -30,6 +30,7 @@
 
 </head>
 <body>
+    <div id="plyr-svg" hidden></div>
     <header>
         <!-- The logo & description -->
         <figure>
@@ -121,45 +122,6 @@
             "url": "https://zenplayer.audio",
             "logo": "https://zenplayer.audio/img/zen-audio-player-905.png"
         }
-    </script>
-    <!-- Load SVG defs for Plyr-->
-    <script type="text/javascript">
-        (function() {
-            [
-                'https://cdn.plyr.io/1.5.16/sprite.svg',
-                'https://cdn.plyr.io/1.5.16/docs.svg'
-            ]
-            .forEach(function(u) {
-                var x = new XMLHttpRequest(),
-                    b = document.body;
-
-                // Check for CORS support
-                // If you're loading from same domain, you can remove the whole if/else statement
-                // XHR for Chrome/Firefox/Opera/Safari/IE10+
-                if ('withCredentials' in x) {
-                    x.open('GET', u, true);
-                }
-                // XDomainRequest for IE8 & IE9
-                else if (typeof XDomainRequest == 'function') {
-                    x = new XDomainRequest();
-                    x.open('GET', u);
-                }
-                else { return; }
-
-                // Inject hidden div with sprite on load
-                x.onload = function() {
-                    var c = document.createElement('div');
-                    c.setAttribute('hidden', '');
-                    c.innerHTML = x.responseText;
-                    b.insertBefore(c, b.childNodes[0]);
-                }
-
-                // Timeout for IE9
-                setTimeout(function () {
-                    x.send();
-                }, 0);
-            });
-        })();
     </script>
 </body>
 </html>
