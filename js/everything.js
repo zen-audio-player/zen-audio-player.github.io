@@ -85,29 +85,33 @@ function onPlayerReady(event) {
     // Setup player
     if (currentVideoID) {
         ZenPlayer.init(currentVideoID);
-        //set up Plyr player
-        plyrPlayer = plyr.setup({
-            autoplay: true,
-            controls:["play", "current-time", "duration", "mute", "volume", "captions"]
-        })[0];
-        //Load video into Plyr player
-        if (plyrPlayer) {
-            plyrPlayer.source({
-                type: "video",
-                title: player.getVideoData().title,
-                sources: [{
-                    src: currentVideoID,
-                    type: "youtube"
-                }]
-            });
-            //Hide video; leave only controls
-            $(".plyr__video-wrapper").hide();
-            //Inject svg with controls' icons
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "../bower_components/plyr/dist/sprite.svg", false);
-            xhr.send("");
-            document.getElementById("plyr-svg").appendChild(xhr.responseXML.documentElement);
+        setupPlyr();
         }
+}
+
+function setupPlyr() {
+    //set up Plyr player
+    plyrPlayer = plyr.setup({
+        autoplay: true,
+        controls:["play", "current-time", "duration", "mute", "volume", "captions"]
+    })[0];
+    //Load video into Plyr player
+    if (plyrPlayer) {
+        plyrPlayer.source({
+            type: "video",
+            title: player.getVideoData().title,
+            sources: [{
+                src: currentVideoID,
+                type: "youtube"
+            }]
+        });
+        //Hide video; leave only controls
+        $(".plyr__video-wrapper").hide();
+        //Inject svg with controls' icons
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "../bower_components/plyr/dist/sprite.svg", true);
+        xhr.send("");
+        document.getElementById("plyr-svg").appendChild(xhr.responseXML.documentElement);
     }
 }
 
