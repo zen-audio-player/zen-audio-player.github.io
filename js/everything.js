@@ -105,8 +105,6 @@ function setupPlyr() {
                 type: "youtube"
             }]
         });
-        //Hide video; leave only controls
-        $(".plyr__video-wrapper").hide();
         //Inject svg with controls' icons
         $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
     }
