@@ -108,10 +108,7 @@ function setupPlyr() {
         //Hide video; leave only controls
         $(".plyr__video-wrapper").hide();
         //Inject svg with controls' icons
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "../bower_components/plyr/dist/sprite.svg", true);
-        xhr.send("");
-        document.getElementById("plyr-svg").appendChild(xhr.responseXML.documentElement);
+        $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
     }
 }
 
