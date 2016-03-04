@@ -8,7 +8,7 @@
     <meta name="google-site-verification" content="D3SjNR3tmNYOusESQijh_oH5SGmU9QsAIVwlqizwRBU" />
 
     <title>Zen Audio Player</title>
-    
+
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 
@@ -30,7 +30,6 @@
 
 </head>
 <body>
-    <div id="plyr-svg" hidden></div>
     <header>
         <!-- The logo & description -->
         <figure>
@@ -91,7 +90,12 @@
             <br>
         </div>
         <br>
-        <div class="plyr"><audio></audio></div>
+        <!-- Plyr controls' icons and Plyr player itself -->
+        <div id="plyr-svg" hidden>
+        </div>
+        <div class="plyr">
+            <div></div>
+        </div>
         <br>
         <button id="demo" class="btn">
             <i class="fa fa-mouse-pointer"></i>
