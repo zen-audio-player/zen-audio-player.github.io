@@ -85,7 +85,12 @@ function onPlayerReady(event) {
     // Setup player
     if (currentVideoID) {
         ZenPlayer.init(currentVideoID);
-        setupPlyr();
+        if (plyrPlayer) {
+            return;
+        }
+        else {
+            setupPlyr();
+        }
     }
 }
 
@@ -93,7 +98,7 @@ function setupPlyr() {
     //set up Plyr player
     plyrPlayer = plyr.setup({
         autoplay: true,
-        controls:["play", "current-time", "duration", "mute", "volume", "captions"]
+        controls:["play", "current-time", "duration", "mute", "volume"]
     })[0];
     //Load video into Plyr player
     if (plyrPlayer) {
