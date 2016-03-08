@@ -88,9 +88,7 @@ function onPlayerReady(event) {
         if (plyrPlayer) {
             return;
         }
-        else {
-            setupPlyr();
-        }
+        setupPlyr();
     }
 }
 
