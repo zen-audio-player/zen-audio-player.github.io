@@ -1,3 +1,7 @@
+body {
+    background-color: #f9f9f9;
+}
+
 header, footer {
     text-align: center;
 }
@@ -12,16 +16,20 @@ header, footer {
 }
 
 #container {
-    max-width: 450px;
+    width: 80%;
     margin: 0 auto;
 }
+@media all and (min-width:480px) {
+    #container {
+        max-width: 450px;
+    }
+}
 
-.logo {
+/*.logo {
     max-width: 300px;
     max-height: 300px;
-    padding-top: 30px;
     margin-bottom: 5px;
-}
+}*/
 
 #v {
     margin: 0 auto;
@@ -112,4 +120,91 @@ header, footer {
 
 .tt-cursor, .tt-suggestion:hover {
     background-color: #efefef;
+}
+
+/* improvements by YuriBrunetto */
+hgroup {
+    margin-top: 30px;
+}
+h2 {
+    font-weight: normal;
+    font-size: 16px;
+    color: #666;
+    line-height: 150%;
+}
+
+header {
+    width: 80%;
+    margin: 50px auto 0 auto;
+}
+@media all and (min-width:480px) {
+    header {
+        max-width: 450px;
+    }
+}
+
+.zen-logo {
+    width: 100px;
+    height: 100px;
+    display: block;
+    overflow: hidden;
+    border-radius: 6px;
+    margin: 0 auto;
+}
+
+.input {
+
+}
+@media all and (min-width:480px) {
+    .input-search {
+        height: 50px;
+        font-size: 18px !important;
+        color: #666 !important;
+    }
+    .btn {
+        height: 50px;
+    }
+}
+
+footer {
+    border-top: 1px solid #eee;
+    background-color: #fff;
+    margin-top: 50px;
+    padding: 50px 0;
+}
+
+.sponsor {
+    width: 70%;
+    margin: 30px auto 0 auto;
+}
+
+/* responsive sponsor :) */
+.sponsor-a {
+    width:100%;
+    display: block;
+    margin-top: 20px;
+}
+.sponsor-a:first-of-type {
+    margin-top: 0;
+}
+@media all and (min-width:640px) {
+    .sponsor-a {
+        width: 30.666666667%;
+        float: left;
+        margin-left: 4%;
+        margin-top: 0;
+    }
+    .sponsor-a:first-of-type {
+        margin: 0;
+    }
+}
+
+.color-666 {
+    color: #666;
+}
+
+.clear-both {
+    clear: both;
+    height: 0px;
+    overflow: hidden;
 }
