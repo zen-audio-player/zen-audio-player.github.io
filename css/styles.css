@@ -6,6 +6,33 @@ header, footer {
     text-align: center;
 }
 
+header {
+    width: 80%;
+    margin: 50px auto 0 auto;
+}
+@media all and ( min-width:480px ) {
+    header {
+        max-width: 450px;
+    }
+}
+
+footer {
+    border-top: 1px solid #eeeeee;
+    background-color: #ffffff;
+    margin-top: 50px;
+    padding: 50px 0;
+}
+
+hgroup {
+    margin-top: 30px;
+}
+
+h2 {
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 150%;
+}
+
 .hide {
     display: none;
 }
@@ -19,17 +46,11 @@ header, footer {
     width: 80%;
     margin: 0 auto;
 }
-@media all and (min-width:480px) {
+@media all and ( min-width:480px ) {
     #container {
         max-width: 450px;
     }
 }
-
-/*.logo {
-    max-width: 300px;
-    max-height: 300px;
-    margin-bottom: 5px;
-}*/
 
 #v {
     margin: 0 auto;
@@ -122,27 +143,6 @@ header, footer {
     background-color: #efefef;
 }
 
-/* improvements by YuriBrunetto */
-hgroup {
-    margin-top: 30px;
-}
-h2 {
-    font-weight: normal;
-    font-size: 16px;
-    color: #666;
-    line-height: 150%;
-}
-
-header {
-    width: 80%;
-    margin: 50px auto 0 auto;
-}
-@media all and (min-width:480px) {
-    header {
-        max-width: 450px;
-    }
-}
-
 .zen-logo {
     width: 100px;
     height: 100px;
@@ -152,25 +152,20 @@ header {
     margin: 0 auto;
 }
 
-.input {
-
+.btn-search {
+    width: 50px;
 }
-@media all and (min-width:480px) {
+@media all and ( min-width:480px ) {
     .input-search {
         height: 50px;
         font-size: 18px !important;
-        color: #666 !important;
     }
-    .btn {
+    .btn-search {
         height: 50px;
     }
-}
-
-footer {
-    border-top: 1px solid #eee;
-    background-color: #fff;
-    margin-top: 50px;
-    padding: 50px 0;
+    .fa-search {
+        font-size: 20px;
+    }
 }
 
 .sponsor {
@@ -178,7 +173,6 @@ footer {
     margin: 30px auto 0 auto;
 }
 
-/* responsive sponsor :) */
 .sponsor-a {
     width:100%;
     display: block;
@@ -187,7 +181,7 @@ footer {
 .sponsor-a:first-of-type {
     margin-top: 0;
 }
-@media all and (min-width:640px) {
+@media all and ( min-width:640px ) {
     .sponsor-a {
         width: 30.666666667%;
         float: left;
@@ -199,12 +193,16 @@ footer {
     }
 }
 
-.color-666 {
-    color: #666;
+.color-grey {
+    color: #666666 !important;
 }
 
 .clear-both {
     clear: both;
     height: 0px;
     overflow: hidden;
+}
+
+.img-100 {
+    width: 100%;
 }
