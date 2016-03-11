@@ -1,83 +1,12 @@
 /*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription*/
 
-var player;
 var plyrPlayer;
-var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
 
-function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
-    player = new YT.Player("player", {
-        height: "300",
-        width: "400",
-        // Parse the querystring and populate the video when loading the page
-        videoId: getCurrentVideoID(),
-        playerVars: {
-            "autoplay": 1,
-            "cc_load_policy": 0
-        },
-        events: {
-            "onReady": onPlayerReady,
-            "onStateChange": function(event) {
-                // Look at playerState for debugging
-                var playerState = event.data;
-
-                switch (playerState) {
-                    case YT.PlayerState.PLAYING:
-                        ZenPlayer.showPauseButton();
-                        break;
-                    default:
-                        ZenPlayer.showPlayButton();
-                }
-            },
-            "onError": function(event) {
-                var message = "Got an unknown error, check the JS console.";
-                var verboseMessage = message;
-
-                // Handle the different error codes
-                switch (event.data) {
-                    case 2:
-                        verboseMessage = "The request contains an invalid parameter value. For example, this error occurs if you specify a video ID that does not have 11 characters, or if the video ID contains invalid characters, such as exclamation points or asterisks.";
-                        message = "looks like an invalid video ID";
-                        break;
-                    case 5:
-                        verboseMessage = "The requested content cannot be played in an HTML5 player or another error related to the HTML5 player has occurred.";
-                        message = "we can't play that video here, or something is wrong with YouTube's iframe API";
-                        break;
-                    case 100:
-                        verboseMessage = "The video requested was not found. This error occurs when a video has been removed (for any reason) or has been marked as private.";
-                        message = "we can't find that video, it might be private or removed";
-                        break;
-                    case 101:
-                        verboseMessage = "The owner of the requested video does not allow it to be played in embedded players.";
-                        message = "the video owner won't allow us to play that video";
-                        break;
-                    case 150:
-                        verboseMessage = "This error is the same as 101. It's just a 101 error in disguise!";
-                        message = "the video owner won't allow us to play that video";
-                        break;
-                }
-
-                // Update the UI w/ error
-                errorMessage.show(message);
-                ga("send", "event", "YouTube iframe API error", verboseMessage);
-
-                // Log debug info
-                console.log("Verbose debug error message: ", verboseMessage);
-            }
-        }
-    });
-}
-
-function onPlayerReady(event) {
+function initPlayer() {
     var currentVideoID = getCurrentVideoID();
 
     updateTweetMessage();
-
-    // If the video isn't going to play, then return.
-    if (event.target.getPlayerState() === YT.PlayerState.UNSTARTED) {
-        errorMessage.show("Invalid YouTube videoID or URL.");
-        return;
-    }
 
     // Setup player
     if (currentVideoID) {
@@ -109,22 +38,6 @@ function setupPlyr() {
         $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
     }
 }
-
-var errorMessage = {
-    init: function() {
-        // nothing for now
-    },
-    show: function(message) {
-        $("#zen-video-error").text("ERROR: " + message);
-        $("#zen-video-error").show();
-
-        // When the error message is shown, also hide the player
-        ZenPlayer.hide();
-    },
-    hide: function() {
-        $("#zen-video-error").text("").hide();
-    }
-};
 
 function isFileProtocol() {
     return window.location.protocol === "file:";
@@ -225,7 +138,6 @@ function wrapParseYouTubeVideoID(url) {
 // TODO: this function can go away, the YouTube API will let you play video by URL
 
 $(function() {
-    errorMessage.init();
 
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
