@@ -18,6 +18,7 @@
     "primer-css": "2.5.x",
     "jquery": "~1.11.x",
     "keen-js": "~3.2.7",
-    "trackjs": "~2.1.16"
+    "trackjs": "~2.1.16",
+    "typeahead.js": "~0.11.1"
   }
 }

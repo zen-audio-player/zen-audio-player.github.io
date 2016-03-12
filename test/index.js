@@ -3,11 +3,14 @@ var Browser = require("zombie");
 var path = require("path");
 var fs = require("fs");
 
+var _js = "";
+
 const browser = new Browser();
 
 var indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
 /** Utilities **/
+// TODO: with refactor into a node module, this can go away!
 function getParameterByName(url, name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -66,7 +69,7 @@ describe("Page Structure", function () {
         assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-113.png");
         assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-453.png");
         assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-905.png");
-        assert.equal(browser.query("header > figure > a").href, "https://zen-audio-player.github.io/");
+        assert.equal(browser.query("header > figure > a").href, "https://zenplayer.audio/");
         assert.ok(browser.query("header > figure > a > img.logo").src.indexOf("img/zen-audio-player-905.png") !== -1);
         assert.equal(browser.query("header > figure > a > img.logo").alt, "Zen Audio Player logo");
     });
@@ -101,6 +104,10 @@ describe("Page Structure", function () {
 });
 
 describe("JavaScript components", function() {
+    before(function () {
+        _js = fs.readFileSync(path.join(__dirname, "../js", "everything.js"), "utf8");
+    });
+
     it("should load TrackJS token", function() {
         var trackjs = browser.evaluate("window._trackJs");
         assert.strictEqual(Object.keys(trackjs).length, 1);
@@ -116,6 +123,9 @@ describe("JavaScript components", function() {
     });
     it("should load ZenPlayer from everything.js", function() {
         assert.ok(browser.evaluate("ZenPlayer"));
+    });
+    it("should make all requests over https, not http", function() {
+        assert.strictEqual(-1, _js.indexOf("http://"), "Please use HTTPS for all scripts");
     });
 });
 

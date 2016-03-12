@@ -1,3 +1,4 @@
+
 // Pointer to Keen client
 var client;
 
@@ -47,11 +48,14 @@ function sendKeenEvent(_msg, _data) {
     client.addEvent(_msg, d);
 }
 
+/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription*/
+
 /**
  * YouTube iframe API required setup
  */
 var player;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
+var currentVideoID;
 
 function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
     player = new YT.Player("player", {
@@ -66,8 +70,7 @@ function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
         events: {
             "onReady": onPlayerReady,
             "onStateChange": function(event) {
-                // Uncomment for debugging
-                //console.log("State changed to " + event.data);
+                // Look at playerState for debugging
                 var playerState = event.data;
 
                 switch (playerState) {
@@ -124,10 +127,8 @@ function onPlayerReady(event) {
     updateTweetMessage();
 
     // If the video isn't going to play, then return.
-    if (event.target.getPlayerState() !== YT.PlayerState.BUFFERING) {
-        if (currentVideoID.length > 0) {
-            errorMessage.show("Invalid YouTube videoID or URL.");
-        }
+    if (event.target.getPlayerState() === YT.PlayerState.UNSTARTED) {
+        errorMessage.show("Invalid YouTube videoID or URL.");
         return;
     }
 
@@ -157,6 +158,9 @@ var errorMessage = {
 
         // When the error message is shown, also hide the player
         ZenPlayer.hide();
+
+        // Send the error to Google Analytics
+        ga("send", "event", "error", message);
     },
     hide: function() {
         $("#zen-video-error").text("").hide();
@@ -169,6 +173,9 @@ function isFileProtocol() {
 
 // Lock for updating the volume
 var VOLUME_LOCKED = false;
+
+// Lock for updating the playertime
+var TIME_LOCKED = false;
 
 var ZenPlayer = {
     init: function(videoID) {
@@ -186,6 +193,7 @@ var ZenPlayer = {
         this.setupVideoDescription();
         this.setupMediaControls();
         this.setupVolumeSlider();
+        this.setupTimeSeekSlider();
 
         // Start video from where we left off
         player.seekTo(loadTime());
@@ -225,17 +233,7 @@ var ZenPlayer = {
         $("#zen-video-description").hide();
 
         $("#toggleDescription").click(function(event) {
-            event.preventDefault();
-
-            var descriptionElement = $("#zen-video-description");
-            descriptionElement.toggle();
-
-            if (descriptionElement.is(":visible")) {
-                $("#toggleDescription").text("Hide Description");
-            }
-            else {
-                $("#toggleDescription").text("Show Description");
-            }
+            toggleElement(event, "#zen-video-description", "Description");
         });
     },
     setupMediaControls: function() {
@@ -253,16 +251,7 @@ var ZenPlayer = {
 
         // Show player button click event
         $("#togglePlayer").click(function(event) {
-            event.preventDefault();
-
-            var p = $("#player");
-            p.toggle();
-            if (p.is(":visible")) {
-                $("#togglePlayer").text("Hide Player");
-            }
-            else {
-                $("#togglePlayer").text("Show Player");
-            }
+            toggleElement(event, "#player", "Player");
         });
     },
     setupVolumeSlider: function() {
@@ -272,6 +261,7 @@ var ZenPlayer = {
             setp: 1,
             value: 50,
             tooltip: "hide",
+            handle: "custom",
             id: "volumeSliderControl",
             formatter: function(){}
         });
@@ -294,13 +284,46 @@ var ZenPlayer = {
             VOLUME_LOCKED = false;
         });
 
-        // Update the time(s) every 100ms
+        // Update the volume slider every 100ms
         setInterval(function() {
-            if (!VOLUME_LOCKED) {
-                $("#volume").slider("setValue", player.getVolume());
-            }
-            updatePlayerTime();
+            updateSlider("#volume", VOLUME_LOCKED, player.getVolume());
         }, 100);
+    },
+    setupTimeSeekSlider: function() {
+        $("#timeSeek").slider({
+            min: 0,
+            max: player.getDuration(),
+            value: player.getCurrentTime(),
+            setp: 1,
+            tooltip: "hide",
+            id: "timeSeekSliderControl",
+            formatter: function(){}
+        });
+
+        function updateTimeFromSlider() {
+            if (player) {
+                player.seekTo($("#timeSeek").slider("getValue"));
+            }
+        }
+
+        $("#timeSeek").on("slideStart", function() {
+            TIME_LOCKED = true;
+            player.pauseVideo();
+            updateTimeFromSlider();
+        });
+        $("#timeSeek").on("change", function() {
+            updateTimeFromSlider();
+        });
+        $("#timeSeek").on("slideStop", function() {
+            updateTimeFromSlider();
+            player.playVideo();
+            TIME_LOCKED = false;
+        });
+
+        // Update the time(s) every 50ms
+        setInterval(function() {
+            updateSlider("#timeSeek", TIME_LOCKED, player.getCurrentTime());
+        }, 50);
     },
     getVideoDescription: function(videoID) {
         var description = "";
@@ -310,30 +333,21 @@ var ZenPlayer = {
             $("#toggleDescription").hide();
         }
         else {
-            // Request the video description
-            $.ajax({
-                url: "https://www.googleapis.com/youtube/v3/videos",
-                dataType: "json",
-                async: false,
-                data: {
-                    key: youTubeDataApiKey,
-                    part: "snippet",
-                    fields: "items/snippet/description",
-                    id: videoID
-                },
-                success: function(data) {
+            getYouTubeVideoDescription(
+                videoID,
+                youTubeDataApiKey,
+                function(data) {
                     if (data.items.length === 0) {
                         errorMessage.show("Video description not found");
                     }
                     else {
                         description = data.items[0].snippet.description;
                     }
+                },
+                function(jqXHR, textStatus, errorThrown) {
+                    logError(jqXHR, textStatus, errorThrown, "Video Description error");
                 }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                var responseText = JSON.parse(jqXHR.error().responseText);
-                errorMessage.show(responseText.error.errors[0].message);
-                console.log("Video Description error", errorThrown);
-            });
+            );
         }
 
         return description;
@@ -341,7 +355,7 @@ var ZenPlayer = {
 };
 
 function updateTweetMessage() {
-    var url = "https://zen-audio-player.github.io";
+    var url = "https://ZenPlayer.Audio";
 
     var opts = {
         text: "Listen to YouTube videos without the distracting visuals",
@@ -362,9 +376,37 @@ function updateTweetMessage() {
     );
 }
 
+function updateSlider(sliderID, lockVariable, value) {
+    if (!lockVariable) {
+        $(sliderID).slider("setValue", value);
+    }
+    updatePlayerTime();
+}
+
+function logError(jqXHR, textStatus, errorThrown, errorMessage) {
+    var responseText = JSON.parse(jqXHR.error().responseText);
+    errorMessage.show(responseText.error.errors[0].message);
+    console.log(errorMessage, errorThrown);
+}
+
+function toggleElement(event, ToggleID, buttonText) {
+    event.preventDefault();
+
+    var toggleElement = $(ToggleID);
+    toggleElement.toggle();
+
+    var toggleTextElement = $("#" + event.currentTarget.id);
+
+    if (toggleElement.is(":visible")) {
+        toggleTextElement.text("Hide " + buttonText);
+    }
+    else {
+        toggleTextElement.text("Show " + buttonText);
+    }
+}
 // Takes seconds as a Number, returns a : delimited string
 function cleanTime(time) {
-    // Awesome hack for int->double cast http://stackoverflow.com/a/8388831/2785681
+    // Awesome hack for int->double cast https://stackoverflow.com/a/8388831/2785681
     var t = ~~time;
 
     var seconds = t % 60;
@@ -393,7 +435,7 @@ function cleanTime(time) {
 }
 
 function storeTime(time) {
-    var videoID = getCurrentVideoID();
+    var videoID = currentVideoID || getCurrentVideoID();
     if (window.sessionStorage && videoID) {
         window.sessionStorage[videoID] = time;
     }
@@ -420,17 +462,15 @@ function loadTime() {
     }
 }
 
-function getParameterByName(url, name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(url);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
-
 function getCurrentVideoID() {
     var v = getParameterByName(window.location.search, "v");
-    if (v.length > 0) {
-        return parseYoutubeVideoID(v);
+    // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
+    var vParams = window.location.search.match(/v=\w+/g);
+    if (vParams && vParams.length > 1) {
+        v = vParams[vParams.length - 1].replace("v=", "");
+    }
+    else if (v.length > 1) {
+        return wrapParseYouTubeVideoID(v);
     }
     return v;
 }
@@ -440,11 +480,15 @@ function getCurrentSearchQuery() {
     return q;
 }
 
-function makeListenURL(videoID) {
-    var url = window.location.href;
+function removeSearchQueryFromURL(url) {
     if (window.location.search.length !== 0) {
         url = window.location.href.replace(window.location.search, "");
     }
+    return url;
+}
+
+function makeListenURL(videoID) {
+    var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
 
@@ -452,14 +496,11 @@ function makeListenURL(videoID) {
 }
 
 function makeSearchURL(searchQuery) {
-    var url = window.location.href;
-    if (window.location.search.length !== 0) {
-        url = window.location.href.replace(window.location.search, "");
-    }
+    var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
 
-    return url + "?q=" + searchQuery;
+    return url + "?q=" + encodeURIComponent(searchQuery);
 }
 
 function anchorURLs(text) {
@@ -473,49 +514,22 @@ function anchorURLs(text) {
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
 }
 
-// TODO: this function can go away, the YouTube API will let you play video by URL
-// The url parameter could be the video ID
-function parseYoutubeVideoID(url) {
-    var videoID = null;
-
-    var shortUrlDomain = "youtu.be";
-    var longUrlDomain = "youtube.com";
-
-    if (url && url.length > 0) {
-        // youtube.com format
-        if (url.indexOf(longUrlDomain) !== -1) {
-            ga("send", "event", "video ID format", longUrlDomain);
-            sendKeenEvent("Video ID format", {format: longUrlDomain});
-            videoID = getParameterByName(url, "v");
-            // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
-            if (videoID === "") {
-                videoID = getParameterByName(window.location.href.substring(window.location.href.indexOf(url)), "v");
-            }
-        }
-        // youtu.be format
-        else if (url.indexOf(shortUrlDomain) !== -1) {
-            ga("send", "event", "video ID format", shortUrlDomain);
-            sendKeenEvent("Video ID format", {format: shortUrlDomain});
-            var endPosition = url.indexOf("?") === -1 ? url.length : url.indexOf("?");
-            var offset = url.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
-            videoID = url.substring(offset, endPosition);
-        }
-        // Assume YouTube video ID string
-        else {
-            ga("send", "event", "video ID format", "video ID");
-            sendKeenEvent("Video ID format", {format: "video ID"});
-            videoID = url;
-        }
-
-        var slashPos = videoID.indexOf("/");
-        // We found a slash in the video ID (ex: real id is ABC123, but saw ABC123/zen)
-        // So, only keep what's before the slash
-        if (slashPos !== -1) {
-            videoID = videoID.substring(0, slashPos);
-        }
-        return videoID;
+function wrapParseYouTubeVideoID(url) {
+    if (currentVideoID && url === currentVideoID) {
+        // We have already determined the video id
+        return currentVideoID;
     }
-    errorMessage.show("Failed to parse the video ID.");
+
+    var info = parseYoutubeVideoID(url);
+
+    if (info.id) {
+        currentVideoID = info.id;
+        ga("send", "event", "video ID format", info.format);
+        return info.id;
+    }
+    else {
+        errorMessage.show("Failed to parse the video ID.");
+    }
 }
 
 function getSearchResults(query) {
@@ -561,9 +575,47 @@ $(function() {
         var currentSearchQuery = getCurrentSearchQuery();
         if (currentSearchQuery) {
             $("#v").attr("value", currentSearchQuery);
-            getSearchResults(currentSearchQuery);
+            getSearchResults(
+                currentSearchQuery,
+                youTubeDataApiKey,
+                function(data) {
+                    if (data.pageInfo.totalResults === 0) {
+                        errorMessage.show("No results.");
+                        return;
+                    }
+                    $("#search-results").show();
+                    // Clear out results
+                    $("#search-results ul").html("");
+
+                    var start = "<li><h4><a href=?v=";
+                    var end = "</a></h4></li>";
+                    $.each(data.items, function(index, result) {
+                        $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title  + end);
+                    });
+                },
+                function(jqXHR, textStatus, errorThrown) {
+                    logError(jqXHR, textStatus, errorThrown, "Search error");
+                }
+            );
         }
     }
+
+    // Autocomplete with youtube suggested queries
+    $("#v").typeahead({
+        hint: false,
+        highlight: true,
+        minLength: 1
+    }, {
+        source: function (query, processSync, processAsync) {
+            getAutocompleteSuggestions(query, function(data) {
+                return processAsync($.map(data[1], function(item) {
+                    return item[0];
+                }));
+            });
+        }
+    }).bind("typeahead:selected", function(obj, datum) {
+        window.location.href = makeSearchURL(datum);
+    });
 
     // Handle form submission
     $("#form").submit(function(event) {
@@ -571,7 +623,7 @@ $(function() {
 
         var formValue = $.trim($("#v").val());
         if (formValue) {
-            var videoID = parseYoutubeVideoID(formValue);
+            var videoID = wrapParseYouTubeVideoID(formValue, true);
             ga("send", "event", "form submitted", videoID);
             sendKeenEvent("Form submitted", {videoID: videoID});
 
@@ -598,9 +650,7 @@ $(function() {
                         }
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    var responseText = JSON.parse(jqXHR.error().responseText);
-                    errorMessage.show(responseText.error.errors[0].message);
-                    console.log("Search error", errorThrown);
+                    logError(jqXHR, textStatus, errorThrown, "Lookup error");
                 });
             }
         }
