@@ -532,31 +532,6 @@ function wrapParseYouTubeVideoID(url) {
     }
 }
 
-function getSearchResults(query) {
-    $.getJSON("https://www.googleapis.com/youtube/v3/search", {
-        key: youTubeDataApiKey,
-        part: "snippet",
-        q: query,
-        type: "video"
-    }, function(data) {
-        if (data.pageInfo.totalResults === 0) {
-            errorMessage.show("No results.");
-            return;
-        }
-
-        $("#search-results").show();
-        // Clear out results
-        $("#search-results ul").html("");
-        $.each(data.items, function(index, result) {
-            $("#search-results ul").append("<li><h4><a href=?v=" + result.id.videoId + ">" + result.snippet.title  + "</a></h4></li>");
-        });
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-        var responseText = JSON.parse(jqXHR.error().responseText);
-        errorMessage.show(responseText.error.errors[0].message);
-        console.log("Search error", errorThrown);
-    });
-}
-
 $(function() {
     // Keen.io
     client = new Keen({ //eslint-disable-line no-undef
