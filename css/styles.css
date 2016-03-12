@@ -90,7 +90,6 @@ header, footer {
 /* Input field fixes and search suggestion style.
  * typeahead conflicts with primercss */
 .twitter-typeahead {
-    display: inline;
     width: 100%;
 }
 
