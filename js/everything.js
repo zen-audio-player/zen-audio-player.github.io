@@ -134,6 +134,12 @@ var ZenPlayer = {
         // Start video from where we left off
         player.seekTo(loadTime());
 
+        // Set volume to previous saved value, if any
+        var volume = loadVolume();
+        if (!isNaN(volume)) {
+            player.setVolume(volume);
+        }
+
         // Google Analytics
         ga("send", "event", "Playing YouTube video title", this.videoTitle);
         ga("send", "event", "Playing YouTube video author", this.videoAuthor);
@@ -228,7 +234,9 @@ var ZenPlayer = {
 
         function updateVolumeFromSlider() {
             if (player) {
-                player.setVolume($("#volume").slider("getValue"));
+                var volume = $("#volume").slider("getValue");
+                player.setVolume(volume);
+                storeVolume(volume);
             }
         }
 
@@ -400,6 +408,28 @@ function loadTime() {
     else {
         return 0;
     }
+}
+
+// Key to the persisted volume level entry in localStorage
+var LOCAL_STORAGE_VOLUME_KEY = "VOLUME_LEVEL";
+
+// The delay to debounce writes of the volume level to localStorage
+var VOLUME_PERSIST_DELAY = 200;
+
+// The timeout ID tracking debounced writes of volume level to localStorage
+var debouncedPersistVolumeTimer;
+
+function storeVolume(volume) {
+    if (debouncedPersistVolumeTimer) {
+        clearTimeout(debouncedPersistVolumeTimer);
+    }
+    debouncedPersistVolumeTimer = setTimeout(function () {
+        localStorage.setItem(LOCAL_STORAGE_VOLUME_KEY, volume);
+    }, VOLUME_PERSIST_DELAY);
+}
+
+function loadVolume() {
+    return parseInt(localStorage.getItem(LOCAL_STORAGE_VOLUME_KEY));
 }
 
 function getCurrentVideoID() {
