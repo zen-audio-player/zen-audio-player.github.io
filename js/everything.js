@@ -227,10 +227,7 @@ var ZenPlayer = {
 
         // Update the volume slider every 100ms
         setInterval(function() {
-            if (!VOLUME_LOCKED) {
-                $("#volume").slider("setValue", player.getVolume());
-            }
-            updatePlayerTime();
+            updateSlider("#volume", VOLUME_LOCKED, player.getVolume());
         }, 100);
     },
     setupTimeSeekSlider: function() {
@@ -266,10 +263,7 @@ var ZenPlayer = {
 
         // Update the time(s) every 50ms
         setInterval(function() {
-            if (!TIME_LOCKED) {
-                $("#timeSeek").slider("setValue", player.getCurrentTime());
-            }
-            updatePlayerTime();
+            updateSlider("#timeSeek", TIME_LOCKED, player.getCurrentTime());
         }, 50);
     },
     getVideoDescription: function(videoID) {
@@ -321,6 +315,13 @@ function updateTweetMessage() {
         document.getElementById("tweetButton"),
         opts
     );
+}
+
+function updateSlider(sliderID, lockVariable, value) {
+    if (!lockVariable) {
+        $(sliderID).slider("setValue", value);
+    }
+    updatePlayerTime();
 }
 
 function logError(jqXHR, textStatus, errorThrown, errorMessage) {
@@ -420,11 +421,15 @@ function getCurrentSearchQuery() {
     return q;
 }
 
-function makeListenURL(videoID) {
-    var url = window.location.href;
+function removeSearchQueryFromURL(url) {
     if (window.location.search.length !== 0) {
         url = window.location.href.replace(window.location.search, "");
     }
+    return url;
+}
+
+function makeListenURL(videoID) {
+    var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
 
@@ -432,10 +437,7 @@ function makeListenURL(videoID) {
 }
 
 function makeSearchURL(searchQuery) {
-    var url = window.location.href;
-    if (window.location.search.length !== 0) {
-        url = window.location.href.replace(window.location.search, "");
-    }
+    var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
 
@@ -472,8 +474,6 @@ function wrapParseYouTubeVideoID(url) {
     }
 }
 
-// TODO: this function can go away, the YouTube API will let you play video by URL
-
 $(function() {
     errorMessage.init();
 
@@ -497,9 +497,11 @@ $(function() {
                     $("#search-results").show();
                     // Clear out results
                     $("#search-results ul").html("");
-                    // TODO: refactor this to be less wide
+
+                    var start = "<li><h4><a href=?v=";
+                    var end = "</a></h4></li>";
                     $.each(data.items, function(index, result) {
-                        $("#search-results ul").append("<li><h4><a href=?v=" + result.id.videoId + ">" + result.snippet.title  + "</a></h4></li>");
+                        $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title  + end);
                     });
                 },
                 function(jqXHR, textStatus, errorThrown) {
