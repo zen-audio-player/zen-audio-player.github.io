@@ -174,17 +174,7 @@ var ZenPlayer = {
         $("#zen-video-description").hide();
 
         $("#toggleDescription").click(function(event) {
-            event.preventDefault();
-
-            var descriptionElement = $("#zen-video-description");
-            descriptionElement.toggle();
-
-            if (descriptionElement.is(":visible")) {
-                $("#toggleDescription").text("Hide Description");
-            }
-            else {
-                $("#toggleDescription").text("Show Description");
-            }
+            toggleElement(event, "#zen-video-description", "Description");
         });
     },
     setupMediaControls: function() {
@@ -202,16 +192,7 @@ var ZenPlayer = {
 
         // Show player button click event
         $("#togglePlayer").click(function(event) {
-            event.preventDefault();
-
-            var p = $("#player");
-            p.toggle();
-            if (p.is(":visible")) {
-                $("#togglePlayer").text("Hide Player");
-            }
-            else {
-                $("#togglePlayer").text("Show Player");
-            }
+            toggleElement(event, "#player", "Player");
         });
     },
     setupVolumeSlider: function() {
@@ -246,10 +227,7 @@ var ZenPlayer = {
 
         // Update the volume slider every 100ms
         setInterval(function() {
-            if (!VOLUME_LOCKED) {
-                $("#volume").slider("setValue", player.getVolume());
-            }
-            updatePlayerTime();
+            updateSlider("#volume", VOLUME_LOCKED, player.getVolume());
         }, 100);
     },
     setupTimeSeekSlider: function() {
@@ -285,10 +263,7 @@ var ZenPlayer = {
 
         // Update the time(s) every 50ms
         setInterval(function() {
-            if (!TIME_LOCKED) {
-                $("#timeSeek").slider("setValue", player.getCurrentTime());
-            }
-            updatePlayerTime();
+            updateSlider("#timeSeek", TIME_LOCKED, player.getCurrentTime());
         }, 50);
     },
     getVideoDescription: function(videoID) {
@@ -311,9 +286,7 @@ var ZenPlayer = {
                     }
                 },
                 function(jqXHR, textStatus, errorThrown) {
-                    var responseText = JSON.parse(jqXHR.error().responseText);
-                    errorMessage.show(responseText.error.errors[0].message);
-                    console.log("Video Description error", errorThrown);
+                    logError(jqXHR, textStatus, errorThrown, "Video Description error");
                 }
             );
         }
@@ -344,6 +317,34 @@ function updateTweetMessage() {
     );
 }
 
+function updateSlider(sliderID, lockVariable, value) {
+    if (!lockVariable) {
+        $(sliderID).slider("setValue", value);
+    }
+    updatePlayerTime();
+}
+
+function logError(jqXHR, textStatus, errorThrown, errorMessage) {
+    var responseText = JSON.parse(jqXHR.error().responseText);
+    errorMessage.show(responseText.error.errors[0].message);
+    console.log(errorMessage, errorThrown);
+}
+
+function toggleElement(event, ToggleID, buttonText) {
+    event.preventDefault();
+
+    var toggleElement = $(ToggleID);
+    toggleElement.toggle();
+
+    var toggleTextElement = $("#" + event.currentTarget.id);
+
+    if (toggleElement.is(":visible")) {
+        toggleTextElement.text("Hide " + buttonText);
+    }
+    else {
+        toggleTextElement.text("Show " + buttonText);
+    }
+}
 // Takes seconds as a Number, returns a : delimited string
 function cleanTime(time) {
     // Awesome hack for int->double cast https://stackoverflow.com/a/8388831/2785681
@@ -420,11 +421,15 @@ function getCurrentSearchQuery() {
     return q;
 }
 
-function makeListenURL(videoID) {
-    var url = window.location.href;
+function removeSearchQueryFromURL(url) {
     if (window.location.search.length !== 0) {
         url = window.location.href.replace(window.location.search, "");
     }
+    return url;
+}
+
+function makeListenURL(videoID) {
+    var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
 
@@ -432,10 +437,7 @@ function makeListenURL(videoID) {
 }
 
 function makeSearchURL(searchQuery) {
-    var url = window.location.href;
-    if (window.location.search.length !== 0) {
-        url = window.location.href.replace(window.location.search, "");
-    }
+    var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
 
@@ -472,8 +474,6 @@ function wrapParseYouTubeVideoID(url) {
     }
 }
 
-// TODO: this function can go away, the YouTube API will let you play video by URL
-
 $(function() {
     errorMessage.init();
 
@@ -497,15 +497,15 @@ $(function() {
                     $("#search-results").show();
                     // Clear out results
                     $("#search-results ul").html("");
-                    // TODO: refactor this to be less wide
+
+                    var start = "<li><h4><a href=?v=";
+                    var end = "</a></h4></li>";
                     $.each(data.items, function(index, result) {
-                        $("#search-results ul").append("<li><h4><a href=?v=" + result.id.videoId + ">" + result.snippet.title  + "</a></h4></li>");
+                        $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title  + end);
                     });
                 },
                 function(jqXHR, textStatus, errorThrown) {
-                    var responseText = JSON.parse(jqXHR.error().responseText);
-                    errorMessage.show(responseText.error.errors[0].message);
-                    console.log("Search error", errorThrown);
+                    logError(jqXHR, textStatus, errorThrown, "Search error");
                 }
             );
         }
@@ -560,9 +560,7 @@ $(function() {
                         }
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    var responseText = JSON.parse(jqXHR.error().responseText);
-                    errorMessage.show(responseText.error.errors[0].message);
-                    console.log("Lookup error", errorThrown);
+                    logError(jqXHR, textStatus, errorThrown, "Lookup error");
                 });
             }
         }
