@@ -97,6 +97,9 @@ var errorMessage = {
 
         // When the error message is shown, also hide the player
         ZenPlayer.hide();
+
+        // Send the error to Google Analytics
+        ga("send", "event", "error", message);
     },
     hide: function() {
         $("#zen-video-error").text("").hide();
@@ -469,7 +472,6 @@ function wrapParseYouTubeVideoID(url) {
         return info.id;
     }
     else {
-        // TODO: analytics
         errorMessage.show("Failed to parse the video ID.");
     }
 }
