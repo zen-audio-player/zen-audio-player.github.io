@@ -1,8 +1,8 @@
-- [ ] Provide a general summary of the issue in the **Title** above.  
-- [ ] Before you open an issue, please check if a similar issue already exists or has been closed before.
+* Provide a general summary of the issue in the **Title** above.  
+* Before you open an issue, please check if a similar issue already exists or has been closed before.
 
 ### Important
-Mark the following with [x] to select. Leave as [ ] to unselect.
+Mark with [x] to select. Leave as [ ] to unselect.
 
 ### When reporting a bug/issue, please be sure to include the following:
 - [ ] Screenshot
