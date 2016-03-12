@@ -6,15 +6,13 @@ var currentVideoID;
 function initPlayer() {
     var currentVideoID = getCurrentVideoID();
 
-    updateTweetMessage();
-
     // Setup player
     if (currentVideoID) {
-        ZenPlayer.init(currentVideoID);
         if (plyrPlayer) {
             return;
         }
         setupPlyr();
+        //updateTweetMessage();
     }
 }
 
@@ -24,18 +22,19 @@ function setupPlyr() {
         autoplay: true,
         controls:["play", "current-time", "duration", "mute", "volume"]
     })[0];
+    //Inject svg with controls' icons
+    $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
     //Load video into Plyr player
     if (plyrPlayer) {
         plyrPlayer.source({
             type: "video",
-            title: player.getVideoData().title,
+            title: "Title",
             sources: [{
                 src: currentVideoID,
                 type: "youtube"
             }]
         });
-        //Inject svg with controls' icons
-        $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
+        plyrPlayer = document.querySelector('.plyr');
     }
 }
 
@@ -55,7 +54,9 @@ function updateTweetMessage() {
     var id = getCurrentVideoID();
     if (id) {
         opts.url += "/?v=" + id;
-        opts.text = "I'm listening to " + player.getVideoData().title;
+        //console.log(Object.keys(plyrPlayer.plyr));
+        //console.log(plyrPlayer.plyr);
+        opts.text = "I'm listening to " + plyrEmbed.getVideoData().title;
     }
 
     twttr.widgets.createHashtagButton(
@@ -138,7 +139,7 @@ function wrapParseYouTubeVideoID(url) {
 // TODO: this function can go away, the YouTube API will let you play video by URL
 
 $(function() {
-
+    initPlayer();
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
