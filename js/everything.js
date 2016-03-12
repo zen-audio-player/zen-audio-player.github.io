@@ -1,326 +1,45 @@
 /*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription*/
 
-/**
- * YouTube iframe API required setup
- */
-var player;
-var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
+var plyrPlayer;
 var currentVideoID;
 
-function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
-    player = new YT.Player("player", {
-        height: "300",
-        width: "400",
-        // Parse the querystring and populate the video when loading the page
-        videoId: getCurrentVideoID(),
-        playerVars: {
-            "autoplay": 1,
-            "cc_load_policy": 0
-        },
-        events: {
-            "onReady": onPlayerReady,
-            "onStateChange": function(event) {
-                // Look at playerState for debugging
-                var playerState = event.data;
-
-                switch (playerState) {
-                    case YT.PlayerState.PLAYING:
-                        ZenPlayer.showPauseButton();
-                        break;
-                    default:
-                        ZenPlayer.showPlayButton();
-                }
-            },
-            "onError": function(event) {
-                var message = "Got an unknown error, check the JS console.";
-                var verboseMessage = message;
-
-                // Handle the different error codes
-                switch (event.data) {
-                    case 2:
-                        verboseMessage = "The request contains an invalid parameter value. For example, this error occurs if you specify a video ID that does not have 11 characters, or if the video ID contains invalid characters, such as exclamation points or asterisks.";
-                        message = "looks like an invalid video ID";
-                        break;
-                    case 5:
-                        verboseMessage = "The requested content cannot be played in an HTML5 player or another error related to the HTML5 player has occurred.";
-                        message = "we can't play that video here, or something is wrong with YouTube's iframe API";
-                        break;
-                    case 100:
-                        verboseMessage = "The video requested was not found. This error occurs when a video has been removed (for any reason) or has been marked as private.";
-                        message = "we can't find that video, it might be private or removed";
-                        break;
-                    case 101:
-                        verboseMessage = "The owner of the requested video does not allow it to be played in embedded players.";
-                        message = "the video owner won't allow us to play that video";
-                        break;
-                    case 150:
-                        verboseMessage = "This error is the same as 101. It's just a 101 error in disguise!";
-                        message = "the video owner won't allow us to play that video";
-                        break;
-                }
-
-                // Update the UI w/ error
-                errorMessage.show(message);
-                ga("send", "event", "YouTube iframe API error", verboseMessage);
-
-                // Log debug info
-                console.log("Verbose debug error message: ", verboseMessage);
-            }
-        }
-    });
-}
-
-function onPlayerReady(event) {
+function initPlayer() {
     var currentVideoID = getCurrentVideoID();
-
-    updateTweetMessage();
-
-    // If the video isn't going to play, then return.
-    if (event.target.getPlayerState() === YT.PlayerState.UNSTARTED) {
-        errorMessage.show("Invalid YouTube videoID or URL.");
-        return;
-    }
 
     // Setup player
     if (currentVideoID) {
-        ZenPlayer.init(currentVideoID);
+        if (plyrPlayer) {
+            return;
+        }
+        setupPlyr();
+        //updateTweetMessage();
     }
 }
 
-var errorMessage = {
-    init: function() {
-        // nothing for now
-    },
-    show: function(message) {
-        $("#zen-video-error").text("ERROR: " + message);
-        $("#zen-video-error").show();
-
-        // When the error message is shown, also hide the player
-        ZenPlayer.hide();
-    },
-    hide: function() {
-        $("#zen-video-error").text("").hide();
+function setupPlyr() {
+    //set up Plyr player
+    plyrPlayer = plyr.setup({
+        autoplay: true,
+        controls:["play", "current-time", "duration", "mute", "volume"]
+    })[0];
+    //Inject svg with controls' icons
+    $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
+    //Load video into Plyr player
+    if (plyrPlayer) {
+        plyrPlayer.source({
+            type: "video",
+            title: "Title",
+            sources: [{
+                src: currentVideoID,
+                type: "youtube"
+            }]
+        });
     }
-};
+}
 
 function isFileProtocol() {
     return window.location.protocol === "file:";
 }
-
-// Lock for updating the volume
-var VOLUME_LOCKED = false;
-
-// Lock for updating the playertime
-var TIME_LOCKED = false;
-
-var ZenPlayer = {
-    init: function(videoID) {
-        // This should be called when the youtube player is done loading
-
-        // Gather video info
-        this.videoTitle = player.getVideoData().title;
-        this.videoAuthor = player.getVideoData().author;
-        this.videoDuration = player.getDuration();
-        this.videoDescription = this.getVideoDescription(videoID);
-        this.videoUrl = player.getVideoUrl();
-
-        // Place stuff on page
-        this.setupTitle();
-        this.setupVideoDescription();
-        this.setupMediaControls();
-        this.setupVolumeSlider();
-        this.setupTimeSeekSlider();
-
-        // Start video from where we left off
-        player.seekTo(loadTime());
-
-        // Google Analytics
-        ga("send", "event", "Playing YouTube video title", this.videoTitle);
-        ga("send", "event", "Playing YouTube video author", this.videoAuthor);
-        ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
-
-        // When it is the player's first play, hide the youtube video
-        $("#player").hide();
-
-        // Everything available, ready to show now
-        this.show();
-    },
-    show: function() {
-        $("#audioplayer").show();
-    },
-    hide: function() {
-        $("#audioplayer").hide();
-    },
-    showPauseButton: function() {
-        $("#pause").show();
-        $("#play").hide();
-    },
-    showPlayButton: function() {
-        $("#play").show();
-        $("#pause").hide();
-    },
-    setupTitle: function() {
-        // Prepend music note only if title does not already begin with one.
-        var tmpVideoTitle = this.videoTitle;
-        if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(tmpVideoTitle)) {
-            tmpVideoTitle = "<i class=\"fa fa-music\"></i> " + tmpVideoTitle;
-        }
-        $("#zen-video-title").html(tmpVideoTitle);
-        $("#zen-video-title").attr("href", this.videoUrl);
-    },
-    setupVideoDescription: function() {
-        var description = anchorURLs(this.videoDescription);
-        $("#zen-video-description").html(description);
-        $("#zen-video-description").hide();
-
-        $("#toggleDescription").click(function(event) {
-            event.preventDefault();
-
-            var descriptionElement = $("#zen-video-description");
-            descriptionElement.toggle();
-
-            if (descriptionElement.is(":visible")) {
-                $("#toggleDescription").text("Hide Description");
-            }
-            else {
-                $("#toggleDescription").text("Show Description");
-            }
-        });
-    },
-    setupMediaControls: function() {
-        // play/pause button click event
-        $("#playPause").click(function(event) {
-            event.preventDefault();
-
-            if ($("#play").is(":visible")) {
-                player.playVideo();
-            }
-            else {
-                player.pauseVideo();
-            }
-        });
-
-        // Show player button click event
-        $("#togglePlayer").click(function(event) {
-            event.preventDefault();
-
-            var p = $("#player");
-            p.toggle();
-            if (p.is(":visible")) {
-                $("#togglePlayer").text("Hide Player");
-            }
-            else {
-                $("#togglePlayer").text("Show Player");
-            }
-        });
-    },
-    setupVolumeSlider: function() {
-        $("#volume").slider({
-            min: 0,
-            max: 100,
-            setp: 1,
-            value: 50,
-            tooltip: "hide",
-            handle: "custom",
-            id: "volumeSliderControl",
-            formatter: function(){}
-        });
-
-        function updateVolumeFromSlider() {
-            if (player) {
-                player.setVolume($("#volume").slider("getValue"));
-            }
-        }
-
-        $("#volume").on("slideStart", function() {
-            VOLUME_LOCKED = true;
-            updateVolumeFromSlider();
-        });
-        $("#volume").on("change", function() {
-            updateVolumeFromSlider();
-        });
-        $("#volume").on("slideStop", function() {
-            updateVolumeFromSlider();
-            VOLUME_LOCKED = false;
-        });
-
-        // Update the volume slider every 100ms
-        setInterval(function() {
-            if (!VOLUME_LOCKED) {
-                $("#volume").slider("setValue", player.getVolume());
-            }
-            updatePlayerTime();
-        }, 100);
-    },
-    setupTimeSeekSlider: function() {
-        $("#timeSeek").slider({
-            min: 0,
-            max: player.getDuration(),
-            value: player.getCurrentTime(),
-            setp: 1,
-            tooltip: "hide",
-            id: "timeSeekSliderControl",
-            formatter: function(){}
-        });
-
-        function updateTimeFromSlider() {
-            if (player) {
-                player.seekTo($("#timeSeek").slider("getValue"));
-            }
-        }
-
-        $("#timeSeek").on("slideStart", function() {
-            TIME_LOCKED = true;
-            player.pauseVideo();
-            updateTimeFromSlider();
-        });
-        $("#timeSeek").on("change", function() {
-            updateTimeFromSlider();
-        });
-        $("#timeSeek").on("slideStop", function() {
-            updateTimeFromSlider();
-            player.playVideo();
-            TIME_LOCKED = false;
-        });
-
-        // Update the time(s) every 50ms
-        setInterval(function() {
-            if (!TIME_LOCKED) {
-                $("#timeSeek").slider("setValue", player.getCurrentTime());
-            }
-            updatePlayerTime();
-        }, 50);
-    },
-    getVideoDescription: function(videoID) {
-        var description = "";
-
-        if (isFileProtocol()) {
-            console.log("Skipping video description request as we're running the site locally.");
-            $("#toggleDescription").hide();
-        }
-        else {
-            getYouTubeVideoDescription(
-                videoID,
-                youTubeDataApiKey,
-                function(data) {
-                    if (data.items.length === 0) {
-                        errorMessage.show("Video description not found");
-                    }
-                    else {
-                        description = data.items[0].snippet.description;
-                    }
-                },
-                function(jqXHR, textStatus, errorThrown) {
-                    var responseText = JSON.parse(jqXHR.error().responseText);
-                    errorMessage.show(responseText.error.errors[0].message);
-                    console.log("Video Description error", errorThrown);
-                }
-            );
-        }
-
-        return description;
-    }
-};
 
 function updateTweetMessage() {
     var url = "https://ZenPlayer.Audio";
@@ -334,7 +53,8 @@ function updateTweetMessage() {
     var id = getCurrentVideoID();
     if (id) {
         opts.url += "/?v=" + id;
-        opts.text = "I'm listening to " + player.getVideoData().title;
+        console.log(Object.keys(plyrPlayer));
+        opts.text = "I'm listening to " + plyrPlayer.embed.getVideoData().title;
     }
 
     twttr.widgets.createHashtagButton(
@@ -342,64 +62,6 @@ function updateTweetMessage() {
         document.getElementById("tweetButton"),
         opts
     );
-}
-
-// Takes seconds as a Number, returns a : delimited string
-function cleanTime(time) {
-    // Awesome hack for int->double cast https://stackoverflow.com/a/8388831/2785681
-    var t = ~~time;
-
-    var seconds = t % 60;
-    var mins = (t - seconds) % (60 * 60) / 60;
-    var hours = 0;
-
-    var potentialHours = t - mins*60 - seconds;
-    if (!isNaN(parseInt(potentialHours / 3600))) {
-        hours = potentialHours / 3600;
-    }
-
-    var ret = "";
-    if (hours > 0) {
-        ret += hours + ":";
-        if (mins < 10) {
-            ret += "0";
-        }
-    }
-    ret += mins + ":";
-    if (seconds < 10) {
-        ret += "0";
-    }
-    ret += seconds;
-
-    return ret;
-}
-
-function storeTime(time) {
-    var videoID = currentVideoID || getCurrentVideoID();
-    if (window.sessionStorage && videoID) {
-        window.sessionStorage[videoID] = time;
-    }
-}
-
-function updatePlayerTime() {
-    var currentTime = player.getCurrentTime();
-    $("#currentTime").text(cleanTime(currentTime));
-    // after the video loads, player.getDuration() may have changed +/- 1
-    $("#totalTime").text(cleanTime(player.getDuration()));
-    storeTime(currentTime);
-}
-
-function loadTime() {
-    var videoID = getCurrentVideoID();
-    if (window.sessionStorage && window.sessionStorage.hasOwnProperty(videoID)) {
-        time = window.sessionStorage[videoID];
-        if (!isNaN(time)) {
-            return parseInt(time, 10);
-        }
-    }
-    else {
-        return 0;
-    }
 }
 
 function getCurrentVideoID() {
@@ -475,8 +137,7 @@ function wrapParseYouTubeVideoID(url) {
 // TODO: this function can go away, the YouTube API will let you play video by URL
 
 $(function() {
-    errorMessage.init();
-
+    initPlayer();
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {

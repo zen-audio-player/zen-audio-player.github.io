@@ -15,16 +15,18 @@
     <link rel="stylesheet" href="bower_components/primer-css/css/primer.css">
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css">
+    <link rel="stylesheet" href="bower_components/plyr/dist/plyr.css">
     <link rel="stylesheet" href="css/styles.css">
-    
+
     <script type="text/javascript">window._trackJs = { token: "f58d0b7c4b4248939fddc582f9e55c9d" };</script>
     <script src="bower_components/trackjs/tracker.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
     <script src="bower_components/typeahead.js/dist/typeahead.jquery.min.js"></script>
+    <script src="bower_components/plyr/dist/plyr.js"></script>
     <script src="js/zap-common.js"></script>
     <script src="js/everything.js"></script>
-    <script src="https://www.youtube.com/iframe_api"></script>
+
 </head>
 <body>
     <header>
@@ -57,31 +59,11 @@
         <!-- The video, along with related content & messages -->
         <div id="audioplayer">
             <h3><a id="zen-video-title"></a></h3>
-            <div id="playerTime">
-                <input id="timeSeek" type="text">
-                <br>
-                <span id="currentTime"></span> / <span id="totalTime"></span>
+            <!-- Plyr controls' icons and Plyr player itself -->
+            <div id="plyr-svg" hidden>
             </div>
-            <div id="playerControls">
-                <br>
-                <button class="btn" id="playPause">
-                    <i class="fa fa-play" id="play"></i>
-                    <i class="fa fa-pause" id="pause"></i>
-                </button>
-                <button class="btn" id="togglePlayer">
-                    Show Player
-                </button>
-                <button class="btn" id="toggleDescription">
-                    Show Description
-                </button>
-                <br>
-                <br>
-                <i class="fa fa-volume-down fa-lg"></i>
-                <input id="volume" type="text">
-                <i class="fa fa-volume-up fa-lg"></i>
-            </div>
-            <br>
-            <div id="player">
+            <div class="plyr">
+                <audio></audio>
             </div>
             <div id="zen-video-description"></div>
             <br>

@@ -11,7 +11,8 @@
         "YT": true,
         "ga": true,
         "twttr": true,
-        "time": true
+        "time": true,
+        "plyr": true
     },
     "rules": {
         "indent": [
