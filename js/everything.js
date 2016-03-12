@@ -174,17 +174,7 @@ var ZenPlayer = {
         $("#zen-video-description").hide();
 
         $("#toggleDescription").click(function(event) {
-            event.preventDefault();
-
-            var descriptionElement = $("#zen-video-description");
-            descriptionElement.toggle();
-
-            if (descriptionElement.is(":visible")) {
-                $("#toggleDescription").text("Hide Description");
-            }
-            else {
-                $("#toggleDescription").text("Show Description");
-            }
+            toggleElement(event, "#zen-video-description", "Description");
         });
     },
     setupMediaControls: function() {
@@ -202,16 +192,7 @@ var ZenPlayer = {
 
         // Show player button click event
         $("#togglePlayer").click(function(event) {
-            event.preventDefault();
-
-            var p = $("#player");
-            p.toggle();
-            if (p.is(":visible")) {
-                $("#togglePlayer").text("Hide Player");
-            }
-            else {
-                $("#togglePlayer").text("Show Player");
-            }
+            toggleElement(event, "#player", "Player");
         });
     },
     setupVolumeSlider: function() {
@@ -311,9 +292,7 @@ var ZenPlayer = {
                     }
                 },
                 function(jqXHR, textStatus, errorThrown) {
-                    var responseText = JSON.parse(jqXHR.error().responseText);
-                    errorMessage.show(responseText.error.errors[0].message);
-                    console.log("Video Description error", errorThrown);
+                    logError(jqXHR, textStatus, errorThrown, "Video Description error");
                 }
             );
         }
@@ -344,6 +323,27 @@ function updateTweetMessage() {
     );
 }
 
+function logError(jqXHR, textStatus, errorThrown, errorMessage) {
+    var responseText = JSON.parse(jqXHR.error().responseText);
+    errorMessage.show(responseText.error.errors[0].message);
+    console.log(errorMessage, errorThrown);
+}
+
+function toggleElement(event, ToggleID, buttonText) {
+    event.preventDefault();
+
+    var toggleElement = $(ToggleID);
+    toggleElement.toggle();
+
+    var toggleTextElement = $("#" + event.currentTarget.id);
+
+    if (toggleElement.is(":visible")) {
+        toggleTextElement.text("Hide " + buttonText);
+    }
+    else {
+        toggleTextElement.text("Show " + buttonText);
+    }
+}
 // Takes seconds as a Number, returns a : delimited string
 function cleanTime(time) {
     // Awesome hack for int->double cast https://stackoverflow.com/a/8388831/2785681
@@ -503,9 +503,7 @@ $(function() {
                     });
                 },
                 function(jqXHR, textStatus, errorThrown) {
-                    var responseText = JSON.parse(jqXHR.error().responseText);
-                    errorMessage.show(responseText.error.errors[0].message);
-                    console.log("Search error", errorThrown);
+                    logError(jqXHR, textStatus, errorThrown, "Search error");
                 }
             );
         }
@@ -560,9 +558,7 @@ $(function() {
                         }
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    var responseText = JSON.parse(jqXHR.error().responseText);
-                    errorMessage.show(responseText.error.errors[0].message);
-                    console.log("Lookup error", errorThrown);
+                    logError(jqXHR, textStatus, errorThrown, "Lookup error");
                 });
             }
         }
