@@ -34,7 +34,6 @@ function setupPlyr() {
                 type: "youtube"
             }]
         });
-        plyrPlayer = document.querySelector('.plyr');
     }
 }
 
@@ -54,9 +53,8 @@ function updateTweetMessage() {
     var id = getCurrentVideoID();
     if (id) {
         opts.url += "/?v=" + id;
-        //console.log(Object.keys(plyrPlayer.plyr));
-        //console.log(plyrPlayer.plyr);
-        opts.text = "I'm listening to " + plyrEmbed.getVideoData().title;
+        console.log(Object.keys(plyrPlayer));
+        opts.text = "I'm listening to " + plyrPlayer.embed.getVideoData().title;
     }
 
     twttr.widgets.createHashtagButton(
