@@ -11,7 +11,7 @@ header {
     margin: 50px auto 0 auto;
 }
 
-@media all and ( min-width: 480px ) {
+@media all and (min-width: 480px) {
 
     header {
         max-width: 450px;
@@ -50,7 +50,7 @@ h2 {
     margin: 0 auto;
 }
 
-@media all and ( min-width: 480px ) {
+@media all and (min-width: 480px) {
 
     #container {
         max-width: 450px;
@@ -166,7 +166,7 @@ h2 {
     width: 50px;
 }
 
-@media all and ( min-width: 480px ) {
+@media all and (min-width: 480px) {
 
     .input-search {
         height: 50px;
@@ -198,7 +198,7 @@ h2 {
     margin-top: 0;
 }
 
-@media all and ( min-width: 640px ) {
+@media all and (min-width: 640px) {
 
     .sponsor-a {
         width: 30.666666667%;
