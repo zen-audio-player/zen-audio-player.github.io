@@ -1,6 +1,6 @@
 /*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription*/
 
-var plyrPlayer;
+var player;
 var currentVideoID;
 
 function initPlayer() {
@@ -8,25 +8,30 @@ function initPlayer() {
 
     // Setup player
     if (currentVideoID) {
-        if (plyrPlayer) {
+        if (player) {
             return;
         }
         setupPlyr();
-        //updateTweetMessage();
     }
 }
 
 function setupPlyr() {
-    //set up Plyr player
-    plyrPlayer = plyr.setup({
+    player = document.querySelector(".plyr");
+
+    plyr.setup(player, {
         autoplay: true,
         controls:["play", "current-time", "duration", "mute", "volume"]
-    })[0];
+    });
     //Inject svg with controls' icons
     $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
+
+    player.addEventListener("ready", function(event) {
+        onEmbedReady();
+    });
+
     //Load video into Plyr player
-    if (plyrPlayer) {
-        plyrPlayer.source({
+    if (player.plyr) {
+        player.plyr.source({
             type: "video",
             title: "Title",
             sources: [{
@@ -35,6 +40,10 @@ function setupPlyr() {
             }]
         });
     }
+}
+
+function onEmbedReady() {
+    updateTweetMessage();
 }
 
 function isFileProtocol() {
@@ -53,8 +62,8 @@ function updateTweetMessage() {
     var id = getCurrentVideoID();
     if (id) {
         opts.url += "/?v=" + id;
-        console.log(Object.keys(plyrPlayer));
-        opts.text = "I'm listening to " + plyrPlayer.embed.getVideoData().title;
+        //console.log(Object.keys(player.plyr));
+        opts.text = "I'm listening to " + player.plyr.embed.getVideoData().title;
     }
 
     twttr.widgets.createHashtagButton(
