@@ -1,9 +1,9 @@
 # Plyr
 A simple, accessible and customizable HTML5, YouTube and Vimeo media player.
 
-[Checkout the demo](http://plyr.io)
+[Checkout the demo](https://plyr.io)
 
-[![Image of Plyr](https://cdn.plyr.io/static/plyr-v1.5.jpg)](http://plyr.io)
+[![Image of Plyr](https://cdn.plyr.io/static/plyr-v1.5.jpg)](https://plyr.io)
 
 ## Why?
 We wanted a lightweight, accessible and customizable media player that supports [*modern*](#browser-support) browsers. Sure, there are many other players out there but we wanted to keep things simple, using the right elements for the job.
@@ -25,7 +25,7 @@ We wanted a lightweight, accessible and customizable media player that supports 
 Oh and yes, it works with Bootstrap.
 
 ## Changelog
-Check out the [changelog](changelog.md) to see what's been new with Plyr.
+Check out the [changelog](changelog.md) to see what's new with Plyr.
 
 ## Planned Development
 - Playback speed
@@ -40,7 +40,7 @@ If you have any cool ideas or features, please let me know by [creating an issue
 
 Check `docs/index.html` and `docs/dist/docs.js` for an example setup.
 
-**Heads up:** the example `index.html` file needs to be served from a webserver (such as Apache, Nginx, IIS or similar) unless you change the file sources to include http or https. e.g. change `//cdn.plyr.io/1.5.17/plyr.js` to `https://cdn.plyr.io/1.5.17/plyr.js`
+**Heads up:** the example `index.html` file needs to be served from a webserver (such as Apache, Nginx, IIS or similar) unless you change the file sources to include http or https. e.g. change `//cdn.plyr.io/1.5.18/plyr.js` to `https://cdn.plyr.io/1.5.18/plyr.js`
 
 ### Node Package Manager (NPM)
 Using NPM, you can grab Plyr:
@@ -69,11 +69,11 @@ More info is on [npm](https://www.npmjs.com/package/ember-cli-plyr) and [GitHub]
 If you want to use our CDN, you can use the following:
 
 ```html
-<link rel="stylesheet" href="https://cdn.plyr.io/1.5.17/plyr.css">
-<script src="https://cdn.plyr.io/1.5.17/plyr.js"></script>
+<link rel="stylesheet" href="https://cdn.plyr.io/1.5.18/plyr.css">
+<script src="https://cdn.plyr.io/1.5.18/plyr.js"></script>
 ```
 
-You can also access the `sprite.svg` file at `https://cdn.plyr.io/1.5.17/sprite.svg`.
+You can also access the `sprite.svg` file at `https://cdn.plyr.io/1.5.18/sprite.svg`.
 
 ### CSS & Styling
 If you want to use the default css, add the `plyr.css` file from `/dist` into your head, or even better use `plyr.less` or `plyr.sass` file included in `/src` in your build to save a request.
@@ -175,7 +175,7 @@ Be sure to [validate your caption files](https://quuz.org/webvtt/)
 Here's an example of a default setup:
 
 ```html
-<script src="https://cdn.plyr.io/1.5.17/plyr.js"></script>
+<script src="https://cdn.plyr.io/1.5.18/plyr.js"></script>
 <script>plyr.setup();</script>
 ```
 
@@ -675,7 +675,7 @@ You can listen for events on the element you setup Plyr on. Some events only app
 		<td>Sent when an error occurs.&nbsp; The element's <code>error</code> attribute contains more information.</td>
 	</tr>
 	<tr>
-		<td><code>loadeddata/code></td>
+		<td><code>loadeddata</code></td>
 		<td>✔</td>
 		<td>The first frame of the media has finished loading.</td>
 	</tr>
@@ -759,6 +759,11 @@ You can listen for events on the element you setup Plyr on. Some events only app
 		<td></td>
 		<td>Captions toggled off</td>
 	</tr>
+	<tr>
+		<td><code>ready</code></td>
+		<td></td>
+		<td>Triggered when initial setup is done or a source change has occurred.</td>
+	</tr>
 	</tbody>
 </table>
 
@@ -767,7 +772,7 @@ Details borrowed from: [https://developer.mozilla.org/en-US/docs/Web/Guide/Event
 Here's an example of binding an event listener:
 
 ```javascript
-document.querySelector(".js-plyr").addEventListener("playing", function() {
+document.querySelector(".js-plyr").addEventListener("ready", function() {
   /* Magic happens */
 });
 ```
@@ -842,6 +847,8 @@ Plyr is developed by [@sam_potts](https://twitter.com/sam_potts) / [sampotts.me]
 
 ## Used by
 - [Selz.com](https://selz.com)
+- [koel - A personal music streaming server that works.](http://koel.phanan.net/)
+- [Oscar Radio](http://oscar-radio.xyz/)
 
 Let me know on [Twitter](https://twitter.com/sam_potts) I can add you to the above list. It'd be awesome to see how you're using Plyr :-)
 

@@ -1,6 +1,6 @@
 // ==========================================================================
 // Plyr
-// plyr.js v1.5.17
+// plyr.js v1.5.18
 // https://github.com/selz/plyr
 // License: The MIT License (MIT)
 // ==========================================================================
@@ -1242,7 +1242,7 @@
 
         // Toggle style hook
         function _toggleStyleHook() {
-            _toggleClass(plyr.container, defaults.selectors.container.replace('.', ''), plyr.supported.full);
+            _toggleClass(plyr.container, config.selectors.container.replace('.', ''), plyr.supported.full);
         }
 
         // Toggle native controls
@@ -1438,7 +1438,7 @@
             plyr.embed = new YT.Player(container.id, {
                 videoId: videoId,
                 playerVars: {
-                    autoplay: 0,
+                    autoplay: plyr.autoplay ? 1 : 0,
                     controls: (plyr.supported.full ? 0 : 1),
                     rel: 0,
                     showinfo: 0,
@@ -2730,6 +2730,9 @@
 
             // Display duration
             _displayDuration();
+
+            // Ready event
+            _triggerEvent(plyr.container, 'ready');
         }
 
         // Initialize instance
