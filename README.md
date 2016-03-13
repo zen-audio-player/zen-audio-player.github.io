@@ -35,7 +35,7 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 
 ## Contributing to Zen Audio Player
 
-If you would like to contribute to this project please read the [guidelines on contributing](CONTRIBUTING.md) before doing so.
+If you would like to contribute to this project please read the [guidelines on contributing](.github/CONTRIBUTING.md) before doing so.
 
 ## Project Sponsors
 |Sponsor|Description|
