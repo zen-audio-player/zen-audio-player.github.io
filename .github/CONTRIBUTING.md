@@ -24,7 +24,7 @@ Join the chat room on Gitter
 
 ### Syncing  
 
-This issue arises when the `master` branch of the upstream repository has been changed (ie. new commits added) since you checked out a development branch. It can be resolved in the following manner -  
+This issue arises when the `master` branch of the upstream repository has been changed (i.e. new commits added) since you checked out a development branch. It can be resolved in the following manner -  
   
 0. Click on the **command line instructions**  as shown in the image above. The instructions are also explained below.  
 0. Navigate to the current working directory of your working project on the command line. 
