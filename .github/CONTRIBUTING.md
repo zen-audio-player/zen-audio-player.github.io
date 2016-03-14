@@ -13,7 +13,20 @@
 0. Run the tests: `npm test`.
 0. Run `git commit` and add your message describing what you have changed. If you have made changes that address an issue include the text `Closes #1` (where 1 would be the issue number) to your commit message.
 0. Submit a [pull request](https://github.com/zen-audio-player/zen-audio-player.github.io/pulls) - Travis CI will run tests to make sure nothing broke.
+0. In case the following occurs, skip to **Syncing** below  
+![out of sync](/.github/outofsync.png)
 0. After you've had 1 PR merged, [@shakeelmohamed](http://github.com/shakeelmohamed) will add you to the organization. Then you can create any issues you work on before you start.
+
+### Syncing  
+
+This issue arises when the `master` branch of the upstream repository has been changed (ie. new commits added) since you checked out a development branch. It can be resolved in the following manner -  
+  
+0. Click on the **command line instructions**  as shown in the image above. The instructions are also explained below.  
+0. Navigate to the current working directory of your working project on the command line.  
+0. Use `git fetch upstream` to fetch the branches and their respective commits from the upstream repository and store them locally. Commits to the upstream `master` branch are stored in a local branch `upstream/master`.  
+0. Check out your branch using `git checkout <your-branchname>`.  
+0. Merge the changes from upstream/master into your branch using `git merge upstream/master`. This syncs your branch with the upstream repository, without losing your local changes.  
+0. Now you can again push your local changes using `git push origin <your-branchname>`.
 
 ## Issues & Bug Reports
 
