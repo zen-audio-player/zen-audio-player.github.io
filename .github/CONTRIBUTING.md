@@ -22,7 +22,8 @@
 This issue arises when the `master` branch of the upstream repository has been changed (ie. new commits added) since you checked out a development branch. It can be resolved in the following manner -  
   
 0. Click on the **command line instructions**  as shown in the image above. The instructions are also explained below.  
-0. Navigate to the current working directory of your working project on the command line.  
+0. Navigate to the current working directory of your working project on the command line. 
+0. Run `git remote` to determine the remote name, if you have multiple remotes configured, you can run `git remote` -v to also see the URLs associated with each remote.  
 0. Use `git fetch upstream` to fetch the branches and their respective commits from the upstream repository and store them locally. Commits to the upstream `master` branch are stored in a local branch `upstream/master`.  
 0. Check out your branch using `git checkout <your-branchname>`.  
 0. Merge the changes from upstream/master into your branch using `git merge upstream/master`. This syncs your branch with the upstream repository, without losing your local changes.  
