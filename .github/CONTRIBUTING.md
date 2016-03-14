@@ -13,7 +13,7 @@ Join the chat room on Gitter
 0. Clone your fork of the repo: `git clone git@github.com:<YOUR-USERNAME>/zen-audio-player.github.io.git`.
 0. Navigate to the project: `cd zen-audio-player.github.io`.
 0. Install test dependencies: `npm install`.
-0. If you've started working on an issue, please ensure that you leave a comment as it helps avoid duplicate work.
+0. If you've started working on an issue, leave a comment as it helps avoid duplicate work.
 0. Make your changes.
 0. Run the tests: `npm test`.
 0. Run `git commit` and add your message describing what you have changed. If you have made changes that address an issue include the text `Closes #1` (where 1 would be the issue number) to your commit message.
