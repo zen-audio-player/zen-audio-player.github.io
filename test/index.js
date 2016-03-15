@@ -70,14 +70,14 @@ describe("Page Structure", function () {
         assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-453.png");
         assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-905.png");
         assert.equal(browser.query("header > figure > a").href, "https://zenplayer.audio/");
-        assert.ok(browser.query("header > figure > a > img.img-100").src.indexOf("img/zen-audio-player-905.png") !== -1);
-        assert.equal(browser.query("header > figure > a > img.img-100").alt, "Zen Audio Player logo");
+        assert.ok(browser.query("header > figure > a.zen-logo > img.img-100").src.indexOf("img/zen-audio-player-905.png") !== -1);
+        assert.equal(browser.query("header > figure > a.zen-logo > img.img-100").alt, "Zen Audio Player logo");
     });
     it("should have expected elements", function () {
         assert.ok(browser.query("header"), "Couldn't find header");
         assert.ok(browser.query("header > figure"), "Couldn't find <header><figure>");
         assert.ok(browser.query("header > figure > a"), "Couldn't find <header><figure><a>");
-        assert.ok(browser.query("header > figure > a > img.img-100"), "Couldn't find <header><figure><a><img>");
+        assert.ok(browser.query("header > figure > a.zen-logo > img.img-100"), "Couldn't find <header><figure><a><img>");
         assert.ok(browser.query("#form"), "Couldn't find #form");
         // TODO: validate the rest of the form
         assert.ok(browser.query("#demo"), "Couldn't find #demo");
@@ -89,9 +89,9 @@ describe("Page Structure", function () {
         assert.ok(browser.query("#v"), "Couldn't find #v");
 
         assert.ok(browser.query("footer"), "Couldn't find footer");
-        assert.ok(browser.query("footer > div.color-grey > p"), "Couldn't find footer<p>Created by");
-        assert.ok(browser.query("footer > div.color-grey > p ~ p"), "Couldn't find footer<p>Created by...</p><p>");
-        assert.ok(browser.query("footer > div.color-grey > p ~ p ~ p"), "Couldn't find footer<p>Created by...</p><p>Source available...</p><p>");
+        assert.ok(browser.query("footer > div.color-grey > p"), "Couldn't find footer > div.color-grey <p>Created by");
+        assert.ok(browser.query("footer > div.color-grey > p ~ p"), "Couldn't find footer > div.color-grey<p>Created by...</p><p>");
+        assert.ok(browser.query("footer > div.color-grey > p ~ p ~ p"), "Couldn't find footer > div.color-grey<p>Created by...</p><p>Source available...</p><p>");
     });
     it("should not have strange HTML elements", function () {
         // These are more of a sanity check than anything else
