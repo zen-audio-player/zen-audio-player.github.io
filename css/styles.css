@@ -1,5 +1,39 @@
+body {
+    background-color: #f9f9f9;
+}
+
 header, footer {
     text-align: center;
+}
+
+header {
+    width: 80%;
+    margin: 50px auto 0 auto;
+}
+
+@media all and (min-width: 480px) {
+
+    header {
+        max-width: 450px;
+    }
+
+}
+
+footer {
+    border-top: 1px solid #eeeeee;
+    background-color: #ffffff;
+    margin-top: 50px;
+    padding: 50px 0;
+}
+
+hgroup {
+    margin-top: 30px;
+}
+
+h2 {
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 150%;
 }
 
 .hide {
@@ -12,15 +46,16 @@ header, footer {
 }
 
 #container {
-    max-width: 450px;
+    width: 80%;
     margin: 0 auto;
 }
 
-.logo {
-    max-width: 300px;
-    max-height: 300px;
-    padding-top: 30px;
-    margin-bottom: 5px;
+@media all and (min-width: 480px) {
+
+    #container {
+        max-width: 450px;
+    }
+
 }
 
 #v {
@@ -38,14 +73,17 @@ header, footer {
     min-width: 100%;
     width: 100%;
 }
+
 #zen-video-title #demo {
     margin-top: 5px;
     font-weight: bold;
     word-wrap: break-word;
 }
+
 #zen-video-error {
     text-align: center;
 }
+
 #demo {
     display: block;
     margin: 0 auto;
@@ -58,6 +96,7 @@ header, footer {
 #form {
     margin-bottom: 20px;
 }
+
 /* Media controls */
 #pause {
     display: none;
@@ -111,4 +150,77 @@ header, footer {
 
 .tt-cursor, .tt-suggestion:hover {
     background-color: #efefef;
+}
+
+.zen-logo {
+    width: 100px;
+    height: 100px;
+    display: block;
+    overflow: hidden;
+    border-radius: 6px;
+    margin: 0 auto;
+}
+
+.btn-search {
+    width: 50px;
+}
+
+@media all and (min-width: 480px) {
+
+    .input-search {
+        height: 50px;
+    }
+
+    .btn-search {
+        height: 50px;
+    }
+
+    .fa-search {
+        font-size: 20px;
+    }
+
+}
+
+.sponsor {
+    width: 70%;
+    margin: 30px auto 0 auto;
+}
+
+.sponsor-a {
+    width: 100%;
+    display: block;
+    margin-top: 20px;
+}
+
+.sponsor-a:first-of-type {
+    margin-top: 0;
+}
+
+@media all and (min-width: 640px) {
+
+    .sponsor-a {
+        width: 30.666666667%;
+        float: left;
+        margin-left: 4%;
+        margin-top: 0;
+    }
+
+    .sponsor-a:first-of-type {
+        margin: 0;
+    }
+
+}
+
+.color-grey {
+    color: #666666;
+}
+
+.clear-both {
+    clear: both;
+    height: 0;
+    overflow: hidden;
+}
+
+.img-100 {
+    width: 100%;
 }
