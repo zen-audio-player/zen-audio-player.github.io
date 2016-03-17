@@ -10,10 +10,13 @@ header {
     width: 80%;
     margin: 50px auto 0 auto;
 }
-@media all and ( min-width:480px ) {
+
+@media all and (min-width: 480px) {
+
     header {
         max-width: 450px;
     }
+
 }
 
 footer {
@@ -46,10 +49,13 @@ h2 {
     width: 80%;
     margin: 0 auto;
 }
-@media all and ( min-width:480px ) {
+
+@media all and (min-width: 480px) {
+
     #container {
         max-width: 450px;
     }
+
 }
 
 #v {
@@ -67,14 +73,17 @@ h2 {
     min-width: 100%;
     width: 100%;
 }
+
 #zen-video-title #demo {
     margin-top: 5px;
     font-weight: bold;
     word-wrap: break-word;
 }
+
 #zen-video-error {
     text-align: center;
 }
+
 #demo {
     display: block;
     margin: 0 auto;
@@ -87,6 +96,7 @@ h2 {
 #form {
     margin-bottom: 20px;
 }
+
 /* Media controls */
 #pause {
     display: none;
@@ -119,7 +129,6 @@ h2 {
 /* Input field fixes and search suggestion style.
  * typeahead conflicts with primercss */
 .twitter-typeahead {
-    display: inline;
     width: 100%;
 }
 
@@ -155,17 +164,21 @@ h2 {
 .btn-search {
     width: 50px;
 }
-@media all and ( min-width:480px ) {
+
+@media all and (min-width: 480px) {
+
     .input-search {
         height: 50px;
-        font-size: 18px !important;
     }
+
     .btn-search {
         height: 50px;
     }
+
     .fa-search {
         font-size: 20px;
     }
+
 }
 
 .sponsor {
@@ -174,32 +187,37 @@ h2 {
 }
 
 .sponsor-a {
-    width:100%;
+    width: 100%;
     display: block;
     margin-top: 20px;
 }
+
 .sponsor-a:first-of-type {
     margin-top: 0;
 }
-@media all and ( min-width:640px ) {
+
+@media all and (min-width: 640px) {
+
     .sponsor-a {
         width: 30.666666667%;
         float: left;
         margin-left: 4%;
         margin-top: 0;
     }
+
     .sponsor-a:first-of-type {
         margin: 0;
     }
+
 }
 
 .color-grey {
-    color: #666666 !important;
+    color: #666666;
 }
 
 .clear-both {
     clear: both;
-    height: 0px;
+    height: 0;
     overflow: hidden;
 }
 
