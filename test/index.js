@@ -120,13 +120,6 @@ describe("JavaScript components", function() {
     it("should load jQuery", function() {
         assert.ok(browser.evaluate("$"));
     });
-    // TODO: test bootstrap-slider
-    it("should load YouTube iframe API", function() {
-        assert.ok(browser.evaluate("YT"));
-    });
-    it("should load ZenPlayer from everything.js", function() {
-        assert.ok(browser.evaluate("ZenPlayer"));
-    });
     it("should make all requests over https, not http", function() {
         assert.strictEqual(-1, _js.indexOf("http://"), "Please use HTTPS for all scripts");
     });

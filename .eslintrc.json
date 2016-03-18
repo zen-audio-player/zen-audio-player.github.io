@@ -8,7 +8,6 @@
         "node": true
     },
     "globals": {
-        "YT": true,
         "ga": true,
         "twttr": true,
         "time": true,
