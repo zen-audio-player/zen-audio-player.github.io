@@ -1,6 +1,6 @@
 /*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription*/
 
-var player;
+var plyrPlayer;
 var currentVideoID;
 
 function initPlayer() {
@@ -8,7 +8,7 @@ function initPlayer() {
 
     // Setup player
     if (currentVideoID) {
-        if (player) {
+        if (plyrPlayer) {
             return;
         }
         setupPlyr();
@@ -16,22 +16,22 @@ function initPlayer() {
 }
 
 function setupPlyr() {
-    player = document.querySelector(".plyr");
+    plyrPlayer = document.querySelector(".plyr");
 
-    plyr.setup(player, {
+    plyr.setup(plyrPlayer, {
         autoplay: true,
         controls:["play", "current-time", "duration", "mute", "volume"]
     });
     //Inject svg with controls' icons
     $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
 
-    player.addEventListener("ready", function(event) {
+    plyrPlayer.addEventListener("ready", function(event) {
         onEmbedReady();
     });
 
     //Load video into Plyr player
-    if (player.plyr) {
-        player.plyr.source({
+    if (plyrPlayer.plyr) {
+        plyrPlayer.plyr.source({
             type: "video",
             title: "Title",
             sources: [{
@@ -40,10 +40,57 @@ function setupPlyr() {
             }]
         });
     }
+    //Show player
+    $("#audioplayer").show();
+    // When it is the player's first play, hide the youtube video
+    $(".plyr__video-wrapper").hide();
 }
 
 function onEmbedReady() {
+    setupSite();
     updateTweetMessage();
+}
+
+function setupSite() {
+    // Gather video info
+    var videoData = plyrPlayer.plyr.embed.getVideoData();
+    var videoTitle = videoData.title;
+    var videoAuthor = videoData.author;
+    var videoDuration = plyrPlayer.plyr.embed.getDuration();
+    var videoUrl = plyrPlayer.plyr.embed.getVideoUrl();
+
+    // Google Analytics
+    ga("send", "event", "Playing YouTube video title", this.videoTitle);
+    ga("send", "event", "Playing YouTube video author", this.videoAuthor);
+    ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
+
+    // Place stuff on page
+    setupTitle(videoTitle, videoUrl);
+
+    // Show player button click event
+    $("#togglePlayer").click(function(event) {
+        event.preventDefault();
+
+        var p = $(".plyr__video-wrapper");
+        p.toggle();
+        if (p.is(":visible")) {
+            $("#togglePlayer").text("Hide Player");
+        }
+        else {
+            $("#togglePlayer").text("Show Player");
+        }
+    });
+    
+}
+
+function setupTitle(title, url) {
+    // Prepend music note only if title does not already begin with one.
+    var tmpVideoTitle = title;
+    if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(tmpVideoTitle)) {
+        tmpVideoTitle = "<i class=\"fa fa-music\"></i> " + tmpVideoTitle;
+    }
+    $("#zen-video-title").html(tmpVideoTitle);
+    $("#zen-video-title").attr("href", url);
 }
 
 function isFileProtocol() {
@@ -62,8 +109,7 @@ function updateTweetMessage() {
     var id = getCurrentVideoID();
     if (id) {
         opts.url += "/?v=" + id;
-        //console.log(Object.keys(player.plyr));
-        opts.text = "I'm listening to " + player.plyr.embed.getVideoData().title;
+        opts.text = "I'm listening to " + plyrPlayer.plyr.embed.getVideoData().title;
     }
 
     twttr.widgets.createHashtagButton(

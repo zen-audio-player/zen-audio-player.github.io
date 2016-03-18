@@ -8,6 +8,7 @@ header, footer {
 
 #audioplayer {
     text-align: center;
+    display: none;
 }
 
 #container {
@@ -111,8 +112,4 @@ header, footer {
 
 .tt-cursor, .tt-suggestion:hover {
     background-color: #efefef;
-}
-
-.plyr__video-wrapper {
-    display: none;
 }
