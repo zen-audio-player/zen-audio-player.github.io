@@ -2225,7 +2225,7 @@ module.exports = function(){
     delete window['_' + 'Keen']
   } catch(e) {}
 };
-},{"./index":16,"./utils/each":28}],9:[function(require,module,exports){
+},{"./index":16,"./utils/each":29}],9:[function(require,module,exports){
 module.exports = function(){
   return "undefined" == typeof window ? "server" : "browser";
 };
@@ -2242,7 +2242,7 @@ module.exports = function(params){
   });
   return '?' + query.join('&');
 };
-},{"../utils/each":28,"../utils/json-shim":31}],11:[function(require,module,exports){
+},{"../utils/each":29,"../utils/json-shim":32}],11:[function(require,module,exports){
 module.exports = function(){
   return new Date().getTimezoneOffset() * -60;
 };
@@ -2291,7 +2291,7 @@ var each = require('../utils/each'),
 module.exports = function(type, opts){
   return function(request) {
     var __super__ = request.constructor.prototype.end;
-    if ( 'undefined' === typeof window ) return;
+    if ( typeof window === 'undefined' ) return;
     request.requestType = request.requestType || {};
     request.requestType['type'] = type;
     request.requestType['options'] = request.requestType['options'] || {
@@ -2306,7 +2306,7 @@ module.exports = function(type, opts){
       }
     };
     if (opts) {
-      if ( 'boolean' === typeof opts.async ) {
+      if ( typeof opts.async === 'boolean' ) {
         request.requestType['options'].async = opts.async;
       }
       if ( opts.success ) {
@@ -2321,7 +2321,7 @@ module.exports = function(type, opts){
           reqType = (this.requestType) ? this.requestType['type'] : 'xhr',
           query,
           timeout;
-      if ( ('GET' !== self['method'] || 'xhr' === reqType) && self.requestType['options'].async ) {
+      if ( ('GET' !== self['method'] ||  reqType === 'xhr' ) && self.requestType['options'].async ) {
         __super__.call(self, fn);
         return;
       }
@@ -2341,10 +2341,10 @@ module.exports = function(type, opts){
       if ( !self.requestType['options'].async ) {
         sendXhrSync.call(self);
       }
-      else if ( 'jsonp' === reqType ) {
+      else if ( reqType === 'jsonp' ) {
         sendJsonp.call(self);
       }
-      else if ( 'beacon' === reqType ) {
+      else if ( reqType === 'beacon' ) {
         sendBeacon.call(self);
       }
       return self;
@@ -2461,7 +2461,7 @@ function xhrShim(opts){
   };
   return this;
 }
-},{"../utils/each":28,"./get-xhr-object":13,"superagent":5}],16:[function(require,module,exports){
+},{"../utils/each":29,"./get-xhr-object":13,"superagent":5}],16:[function(require,module,exports){
 var root = 'undefined' !== typeof window ? window : this;
 var previous_Keen = root.Keen;
 var Emitter = require('./utils/emitter-shim');
@@ -2472,7 +2472,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.2.7';
+Keen.version = '3.4.0';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){
@@ -2542,7 +2542,7 @@ Keen.ready = function(fn){
   }
 };
 module.exports = Keen;
-},{"./utils/emitter-shim":29}],17:[function(require,module,exports){
+},{"./utils/emitter-shim":30}],17:[function(require,module,exports){
 var json = require('../utils/json-shim');
 var request = require('superagent');
 var Keen = require('../index');
@@ -2630,7 +2630,7 @@ function prepareGetRequest(url, data){
   });
   return ( url.length < getUrlMaxLength() ) ? url : false;
 }
-},{"../helpers/get-context":9,"../helpers/get-query-string":10,"../helpers/get-url-max-length":12,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"../helpers/superagent-request-types":15,"../index":16,"../utils/base64":26,"../utils/each":28,"../utils/json-shim":31,"superagent":5}],18:[function(require,module,exports){
+},{"../helpers/get-context":9,"../helpers/get-query-string":10,"../helpers/get-url-max-length":12,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"../helpers/superagent-request-types":15,"../index":16,"../utils/base64":27,"../utils/each":29,"../utils/json-shim":32,"superagent":5}],18:[function(require,module,exports){
 var Keen = require('../index');
 var request = require('superagent');
 var each = require('../utils/each'),
@@ -2701,7 +2701,7 @@ module.exports = function(payload, callback) {
   }
   return;
 };
-},{"../helpers/get-context":9,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"../helpers/superagent-request-types":15,"../index":16,"../utils/each":28,"superagent":5}],19:[function(require,module,exports){
+},{"../helpers/get-context":9,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"../helpers/superagent-request-types":15,"../index":16,"../utils/each":29,"superagent":5}],19:[function(require,module,exports){
 var request = require('superagent');
 var getQueryString = require('../helpers/get-query-string'),
     handleResponse = require('../helpers/superagent-handle-response'),
@@ -2741,6 +2741,20 @@ module.exports = function(query, callback) {
   var queries = [],
       cb = callback,
       request;
+  if (!this.config.projectId || !this.config.projectId.length) {
+    handleConfigError.call(this, 'Missing projectId property');
+  }
+  if (!this.config.readKey || !this.config.readKey.length) {
+    handleConfigError.call(this, 'Missing readKey property');
+  }
+  function handleConfigError(msg){
+    var err = 'Query not sent: ' + msg;
+    this.trigger('error', err);
+    if (cb) {
+      cb.call(this, err, null);
+      cb = callback = null;
+    }
+  }
   if (query instanceof Array) {
     queries = query;
   } else {
@@ -2870,12 +2884,14 @@ Query.prototype.addFilter = function(property, operator, value) {
   return this;
 };
 module.exports = Query;
-},{"./helpers/get-query-string":10,"./helpers/get-timezone-offset":11,"./utils/each":28,"./utils/emitter-shim":29,"./utils/extend":30}],25:[function(require,module,exports){
-var each = require("./utils/each"),
-    extend = require("./utils/extend"),
-    sendQuery = require("./utils/sendQuery");
-var Keen = require("./");
+},{"./helpers/get-query-string":10,"./helpers/get-timezone-offset":11,"./utils/each":29,"./utils/emitter-shim":30,"./utils/extend":31}],25:[function(require,module,exports){
+var each = require('./utils/each'),
+    extend = require('./utils/extend'),
+    sendQuery = require('./utils/sendQuery'),
+    sendSavedQuery = require('./utils/sendSavedQuery');
 var Emitter = require('./utils/emitter-shim');
+var Keen = require('./');
+var Query = require('./query');
 function Request(client, queries, callback){
   var cb = callback;
   this.config = {
@@ -2888,10 +2904,10 @@ Emitter(Request.prototype);
 Request.prototype.configure = function(client, queries, callback){
   var cb = callback;
   extend(this, {
-    "client"   : client,
-    "queries"  : queries,
-    "data"     : {},
-    "callback" : cb
+    'client'   : client,
+    'queries'  : queries,
+    'data'     : {},
+    'callback' : cb
   });
   cb = callback = null;
   return this;
@@ -2911,7 +2927,7 @@ Request.prototype.refresh = function(){
       return;
     }
     if (err) {
-      self.trigger("error", err);
+      self.trigger('error', err);
       if (self.callback) {
         self.callback(err, null);
       }
@@ -2922,31 +2938,37 @@ Request.prototype.refresh = function(){
     completions++;
     if (completions == self.queries.length && !errored) {
       self.data = (self.queries.length == 1) ? response[0] : response;
-      self.trigger("complete", null, self.data);
+      self.trigger('complete', null, self.data);
       if (self.callback) {
         self.callback(null, self.data);
       }
     }
   };
   each(self.queries, function(query, index){
-    var path;
     var cbSequencer = function(err, res){
       handleResponse(err, res, index);
     };
-    if (query instanceof Keen.Query) {
-      path = "/queries/" + query.analysis;
-      sendQuery.call(self, path, query.params, cbSequencer);
+    var path = '/queries';
+    if (typeof query === 'string') {
+      path += '/saved/' + query + '/result';
+      sendSavedQuery.call(self, path, {}, cbSequencer);
     }
-    else if ( Object.prototype.toString.call(query) === "[object String]" ) {
-      path = "/saved_queries/" + encodeURIComponent(query) + "/result";
-      sendQuery.call(self, path, null, cbSequencer);
+    else if (query instanceof Query) {
+      path += '/' + query.analysis;
+      if (query.analysis === 'saved') {
+        path += '/' + query.params.query_name + '/result';
+        sendSavedQuery.call(self, path, {}, cbSequencer);
+      }
+      else {
+        sendQuery.call(self, path, query.params, cbSequencer);
+      }
     }
     else {
       var res = {
-        statusText: "Bad Request",
-        responseText: { message: "Error: Query " + (+index+1) + " of " + self.queries.length + " for project " + self.client.projectId() + " is not a valid request" }
+        statusText: 'Bad Request',
+        responseText: { message: 'Error: Query ' + (+index+1) + ' of ' + self.queries.length + ' for project ' + self.client.projectId() + ' is not a valid request' }
       };
-      self.trigger("error", res.responseText.message);
+      self.trigger('error', res.responseText.message);
       if (self.callback) {
         self.callback(res.responseText.message, null);
       }
@@ -2955,7 +2977,65 @@ Request.prototype.refresh = function(){
   return this;
 };
 module.exports = Request;
-},{"./":16,"./utils/each":28,"./utils/emitter-shim":29,"./utils/extend":30,"./utils/sendQuery":33}],26:[function(require,module,exports){
+},{"./":16,"./query":24,"./utils/each":29,"./utils/emitter-shim":30,"./utils/extend":31,"./utils/sendQuery":34,"./utils/sendSavedQuery":35}],26:[function(require,module,exports){
+var request = require('superagent');
+var responseHandler = require('./helpers/superagent-handle-response');
+function savedQueries() {
+  var _this = this;
+  this.all = function(callback) {
+    var url = _this.url('/queries/saved');
+    request
+      .get(url)
+      .set('Content-Type', 'application/json')
+      .set('Authorization', _this.masterKey())
+      .end(handleResponse);
+    function handleResponse(err, res){
+      responseHandler(err, res, callback);
+      callback = null;
+    }
+  };
+  this.get = function(queryName, callback) {
+    var url = _this.url('/queries/saved/' + queryName);
+    request
+      .get(url)
+      .set('Content-Type', 'application/json')
+      .set('Authorization', _this.masterKey())
+      .end(handleResponse);
+    function handleResponse(err, res){
+      responseHandler(err, res, callback);
+      callback = null;
+    }
+  };
+  this.update = function(queryName, body, callback) {
+    var url = _this.url('/queries/saved/' + queryName);
+    request
+      .put(url)
+      .set('Content-Type', 'application/json')
+      .set('Authorization', _this.masterKey())
+      .send(body || {})
+      .end(handleResponse);
+    function handleResponse(err, res){
+      responseHandler(err, res, callback);
+      callback = null;
+    }
+  };
+  this.create = this.update;
+  this.destroy = function(queryName, callback) {
+    var url = _this.url('/queries/saved/' + queryName);
+    request
+      .del(url)
+      .set('Content-Type', 'application/json')
+      .set('Authorization', _this.masterKey())
+      .end(handleResponse);
+    function handleResponse(err, res){
+      responseHandler(err, res, callback);
+      callback = null;
+    }
+  };
+  return this;
+}
+module.exports = savedQueries;
+},{"./helpers/superagent-handle-response":14,"superagent":5}],27:[function(require,module,exports){
 module.exports = {
   map: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
   encode: function (n) {
@@ -3002,12 +3082,12 @@ module.exports = {
     }
   }
 };
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 var json = require('./json-shim');
 module.exports = function(target) {
   return json.parse( json.stringify( target ) );
 };
-},{"./json-shim":31}],28:[function(require,module,exports){
+},{"./json-shim":32}],29:[function(require,module,exports){
 module.exports = function(o, cb, s){
   var n;
   if (!o){
@@ -3031,11 +3111,11 @@ module.exports = function(o, cb, s){
   }
   return 1;
 };
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 var Emitter = require('component-emitter');
 Emitter.prototype.trigger = Emitter.prototype.emit;
 module.exports = Emitter;
-},{"component-emitter":1}],30:[function(require,module,exports){
+},{"component-emitter":1}],31:[function(require,module,exports){
 module.exports = function(target){
   for (var i = 1; i < arguments.length; i++) {
     for (var prop in arguments[i]){
@@ -3044,9 +3124,9 @@ module.exports = function(target){
   }
   return target;
 };
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = ('undefined' !== typeof window && window.JSON) ? window.JSON : require("json3");
-},{"json3":3}],32:[function(require,module,exports){
+},{"json3":3}],33:[function(require,module,exports){
 function parseParams(str){
   var urlParams = {},
       match,
@@ -3060,58 +3140,60 @@ function parseParams(str){
   return urlParams;
 };
 module.exports = parseParams;
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var request = require('superagent');
 var getContext = require('../helpers/get-context'),
-    getQueryString = require('../helpers/get-query-string'),
-    getUrlMaxLength = require('../helpers/get-url-max-length'),
     getXHR = require('../helpers/get-xhr-object'),
-    requestTypes = require('../helpers/superagent-request-types'),
     responseHandler = require('../helpers/superagent-handle-response');
 module.exports = function(path, params, callback){
-  var self = this,
-      urlBase = this.client.url(path),
-      reqType = this.client.config.requestType,
-      cb = callback;
-  callback = null;
-  if (!self.client.projectId()) {
-    self.client.trigger('error', 'Query not sent: Missing projectId property');
+  var url = this.client.url(path);
+  if (!this.client.projectId()) {
+    this.client.trigger('error', 'Query not sent: Missing projectId property');
     return;
   }
-  if (!self.client.readKey()) {
-    self.client.trigger('error', 'Query not sent: Missing readKey property');
+  if (!this.client.readKey()) {
+    this.client.trigger('error', 'Query not sent: Missing readKey property');
     return;
   }
-  if (getXHR() || getContext() === 'server' ) {
+  if (getContext() === 'server' || getXHR()) {
     request
-      .post(urlBase)
+      .post(url)
         .set('Content-Type', 'application/json')
-        .set('Authorization', self.client.readKey())
-        .timeout(self.timeout())
+        .set('Authorization', this.client.readKey())
+        .timeout(this.timeout())
         .send(params || {})
         .end(handleResponse);
   }
-  else {
-    extend(params, { api_key: self.client.readKey() });
-    urlBase += getQueryString(params);
-    if (urlBase.length < getUrlMaxLength() ) {
-      request
-        .get(urlBase)
-        .timeout(self.timeout())
-        .use(requestTypes('jsonp'))
-        .end(handleResponse);
-    }
-    else {
-      self.client.trigger('error', 'Query not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.');
-    }
-  }
   function handleResponse(err, res){
-    responseHandler(err, res, cb);
-    cb = callback = null;
+    responseHandler(err, res, callback);
+    callback = null;
   }
   return;
 }
-},{"../helpers/get-context":9,"../helpers/get-query-string":10,"../helpers/get-url-max-length":12,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"../helpers/superagent-request-types":15,"superagent":5}],34:[function(require,module,exports){
+},{"../helpers/get-context":9,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"superagent":5}],35:[function(require,module,exports){
+var request = require('superagent');
+var responseHandler = require('../helpers/superagent-handle-response');
+module.exports = function(path, params, callback){
+  var key;
+  if (this.client.readKey()) {
+    key = this.client.readKey();
+  }
+  else if (this.client.masterKey()) {
+    key = this.client.masterKey();
+  }
+  request
+    .get(this.client.url(path))
+    .set('Content-Type', 'application/json')
+    .set('Authorization', key)
+    .timeout(this.timeout())
+    .send()
+    .end(function(err, res) {
+      responseHandler(err, res, callback);
+      callback = null;
+    });
+  return;
+}
+},{"../helpers/superagent-handle-response":14,"superagent":5}],36:[function(require,module,exports){
 var clone = require("../core/utils/clone"),
     each = require("../core/utils/each"),
     flatten = require("./utils/flatten"),
@@ -3120,12 +3202,13 @@ var Emitter = require('../core/utils/emitter-shim');
 function Dataset(){
   this.data = {
     input: {},
-    output: [['index']]
+    output: [['Index']]
   };
   this.meta = {
     schema: {},
     method: undefined
   };
+  this.parser = undefined;
   if (arguments.length > 0) {
     this.parse.apply(this, arguments);
   }
@@ -3135,6 +3218,7 @@ Dataset.defaults = {
 };
 Emitter(Dataset);
 Emitter(Dataset.prototype);
+Dataset.parser = require('./utils/parsers')(Dataset);
 Dataset.prototype.input = function(obj){
   if (!arguments.length) return this["data"]["input"];
   this["data"]["input"] = (obj ? clone(obj) : null);
@@ -3353,7 +3437,7 @@ function extend(o, e){
   return o;
 }
 module.exports = Dataset;
-},{"../core/utils/clone":27,"../core/utils/each":28,"../core/utils/emitter-shim":29,"./utils/flatten":47,"./utils/parse":48}],35:[function(require,module,exports){
+},{"../core/utils/clone":28,"../core/utils/each":29,"../core/utils/emitter-shim":30,"./utils/flatten":49,"./utils/parse":50,"./utils/parsers":51}],37:[function(require,module,exports){
 var extend = require("../core/utils/extend"),
     Dataset = require("./dataset");
 extend(Dataset.prototype, require("./lib/append"));
@@ -3369,7 +3453,7 @@ extend(Dataset.prototype, {
   "format": require("./lib/format")
 });
 module.exports = Dataset;
-},{"../core/utils/extend":30,"./dataset":34,"./lib/analyses":36,"./lib/append":37,"./lib/delete":38,"./lib/filter":39,"./lib/format":40,"./lib/insert":41,"./lib/select":42,"./lib/set":43,"./lib/sort":44,"./lib/update":45}],36:[function(require,module,exports){
+},{"../core/utils/extend":31,"./dataset":36,"./lib/analyses":38,"./lib/append":39,"./lib/delete":40,"./lib/filter":41,"./lib/format":42,"./lib/insert":43,"./lib/select":44,"./lib/set":45,"./lib/sort":46,"./lib/update":47}],38:[function(require,module,exports){
 var each = require("../../core/utils/each"),
     arr = ["Average", "Maximum", "Minimum", "Sum"],
     output = {};
@@ -3423,7 +3507,7 @@ output["getColumnLabel"] = output["getRowIndex"] = function(arr){
   return arr[0];
 };
 module.exports = output;
-},{"../../core/utils/each":28}],37:[function(require,module,exports){
+},{"../../core/utils/each":29}],39:[function(require,module,exports){
 var each = require("../../core/utils/each");
 var createNullList = require('../utils/create-null-list');
 module.exports = {
@@ -3502,7 +3586,7 @@ function appendRow(str, input){
   }
   return self;
 }
-},{"../../core/utils/each":28,"../utils/create-null-list":46}],38:[function(require,module,exports){
+},{"../../core/utils/each":29,"../utils/create-null-list":48}],40:[function(require,module,exports){
 var each = require("../../core/utils/each");
 module.exports = {
   "deleteColumn": deleteColumn,
@@ -3525,7 +3609,7 @@ function deleteRow(q){
   }
   return this;
 }
-},{"../../core/utils/each":28}],39:[function(require,module,exports){
+},{"../../core/utils/each":29}],41:[function(require,module,exports){
 var each = require("../../core/utils/each");
 module.exports = {
   "filterColumns": filterColumns,
@@ -3559,7 +3643,7 @@ function filterRows(fn){
   self.output(clone);
   return self;
 }
-},{"../../core/utils/each":28}],40:[function(require,module,exports){
+},{"../../core/utils/each":29}],42:[function(require,module,exports){
 var each = require("../../core/utils/each");
 module.exports = function(options){
   var self = this;
@@ -3654,7 +3738,7 @@ function _applyFormat(value, opts){
   }
   return output;
 }
-},{"../../core/utils/each":28}],41:[function(require,module,exports){
+},{"../../core/utils/each":29}],43:[function(require,module,exports){
 var each = require("../../core/utils/each");
 var createNullList = require('../utils/create-null-list');
 var append = require('./append');
@@ -3733,7 +3817,7 @@ function insertRow(index, str, input){
   }
   return self;
 }
-},{"../../core/utils/each":28,"../utils/create-null-list":46,"./append":37}],42:[function(require,module,exports){
+},{"../../core/utils/each":29,"../utils/create-null-list":48,"./append":39}],44:[function(require,module,exports){
 var each = require("../../core/utils/each");
 module.exports = {
   "selectColumn": selectColumn,
@@ -3757,7 +3841,7 @@ function selectRow(q){
   }
   return  result;
 }
-},{"../../core/utils/each":28}],43:[function(require,module,exports){
+},{"../../core/utils/each":29}],45:[function(require,module,exports){
 var each = require("../../core/utils/each");
 var append = require('./append');
 var select = require('./select');
@@ -3783,7 +3867,7 @@ function set(coords, value){
   this.data.output[ rowIndex ][ colIndex ] = value;
   return this;
 }
-},{"../../core/utils/each":28,"./append":37,"./select":42}],44:[function(require,module,exports){
+},{"../../core/utils/each":29,"./append":39,"./select":44}],46:[function(require,module,exports){
 var each = require("../../core/utils/each");
 module.exports = {
   "sortColumns": sortColumns,
@@ -3833,7 +3917,7 @@ function sortRows(str, comp){
   self.output(head.concat(body));
   return self;
 }
-},{"../../core/utils/each":28}],45:[function(require,module,exports){
+},{"../../core/utils/each":29}],47:[function(require,module,exports){
 var each = require("../../core/utils/each");
 var createNullList = require('../utils/create-null-list');
 var append = require('./append');
@@ -3907,7 +3991,7 @@ function updateRow(q, input){
   }
   return self;
 }
-},{"../../core/utils/each":28,"../utils/create-null-list":46,"./append":37}],46:[function(require,module,exports){
+},{"../../core/utils/each":29,"../utils/create-null-list":48,"./append":39}],48:[function(require,module,exports){
 module.exports = function(len){
   var list = new Array();
   for (i = 0; i < len; i++) {
@@ -3915,7 +3999,7 @@ module.exports = function(len){
   }
   return list;
 };
-},{}],47:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 module.exports = flatten;
 function flatten(ob) {
   var toReturn = {};
@@ -3933,7 +4017,7 @@ function flatten(ob) {
   }
   return toReturn;
 }
-},{}],48:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 var each = require("../../core/utils/each");
 module.exports = function() {
   var result = [];
@@ -3986,7 +4070,189 @@ module.exports = function() {
   };
   return loop.apply(this, arguments);
 }
-},{"../../core/utils/each":28}],49:[function(require,module,exports){
+},{"../../core/utils/each":29}],51:[function(require,module,exports){
+var Dataset; /* injected */
+var each = require('../../core/utils/each'),
+    flatten = require('./flatten');
+var parsers = {
+  'metric':                   parseMetric,
+  'interval':                 parseInterval,
+  'grouped-metric':           parseGroupedMetric,
+  'grouped-interval':         parseGroupedInterval,
+  'double-grouped-metric':    parseDoubleGroupedMetric,
+  'double-grouped-interval':  parseDoubleGroupedInterval,
+  'funnel':                   parseFunnel,
+  'list':                     parseList,
+  'extraction':               parseExtraction
+};
+module.exports = initialize;
+function initialize(lib){
+  Dataset = lib;
+  return function(name){
+    var options = Array.prototype.slice.call(arguments, 1);
+    if (!parsers[name]) {
+      throw 'Requested parser does not exist';
+    }
+    else {
+      return parsers[name].apply(this, options);
+    }
+  };
+}
+function parseMetric(){
+  return function(res){
+    var dataset = new Dataset();
+    dataset.data.input = res;
+    dataset.parser = {
+      name: 'metric'
+    };
+    return dataset.set(['Value', 'Result'], res.result);
+  }
+}
+function parseInterval(){
+  var options = Array.prototype.slice.call(arguments);
+  return function(res){
+    var dataset = new Dataset();
+    each(res.result, function(record, i){
+      var index = options[0] && options[0] === 'timeframe.end' ? record.timeframe.end : record.timeframe.start;
+      dataset.set(['Result', index], record.value);
+    });
+    dataset.data.input = res;
+    dataset.parser = 'interval';
+    dataset.parser = {
+      name: 'interval',
+      options: options
+    };
+    return dataset;
+  }
+}
+function parseGroupedMetric(){
+  return function(res){
+    var dataset = new Dataset();
+    each(res.result, function(record, i){
+      var label;
+      each(record, function(value, key){
+        if (key !== 'result') {
+          label = key;
+        }
+      });
+      dataset.set(['Result', String(record[label])], record.result);
+    });
+    dataset.data.input = res;
+    dataset.parser = {
+      name: 'grouped-metric'
+    };
+    return dataset;
+  }
+}
+function parseGroupedInterval(){
+  var options = Array.prototype.slice.call(arguments);
+  return function(res){
+    var dataset = new Dataset();
+    each(res.result, function(record, i){
+      var index = options[0] && options[0] === 'timeframe.end' ? record.timeframe.end : record.timeframe.start;
+      if (record.value.length) {
+        each(record.value, function(group, j){
+          var label;
+          each(group, function(value, key){
+            if (key !== 'result') {
+              label = key;
+            }
+          });
+          dataset.set([ String(group[label]) || '', index ], group.result);
+        });
+      }
+      else {
+        dataset.appendRow(index);
+      }
+    });
+    dataset.data.input = res;
+    dataset.parser = {
+      name: 'grouped-interval',
+      options: options
+    };
+    return dataset;
+  }
+}
+function parseDoubleGroupedMetric(){
+  var options = Array.prototype.slice.call(arguments);
+  if (!options[0]) throw 'Requested parser requires a sequential list (array) of properties to target as a second argument';
+  return function(res){
+    var dataset = new Dataset();
+    each(res.result, function(record, i){
+      dataset.set([ 'Result', record[options[0][0]] + ' ' + record[options[0][1]] ], record.result);
+    });
+    dataset.data.input = res;
+    dataset.parser = {
+      name: 'double-grouped-metric',
+      options: options
+    };
+    return dataset;
+  }
+}
+function parseDoubleGroupedInterval(){
+  var options = Array.prototype.slice.call(arguments);
+  if (!options[0]) throw 'Requested parser requires a sequential list (array) of properties to target as a second argument';
+  return function(res){
+    var dataset = new Dataset();
+    each(res.result, function(record, i){
+      var index = options[1] && options[1] === 'timeframe.end' ? record.timeframe.end : record.timeframe.start;
+      each(record['value'], function(value, j){
+        var label = String(value[options[0][0]]) + ' ' + String(value[options[0][1]]);
+        dataset.set([ label, index ], value.result);
+      });
+    });
+    dataset.data.input = res;
+    dataset.parser = {
+      name: 'double-grouped-interval',
+      options: options
+    };
+    return dataset;
+  }
+}
+function parseFunnel(){
+  return function(res){
+    var dataset = new Dataset();
+    dataset.appendColumn('Step Value');
+    each(res.result, function(value, i){
+      dataset.appendRow(res.steps[i].event_collection, [ value ]);
+    });
+    dataset.data.input = res;
+    dataset.parser = {
+      name: 'funnel'
+    };
+    return dataset;
+  }
+}
+function parseList(){
+  return function(res){
+    var dataset = new Dataset();
+    each(res.result, function(value, i){
+      dataset.set( [ 'Value', i+1 ], value );
+    });
+    dataset.data.input = res;
+    dataset.parser = {
+      name: 'list'
+    };
+    return dataset;
+  }
+}
+function parseExtraction(){
+  return function(res){
+    var dataset = new Dataset();
+    each(res.result, function(record, i){
+      each(flatten(record), function(value, key){
+        dataset.set([key, i+1], value);
+      });
+    });
+    dataset.deleteColumn(0);
+    dataset.data.input = res;
+    dataset.parser = {
+      name: 'extraction'
+    };
+    return dataset;
+  }
+}
+},{"../../core/utils/each":29,"./flatten":49}],52:[function(require,module,exports){
 /*!
  * ----------------------
  * C3.js Adapter
@@ -4048,20 +4314,17 @@ module.exports = function(){
     };
   });
   function getSetupTemplate(type){
-    var setup = {
+    var setup = extend({
       axis: {},
-      bindto: this.el(),
-      data: {
-        columns: []
-      },
-      color: {
-        pattern: this.colors()
-      },
-      size: {
-        height: this.height(),
-        width: this.width()
-      }
-    };
+      color: {},
+      data: {},
+      size: {}
+    }, this.chartOptions());
+    setup.bindto = this.el();
+    setup.color.pattern = this.colors();
+    setup.data.columns = [];
+    setup.size.height = this.height();
+    setup.size.width = this.width();
     setup['data']['type'] = type;
     if (type === 'gauge') {}
     else if (type === 'pie' || type === 'donut') {
@@ -4073,7 +4336,7 @@ module.exports = function(){
         setup['axis']['x'] = {
           type: 'timeseries',
           tick: {
-            format: '%Y-%m-%d'
+            format: this.dateFormat() || getDateFormatDefault(this.data()[1][0], this.data()[2][0])
           }
         };
       }
@@ -4089,7 +4352,7 @@ module.exports = function(){
         setup['axis']['y'] = { label: this.title() }
       }
     }
-    return extend(setup, this.chartOptions());
+    return setup;
   }
   function _selfDestruct(){
     if (this.view._artifacts['c3']) {
@@ -4097,9 +4360,36 @@ module.exports = function(){
       this.view._artifacts['c3'] = null;
     }
   }
+  function getDateFormatDefault(a, b){
+    var d = Math.abs(new Date(a).getTime() - new Date(b).getTime());
+    var months = [
+      'Jan', 'Feb', 'Mar',
+      'Apr', 'May', 'June',
+      'July', 'Aug', 'Sept',
+      'Oct', 'Nov', 'Dec'
+    ];
+    if (d >= 2419200000) {
+      return function(ms){
+        var date = new Date(ms);
+        return months[date.getMonth()] + ' ' + date.getFullYear();
+      };
+    }
+    else if (d >= 86400000) {
+      return function(ms){
+        var date = new Date(ms);
+        return months[date.getMonth()] + ' ' + date.getDate();
+      };
+    }
+    else if (d >= 3600000) {
+      return '%I:%M %p';
+    }
+    else {
+      return '%I:%M:%S %p';
+    }
+  }
   Dataviz.register('c3', charts, { capabilities: dataTypes });
 };
-},{"../../core/utils/each":28,"../../core/utils/extend":30,"../dataviz":53}],50:[function(require,module,exports){
+},{"../../core/utils/each":29,"../../core/utils/extend":31,"../dataviz":56}],53:[function(require,module,exports){
 /*!
  * ----------------------
  * Chart.js Adapter
@@ -4205,6 +4495,10 @@ module.exports = function(){
         return this;
       },
       render: function(){
+        if(_isEmptyOutput(this.dataset)) {
+          this.error("No results to display");
+          return;
+        }
         var method = ChartNameMap[type],
             opts = extend({}, this.chartOptions()),
             data = dataTransformers[type].call(this);
@@ -4225,13 +4519,19 @@ module.exports = function(){
       this.view._artifacts["chartjs"] = null;
     }
   }
+  function _isEmptyOutput(dataset) {
+    var flattened = dataset.output().reduce(function(a, b) {
+      return a.concat(b)
+    });
+    return flattened.length === 0
+  }
   function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
   function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
   function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}
   function cutHex(h) {return (h.charAt(0)=="#") ? h.substring(1,7):h}
   Dataviz.register("chartjs", charts, { capabilities: dataTypes });
 };
-},{"../../core/utils/each":28,"../../core/utils/extend":30,"../dataviz":53}],51:[function(require,module,exports){
+},{"../../core/utils/each":29,"../../core/utils/extend":31,"../dataviz":56}],54:[function(require,module,exports){
 /*!
  * ----------------------
  * Google Charts Adapter
@@ -4288,6 +4588,16 @@ module.exports = function(){
         extend(options, this.chartOptions(), this.attributes());
         options['isStacked'] = (this.stacked() || options['isStacked']);
         this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data());
+        if (options.dateFormat) {
+          if (typeof options.dateFormat === 'function') {
+            options.dateFormat(this.view._artifacts['datatable']);
+          }
+          else if (typeof options.dateFormat === 'string') {
+            new google.visualization.DateFormat({
+              pattern: options.dateFormat
+            }).format(this.view._artifacts['datatable'], 0);
+          }
+        }
         if (this.view._artifacts['googlechart']) {
           this.view._artifacts['googlechart'].draw(this.view._artifacts['datatable'], options);
         }
@@ -4345,6 +4655,9 @@ module.exports = function(){
             width: "85%"
           };
         }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
+        }
         break;
       case "barchart":
         output.hAxis = {
@@ -4356,6 +4669,9 @@ module.exports = function(){
         };
         if (this.dataType() === "chronological" || this.dataType() === "cat-ordinal") {
           output.legend = "none";
+        }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.vAxis.format = this.dateFormat();
         }
         break;
       case "columnchart":
@@ -4371,6 +4687,9 @@ module.exports = function(){
           output.chartArea = {
             width: "85%"
           };
+        }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
         }
         break;
       case "linechart":
@@ -4388,6 +4707,9 @@ module.exports = function(){
             width: "85%"
           };
         }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
+        }
         break;
       case "piechart":
         output.sliceVisibilityThreshold = 0.01;
@@ -4398,7 +4720,7 @@ module.exports = function(){
     return output;
   }
 };
-},{"../../core":16,"../../core/utils/each":28,"../../core/utils/extend":30,"../dataviz":53}],52:[function(require,module,exports){
+},{"../../core":16,"../../core/utils/each":29,"../../core/utils/extend":31,"../dataviz":56}],55:[function(require,module,exports){
 /*!
 * ----------------------
 * Keen IO Adapter
@@ -4463,7 +4785,7 @@ module.exports = function(){
     render: function(){
       var bgColor = (this.colors().length == 1) ? this.colors()[0] : "#49c5b1",
           title = this.title() || "Result",
-          value = this.data()[1][1] || 0,
+          value = (this.data()[1] && this.data()[1][1]) ? this.data()[1][1] : 0,
           width = this.width(),
           opts = this.chartOptions() || {},
           prefix = "",
@@ -4540,7 +4862,7 @@ module.exports = function(){
     capabilities: dataTypes
   });
 };
-},{"../../core":16,"../../core/utils/clone":27,"../../core/utils/each":28,"../../core/utils/extend":30,"../dataviz":53,"../utils/prettyNumber":92}],53:[function(require,module,exports){
+},{"../../core":16,"../../core/utils/clone":28,"../../core/utils/each":29,"../../core/utils/extend":31,"../dataviz":56,"../utils/prettyNumber":95}],56:[function(require,module,exports){
 var clone = require('../core/utils/clone'),
     each = require('../core/utils/each'),
     extend = require('../core/utils/extend'),
@@ -4653,7 +4975,7 @@ Dataviz.find = function(target){
   if (match) return match;
 };
 module.exports = Dataviz;
-},{"../core":16,"../core/utils/clone":27,"../core/utils/each":28,"../core/utils/emitter-shim":29,"../core/utils/extend":30,"../dataset":35,"./utils/loadScript":90,"./utils/loadStyle":91}],54:[function(require,module,exports){
+},{"../core":16,"../core/utils/clone":28,"../core/utils/each":29,"../core/utils/emitter-shim":30,"../core/utils/extend":31,"../dataset":37,"./utils/loadScript":93,"./utils/loadStyle":94}],57:[function(require,module,exports){
 var clone = require("../../core/utils/clone"),
     extend = require("../../core/utils/extend"),
     Dataviz = require("../dataviz"),
@@ -4662,19 +4984,7 @@ module.exports = function(query, el, cfg) {
   var DEFAULTS = clone(Dataviz.defaults),
       visual = new Dataviz(),
       request = new Request(this, [query]),
-      config = cfg ? clone(cfg) : {};
-  if (config.chartType) {
-    visual.chartType(config.chartType);
-    delete config.chartType;
-  }
-  if (config.library) {
-    visual.library(config.library);
-    delete config.library;
-  }
-  if (config.chartOptions) {
-    visual.chartOptions(config.chartOptions);
-    delete config.chartOptions;
-  }
+      config = cfg || {};
   visual
     .attributes(extend(DEFAULTS, config))
     .el(el)
@@ -4695,7 +5005,7 @@ module.exports = function(query, el, cfg) {
   });
   return visual;
 };
-},{"../../core/request":25,"../../core/utils/clone":27,"../../core/utils/extend":30,"../dataviz":53}],55:[function(require,module,exports){
+},{"../../core/request":25,"../../core/utils/clone":28,"../../core/utils/extend":31,"../dataviz":56}],58:[function(require,module,exports){
 var Dataviz = require("../dataviz"),
     extend = require("../../core/utils/extend")
 module.exports = function(){
@@ -4712,27 +5022,14 @@ module.exports = function(){
   if (library && !chartType && map[dataType]) {
     chartType = map[dataType].chartType;
   }
-  return (library && chartType) ? Dataviz.libraries[library][chartType] : {};
-};
-},{"../../core/utils/extend":30,"../dataviz":53}],56:[function(require,module,exports){
-var each = require("../../core/utils/each"),
-    Dataset = require("../../dataset");
-module.exports = {
-  "extraction": parseExtraction
-};
-function parseExtraction(req){
-  var data = (req.data instanceof Array ? req.data[0] : req.data),
-  names = req.queries[0].get("property_names") || [],
-  schema = { records: "result", select: true };
-  if (names) {
-    schema.select = [];
-    each(names, function(p){
-      schema.select.push({ path: p });
-    });
+  if (library && chartType && Dataviz.libraries[library][chartType]) {
+    return Dataviz.libraries[library][chartType];
   }
-  return new Dataset(data, schema);
-}
-},{"../../core/utils/each":28,"../../dataset":35}],57:[function(require,module,exports){
+  else {
+    return {};
+  }
+};
+},{"../../core/utils/extend":31,"../dataviz":56}],59:[function(require,module,exports){
 module.exports = function(req){
   var analysis = req.queries[0].analysis.replace("_", " "),
   collection = req.queries[0].get('event_collection'),
@@ -4745,7 +5042,7 @@ module.exports = function(req){
   }
   return output;
 };
-},{}],58:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 module.exports = function(query){
   var isInterval = typeof query.params.interval === "string",
   isGroupBy = typeof query.params.group_by === "string",
@@ -4780,7 +5077,7 @@ module.exports = function(query){
   }
   return dataType;
 };
-},{}],59:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 var extend = require('../core/utils/extend'),
     Dataviz = require('./dataviz');
 extend(Dataviz.prototype, {
@@ -4793,6 +5090,7 @@ extend(Dataviz.prototype, {
   'colors'           : require('./lib/colors'),
   'data'             : require('./lib/data'),
   'dataType'         : require('./lib/dataType'),
+  'dateFormat'       : require('./lib/dateFormat'),
   'defaultChartType' : require('./lib/defaultChartType'),
   'el'               : require('./lib/el'),
   'height'           : require('./lib/height'),
@@ -4817,7 +5115,7 @@ extend(Dataviz.prototype, {
   'update'           : require('./lib/actions/update')
 });
 module.exports = Dataviz;
-},{"../core/utils/extend":30,"./dataviz":53,"./lib/actions/destroy":60,"./lib/actions/error":61,"./lib/actions/initialize":62,"./lib/actions/render":63,"./lib/actions/update":64,"./lib/adapter":65,"./lib/attributes":66,"./lib/call":67,"./lib/chartOptions":68,"./lib/chartType":69,"./lib/colorMapping":70,"./lib/colors":71,"./lib/data":72,"./lib/dataType":73,"./lib/defaultChartType":74,"./lib/el":75,"./lib/height":76,"./lib/indexBy":77,"./lib/labelMapping":78,"./lib/labels":79,"./lib/library":80,"./lib/parseRawData":81,"./lib/parseRequest":82,"./lib/prepare":83,"./lib/sortGroups":84,"./lib/sortIntervals":85,"./lib/stacked":86,"./lib/title":87,"./lib/width":88}],60:[function(require,module,exports){
+},{"../core/utils/extend":31,"./dataviz":56,"./lib/actions/destroy":62,"./lib/actions/error":63,"./lib/actions/initialize":64,"./lib/actions/render":65,"./lib/actions/update":66,"./lib/adapter":67,"./lib/attributes":68,"./lib/call":69,"./lib/chartOptions":70,"./lib/chartType":71,"./lib/colorMapping":72,"./lib/colors":73,"./lib/data":74,"./lib/dataType":75,"./lib/dateFormat":76,"./lib/defaultChartType":77,"./lib/el":78,"./lib/height":79,"./lib/indexBy":80,"./lib/labelMapping":81,"./lib/labels":82,"./lib/library":83,"./lib/parseRawData":84,"./lib/parseRequest":85,"./lib/prepare":86,"./lib/sortGroups":87,"./lib/sortIntervals":88,"./lib/stacked":89,"./lib/title":90,"./lib/width":91}],62:[function(require,module,exports){
 var getAdapterActions = require("../../helpers/getAdapterActions");
 module.exports = function(){
   var actions = getAdapterActions.call(this);
@@ -4833,19 +5131,24 @@ module.exports = function(){
   this.view._artifacts = {};
   return this;
 };
-},{"../../helpers/getAdapterActions":55}],61:[function(require,module,exports){
+},{"../../helpers/getAdapterActions":58}],63:[function(require,module,exports){
 var getAdapterActions = require("../../helpers/getAdapterActions"),
     Dataviz = require("../../dataviz");
 module.exports = function(){
   var actions = getAdapterActions.call(this);
-  if (actions['error']) {
-    actions['error'].apply(this, arguments);
-  } else {
-    Dataviz.libraries['keen-io']['error'].render.apply(this, arguments);
+  if (this.el()) {
+    if (actions['error']) {
+      actions['error'].apply(this, arguments);
+    } else {
+      Dataviz.libraries['keen-io']['error'].render.apply(this, arguments);
+    }
+  }
+  else {
+    this.emit('error', 'No DOM element provided');
   }
   return this;
 };
-},{"../../dataviz":53,"../../helpers/getAdapterActions":55}],62:[function(require,module,exports){
+},{"../../dataviz":56,"../../helpers/getAdapterActions":58}],64:[function(require,module,exports){
 var getAdapterActions = require("../../helpers/getAdapterActions"),
     Dataviz = require("../../dataviz");
 module.exports = function(){
@@ -4856,11 +5159,17 @@ module.exports = function(){
   } else {
     if (this.el()) this.el().innerHTML = "";
   }
-  if (actions.initialize) actions.initialize.apply(this, arguments);
+  if (actions.initialize) {
+    actions.initialize.apply(this, arguments);
+  }
+  else {
+    this.error('Incorrect chartType');
+    this.emit('error', 'Incorrect chartType');
+  }
   this.view._initialized = true;
   return this;
 };
-},{"../../dataviz":53,"../../helpers/getAdapterActions":55}],63:[function(require,module,exports){
+},{"../../dataviz":56,"../../helpers/getAdapterActions":58}],65:[function(require,module,exports){
 var getAdapterActions = require("../../helpers/getAdapterActions"),
     applyTransforms = require("../../utils/applyTransforms");
 module.exports = function(){
@@ -4875,7 +5184,7 @@ module.exports = function(){
   }
   return this;
 };
-},{"../../helpers/getAdapterActions":55,"../../utils/applyTransforms":89}],64:[function(require,module,exports){
+},{"../../helpers/getAdapterActions":58,"../../utils/applyTransforms":92}],66:[function(require,module,exports){
 var getAdapterActions = require("../../helpers/getAdapterActions"),
     applyTransforms = require("../../utils/applyTransforms");
 module.exports = function(){
@@ -4888,7 +5197,7 @@ module.exports = function(){
   }
   return this;
 };
-},{"../../helpers/getAdapterActions":55,"../../utils/applyTransforms":89}],65:[function(require,module,exports){
+},{"../../helpers/getAdapterActions":58,"../../utils/applyTransforms":92}],67:[function(require,module,exports){
 var each = require("../../core/utils/each");
 module.exports = function(obj){
   if (!arguments.length) return this.view.adapter;
@@ -4898,40 +5207,54 @@ module.exports = function(obj){
   });
   return this;
 };
-},{"../../core/utils/each":28}],66:[function(require,module,exports){
+},{"../../core/utils/each":29}],68:[function(require,module,exports){
 var each = require("../../core/utils/each");
-var chartOptions = require("./chartOptions");
+var chartOptions = require("./chartOptions")
+    chartType = require("./chartType"),
+    library = require("./library");
 module.exports = function(obj){
   if (!arguments.length) return this.view["attributes"];
   var self = this;
   each(obj, function(prop, key){
-    if (key === "chartOptions") {
+    if (key === "library") {
+      library.call(self, prop);
+    }
+    else if (key === "chartType") {
+      chartType.call(self, prop);
+    }
+    else if (key === "chartOptions") {
       chartOptions.call(self, prop);
-    } else {
+    }
+    else {
       self.view["attributes"][key] = prop;
     }
   });
   return this;
 };
-},{"../../core/utils/each":28,"./chartOptions":68}],67:[function(require,module,exports){
+},{"../../core/utils/each":29,"./chartOptions":70,"./chartType":71,"./library":83}],69:[function(require,module,exports){
 module.exports = function(fn){
   fn.call(this);
   return this;
 };
-},{}],68:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 var extend = require('../../core/utils/extend');
 module.exports = function(obj){
   if (!arguments.length) return this.view.adapter.chartOptions;
-  extend(this.view.adapter.chartOptions, obj);
+  if (typeof obj === 'object' && obj !== null) {
+    extend(this.view.adapter.chartOptions, obj);
+  }
+  else {
+    this.view.adapter.chartOptions = {};
+  }
   return this;
 };
-},{"../../core/utils/extend":30}],69:[function(require,module,exports){
+},{"../../core/utils/extend":31}],71:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view.adapter.chartType;
   this.view.adapter.chartType = (str ? String(str) : null);
   return this;
 };
-},{}],70:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 var each = require("../../core/utils/each");
 module.exports = function(obj){
   if (!arguments.length) return this.view["attributes"].colorMapping;
@@ -4966,14 +5289,14 @@ function colorMapping(){
     self.view.attributes.colors = colorSet;
   }
 }
-},{"../../core/utils/each":28}],71:[function(require,module,exports){
+},{"../../core/utils/each":29}],73:[function(require,module,exports){
 module.exports = function(arr){
   if (!arguments.length) return this.view["attributes"].colors;
   this.view["attributes"].colors = (arr instanceof Array ? arr : null);
   this.view.defaults.colors = (arr instanceof Array ? arr : null);
   return this;
 };
-},{}],72:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 var Dataset = require("../../dataset"),
     Request = require("../../core/request");
 module.exports = function(data){
@@ -4987,59 +5310,88 @@ module.exports = function(data){
   }
   return this;
 };
-},{"../../core/request":25,"../../dataset":35}],73:[function(require,module,exports){
+},{"../../core/request":25,"../../dataset":37}],75:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view.adapter.dataType;
   this.view.adapter.dataType = (str ? String(str) : null);
   return this;
 };
-},{}],74:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
+module.exports = function(val){
+  if (!arguments.length) return this.view.attributes.dateFormat;
+  if (typeof val === 'string' || typeof val === 'function') {
+    this.view.attributes.dateFormat = val;
+  }
+  else {
+    this.view.attributes.dateFormat = undefined;
+  }
+  return this;
+};
+},{}],77:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view.adapter.defaultChartType;
   this.view.adapter.defaultChartType = (str ? String(str) : null);
   return this;
 };
-},{}],75:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 module.exports = function(el){
   if (!arguments.length) return this.view.el;
   this.view.el = el;
   return this;
 };
-},{}],76:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 module.exports = function(num){
   if (!arguments.length) return this.view["attributes"]["height"];
   this.view["attributes"]["height"] = (!isNaN(parseInt(num)) ? parseInt(num) : null);
   return this;
 };
-},{}],77:[function(require,module,exports){
-var Dataset = require("../../dataset"),
-    Dataviz = require("../dataviz"),
-    each = require("../../core/utils/each");
+},{}],80:[function(require,module,exports){
+var Dataset = require('../../dataset'),
+    Dataviz = require('../dataviz'),
+    each = require('../../core/utils/each');
 module.exports = function(str){
-  if (!arguments.length) return this.view["attributes"].indexBy;
-  this.view["attributes"].indexBy = (str ? String(str) : Dataviz.defaults.indexBy);
+  if (!arguments.length) return this.view['attributes'].indexBy;
+  this.view['attributes'].indexBy = (str ? String(str) : Dataviz.defaults.indexBy);
   indexBy.call(this);
   return this;
 };
 function indexBy(){
-  var self = this,
-  root = this.dataset.meta.schema || this.dataset.meta.unpack,
-  newOrder = this.indexBy().split(".").join(Dataset.defaults.delimeter);
-  each(root, function(def, i){
-    if (i === "select" && def instanceof Array) {
-      each(def, function(c, j){
-        if (c.path.indexOf("timeframe -> ") > -1) {
-          self.dataset.meta.schema[i][j].path = newOrder;
-        }
-      });
+  var parser, options;
+  if (this.dataset.output().length > 1
+    && !isNaN(new Date(this.dataset.output()[1][0]).getTime())) {
+    if (this.dataset.parser
+      && this.dataset.parser.name
+        && this.dataset.parser.options) {
+      if (this.dataset.parser.options.length === 1) {
+        parser = Dataset.parser(this.dataset.parser.name, this.indexBy());
+        this.dataset.parser.options[0] = this.indexBy();
+      }
+      else {
+        parser = Dataset.parser(this.dataset.parser.name, this.dataset.parser.options[0], this.indexBy());
+        this.dataset.parser.options[1] = this.indexBy();
+      }
     }
-    else if (i === "unpack" && typeof def === "object") {
-      self.dataset.meta.schema[i]['index'].path = newOrder;
+    else if (this.dataset.output()[0].length === 2) {
+      parser = Dataset.parser('interval', this.indexBy());
+      this.dataset.parser = {
+        name: 'interval',
+        options: [this.indexBy()]
+      };
     }
-  });
-  this.dataset.parse();
+    else {
+      parser = Dataset.parser('grouped-interval', this.indexBy());
+      this.dataset.parser = {
+        name: 'grouped-interval',
+        options: [this.indexBy()]
+      };
+    }
+    this.dataset = parser(this.dataset.input());
+    this.dataset.updateColumn(0, function(value){
+      return (typeof value === 'string') ? new Date(value) : value;
+    });
+  }
 }
-},{"../../core/utils/each":28,"../../dataset":35,"../dataviz":53}],78:[function(require,module,exports){
+},{"../../core/utils/each":29,"../../dataset":37,"../dataviz":56}],81:[function(require,module,exports){
 var each = require("../../core/utils/each");
 module.exports = function(obj){
   if (!arguments.length) return this.view["attributes"].labelMapping;
@@ -5050,24 +5402,23 @@ module.exports = function(obj){
 function applyLabelMapping(){
   var self = this,
   labelMap = this.labelMapping(),
-  schema = this.dataset.schema() || {},
   dt = this.dataType() || "";
   if (labelMap) {
-    if (dt.indexOf("chronological") > -1 || (schema.unpack && self.dataset.output()[0].length > 2)) {
+    if (dt.indexOf("chronological") > -1 || (self.dataset.output()[0].length > 2)) {
       each(self.dataset.output()[0], function(c, i){
         if (i > 0) {
           self.dataset.data.output[0][i] = labelMap[c] || c;
         }
       });
     }
-    else if (schema.select && self.dataset.output()[0].length === 2) {
+    else if (self.dataset.output()[0].length === 2) {
       self.dataset.updateColumn(0, function(c, i){
         return labelMap[c] || c;
       });
     }
   }
 }
-},{"../../core/utils/each":28}],79:[function(require,module,exports){
+},{"../../core/utils/each":29}],82:[function(require,module,exports){
 var each = require('../../core/utils/each');
 module.exports = function(arr){
   if (!arguments.length) {
@@ -5087,11 +5438,10 @@ module.exports = function(arr){
 function setLabels(){
   var self = this,
       labelSet = this.labels() || null,
-      schema = this.dataset.schema() || {},
       data = this.dataset.output(),
       dt = this.dataType() || '';
   if (labelSet) {
-    if (dt.indexOf('chronological') > -1 || (schema.unpack && data[0].length > 2)) {
+    if (dt.indexOf('chronological') > -1 || (data[0].length > 2)) {
       each(data[0], function(cell,i){
         if (i > 0 && labelSet[i-1]) {
           self.dataset.data.output[0][i] = labelSet[i-1];
@@ -5108,11 +5458,10 @@ function setLabels(){
   }
 }
 function getLabels(){
-  var schema = this.dataset.schema() || {},
-      data = this.dataset.output(),
+  var data = this.dataset.output(),
       dt = this.dataType() || '',
       labels;
-  if (dt.indexOf('chron') > -1 || (schema.unpack && data[0].length > 2)) {
+  if (dt.indexOf('chron') > -1 || (data[0].length > 2)) {
     labels = this.dataset.selectRow(0).slice(1);
   }
   else {
@@ -5120,165 +5469,148 @@ function getLabels(){
   }
   return labels;
 }
-},{"../../core/utils/each":28}],80:[function(require,module,exports){
+},{"../../core/utils/each":29}],83:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view.adapter.library;
   this.view.adapter.library = (str ? String(str) : null);
   return this;
 };
-},{}],81:[function(require,module,exports){
-var Dataviz = require('../dataviz'),
-    Dataset = require('../../dataset');
-var each = require('../../core/utils/each');
-module.exports = function(raw){
-  this.dataset = parseRawData.call(this, raw);
-  return this;
-};
-function parseRawData(response){
-  var self = this,
-      schema = {},
-      indexBy,
-      delimeter,
-      indexTarget,
-      labelSet,
-      labelMap,
-      dataType,
-      dataset;
-  indexBy = self.indexBy() ? self.indexBy() : Dataviz.defaults.indexBy;
-  delimeter = Dataset.defaults.delimeter;
-  indexTarget = indexBy.split('.').join(delimeter);
-  labelSet = self.labels() || null;
-  labelMap = self.labelMapping() || null;
-  if (typeof response.result == 'number'){
-    dataType = 'singular';
-    schema = {
-      records: '',
-      select: [{
-        path: 'result',
-        type: 'string',
-        label: 'Metric'
-      }]
-    }
+},{}],84:[function(require,module,exports){
+var Dataset = require('../../dataset');
+var extend = require('../../core/utils/extend');
+module.exports = function(response){
+  var dataType,
+      indexBy = this.indexBy() ? this.indexBy() : 'timestamp.start',
+      parser,
+      parserArgs = [],
+      query = (typeof response.query !== 'undefined') ? response.query : {};
+  query = extend({
+    analysis_type: null,
+    event_collection: null,
+    filters: [],
+    group_by: null,
+    interval: null,
+    timeframe: null,
+    timezone: null
+  }, query);
+  if (query.analysis_type === 'funnel') {
+    dataType = 'cat-ordinal';
+    parser = 'funnel';
   }
-  if (response.result instanceof Array && response.result.length > 0){
-    if (response.result[0].timeframe && (typeof response.result[0].value == 'number' || response.result[0].value == null)) {
-      dataType = 'chronological';
-      schema = {
-        records: 'result',
-        select: [
-          {
-            path: indexTarget,
-            type: 'date'
-          },
-          {
-            path: 'value',
-            type: 'number'
-          }
-        ]
-      }
-    }
-    if (typeof response.result[0].result == 'number'){
-      dataType = 'categorical';
-      schema = {
-        records: 'result',
-        select: []
-      };
-      for (var key in response.result[0]){
-        if (response.result[0].hasOwnProperty(key) && key !== 'result'){
-          schema.select.push({
-            path: key,
-            type: 'string'
-          });
-          break;
-        }
-      }
-      schema.select.push({
-        path: 'result',
-        type: 'number'
-      });
-    }
-    if (response.result[0].value instanceof Array){
-      dataType = 'cat-chronological';
-      schema = {
-        records: 'result',
-        unpack: {
-          index: {
-            path: indexTarget,
-            type: 'date'
-          },
-          value: {
-            path: 'value -> result',
-            type: 'number'
-          }
-        }
-      }
-      for (var key in response.result[0].value[0]){
-        if (response.result[0].value[0].hasOwnProperty(key) && key !== 'result'){
-          schema.unpack.label = {
-            path: 'value -> ' + key,
-            type: 'string'
-          }
-          break;
-        }
-      }
-    }
-    if (typeof response.result[0] == 'number' && typeof response.steps !== "undefined"){
-      dataType = 'cat-ordinal';
-      schema = {
-        records: '',
-        unpack: {
-          index: {
-            path: 'steps -> event_collection',
-            type: 'string'
-          },
-          value: {
-            path: 'result -> ',
-            type: 'number'
-          }
-        }
-      }
-    }
-    if ((typeof response.result[0] == 'string' || typeof response.result[0] == 'number') && typeof response.steps === "undefined"){
+  else if (query.analysis_type === 'extraction'){
+    dataType = 'extraction';
+    parser = 'extraction';
+  }
+  else if (query.analysis_type === 'select_unique') {
+    if (!query.group_by && !query.interval) {
       dataType = 'nominal';
-      dataset = new Dataset();
-      dataset.appendColumn('unique values', []);
-      each(response.result, function(result, i){
-        dataset.appendRow(result);
-      });
-    }
-    if (dataType === void 0) {
-      dataType = 'extraction';
-      schema = { records: 'result', select: true };
+      parser = 'list';
     }
   }
-  dataset = dataset instanceof Dataset ? dataset : new Dataset(response, schema);
+  else if (query.analysis_type) {
+    if (!query.group_by && !query.interval) {
+      dataType = 'singular';
+      parser = 'metric';
+    }
+    else if (query.group_by && !query.interval) {
+      if (query.group_by instanceof Array && query.group_by.length > 1) {
+        dataType = 'categorical';
+        parser = 'double-grouped-metric';
+        parserArgs.push(query.group_by);
+      }
+      else {
+        dataType = 'categorical';
+        parser = 'grouped-metric';
+      }
+    }
+    else if (query.interval && !query.group_by) {
+      dataType = 'chronological';
+      parser = 'interval';
+      parserArgs.push(indexBy);
+    }
+    else if (query.group_by && query.interval) {
+      if (query.group_by instanceof Array && query.group_by.length > 1) {
+        dataType = 'cat-chronological';
+        parser = 'double-grouped-interval';
+        parserArgs.push(query.group_by);
+        parserArgs.push(indexBy);
+      }
+      else {
+        dataType = 'cat-chronological';
+        parser = 'grouped-interval';
+        parserArgs.push(indexBy);
+      }
+    }
+  }
+  if (!parser) {
+    if (typeof response.result === 'number'){
+      dataType = 'singular';
+      parser = 'metric';
+    }
+    if (response.result instanceof Array && response.result.length > 0){
+      if (response.result[0].timeframe && (typeof response.result[0].value == 'number' || response.result[0].value == null)) {
+        dataType = 'chronological';
+        parser = 'interval';
+        parserArgs.push(indexBy)
+      }
+      if (typeof response.result[0].result == 'number'){
+        dataType = 'categorical';
+        parser = 'grouped-metric';
+      }
+      if (response.result[0].value instanceof Array){
+        dataType = 'cat-chronological';
+        parser = 'grouped-interval';
+        parserArgs.push(indexBy)
+      }
+      if (typeof response.result[0] == 'number' && typeof response.steps !== "undefined"){
+        dataType = 'cat-ordinal';
+        parser = 'funnel';
+      }
+      if ((typeof response.result[0] == 'string' || typeof response.result[0] == 'number') && typeof response.steps === "undefined"){
+        dataType = 'nominal';
+        parser = 'list';
+      }
+      if (dataType === void 0) {
+        dataType = 'extraction';
+        parser = 'extraction';
+      }
+    }
+  }
   if (dataType) {
-    self.dataType(dataType);
+    this.dataType(dataType);
   }
-  return dataset;
-}
-},{"../../core/utils/each":28,"../../dataset":35,"../dataviz":53}],82:[function(require,module,exports){
-var getDatasetSchemas = require("../helpers/getDatasetSchemas"),
-    getDefaultTitle = require("../helpers/getDefaultTitle"),
-    getQueryDataType = require("../helpers/getQueryDataType");
-var Dataset = require("../../dataset"),
-    parseRawData = require("./parseRawData");
-module.exports = function(req){
-  var dataType = getQueryDataType(req.queries[0]);
-  if (dataType === "extraction") {
-    this.dataset = getDatasetSchemas.extraction(req);
-  }
-  else {
-    this.parseRawData(req.data instanceof Array ? req.data[0] : req.data);
-  }
-  this.dataType(dataType);
-  this.view.defaults.title = getDefaultTitle.call(this, req);
-  if (!this.title()) {
-    this.title(this.view.defaults.title);
+  this.dataset = Dataset.parser.apply(this, [parser].concat(parserArgs))(response);
+  if (parser.indexOf('interval') > -1) {
+    this.dataset.updateColumn(0, function(value, i){
+      return new Date(value);
+    });
   }
   return this;
 };
-},{"../../dataset":35,"../helpers/getDatasetSchemas":56,"../helpers/getDefaultTitle":57,"../helpers/getQueryDataType":58,"./parseRawData":81}],83:[function(require,module,exports){
+},{"../../core/utils/extend":31,"../../dataset":37}],85:[function(require,module,exports){
+var Query = require('../../core/query');
+var dataType = require('./dataType'),
+    extend = require('../../core/utils/extend'),
+    getDefaultTitle = require('../helpers/getDefaultTitle'),
+    getQueryDataType = require('../helpers/getQueryDataType'),
+    parseRawData = require('./parseRawData'),
+    title = require('./title');
+module.exports = function(req){
+  var response = req.data instanceof Array ? req.data[0] : req.data;
+  if (req.queries[0] instanceof Query) {
+    response.query = extend({
+      analysis_type: req.queries[0].analysis
+    }, req.queries[0].params);
+    dataType.call(this, getQueryDataType(req.queries[0]));
+    this.view.defaults.title = getDefaultTitle.call(this, req);
+    if (!title.call(this)) {
+      title.call(this, this.view.defaults.title);
+    }
+  }
+  parseRawData.call(this, response);
+  return this;
+};
+},{"../../core/query":24,"../../core/utils/extend":31,"../helpers/getDefaultTitle":59,"../helpers/getQueryDataType":60,"./dataType":75,"./parseRawData":84,"./title":90}],86:[function(require,module,exports){
 var Dataviz = require("../dataviz");
 module.exports = function(){
   var loader;
@@ -5298,7 +5630,7 @@ module.exports = function(){
   }
   return this;
 };
-},{"../dataviz":53}],84:[function(require,module,exports){
+},{"../dataviz":56}],87:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view["attributes"].sortGroups;
   this.view["attributes"].sortGroups = (str ? String(str) : null);
@@ -5316,7 +5648,7 @@ function runSortGroups(){
   }
   return;
 }
-},{}],85:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view["attributes"].sortIntervals;
   this.view["attributes"].sortIntervals = (str ? String(str) : null);
@@ -5328,25 +5660,25 @@ function runSortIntervals(){
   this.dataset.sortRows(this.sortIntervals());
   return;
 }
-},{}],86:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 module.exports = function(bool){
   if (!arguments.length) return this.view['attributes']['stacked'];
   this.view['attributes']['stacked'] = bool ? true : false;
   return this;
 };
-},{}],87:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view["attributes"]["title"];
   this.view["attributes"]["title"] = (str ? String(str) : null);
   return this;
 };
-},{}],88:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 module.exports = function(num){
   if (!arguments.length) return this.view["attributes"]["width"];
   this.view["attributes"]["width"] = (!isNaN(parseInt(num)) ? parseInt(num) : null);
   return this;
 };
-},{}],89:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 module.exports = function(){
   if (this.labelMapping()) {
     this.labelMapping(this.labelMapping());
@@ -5361,7 +5693,7 @@ module.exports = function(){
     this.sortIntervals(this.sortIntervals());
   }
 };
-},{}],90:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = function(url, cb) {
   var doc = document;
   var handler;
@@ -5395,7 +5727,7 @@ module.exports = function(url, cb) {
     }, false);
   }
 };
-},{}],91:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 module.exports = function(url, cb) {
   var link = document.createElement('link');
   link.setAttribute('rel', 'stylesheet');
@@ -5404,7 +5736,7 @@ module.exports = function(url, cb) {
   cb();
   document.head.appendChild(link);
 };
-},{}],92:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 module.exports = function(_input) {
   var input = Number(_input),
       sciNo = input.toPrecision(3),
@@ -5458,7 +5790,7 @@ module.exports = function(_input) {
     }
   }
 };
-},{}],93:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 (function (global){
 ;(function (f) {
   if (typeof define === "function" && define.amd) {
@@ -5491,6 +5823,7 @@ module.exports = function(_input) {
     "post"                : require("./core/lib/post"),
     "put"                 : require("./core/lib/post"),
     "run"                 : require("./core/lib/run"),
+    "savedQueries"        : require("./core/saved-queries"),
     "draw"                : require("./dataviz/extensions/draw")
   });
   Keen.Query = require("./core/query");
@@ -5522,4 +5855,4 @@ module.exports = function(_input) {
   return Keen;
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./core":16,"./core/async":8,"./core/lib/addEvent":17,"./core/lib/addEvents":18,"./core/lib/get":19,"./core/lib/post":20,"./core/lib/run":21,"./core/lib/setGlobalProperties":22,"./core/lib/trackExternalLink":23,"./core/query":24,"./core/request":25,"./core/utils/base64":26,"./core/utils/each":28,"./core/utils/extend":30,"./core/utils/parseParams":32,"./dataset":35,"./dataviz":59,"./dataviz/adapters/c3":49,"./dataviz/adapters/chartjs":50,"./dataviz/adapters/google":51,"./dataviz/adapters/keen-io":52,"./dataviz/extensions/draw":54,"./dataviz/utils/prettyNumber":92,"domready":2,"spin.js":4}]},{},[93]);
+},{"./core":16,"./core/async":8,"./core/lib/addEvent":17,"./core/lib/addEvents":18,"./core/lib/get":19,"./core/lib/post":20,"./core/lib/run":21,"./core/lib/setGlobalProperties":22,"./core/lib/trackExternalLink":23,"./core/query":24,"./core/request":25,"./core/saved-queries":26,"./core/utils/base64":27,"./core/utils/each":29,"./core/utils/extend":31,"./core/utils/parseParams":33,"./dataset":37,"./dataviz":61,"./dataviz/adapters/c3":52,"./dataviz/adapters/chartjs":53,"./dataviz/adapters/google":54,"./dataviz/adapters/keen-io":55,"./dataviz/extensions/draw":57,"./dataviz/utils/prettyNumber":95,"domready":2,"spin.js":4}]},{},[96]);

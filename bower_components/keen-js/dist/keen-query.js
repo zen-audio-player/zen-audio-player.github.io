@@ -1820,15 +1820,6 @@ module.exports = function(){
   return new Date().getTimezoneOffset() * -60;
 };
 },{}],9:[function(require,module,exports){
-module.exports = function(){
-  if ("undefined" !== typeof window) {
-    if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
-      return 2000;
-    }
-  }
-  return 16000;
-};
-},{}],10:[function(require,module,exports){
 module.exports = function() {
   var root = "undefined" == typeof window ? this : window;
   if (root.XMLHttpRequest && ("file:" != root.location.protocol || !root.ActiveXObject)) {
@@ -1841,7 +1832,7 @@ module.exports = function() {
   }
   return false;
 };
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = function(err, res, callback) {
   var cb = callback || function() {};
   if (res && !res.ok) {
@@ -1857,14 +1848,14 @@ module.exports = function(err, res, callback) {
   }
   return;
 };
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var superagent = require('superagent');
 var each = require('../utils/each'),
     getXHR = require('./get-xhr-object');
 module.exports = function(type, opts){
   return function(request) {
     var __super__ = request.constructor.prototype.end;
-    if ( 'undefined' === typeof window ) return;
+    if ( typeof window === 'undefined' ) return;
     request.requestType = request.requestType || {};
     request.requestType['type'] = type;
     request.requestType['options'] = request.requestType['options'] || {
@@ -1879,7 +1870,7 @@ module.exports = function(type, opts){
       }
     };
     if (opts) {
-      if ( 'boolean' === typeof opts.async ) {
+      if ( typeof opts.async === 'boolean' ) {
         request.requestType['options'].async = opts.async;
       }
       if ( opts.success ) {
@@ -1894,7 +1885,7 @@ module.exports = function(type, opts){
           reqType = (this.requestType) ? this.requestType['type'] : 'xhr',
           query,
           timeout;
-      if ( ('GET' !== self['method'] || 'xhr' === reqType) && self.requestType['options'].async ) {
+      if ( ('GET' !== self['method'] ||  reqType === 'xhr' ) && self.requestType['options'].async ) {
         __super__.call(self, fn);
         return;
       }
@@ -1914,10 +1905,10 @@ module.exports = function(type, opts){
       if ( !self.requestType['options'].async ) {
         sendXhrSync.call(self);
       }
-      else if ( 'jsonp' === reqType ) {
+      else if ( reqType === 'jsonp' ) {
         sendJsonp.call(self);
       }
-      else if ( 'beacon' === reqType ) {
+      else if ( reqType === 'beacon' ) {
         sendBeacon.call(self);
       }
       return self;
@@ -2034,7 +2025,7 @@ function xhrShim(opts){
   };
   return this;
 }
-},{"../utils/each":18,"./get-xhr-object":10,"superagent":3}],13:[function(require,module,exports){
+},{"../utils/each":18,"./get-xhr-object":9,"superagent":3}],12:[function(require,module,exports){
 var root = 'undefined' !== typeof window ? window : this;
 var previous_Keen = root.Keen;
 var Emitter = require('./utils/emitter-shim');
@@ -2045,7 +2036,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.2.7';
+Keen.version = '3.4.0';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){
@@ -2115,7 +2106,7 @@ Keen.ready = function(fn){
   }
 };
 module.exports = Keen;
-},{"./utils/emitter-shim":19}],14:[function(require,module,exports){
+},{"./utils/emitter-shim":19}],13:[function(require,module,exports){
 var request = require('superagent');
 var getQueryString = require('../helpers/get-query-string'),
     handleResponse = require('../helpers/superagent-handle-response'),
@@ -2135,12 +2126,26 @@ module.exports = function(url, params, api_key, callback){
       callback = null;
     });
 };
-},{"../helpers/get-query-string":7,"../helpers/superagent-handle-response":11,"../helpers/superagent-request-types":12,"superagent":3}],15:[function(require,module,exports){
+},{"../helpers/get-query-string":7,"../helpers/superagent-handle-response":10,"../helpers/superagent-request-types":11,"superagent":3}],14:[function(require,module,exports){
 var Request = require("../request");
 module.exports = function(query, callback) {
   var queries = [],
       cb = callback,
       request;
+  if (!this.config.projectId || !this.config.projectId.length) {
+    handleConfigError.call(this, 'Missing projectId property');
+  }
+  if (!this.config.readKey || !this.config.readKey.length) {
+    handleConfigError.call(this, 'Missing readKey property');
+  }
+  function handleConfigError(msg){
+    var err = 'Query not sent: ' + msg;
+    this.trigger('error', err);
+    if (cb) {
+      cb.call(this, err, null);
+      cb = callback = null;
+    }
+  }
   if (query instanceof Array) {
     queries = query;
   } else {
@@ -2150,7 +2155,7 @@ module.exports = function(query, callback) {
   cb = callback = null;
   return request;
 };
-},{"../request":17}],16:[function(require,module,exports){
+},{"../request":16}],15:[function(require,module,exports){
 var each = require("./utils/each"),
     extend = require("./utils/extend"),
     getTimezoneOffset = require("./helpers/get-timezone-offset"),
@@ -2212,12 +2217,14 @@ Query.prototype.addFilter = function(property, operator, value) {
   return this;
 };
 module.exports = Query;
-},{"./helpers/get-query-string":7,"./helpers/get-timezone-offset":8,"./utils/each":18,"./utils/emitter-shim":19,"./utils/extend":20}],17:[function(require,module,exports){
-var each = require("./utils/each"),
-    extend = require("./utils/extend"),
-    sendQuery = require("./utils/sendQuery");
-var Keen = require("./");
+},{"./helpers/get-query-string":7,"./helpers/get-timezone-offset":8,"./utils/each":18,"./utils/emitter-shim":19,"./utils/extend":20}],16:[function(require,module,exports){
+var each = require('./utils/each'),
+    extend = require('./utils/extend'),
+    sendQuery = require('./utils/sendQuery'),
+    sendSavedQuery = require('./utils/sendSavedQuery');
 var Emitter = require('./utils/emitter-shim');
+var Keen = require('./');
+var Query = require('./query');
 function Request(client, queries, callback){
   var cb = callback;
   this.config = {
@@ -2230,10 +2237,10 @@ Emitter(Request.prototype);
 Request.prototype.configure = function(client, queries, callback){
   var cb = callback;
   extend(this, {
-    "client"   : client,
-    "queries"  : queries,
-    "data"     : {},
-    "callback" : cb
+    'client'   : client,
+    'queries'  : queries,
+    'data'     : {},
+    'callback' : cb
   });
   cb = callback = null;
   return this;
@@ -2253,7 +2260,7 @@ Request.prototype.refresh = function(){
       return;
     }
     if (err) {
-      self.trigger("error", err);
+      self.trigger('error', err);
       if (self.callback) {
         self.callback(err, null);
       }
@@ -2264,31 +2271,37 @@ Request.prototype.refresh = function(){
     completions++;
     if (completions == self.queries.length && !errored) {
       self.data = (self.queries.length == 1) ? response[0] : response;
-      self.trigger("complete", null, self.data);
+      self.trigger('complete', null, self.data);
       if (self.callback) {
         self.callback(null, self.data);
       }
     }
   };
   each(self.queries, function(query, index){
-    var path;
     var cbSequencer = function(err, res){
       handleResponse(err, res, index);
     };
-    if (query instanceof Keen.Query) {
-      path = "/queries/" + query.analysis;
-      sendQuery.call(self, path, query.params, cbSequencer);
+    var path = '/queries';
+    if (typeof query === 'string') {
+      path += '/saved/' + query + '/result';
+      sendSavedQuery.call(self, path, {}, cbSequencer);
     }
-    else if ( Object.prototype.toString.call(query) === "[object String]" ) {
-      path = "/saved_queries/" + encodeURIComponent(query) + "/result";
-      sendQuery.call(self, path, null, cbSequencer);
+    else if (query instanceof Query) {
+      path += '/' + query.analysis;
+      if (query.analysis === 'saved') {
+        path += '/' + query.params.query_name + '/result';
+        sendSavedQuery.call(self, path, {}, cbSequencer);
+      }
+      else {
+        sendQuery.call(self, path, query.params, cbSequencer);
+      }
     }
     else {
       var res = {
-        statusText: "Bad Request",
-        responseText: { message: "Error: Query " + (+index+1) + " of " + self.queries.length + " for project " + self.client.projectId() + " is not a valid request" }
+        statusText: 'Bad Request',
+        responseText: { message: 'Error: Query ' + (+index+1) + ' of ' + self.queries.length + ' for project ' + self.client.projectId() + ' is not a valid request' }
       };
-      self.trigger("error", res.responseText.message);
+      self.trigger('error', res.responseText.message);
       if (self.callback) {
         self.callback(res.responseText.message, null);
       }
@@ -2297,7 +2310,65 @@ Request.prototype.refresh = function(){
   return this;
 };
 module.exports = Request;
-},{"./":13,"./utils/each":18,"./utils/emitter-shim":19,"./utils/extend":20,"./utils/sendQuery":23}],18:[function(require,module,exports){
+},{"./":12,"./query":15,"./utils/each":18,"./utils/emitter-shim":19,"./utils/extend":20,"./utils/sendQuery":23,"./utils/sendSavedQuery":24}],17:[function(require,module,exports){
+var request = require('superagent');
+var responseHandler = require('./helpers/superagent-handle-response');
+function savedQueries() {
+  var _this = this;
+  this.all = function(callback) {
+    var url = _this.url('/queries/saved');
+    request
+      .get(url)
+      .set('Content-Type', 'application/json')
+      .set('Authorization', _this.masterKey())
+      .end(handleResponse);
+    function handleResponse(err, res){
+      responseHandler(err, res, callback);
+      callback = null;
+    }
+  };
+  this.get = function(queryName, callback) {
+    var url = _this.url('/queries/saved/' + queryName);
+    request
+      .get(url)
+      .set('Content-Type', 'application/json')
+      .set('Authorization', _this.masterKey())
+      .end(handleResponse);
+    function handleResponse(err, res){
+      responseHandler(err, res, callback);
+      callback = null;
+    }
+  };
+  this.update = function(queryName, body, callback) {
+    var url = _this.url('/queries/saved/' + queryName);
+    request
+      .put(url)
+      .set('Content-Type', 'application/json')
+      .set('Authorization', _this.masterKey())
+      .send(body || {})
+      .end(handleResponse);
+    function handleResponse(err, res){
+      responseHandler(err, res, callback);
+      callback = null;
+    }
+  };
+  this.create = this.update;
+  this.destroy = function(queryName, callback) {
+    var url = _this.url('/queries/saved/' + queryName);
+    request
+      .del(url)
+      .set('Content-Type', 'application/json')
+      .set('Authorization', _this.masterKey())
+      .end(handleResponse);
+    function handleResponse(err, res){
+      responseHandler(err, res, callback);
+      callback = null;
+    }
+  };
+  return this;
+}
+module.exports = savedQueries;
+},{"./helpers/superagent-handle-response":10,"superagent":3}],18:[function(require,module,exports){
 module.exports = function(o, cb, s){
   var n;
   if (!o){
@@ -2353,55 +2424,57 @@ module.exports = parseParams;
 },{}],23:[function(require,module,exports){
 var request = require('superagent');
 var getContext = require('../helpers/get-context'),
-    getQueryString = require('../helpers/get-query-string'),
-    getUrlMaxLength = require('../helpers/get-url-max-length'),
     getXHR = require('../helpers/get-xhr-object'),
-    requestTypes = require('../helpers/superagent-request-types'),
     responseHandler = require('../helpers/superagent-handle-response');
 module.exports = function(path, params, callback){
-  var self = this,
-      urlBase = this.client.url(path),
-      reqType = this.client.config.requestType,
-      cb = callback;
-  callback = null;
-  if (!self.client.projectId()) {
-    self.client.trigger('error', 'Query not sent: Missing projectId property');
+  var url = this.client.url(path);
+  if (!this.client.projectId()) {
+    this.client.trigger('error', 'Query not sent: Missing projectId property');
     return;
   }
-  if (!self.client.readKey()) {
-    self.client.trigger('error', 'Query not sent: Missing readKey property');
+  if (!this.client.readKey()) {
+    this.client.trigger('error', 'Query not sent: Missing readKey property');
     return;
   }
-  if (getXHR() || getContext() === 'server' ) {
+  if (getContext() === 'server' || getXHR()) {
     request
-      .post(urlBase)
+      .post(url)
         .set('Content-Type', 'application/json')
-        .set('Authorization', self.client.readKey())
-        .timeout(self.timeout())
+        .set('Authorization', this.client.readKey())
+        .timeout(this.timeout())
         .send(params || {})
         .end(handleResponse);
   }
-  else {
-    extend(params, { api_key: self.client.readKey() });
-    urlBase += getQueryString(params);
-    if (urlBase.length < getUrlMaxLength() ) {
-      request
-        .get(urlBase)
-        .timeout(self.timeout())
-        .use(requestTypes('jsonp'))
-        .end(handleResponse);
-    }
-    else {
-      self.client.trigger('error', 'Query not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.');
-    }
-  }
   function handleResponse(err, res){
-    responseHandler(err, res, cb);
-    cb = callback = null;
+    responseHandler(err, res, callback);
+    callback = null;
   }
   return;
 }
-},{"../helpers/get-context":6,"../helpers/get-query-string":7,"../helpers/get-url-max-length":9,"../helpers/get-xhr-object":10,"../helpers/superagent-handle-response":11,"../helpers/superagent-request-types":12,"superagent":3}],24:[function(require,module,exports){
+},{"../helpers/get-context":6,"../helpers/get-xhr-object":9,"../helpers/superagent-handle-response":10,"superagent":3}],24:[function(require,module,exports){
+var request = require('superagent');
+var responseHandler = require('../helpers/superagent-handle-response');
+module.exports = function(path, params, callback){
+  var key;
+  if (this.client.readKey()) {
+    key = this.client.readKey();
+  }
+  else if (this.client.masterKey()) {
+    key = this.client.masterKey();
+  }
+  request
+    .get(this.client.url(path))
+    .set('Content-Type', 'application/json')
+    .set('Authorization', key)
+    .timeout(this.timeout())
+    .send()
+    .end(function(err, res) {
+      responseHandler(err, res, callback);
+      callback = null;
+    });
+  return;
+}
+},{"../helpers/superagent-handle-response":10,"superagent":3}],25:[function(require,module,exports){
 (function (global){
 ;(function (f) {
   if (typeof define === "function" && define.amd) {
@@ -2427,7 +2500,8 @@ module.exports = function(path, params, callback){
       extend = require("./core/utils/extend");
   extend(Keen.prototype, {
     "get"                 : require("./core/lib/get"),
-    "run"                 : require("./core/lib/run")
+    "run"                 : require("./core/lib/run"),
+    "savedQueries"        : require("./core/saved-queries"),
   });
   Keen.Query = require("./core/query");
   Keen.Request = require("./core/request");
@@ -2441,4 +2515,4 @@ module.exports = function(path, params, callback){
   return Keen;
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./core":13,"./core/lib/get":14,"./core/lib/run":15,"./core/query":16,"./core/request":17,"./core/utils/each":18,"./core/utils/extend":20,"./core/utils/parseParams":22}]},{},[24]);
+},{"./core":12,"./core/lib/get":13,"./core/lib/run":14,"./core/query":15,"./core/request":16,"./core/saved-queries":17,"./core/utils/each":18,"./core/utils/extend":20,"./core/utils/parseParams":22}]},{},[25]);
