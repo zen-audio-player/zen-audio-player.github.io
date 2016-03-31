@@ -5,14 +5,15 @@
   "main": "tests.js",
   "scripts": {
     "lint:js": "eslint js/*.js",
-    "lint:tests":"eslint test/*.js",
+    "lint:tests": "eslint test/*.js",
     "lint:html": "htmlhint index.html",
     "lint:css": "csslint --format=compact --warnings=box-model,ids css/*.css",
     "stylelint:css": "stylelint css/*.css",
     "lint": "npm run lint:js && npm run lint:html && npm run lint:css && npm run lint:tests",
     "pretest": "npm run stylelint:css && npm run lint",
     "test": "mocha",
-    "exp-fix:js": "eslint js/everything.js --fix"
+    "exp-fix:js": "eslint js/everything.js --fix",
+    "start": "http-server --cors -o -a localhost"
   },
   "repository": {
     "type": "git",
@@ -40,5 +41,8 @@
   },
   "engines": {
     "node": ">=4.x"
+  },
+  "dependencies": {
+    "http-server": "^0.9.0"
   }
 }
