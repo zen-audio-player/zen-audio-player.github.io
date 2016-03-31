@@ -132,20 +132,10 @@ function onPlayerReady(event) {
         return;
     }
 
-    // Google Analytics
-    ga("send", "event", "Playing YouTube video title", this.videoTitle);
-    ga("send", "event", "Playing YouTube video author", this.videoAuthor);
-    ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
-
     // Setup player
     if (currentVideoID) {
         ZenPlayer.init(currentVideoID);
     }
-    sendKeenEvent("Playing YouTube video", {
-        author: player.getVideoData().author,
-        title: player.getVideoData().title,
-        seconds: player.getDuration()
-    });
 }
 
 var errorMessage = {
@@ -203,6 +193,16 @@ var ZenPlayer = {
 
         // Everything available, ready to show now
         this.show();
+
+        // Analytics
+        ga("send", "event", "Playing YouTube video title", this.videoTitle);
+        ga("send", "event", "Playing YouTube video author", this.videoAuthor);
+        ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
+        sendKeenEvent("Playing YouTube video", {
+            author: player.getVideoData().author,
+            title: player.getVideoData().title,
+            seconds: player.getDuration()
+        });
     },
     show: function() {
         $("#audioplayer").show();
