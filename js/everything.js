@@ -1,3 +1,53 @@
+
+// Pointer to Keen client
+var client;
+
+function anonymizeFileUrl() {
+    var url = window.location.href;
+    if (url.indexOf("file://") === 0) {
+        url = "localhost";
+    }
+    return url;
+}
+
+function sendKeenEvent(_msg, _data) {
+    var d = {
+        page_url: anonymizeFileUrl(), //eslint-disable-line camelcase
+        user_agent: "${keen.user_agent}", //eslint-disable-line camelcase
+        ip_address: "${keen.ip}", //eslint-disable-line camelcase
+        keen: {
+            addons: [
+                {
+                    name: "keen:ip_to_geo",
+                    input: {
+                        ip: "ip_address"
+                    },
+                    output: "ip_geo_info"
+                },
+                {
+                    name: "keen:ua_parser",
+                    input: {
+                        ua_string: "user_agent" //eslint-disable-line camelcase
+                    },
+                    output: "parsed_user_agent"
+                },
+                {
+                    name: "keen:url_parser",
+                    input: {
+                        url: "page_url"
+                    },
+                    output: "parsed_page_url"
+                }
+            ]
+        }
+    };
+
+    for (var _d in _data) {
+        d[_d] = _data[_d];
+    }
+    client.addEvent(_msg, d);
+}
+
 /*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription*/
 
 /**
@@ -62,6 +112,7 @@ function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
                 // Update the UI w/ error
                 errorMessage.show(message);
                 ga("send", "event", "YouTube iframe API error", verboseMessage);
+                sendKeenEvent("YouTube iframe API error", {verbose: verboseMessage, message: message, code: event.data});
 
                 // Log debug info
                 console.log("Verbose debug error message: ", verboseMessage);
@@ -137,16 +188,23 @@ var ZenPlayer = {
         // Start video from where we left off
         player.seekTo(loadTime());
 
-        // Google Analytics
-        ga("send", "event", "Playing YouTube video title", this.videoTitle);
-        ga("send", "event", "Playing YouTube video author", this.videoAuthor);
-        ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
-
         // When it is the player's first play, hide the youtube video
         $("#player").hide();
 
         // Everything available, ready to show now
         this.show();
+
+        // Analytics
+        ga("send", "event", "Playing YouTube video title", this.videoTitle);
+        ga("send", "event", "Playing YouTube video author", this.videoAuthor);
+        ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
+        // For some reason author is always an empty string, but not when inspected in the browser...
+        sendKeenEvent("Playing YouTube video", {
+            author: player.getVideoData().author,
+            title: player.getVideoData().title,
+            seconds: player.getDuration(),
+            youtubeID: player.getVideoData().video_id
+        });
     },
     show: function() {
         $("#audioplayer").show();
@@ -477,6 +535,12 @@ function wrapParseYouTubeVideoID(url) {
 }
 
 $(function() {
+    // Keen.io
+    client = new Keen({ //eslint-disable-line no-undef
+        projectId: "5690c384c1e0ab0c8a6c59c4",
+        writeKey: "630fa16847ce5ffb01c9cc00327498e4e7716e0f324fb14fdf0e83ffc06f9eacff5fad1313c2701efe4a91c88c34b8d8153cbb121c454056bb63caf60a46336dd9c9e9855ecc5202ef3151d798eda40896d5111f44005c707cbfb32c7ae31070d129d6f520d5604fdbce5ad31e9c7232"
+    });
+
     errorMessage.init();
 
     // Preload the form from the URL
@@ -538,6 +602,7 @@ $(function() {
         if (formValue) {
             var videoID = wrapParseYouTubeVideoID(formValue, true);
             ga("send", "event", "form submitted", videoID);
+            sendKeenEvent("Form submitted", {videoID: videoID});
 
             if (isFileProtocol()) {
                 errorMessage.show("Skipping video lookup request as we're running the site locally.");
@@ -582,6 +647,7 @@ $(function() {
     $("#demo").click(function(event) {
         event.preventDefault();
         ga("send", "event", "demo", "clicked");
+        sendKeenEvent("Demo", {action: "clicked"});
 
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
@@ -590,6 +656,7 @@ $(function() {
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
+            sendKeenEvent("demo", {action: "already had video ID in URL"});
         }
     });
 });
