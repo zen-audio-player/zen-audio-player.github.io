@@ -198,10 +198,12 @@ var ZenPlayer = {
         ga("send", "event", "Playing YouTube video title", this.videoTitle);
         ga("send", "event", "Playing YouTube video author", this.videoAuthor);
         ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
+        // TODO: for some reason author isn't set almost every time, but title is
         sendKeenEvent("Playing YouTube video", {
             author: player.getVideoData().author,
             title: player.getVideoData().title,
-            seconds: player.getDuration()
+            seconds: player.getDuration(),
+            youtube_id: player.getVideoData().video_id
         });
     },
     show: function() {
