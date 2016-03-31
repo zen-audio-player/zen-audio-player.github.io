@@ -81,7 +81,7 @@ function setupSite() {
             $("#togglePlayer").text("Show Player");
         }
     });
-    
+
 }
 
 function getVideoDescription(videoID) {
