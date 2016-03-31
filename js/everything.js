@@ -60,9 +60,9 @@ function setupSite() {
     var videoDescription = getVideoDescription(currentVideoID);
 
     // Google Analytics
-    ga("send", "event", "Playing YouTube video title", this.videoTitle);
-    ga("send", "event", "Playing YouTube video author", this.videoAuthor);
-    ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
+    ga("send", "event", "Playing YouTube video title", videoTitle);
+    ga("send", "event", "Playing YouTube video author", videoAuthor);
+    ga("send", "event", "Playing YouTube video duration (seconds)", videoDuration);
 
     // Place stuff on page
     setupTitle(videoTitle, videoUrl);
