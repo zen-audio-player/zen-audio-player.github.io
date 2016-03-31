@@ -57,6 +57,7 @@ function setupSite() {
     var videoAuthor = videoData.author;
     var videoDuration = plyrPlayer.plyr.embed.getDuration();
     var videoUrl = plyrPlayer.plyr.embed.getVideoUrl();
+    var videoDescription = getVideoDescription(currentVideoID);
 
     // Google Analytics
     ga("send", "event", "Playing YouTube video title", this.videoTitle);
@@ -65,6 +66,7 @@ function setupSite() {
 
     // Place stuff on page
     setupTitle(videoTitle, videoUrl);
+    setupVideoDescription(videoDescription);
 
     // Show player button click event
     $("#togglePlayer").click(function(event) {
@@ -82,6 +84,36 @@ function setupSite() {
     
 }
 
+function getVideoDescription(videoID) {
+    var description = "";
+
+    if (isFileProtocol()) {
+        console.log("Skipping video description request as we're running the site locally.");
+        $("#toggleDescription").hide();
+    }
+    else {
+        getYouTubeVideoDescription(
+            videoID,
+            youTubeDataApiKey,
+            function(data) {
+                if (data.items.length === 0) {
+                    errorMessage.show("Video description not found");
+                }
+                else {
+                    description = data.items[0].snippet.description;
+                }
+            },
+            function(jqXHR, textStatus, errorThrown) {
+                var responseText = JSON.parse(jqXHR.error().responseText);
+                errorMessage.show(responseText.error.errors[0].message);
+                console.log("Video Description error", errorThrown);
+            }
+        );
+    }
+
+    return description;
+}
+
 function setupTitle(title, url) {
     // Prepend music note only if title does not already begin with one.
     var tmpVideoTitle = title;
@@ -90,6 +122,26 @@ function setupTitle(title, url) {
     }
     $("#zen-video-title").html(tmpVideoTitle);
     $("#zen-video-title").attr("href", url);
+}
+
+function setupVideoDescription(videoDescription) {
+    var description = anchorURLs(videoDescription);
+    $("#zen-video-description").html(description);
+    $("#zen-video-description").hide();
+
+    $("#toggleDescription").click(function(event) {
+        event.preventDefault();
+
+        var descriptionElement = $("#zen-video-description");
+        descriptionElement.toggle();
+
+        if (descriptionElement.is(":visible")) {
+            $("#toggleDescription").text("Hide Description");
+        }
+        else {
+            $("#toggleDescription").text("Show Description");
+        }
+    });
 }
 
 function isFileProtocol() {
