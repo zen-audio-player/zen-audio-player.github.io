@@ -1,7 +1,6 @@
-/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription*/
-
 var plyrPlayer;
 var currentVideoID;
+var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 
 function initPlayer() {
     var currentVideoID = getCurrentVideoID();
@@ -119,6 +118,22 @@ function updateTweetMessage() {
     );
 }
 
+var errorMessage = {
+    init: function() {
+        // nothing for now
+    },
+    show: function(message) {
+        $("#zen-error").text("ERROR: " + message);
+        $("#zen-error").show();
+
+        // When the error message is shown, also hide the player
+        $("#audioplayer").hide();
+    },
+    hide: function() {
+        $("#zen-error").text("").hide();
+    }
+};
+
 function getCurrentVideoID() {
     var v = getParameterByName(window.location.search, "v");
     // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
@@ -188,8 +203,6 @@ function wrapParseYouTubeVideoID(url) {
         errorMessage.show("Failed to parse the video ID.");
     }
 }
-
-// TODO: this function can go away, the YouTube API will let you play video by URL
 
 $(function() {
     initPlayer();
