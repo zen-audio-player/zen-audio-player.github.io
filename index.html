@@ -62,13 +62,7 @@
         <!-- The video, along with related content & messages -->
         <div id="audioplayer">
             <h3><a id="zen-video-title"></a></h3>
-            <!-- Plyr controls' icons and Plyr player itself -->
-            <div id="plyr-svg" hidden>
-            </div>
-            <div class="plyr">
-                <audio></audio>
-            </div>
-            <br>
+
             <div id="playerControls">
                 <button class="btn" id="togglePlayer">
                     Show Player
@@ -77,9 +71,18 @@
                     Show Description
                 </button>
             </div>
+            <br>
+
+            <!-- Plyr controls' icons and Plyr player itself -->
+            <div id="plyr-svg" hidden>
+            </div>
+            <div class="plyr">
+                <audio></audio>
+            </div>
+            <br>
+            <div id="zen-video-description"></div>
+            <br>
         </div>
-        <br>
-        <br>
         <button id="demo" class="btn">
             <i class="fa fa-mouse-pointer"></i>
             Click for Demo
