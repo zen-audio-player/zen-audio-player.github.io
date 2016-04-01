@@ -165,26 +165,10 @@ function setupPlyr() {
                 type: "youtube"
             }]
         });
-
-        //Inject svg with controls' icons
-        $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
-        //Load video into Plyr player
-        plyrPlayer.source({
-            type: "video",
-            title: player.getVideoData().title,
-            sources: [{
-                src: currentVideoID,
-                type: "youtube"
-            }]
-        });
-        //Hide video; leave only controls
-        $(document.querySelector(".plyr__video-wrapper")).hide();
-        plyrPlayer = document.querySelector(".plyr");
     }
+
     //Show player
     $("#audioplayer").show();
-    // When it is the player's first play, hide the youtube video
-    $(".plyr__video-wrapper").hide();
 }
 
 var errorMessage = {
@@ -323,8 +307,8 @@ var ZenPlayer = {
         // This should be called when the youtube player is done loading
 
         // Gather video info
-        this.videoTitle = player.getVideoData().title;
-        this.videoAuthor = player.getVideoData().author;
+        this.videoTitle = plyrPlayer.plyr.embed.getVideoData().title;
+        this.videoAuthor = plyrPlayer.plyr.embed.getVideoData().author;
         this.videoDuration = player.getDuration();
         this.videoDescription = this.getVideoDescription(videoID);
         this.videoUrl = player.getVideoUrl();
@@ -351,10 +335,10 @@ var ZenPlayer = {
         ga("send", "event", "Playing YouTube video duration (seconds)", this.videoDuration);
         // For some reason author is always an empty string, but not when inspected in the browser...
         sendKeenEvent("Playing YouTube video", {
-            author: player.getVideoData().author,
-            title: player.getVideoData().title,
+            author: plyrPlayer.plyr.embed.getVideoData().author,
+            title: plyrPlayer.plyr.embed.getVideoData().title,
             seconds: player.getDuration(),
-            youtubeID: player.getVideoData().video_id
+            youtubeID: plyrPlayer.plyr.embed.getVideoData().video_id
         });
     },
     show: function() {
