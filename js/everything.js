@@ -170,16 +170,16 @@ function setupPlyr() {
         $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
         //Load video into Plyr player
         plyrPlayer.source({
-            type: 'video',
+            type: "video",
             title: player.getVideoData().title,
             sources: [{
                 src: currentVideoID,
-                type: 'youtube'
+                type: "youtube"
             }]
         });
         //Hide video; leave only controls
-        $(document.querySelector('.plyr__video-wrapper')).hide();
-        plyrPlayer = document.querySelector('.plyr');
+        $(document.querySelector(".plyr__video-wrapper")).hide();
+        plyrPlayer = document.querySelector(".plyr");
     }
     //Show player
     $("#audioplayer").show();
