@@ -137,8 +137,8 @@ describe("Demo", function () {
             //     : info. But there's a race condition where sometimes the player object isn't ready yet...?
             //     : looks like can't rely on global variables.
             // TODO: How do we inspect the player object (title, etc.)?
-            browser.assert.element("#player");
-            assert.ok(browser.evaluate("window.player"));
+            browser.assert.element(".plyr");
+            assert.ok(browser.evaluate("window.plyrPlayer"));
             browser.assert.text("#togglePlayer", "Show Player");
             browser.assert.text("#zen-error", "");
             done();
