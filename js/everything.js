@@ -168,17 +168,17 @@ function setupPlyr() {
 
         //Inject svg with controls' icons
         $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
-		//Load video into Plyr player
-		plyrPlayer.source({
-			type: 'video',
-			title: player.getVideoData().title,
-			sources: [{
-				src: currentVideoID,
-				type: 'youtube'
-			}]
-		});
-		//Hide video; leave only controls
-		$(document.querySelector('.plyr__video-wrapper')).hide();
+        //Load video into Plyr player
+        plyrPlayer.source({
+            type: 'video',
+            title: player.getVideoData().title,
+            sources: [{
+                src: currentVideoID,
+                type: 'youtube'
+            }]
+        });
+        //Hide video; leave only controls
+        $(document.querySelector('.plyr__video-wrapper')).hide();
         plyrPlayer = document.querySelector('.plyr');
     }
     //Show player
