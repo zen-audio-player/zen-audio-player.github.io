@@ -174,7 +174,7 @@ describe("Public Method Tests", function() {
         expect(tooltipIsShownAfterSlide).toBeTruthy();
       });
       
-      it("tooltip is shown on mouse over and hides correclty after mouse leave", function() {
+      it("tooltip is shown on mouse over and hides correctly after mouse leave", function() {
         testSlider = $("#testSlider1").slider({
           tooltip : "show"
         });
@@ -456,77 +456,6 @@ describe("Public Method Tests", function() {
     });
   });
 
-
-  describe("'destroy()' tests", function() {
-    describe("slider instance tests", function() {
-      beforeEach(function() {
-        testSlider = $("#testSlider1").slider();
-      });
-
-      it("removes the extra DOM elements associated with a slider", function() {
-        testSlider.slider('destroy');
-
-        var sliderParentElement = $("#testSlider1").parent('div.slider').length,
-            sliderChildrenElements = $("#testSlider1").siblings('div.slider-track, div.tooltip').length;
-
-        expect(sliderParentElement).toBe(0);
-        expect(sliderChildrenElements).toBe(0);
-      });
-
-      describe("unbinds all slider events", function() {
-        var flag, evtName;
-
-        beforeEach(function() {
-          flag = false;
-        });
-
-        it("unbinds from 'slideStart' event", function() {
-          evtName = 'slideStart';
-          testSlider.on(evtName, function() {
-            flag = true;
-          });
-          testSlider.slider('destroy');
-          testSlider.trigger(evtName);
-          expect(flag).toBeFalsy();
-        });
-
-        it("unbinds from 'slide' event", function() {
-          evtName = 'slide';
-          testSlider.on(evtName, function() {
-            flag = true;
-          });
-          testSlider.slider('destroy');
-          testSlider.trigger(evtName);
-          expect(flag).toBeFalsy();
-        });
-
-        it("unbinds from 'slideStop' event", function() {
-          evtName = 'slideStop';
-          testSlider.on(evtName, function() {
-            flag = true;
-          });
-          testSlider.slider('destroy');
-          testSlider.trigger(evtName);
-          expect(flag).toBeFalsy();
-        });
-
-        it("unbinds from 'slideChange' event", function() {
-          evtName = 'slideChange';
-          testSlider.on(evtName, function() {
-            flag = true;
-          });
-          testSlider.slider('destroy');
-          testSlider.trigger(evtName);
-          expect(flag).toBeFalsy();
-        });
-      });
-
-      afterEach(function() {
-        testSlider = null;
-      });
-    });
-  });
-
   describe("'enable()' tests", function() {
     it("correctly enables a slider", function() {
       testSlider = $("#testSlider1").slider({
@@ -642,6 +571,38 @@ describe("Public Method Tests", function() {
     // Main tooltip margin-left offset should re-adjust to be > 0
     tooltipMarginLeft = Math.abs( parseFloat(mainTooltipDOMRef.style.marginLeft) );
     expect(tooltipMarginLeft).toBeGreaterThan(0);
+  });
+
+  it("relayout: if slider is not displayed on initialization and then displayed later on, relayout() will re-adjust the tick label width", function() {
+    // Setup
+    testSlider = new Slider("#relayoutSliderInputTickLabels", {
+      id: "relayoutSliderTickLabels",
+      min: 0,
+      max: 10,
+      ticks: [0, 5, 10],
+      ticks_labels: ['low', 'mid', 'high'],
+      value: 5
+    });
+
+    var $ticks = $('#relayoutSliderTickLabels').find('.slider-tick-label');
+
+    // Tick-Width should be 0 on slider intialization
+    var i, $tick;
+    for (i = 0; i < $ticks.length; i++) {
+      $tick = $($ticks[i]);
+      expect( parseInt($tick.css('width')) ).toBe(0);
+    }
+
+    // Show slider and call relayout()
+    $('#relayoutSliderContainerTickLabels').css('display', 'block');
+    testSlider.relayout();
+    $('#relayoutSliderContainerTickLabels').css('display', 'none');
+
+    // Tick-Width should re-adjust to be > 0
+    for (i = 0; i < $ticks.length; i++) {
+      $tick = $($ticks[i]);
+      expect( parseInt($tick.css('width')) ).toBeGreaterThan(0);
+    }
   });
 
   afterEach(function() {

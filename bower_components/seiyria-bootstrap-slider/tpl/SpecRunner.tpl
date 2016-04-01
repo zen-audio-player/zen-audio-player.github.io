@@ -16,6 +16,16 @@
 		{
 			background: rgb(255, 0, 0);
 		}
+		#scrollable-div {
+			overflow-y: scroll;
+			width: 300px;
+			height: 150px;
+			position: relative;
+		}
+		#low-div {
+			padding: 2000px 0 500px 0;
+		}
+
 	</style>
 </head>
 <body>
@@ -61,10 +71,39 @@
 
 	<input id="makeRangeSlider" type="text"/>
 
+	<div id="autoregisterSliderContainer">
+		<input id="autoregisterSlider" data-provide="slider" data-slider-value="1"/>
+	</div>
+
 	<div id="relayoutSliderContainer" style="display: none">
 		<input id="relayoutSliderInput" type="text"/>
 	</div>
 
+	<div id="relayoutSliderContainerTickLabels" style="display: none">
+		<input id="relayoutSliderInputTickLabels" type="text"/>
+	</div>
+
+	<div id="scrollable-div">
+		<p>just a row</p>
+		<p>just a row</p>
+		<input id="ex1" data-slider-id='ex1Slider' type="text"/>
+	</div>
+
+	<div id="low-div">
+		<input id="veryLowPositionedSlider" type="text"/>
+	</div>
+
+  <!-- Sliders used by resize -->
+  <input id="resizeSlider" type="text"/>
+  <input id="resizeSliderVertical" data-slider-orientation="vertical" type="text"/>
+
+  <!-- Sliders used for AccessibilitySpec -->
+	<div>
+		<span id="accessibilitySliderLabelA">Label A</span>
+		<span id="accessibilitySliderLabelB">Label B</span>
+		<input id="accessibilitySliderA" type="text" data-slider-labelledby="accessibilitySliderLabelA" />
+		<input id="accessibilitySliderB" type="text" data-slider-labelledby='["accessibilitySliderLabelA", "accessibilitySliderLabelB"]' />
+	</div>
 	<% with (scripts) { %>
 	  <% [].concat(jasmine, vendor, src, specs, reporters, start).forEach(function(script){ %>
 	  <script src="<%= script %>"></script>
