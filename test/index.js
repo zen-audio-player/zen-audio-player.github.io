@@ -58,11 +58,11 @@ describe("Page Structure", function () {
         assert.equal(browser.query("link ~ link ~ link ~ link").rel, "stylesheet");
         assert.equal(browser.query("link ~ link ~ link ~ link").href, "bower_components/font-awesome/css/font-awesome.min.css");
 
-        assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").rel, "stylesheet");
-        assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").href, "bower_components/plyr/dist/plyr.css");
+        assert.equal(browser.query("link ~ link ~ link ~ link ~ link").rel, "stylesheet");
+        assert.equal(browser.query("link ~ link ~ link ~ link ~ link").href, "bower_components/plyr/dist/plyr.css");
 
-        assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link ~ link").rel, "stylesheet");
-        assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link ~ link").href, "css/styles.css");
+        assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").rel, "stylesheet");
+        assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").href, "css/styles.css");
     });
     it("should have logo configured correctly", function () {
         var imgFolderPath = path.join(__filename, "..", "..", "img") + path.sep;
