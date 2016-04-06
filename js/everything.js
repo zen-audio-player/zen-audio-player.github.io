@@ -183,6 +183,7 @@ var ZenPlayer = {
         if (plyrPlayer.plyr) {
             var that = this;
             plyrPlayer.addEventListener("error", function(event) {
+                // TODO: how do we see the real error message?
                 console.log("error");
                 console.log(event);
                 console.log(event.target.plyr);
