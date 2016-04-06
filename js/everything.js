@@ -172,7 +172,7 @@ function isFileProtocol() {
 
 var ZenPlayer = {
     init: function(videoID) {
-        //Inject svg with control icons
+        // Inject svg with control icons
         $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
 
         plyrPlayer = document.querySelector(".plyr");
@@ -182,7 +182,7 @@ var ZenPlayer = {
             controls:["play", "current-time", "duration", "mute", "volume"]
         });
 
-        //Load video into Plyr player
+        // Load video into Plyr player
         if (plyrPlayer.plyr) {
             var that = this;
             plyrPlayer.addEventListener("error", function(event) {
@@ -210,12 +210,14 @@ var ZenPlayer = {
                 that.setupVideoDescription();
                 that.setupPlyrToggle();
 
-                // Start video from where we left off
-                // TODO: plyr should already implement that, verify
-                // plyrPlayer.plyr.embed.seekTo(loadTime());
-
-                // When it is the player's first play, hide the YouTube video
-                // $("#player").hide();
+                // Start video from where we left off, if it makes sense
+                if (window.sessionStorage && window.sessionStorage.hasOwnProperty(videoID)) {
+                    var resumeTime = window.sessionStorage[videoID];
+                    var videoDuration = plyrPlayer.plyr.embed.getDuration();
+                    if (!isNaN(resumeTime) && resumeTime < videoDuration - 3) {
+                        plyrPlayer.plyr.embed.seekTo(resumeTime);
+                    }
+                }
 
                 // Analytics
                 ga("send", "event", "Playing YouTube video title", that.videoTitle);
@@ -232,6 +234,25 @@ var ZenPlayer = {
                 // Show player
                 that.show();
                 updateTweetMessage();
+            });
+
+            plyrPlayer.addEventListener("timeupdate", function() {
+                // Store the current time of the video.
+                if (window.sessionStorage) {
+                    var currentTime = plyrPlayer.plyr.embed.getCurrentTime();
+                    var videoDuration = plyrPlayer.plyr.embed.getDuration();
+                    var resumeTime = 0;
+
+                    // Only store the current time if the video isn't done
+                    // playing yet. If the video finished already, then it
+                    // should start off at the beginning next time.
+                    // There is a fuzzy 3 seconds because sometimes the video
+                    // will end a few seconds before the video duration.
+                    if (currentTime < videoDuration - 3) {
+                        resumeTime = currentTime;
+                    }
+                    window.sessionStorage[videoID] = resumeTime;
+                }
             });
 
             plyrPlayer.plyr.source({
