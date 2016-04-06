@@ -160,6 +160,7 @@ var errorMessage = {
     },
     hide: function() {
         $("#zen-error").text("").hide();
+        ZenPlayer.show();
     }
 };
 
@@ -187,7 +188,6 @@ var ZenPlayer = {
                 console.log("error");
                 console.log(event);
                 console.log(event.target.plyr);
-                console.log(event.target.plyr.embed.api);
             });
 
             plyrPlayer.addEventListener("ready", function() {
@@ -229,6 +229,7 @@ var ZenPlayer = {
                     youtubeID: plyrPlayer.plyr.embed.getVideoData().video_id
                 });
 
+                // TODO: if there was a video error it will happen before here, check that and avoid showing the player
                 // Show player
                 that.show();
                 updateTweetMessage();
