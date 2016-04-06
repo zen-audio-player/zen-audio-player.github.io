@@ -157,6 +157,7 @@ var errorMessage = {
 
         // Send the error to Google Analytics
         ga("send", "event", "error", message);
+        sendKeenEvent("error", {"message": message});
     },
     hide: function() {
         $("#zen-error").text("").hide();
