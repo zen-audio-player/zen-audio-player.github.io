@@ -36,6 +36,10 @@ h2 {
     line-height: 150%;
 }
 
+a {
+    color: #3498db;
+}
+
 .hide {
     display: none;
 }
@@ -74,7 +78,7 @@ h2 {
     width: 100%;
 }
 
-#zen-video-title #demo {
+#zen-video-title, #demo {
     margin-top: 5px;
     font-weight: bold;
     word-wrap: break-word;
