@@ -193,6 +193,11 @@ var ZenPlayer = {
             });
 
             plyrPlayer.addEventListener("ready", function() {
+                // Noop if we have nothing to play
+                if (!currentVideoID || currentVideoID.length === 0) {
+                    return;
+                }
+
                 // Gather video info
                 that.videoTitle = plyrPlayer.plyr.embed.getVideoData().title;
                 that.videoAuthor = plyrPlayer.plyr.embed.getVideoData().author;
@@ -210,10 +215,7 @@ var ZenPlayer = {
                 // plyrPlayer.plyr.embed.seekTo(loadTime());
 
                 // When it is the player's first play, hide the YouTube video
-                $("#player").hide();
-
-                // Everything available, ready to show now
-                that.show();
+                // $("#player").hide();
 
                 // Analytics
                 ga("send", "event", "Playing YouTube video title", that.videoTitle);
@@ -228,7 +230,7 @@ var ZenPlayer = {
                 });
 
                 // Show player
-                $("#audioplayer").show();
+                that.show();
                 updateTweetMessage();
             });
 
