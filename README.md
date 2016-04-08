@@ -26,8 +26,8 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 
 ## Demo
 
-* Listen to [Starve the Ego, Feed the Soul by The Glitch Mob](http://zen-audio-player.github.io/?v=koJv-j1usoI)
-* Try it out on [zen-audio-player.github.io](http://zen-audio-player.github.io)
+* Listen to [Starve the Ego, Feed the Soul by The Glitch Mob](http://zenplayer.audio/?v=koJv-j1usoI)
+* Try it out on [zenplayer.audio](http://zenplayer.audio/)
 * Clone the project and open `index.html`.
 * To run the site locally, run `npm install` then `npm start` and a webpage will open in your default browser.
 
