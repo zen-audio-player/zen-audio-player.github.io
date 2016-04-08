@@ -1,4 +1,5 @@
 ![Zen Audio Player](img/zen-audio-player-113.png)
+# Zen Audio Player
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/zen-audio-player/zen-audio-player.github.io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Build Status](https://travis-ci.org/zen-audio-player/zen-audio-player.github.io.svg?branch=master)](https://travis-ci.org/zen-audio-player/zen-audio-player.github.io)
