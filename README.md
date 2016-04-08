@@ -41,6 +41,5 @@ If you would like to contribute to this project please read the [guidelines on c
 ## Project Sponsors
 |Sponsor|Description|
 |:---:|---|
-|[![BrowserStack](img/browserstack_logo.png)](https://browserstack.com/)  |Live, web-based browser testing. Say goodbye to your lab of devices and virtual machines.|
 |[![KeenIO](img/keen_logo.png)](https://keen.io/)     				      |Deliver fast, flexible analytics to your teams & customers. With Keen’s developer-friendly APIs, it’s easy to embed custom dashboards and reports in any app or website.|
 |[![TrackJS](img/trackjs_logo.png)](https://trackjs.com/)                 |Track Better Errors. Actually Fix Bugs. Know when your users run into errors and fix bugs before they report them.|
