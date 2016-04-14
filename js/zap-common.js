@@ -39,10 +39,62 @@ function getYouTubeVideoDescription(videoID, youTubeDataApiKey, onSuccess, onFai
     }).fail(onFail);
 }
 
-// The url parameter could be the video ID
-function parseYoutubeVideoID(url) {
+function parseSoundcloudVideoID(url, clientID, success, error) {
     var videoInfo = {
-        format: "other",
+        format: null,
+        id: null
+    };
+
+    // https://api.soundcloud.com/tracks/123456
+    var apiUrl = "api.soundcloud.com";
+    // https://soundcloud.com/user-123/track-abc
+    var trackUrl = "soundcloud.com";
+
+    if (url && url.length > 0) {
+        // soundcloud.com format
+        if (url.indexOf(apiUrl) !== -1) {
+            videoInfo.format = apiUrl;
+            videoInfo.id = url.split("api.soundcloud.com/tracks/")[1];
+
+            // Got the ID from the URL. Now verify it.
+            verifySoundcloudID(
+                videoInfo.id,
+                function() {
+                    success(videoInfo);
+                },
+                error
+            );
+        }
+        // api.soundcloud.com format
+        else if (url.indexOf(trackUrl) !== -1) {
+            videoInfo.format = trackUrl;
+            // id is not available in url, so request it
+            $.ajax({
+                url: "http://api.soundcloud.com/resolve",
+                dataType: "json",
+                data: {
+                    url: url,
+                    client_id: clientID //eslint-disable-line camelcase
+                },
+                success: function(data) {
+                    videoInfo.id = data.id;
+                    success(videoInfo);
+                }
+            }).fail(error);
+        }
+        else {
+            error();
+        }
+    }
+    else {
+        error();
+    }
+}
+
+// The url parameter could be the video ID
+function parseYoutubeVideoID(url, success, error) {
+    var videoInfo = {
+        format: null,
         id: null
     };
     var shortUrlDomain = "youtu.be";
@@ -61,12 +113,12 @@ function parseYoutubeVideoID(url) {
             var offset = url.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
             videoInfo.id = url.substring(offset, endPosition);
         }
-        // Assume YouTube video ID string
         else {
-            videoInfo.format = "video ID";
-            videoInfo.id = url;
+            // format and id are null
         }
+    }
 
+    if (videoInfo.id) {
         var slashPos = videoInfo.id.indexOf("/");
         // We found a slash in the video ID (ex: real id is ABC123, but saw ABC123/zen)
         // So, only keep what's before the slash
@@ -74,7 +126,17 @@ function parseYoutubeVideoID(url) {
             videoInfo.id = videoInfo.id.substring(0, slashPos);
         }
 
-        return videoInfo;
+        // Parsed an ID from the URL, verify it.
+        verifySoundcloudID(
+            videoInfo.id,
+            function() {
+                success(videoInfo);
+            },
+            error
+        );
+    }
+    else {
+        error();
     }
 }
 /*eslint-enable */
