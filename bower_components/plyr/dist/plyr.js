@@ -1,2 +1,3024 @@
-!function(e,t){"use strict";"object"==typeof module&&"object"==typeof module.exports?module.exports=t(e,document):"function"==typeof define&&define.amd?define(null,function(){t(e,document)}):e.plyr=t(e,document)}("undefined"!=typeof window?window:this,function(e,t){"use strict";function n(){var e,n,r,s=navigator.userAgent,a=navigator.appName,o=""+parseFloat(navigator.appVersion),i=parseInt(navigator.appVersion,10);return-1!==navigator.appVersion.indexOf("Windows NT")&&-1!==navigator.appVersion.indexOf("rv:11")?(a="IE",o="11;"):-1!==(n=s.indexOf("MSIE"))?(a="IE",o=s.substring(n+5)):-1!==(n=s.indexOf("Chrome"))?(a="Chrome",o=s.substring(n+7)):-1!==(n=s.indexOf("Safari"))?(a="Safari",o=s.substring(n+7),-1!==(n=s.indexOf("Version"))&&(o=s.substring(n+8))):-1!==(n=s.indexOf("Firefox"))?(a="Firefox",o=s.substring(n+8)):(e=s.lastIndexOf(" ")+1)<(n=s.lastIndexOf("/"))&&(a=s.substring(e,n),o=s.substring(n+1),a.toLowerCase()==a.toUpperCase()&&(a=navigator.appName)),-1!==(r=o.indexOf(";"))&&(o=o.substring(0,r)),-1!==(r=o.indexOf(" "))&&(o=o.substring(0,r)),i=parseInt(""+o,10),isNaN(i)&&(o=""+parseFloat(navigator.appVersion),i=parseInt(navigator.appVersion,10)),{name:a,version:i,ios:/(iPad|iPhone|iPod)/g.test(navigator.platform),touch:"ontouchstart"in t.documentElement}}function r(e,t){var n=e.media;if("video"==e.type)switch(t){case"video/webm":return!(!n.canPlayType||!n.canPlayType('video/webm; codecs="vp8, vorbis"').replace(/no/,""));case"video/mp4":return!(!n.canPlayType||!n.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"').replace(/no/,""));case"video/ogg":return!(!n.canPlayType||!n.canPlayType('video/ogg; codecs="theora"').replace(/no/,""))}else if("audio"==e.type)switch(t){case"audio/mpeg":return!(!n.canPlayType||!n.canPlayType("audio/mpeg;").replace(/no/,""));case"audio/ogg":return!(!n.canPlayType||!n.canPlayType('audio/ogg; codecs="vorbis"').replace(/no/,""));case"audio/wav":return!(!n.canPlayType||!n.canPlayType('audio/wav; codecs="1"').replace(/no/,""))}return!1}function s(e){if(!t.querySelectorAll('script[src="'+e+'"]').length){var n=t.createElement("script");n.src=e;var r=t.getElementsByTagName("script")[0];r.parentNode.insertBefore(n,r)}}function a(e,t){return Array.prototype.indexOf&&-1!=e.indexOf(t)}function o(e,t,n){return e.replace(new RegExp(t.replace(/([.*+?\^=!:${}()|\[\]\/\\])/g,"\\$1"),"g"),n)}function i(e,t){e.length||(e=[e]);for(var n=e.length-1;n>=0;n--){var r=n>0?t.cloneNode(!0):t,s=e[n],a=s.parentNode,o=s.nextSibling;r.appendChild(s),o?a.insertBefore(r,o):a.appendChild(r)}}function l(e){for(var t=e.parentNode;e.firstChild;)t.insertBefore(e.firstChild,e);t.removeChild(e)}function u(e){e&&e.parentNode.removeChild(e)}function c(e,t){e.insertBefore(t,e.firstChild)}function p(e,t){for(var n in t)e.setAttribute(n,"boolean"==typeof t[n]&&t[n]?"":t[n])}function d(e,n,r){var s=t.createElement(e);p(s,r),c(n,s)}function f(e){return e.replace(".","")}function m(e,t,n){if(e)if(e.classList)e.classList[n?"add":"remove"](t);else{var r=(" "+e.className+" ").replace(/\s+/g," ").replace(" "+t+" ","");e.className=r+(n?" "+t:"")}}function y(e,t){return e?e.classList?e.classList.contains(t):new RegExp("(\\s|^)"+t+"(\\s|$)").test(e.className):!1}function b(e,t,n){e&&h(e,t,n,!0)}function v(e,t,n){e&&h(e,t,n,!1)}function g(e,t,n,r){b(e,t,function(t){n&&n.apply(e,[t]),r.apply(e,[t])})}function h(e,t,n,r){var s=t.split(" ");if(e instanceof NodeList)for(var a=0;a<e.length;a++)e[a]instanceof Node&&h(e[a],arguments[1],arguments[2],arguments[3]);else for(var o=0;o<s.length;o++)e[r?"addEventListener":"removeEventListener"](s[o],n,!1)}function k(e,t,n){if(e&&t){var r=new CustomEvent(t,n);e.dispatchEvent(r)}}function w(e,t){return e?(t="boolean"==typeof t?t:!e.getAttribute("aria-pressed"),e.setAttribute("aria-pressed",t),t):void 0}function x(e,t){return 0===e||0===t||isNaN(e)||isNaN(t)?0:(e/t*100).toFixed(2)}function T(){var e=arguments;if(e.length){if(1==e.lenth)return e[0];for(var t=Array.prototype.shift.call(e),n=e.length,r=0;n>r;r++){var s=e[r];for(var a in s)s[a]&&s[a].constructor&&s[a].constructor===Object?(t[a]=t[a]||{},T(t[a],s[a])):t[a]=s[a]}return t}}function _(){var e={supportsFullScreen:!1,isFullScreen:function(){return!1},requestFullScreen:function(){},cancelFullScreen:function(){},fullScreenEventName:"",element:null,prefix:""},n="webkit moz o ms khtml".split(" ");if("undefined"!=typeof t.cancelFullScreen)e.supportsFullScreen=!0;else for(var r=0,s=n.length;s>r;r++){if(e.prefix=n[r],"undefined"!=typeof t[e.prefix+"CancelFullScreen"]){e.supportsFullScreen=!0;break}if("undefined"!=typeof t.msExitFullscreen&&t.msFullscreenEnabled){e.prefix="ms",e.supportsFullScreen=!0;break}}return e.supportsFullScreen&&(e.fullScreenEventName="ms"==e.prefix?"MSFullscreenChange":e.prefix+"fullscreenchange",e.isFullScreen=function(e){switch("undefined"==typeof e&&(e=t.body),this.prefix){case"":return t.fullscreenElement==e;case"moz":return t.mozFullScreenElement==e;default:return t[this.prefix+"FullscreenElement"]==e}},e.requestFullScreen=function(e){return"undefined"==typeof e&&(e=t.body),""===this.prefix?e.requestFullScreen():e[this.prefix+("ms"==this.prefix?"RequestFullscreen":"RequestFullScreen")]()},e.cancelFullScreen=function(){return""===this.prefix?t.cancelFullScreen():t[this.prefix+("ms"==this.prefix?"ExitFullscreen":"CancelFullScreen")]()},e.element=function(){return""===this.prefix?t.fullscreenElement:t[this.prefix+"FullscreenElement"]}),e}function F(){var t={supported:function(){if(!("localStorage"in e))return!1;try{e.localStorage.setItem("___test","OK");var t=e.localStorage.getItem("___test");return e.localStorage.removeItem("___test"),"OK"===t}catch(n){return!1}return!1}()};return t}function C(h,T){function C(t,n){T.debug&&e.console&&console[n?"warn":"log"](t)}function A(){var e=['<div class="plyr__controls">','<div class="plyr__progress">','<label for="seek{id}" class="plyr__sr-only">Seek</label>','<input id="seek{id}" class="plyr__progress--seek" type="range" min="0" max="100" step="0.1" value="0" data-plyr="seek">','<progress class="plyr__progress--played" max="100" value="0">',"<span>0</span>% "+T.i18n.played,"</progress>",'<progress class="plyr__progress--buffer" max="100" value="0">',"<span>0</span>% "+T.i18n.buffered,"</progress>"];return T.tooltips.seek&&e.push('<span class="plyr__tooltip">00:00</span>'),e.push("</div>",'<span class="plyr__controls--left">'),a(T.controls,"restart")&&e.push('<button type="button" data-plyr="restart">','<svg><use xlink:href="#'+T.iconPrefix+'-restart" /></svg>','<span class="plyr__sr-only">'+T.i18n.restart+"</span>","</button>"),a(T.controls,"rewind")&&e.push('<button type="button" data-plyr="rewind">','<svg><use xlink:href="#'+T.iconPrefix+'-rewind" /></svg>','<span class="plyr__sr-only">'+T.i18n.rewind+"</span>","</button>"),a(T.controls,"play")&&e.push('<button type="button" data-plyr="play">','<svg><use xlink:href="#'+T.iconPrefix+'-play" /></svg>','<span class="plyr__sr-only">'+T.i18n.play+"</span>","</button>",'<button type="button" data-plyr="pause">','<svg><use xlink:href="#'+T.iconPrefix+'-pause" /></svg>','<span class="plyr__sr-only">'+T.i18n.pause+"</span>","</button>"),a(T.controls,"fast-forward")&&e.push('<button type="button" data-plyr="fast-forward">','<svg><use xlink:href="#'+T.iconPrefix+'-fast-forward" /></svg>','<span class="plyr__sr-only">'+T.i18n.forward+"</span>","</button>"),a(T.controls,"current-time")&&e.push('<span class="plyr__time">','<span class="plyr__sr-only">'+T.i18n.currentTime+"</span>",'<span class="plyr__time--current">00:00</span>',"</span>"),a(T.controls,"duration")&&e.push('<span class="plyr__time">','<span class="plyr__sr-only">'+T.i18n.duration+"</span>",'<span class="plyr__time--duration">00:00</span>',"</span>"),e.push("</span>",'<span class="plyr__controls--right">'),a(T.controls,"mute")&&e.push('<button type="button" data-plyr="mute">','<svg class="icon--muted"><use xlink:href="#'+T.iconPrefix+'-muted" /></svg>','<svg><use xlink:href="#'+T.iconPrefix+'-volume" /></svg>','<span class="plyr__sr-only">'+T.i18n.toggleMute+"</span>","</button>"),a(T.controls,"volume")&&e.push('<label for="volume{id}" class="plyr__sr-only">'+T.i18n.volume+"</label>",'<input id="volume{id}" class="plyr__volume" type="range" min="0" max="10" value="5" data-plyr="volume">'),a(T.controls,"captions")&&e.push('<button type="button" data-plyr="captions">','<svg class="icon--captions-on"><use xlink:href="#'+T.iconPrefix+'-captions-on" /></svg>','<svg><use xlink:href="#'+T.iconPrefix+'-captions-off" /></svg>','<span class="plyr__sr-only">'+T.i18n.toggleCaptions+"</span>","</button>"),a(T.controls,"fullscreen")&&e.push('<button type="button" data-plyr="fullscreen">','<svg class="icon--exit-fullscreen"><use xlink:href="#'+T.iconPrefix+'-exit-fullscreen" /></svg>','<svg><use xlink:href="#'+T.iconPrefix+'-enter-fullscreen" /></svg>','<span class="plyr__sr-only">'+T.i18n.toggleFullscreen+"</span>","</button>"),e.push("</span>","</div>"),e.join("")}function N(){if(Ce.supported.full&&("audio"!=Ce.type||T.fullscreen.allowAudio)&&T.fullscreen.enabled){var e=E.supportsFullScreen;e||T.fullscreen.fallback&&!q()?(C((e?"Native":"Fallback")+" fullscreen enabled"),m(Ce.container,T.classes.fullscreen.enabled,!0)):C("Fullscreen not supported and fallback disabled"),w(Ce.buttons.fullscreen,!1),R(),T.fullscreen.hideControls&&m(Ce.container,T.classes.fullscreen.hideControls,!0)}}function I(){if("video"===Ce.type){V(T.selectors.captions)||Ce.videoContainer.insertAdjacentHTML("afterbegin",'<div class="'+f(T.selectors.captions)+'"></div>'),Ce.usingTextTracks=!1,Ce.media.textTracks&&(Ce.usingTextTracks=!0);for(var e,t="",n=Ce.media.childNodes,r=0;r<n.length;r++)"track"===n[r].nodeName.toLowerCase()&&(e=n[r].kind,("captions"===e||"subtitles"===e)&&(t=n[r].getAttribute("src")));if(Ce.captionExists=!0,""===t?(Ce.captionExists=!1,C("No caption track found")):C("Caption track found; URI: "+t),Ce.captionExists){for(var s=Ce.media.textTracks,a=0;a<s.length;a++)s[a].mode="hidden";if(L(Ce),("IE"===Ce.browser.name&&Ce.browser.version>=10||"Firefox"===Ce.browser.name&&Ce.browser.version>=31)&&(C("Detected browser with known TextTrack issues - using manual fallback"),Ce.usingTextTracks=!1),Ce.usingTextTracks){C("TextTracks supported");for(var o=0;o<s.length;o++){var i=s[o];("captions"===i.kind||"subtitles"===i.kind)&&b(i,"cuechange",function(){this.activeCues[0]&&"text"in this.activeCues[0]?P(this.activeCues[0].getCueAsHTML()):P()})}}else if(C("TextTracks not supported so rendering captions manually"),Ce.currentCaption="",Ce.captions=[],""!==t){var l=new XMLHttpRequest;l.onreadystatechange=function(){if(4===l.readyState)if(200===l.status){var e,t=[],n=l.responseText;t=n.split("\n\n");for(var r=0;r<t.length;r++){e=t[r],Ce.captions[r]=[];var s=e.split("\n"),a=0;-1===s[a].indexOf(":")&&(a=1),Ce.captions[r]=[s[a],s[a+1]]}Ce.captions.shift(),C("Successfully loaded the caption file via AJAX")}else C("There was a problem loading the caption file via AJAX",!0)},l.open("get",t,!0),l.send()}}else m(Ce.container,T.classes.captions.enabled)}}function P(e){var n=V(T.selectors.captions),r=t.createElement("span");n.innerHTML="","undefined"==typeof e&&(e=""),"string"==typeof e?r.innerHTML=e.trim():r.appendChild(e),n.appendChild(r);n.offsetHeight}function M(e){function t(e,t){var n=[];n=e.split(" --> ");for(var r=0;r<n.length;r++)n[r]=n[r].replace(/(\d+:\d+:\d+\.\d+).*/,"$1");return s(n[t])}function n(e){return t(e,0)}function r(e){return t(e,1)}function s(e){if(null===e||void 0===e)return 0;var t,n=[],r=[];return n=e.split(","),r=n[0].split(":"),t=Math.floor(60*r[0]*60)+Math.floor(60*r[1])+Math.floor(r[2])}if(!Ce.usingTextTracks&&"video"===Ce.type&&Ce.supported.full&&(Ce.subcount=0,e="number"==typeof e?e:Ce.media.currentTime,Ce.captions[Ce.subcount])){for(;r(Ce.captions[Ce.subcount][0])<e.toFixed(1);)if(Ce.subcount++,Ce.subcount>Ce.captions.length-1){Ce.subcount=Ce.captions.length-1;break}Ce.media.currentTime.toFixed(1)>=n(Ce.captions[Ce.subcount][0])&&Ce.media.currentTime.toFixed(1)<=r(Ce.captions[Ce.subcount][0])?(Ce.currentCaption=Ce.captions[Ce.subcount][1],P(Ce.currentCaption)):P()}}function L(){Ce.buttons.captions&&(m(Ce.container,T.classes.captions.enabled,!0),T.captions.defaultActive&&(m(Ce.container,T.classes.captions.active,!0),w(Ce.buttons.captions,!0)))}function O(e){return Ce.container.querySelectorAll(e)}function V(e){return O(e)[0]}function q(){try{return e.self!==e.top}catch(t){return!0}}function R(){function e(e){9===e.which&&Ce.isFullscreen&&(e.target!==r||e.shiftKey?e.target===n&&e.shiftKey&&(e.preventDefault(),r.focus()):(e.preventDefault(),n.focus()))}var t=O("input:not([disabled]), button:not([disabled])"),n=t[0],r=t[t.length-1];b(Ce.container,"keydown",e)}function j(e,t){if("string"==typeof t)d(e,Ce.media,{src:t});else if(t.constructor===Array)for(var n=t.length-1;n>=0;n--)d(e,Ce.media,t[n])}function H(){var e=T.html;C("Injecting custom controls"),e||(e=A()),e=o(e,"{seektime}",T.seekTime),e=o(e,"{id}",Math.floor(1e4*Math.random()));var n;if(null!==T.selectors.controls.container&&(n=T.selectors.controls.container,"string"==typeof selector&&(n=t.querySelector(n))),n instanceof HTMLElement||(n=Ce.container),n.insertAdjacentHTML("beforeend",e),T.tooltips.controls)for(var r=O(T.selectors.labels+" ."+T.classes.hidden),s=r.length-1;s>=0;s--){var a=r[s];m(a,T.classes.hidden,!1),m(a,T.classes.tooltip,!0)}}function D(){try{return Ce.controls=V(T.selectors.controls.wrapper),Ce.buttons={},Ce.buttons.seek=V(T.selectors.buttons.seek),Ce.buttons.play=V(T.selectors.buttons.play),Ce.buttons.pause=V(T.selectors.buttons.pause),Ce.buttons.restart=V(T.selectors.buttons.restart),Ce.buttons.rewind=V(T.selectors.buttons.rewind),Ce.buttons.forward=V(T.selectors.buttons.forward),Ce.buttons.fullscreen=V(T.selectors.buttons.fullscreen),Ce.buttons.volume=V(T.selectors.buttons.volume),Ce.buttons.mute=V(T.selectors.buttons.mute),Ce.buttons.captions=V(T.selectors.buttons.captions),Ce.checkboxes=O('[type="checkbox"]'),Ce.progress={},Ce.progress.container=V(T.selectors.progress.container),Ce.progress.buffer={},Ce.progress.buffer.bar=V(T.selectors.progress.buffer),Ce.progress.buffer.text=Ce.progress.buffer.bar&&Ce.progress.buffer.bar.getElementsByTagName("span")[0],Ce.progress.played={},Ce.progress.played.bar=V(T.selectors.progress.played),Ce.progress.played.text=Ce.progress.played.bar&&Ce.progress.played.bar.getElementsByTagName("span")[0],Ce.progress.tooltip=Ce.progress.container&&Ce.progress.container.querySelector("."+T.classes.tooltip),Ce.volume=V(T.selectors.buttons.volume),Ce.duration=V(T.selectors.duration),Ce.currentTime=V(T.selectors.currentTime),Ce.seekTime=O(T.selectors.seekTime),!0}catch(e){return C("It looks like there is a problem with your controls html",!0),Y(!0),!1}}function B(){m(Ce.container,T.selectors.container.replace(".",""),Ce.supported.full)}function Y(e){e?Ce.media.setAttribute("controls",""):Ce.media.removeAttribute("controls")}function $(e){var t=T.i18n.play;"undefined"!=typeof T.title&&T.title.length&&(t+=", "+T.title),Ce.supported.full&&Ce.buttons.play&&Ce.buttons.play.setAttribute("aria-label",t),e instanceof HTMLElement&&e.setAttribute("title",T.i18n.frameTitle.replace("{title}",T.title))}function W(){if(!Ce.media)return C("No audio or video element found",!0),!1;if(Ce.supported.full&&(m(Ce.container,T.classes.type.replace("{0}",Ce.type),!0),m(Ce.container,T.classes.stopped,T.autoplay),m(Ce.container,T.classes.isIos,Ce.browser.ios),m(Ce.container,T.classes.isTouch,Ce.browser.touch),"video"===Ce.type)){var e=t.createElement("div");e.setAttribute("class",T.classes.videoWrapper),i(Ce.media,e),Ce.videoContainer=e}a(T.types.embed,Ce.type)&&(z(),Ce.embedId=null)}function z(){for(var n=t.createElement("div"),r=Ce.embedId,a=Ce.type+"-"+Math.floor(1e4*Math.random()),o=O('[id^="'+Ce.type+'-"]'),i=o.length-1;i>=0;i--)u(o[i]);if(m(Ce.media,T.classes.videoWrapper,!0),m(Ce.media,T.classes.embedWrapper,!0),"youtube"===Ce.type)Ce.media.appendChild(n),n.setAttribute("id",a),"object"==typeof YT?U(r,n):(s(T.urls.youtube.api),e.onYouTubeReadyCallbacks=e.onYouTubeReadyCallbacks||[],e.onYouTubeReadyCallbacks.push(function(){U(r,n)}),e.onYouTubeIframeAPIReady=function(){e.onYouTubeReadyCallbacks.forEach(function(e){e()})});else if("vimeo"===Ce.type){var l=t.createElement("iframe");l.loaded=!1,b(l,"load",function(){l.loaded=!0}),p(l,{src:"https://player.vimeo.com/video/"+r+"?player_id="+a+"&api=1&badge=0&byline=0&portrait=0&title=0",id:a,webkitallowfullscreen:"",mozallowfullscreen:"",allowfullscreen:"",frameborder:0}),Ce.supported.full?(n.appendChild(l),Ce.media.appendChild(n)):Ce.media.appendChild(l),"$f"in e||s(T.urls.vimeo.api);var c=e.setInterval(function(){"$f"in e&&l.loaded&&(e.clearInterval(c),X.call(l))},50)}}function K(){Ce.container.plyr.embed=Ce.embed,Fe(),$(V("iframe"))}function U(t,n){"timer"in Ce||(Ce.timer={}),Ce.embed=new YT.Player(n.id,{videoId:t,playerVars:{autoplay:T.autoplay?1:0,controls:Ce.supported.full?0:1,rel:0,showinfo:0,iv_load_policy:3,cc_load_policy:T.captions.defaultActive?1:0,cc_lang_pref:"en",wmode:"transparent",modestbranding:1,disablekb:1,origin:"*"},events:{onReady:function(t){var n=t.target;Ce.media.play=function(){n.playVideo(),Ce.media.paused=!1},Ce.media.pause=function(){n.pauseVideo(),Ce.media.paused=!0},Ce.media.stop=function(){n.stopVideo(),Ce.media.paused=!0},Ce.media.duration=n.getDuration(),Ce.media.paused=!0,Ce.media.currentTime=n.getCurrentTime(),Ce.media.muted=n.isMuted(),T.title=n.getVideoData().title,k(Ce.media,"timeupdate"),e.clearInterval(Ce.timer.buffering),Ce.timer.buffering=e.setInterval(function(){Ce.media.buffered=n.getVideoLoadedFraction(),k(Ce.media,"progress"),1===Ce.media.buffered&&(e.clearInterval(Ce.timer.buffering),k(Ce.media,"canplaythrough"))},200),K(),fe()},onStateChange:function(t){var n=t.target;switch(e.clearInterval(Ce.timer.playing),t.data){case 0:Ce.media.paused=!0,k(Ce.media,"ended");break;case 1:Ce.media.paused=!1,Ce.media.seeking=!1,k(Ce.media,"play"),k(Ce.media,"playing"),Ce.timer.playing=e.setInterval(function(){Ce.media.currentTime=n.getCurrentTime(),k(Ce.media,"timeupdate")},100);break;case 2:Ce.media.paused=!0,k(Ce.media,"pause")}}}})}function X(){Ce.embed=$f(this),Ce.embed.addEvent("ready",function(){Ce.media.play=function(){Ce.embed.api("play"),Ce.media.paused=!1},Ce.media.pause=function(){Ce.embed.api("pause"),Ce.media.paused=!0},Ce.media.stop=function(){Ce.embed.api("stop"),Ce.media.paused=!0},Ce.media.paused=!0,Ce.media.currentTime=0,K(),Ce.embed.api("getCurrentTime",function(e){Ce.media.currentTime=e,k(Ce.media,"timeupdate")}),Ce.embed.api("getDuration",function(e){Ce.media.duration=e,fe()}),Ce.embed.addEvent("play",function(){Ce.media.paused=!1,k(Ce.media,"play"),k(Ce.media,"playing")}),Ce.embed.addEvent("pause",function(){Ce.media.paused=!0,k(Ce.media,"pause")}),Ce.embed.addEvent("playProgress",function(e){Ce.media.seeking=!1,Ce.media.currentTime=e.seconds,k(Ce.media,"timeupdate")}),Ce.embed.addEvent("loadProgress",function(e){Ce.media.buffered=e.percent,k(Ce.media,"progress"),1===parseInt(e.percent)&&k(Ce.media,"canplaythrough")}),Ce.embed.addEvent("finish",function(){Ce.media.paused=!0,k(Ce.media,"ended")}),T.autoplay&&Ce.embed.api("play")})}function J(){"play"in Ce.media&&Ce.media.play()}function G(){"pause"in Ce.media&&Ce.media.pause()}function Q(e){e===!0?J():e===!1?G():Ce.media[Ce.media.paused?"play":"pause"]()}function Z(e){"number"!=typeof e&&(e=T.seekTime),te(Ce.media.currentTime-e)}function ee(e){"number"!=typeof e&&(e=T.seekTime),te(Ce.media.currentTime+e)}function te(e){var t=0,n=Ce.media.paused,r=ne();"number"==typeof e?t=e:"object"!=typeof e||"input"!==e.type&&"change"!==e.type||(t=e.target.value/e.target.max*r),0>t?t=0:t>r&&(t=r);try{Ce.media.currentTime=t.toFixed(1)}catch(s){}if(a(T.types.embed,Ce.type)){switch(Ce.type){case"youtube":Ce.embed.seekTo(t);break;case"vimeo":Ce.embed.api("seekTo",t.toFixed(0))}n&&G(),k(Ce.media,"timeupdate"),Ce.media.seeking=!0}C("Seeking to "+Ce.media.currentTime+" seconds"),M(t)}function ne(){var e=parseInt(T.duration);return isNaN(e)?Ce.media.duration:e}function re(){m(Ce.container,T.classes.playing,!Ce.media.paused),m(Ce.container,T.classes.stopped,Ce.media.paused)}function se(e){var n=E.supportsFullScreen;e&&e.type===E.fullScreenEventName?Ce.isFullscreen=E.isFullScreen(Ce.container):n?(E.isFullScreen(Ce.container)?E.cancelFullScreen():E.requestFullScreen(Ce.container),Ce.isFullscreen=E.isFullScreen(Ce.container)):(Ce.isFullscreen=!Ce.isFullscreen,Ce.isFullscreen?(b(t,"keyup",ae),t.body.style.overflow="hidden"):(v(t,"keyup",ae),t.body.style.overflow="")),m(Ce.container,T.classes.fullscreen.active,Ce.isFullscreen),Ce.isFullscreen?Ce.container.setAttribute("tabindex","-1"):Ce.container.removeAttribute("tabindex"),R(Ce.isFullscreen),w(Ce.buttons.fullscreen,Ce.isFullscreen),T.fullscreen.hideControls&&be(!0),k(Ce.container,Ce.isFullscreen?"enterfullscreen":"exitfullscreen")}function ae(e){27===(e.which||e.charCode||e.keyCode)&&Ce.isFullscreen&&se()}function oe(e){if("boolean"!=typeof e&&(e=!Ce.media.muted),w(Ce.buttons.mute,e),Ce.media.muted=e,a(T.types.embed,Ce.type)){switch(Ce.type){case"youtube":Ce.embed[Ce.media.muted?"mute":"unMute"]();break;case"vimeo":Ce.embed.api("setVolume",Ce.media.muted?0:parseFloat(T.volume/10))}k(Ce.media,"volumechange")}}function ie(t){if("undefined"==typeof t&&(t=T.volume,T.storage.enabled&&F().supported&&(t=e.localStorage.getItem(T.storage.key),e.localStorage.removeItem("plyr-volume"))),(null===t||isNaN(t))&&(t=T.volume),t>10&&(t=10),0>t&&(t=0),Ce.media.volume=parseFloat(t/10),T.volume=t,a(T.types.embed,Ce.type)){switch(Ce.type){case"youtube":Ce.embed.setVolume(100*Ce.media.volume);break;case"vimeo":Ce.embed.api("setVolume",Ce.media.volume)}k(Ce.media,"volumechange")}Ce.media.muted&&t>0&&oe()}function le(){var t=Ce.media.muted?0:10*Ce.media.volume;Ce.supported.full&&Ce.volume&&(Ce.volume.value=t),T.storage.enabled&&F().supported&&!isNaN(t)&&e.localStorage.setItem(T.storage.key,t),m(Ce.container,T.classes.muted,0===t),Ce.supported.full&&Ce.buttons.mute&&w(Ce.buttons.mute,0===t)}function ue(e){Ce.supported.full&&Ce.buttons.captions&&("boolean"!=typeof e&&(e=-1===Ce.container.className.indexOf(T.classes.captions.active)),Ce.captionsEnabled=e,w(Ce.buttons.captions,Ce.captionsEnabled),m(Ce.container,T.classes.captions.active,Ce.captionsEnabled),k(Ce.container,Ce.captionsEnabled?"captionsenabled":"captionsdisabled"))}function ce(e){var t="waiting"===e.type;clearTimeout(Ce.timers.loading),Ce.timers.loading=setTimeout(function(){m(Ce.container,T.classes.loading,t)},t?250:0)}function pe(e){var t=Ce.progress.played.bar,n=Ce.progress.played.text,r=0,s=ne();if(e)switch(e.type){case"timeupdate":case"seeking":r=x(Ce.media.currentTime,s),"timeupdate"==e.type&&Ce.buttons.seek&&(Ce.buttons.seek.value=r);break;case"change":case"input":r=e.target.value;break;case"playing":case"progress":t=Ce.progress.buffer.bar,n=Ce.progress.buffer.text,r=function(){var e=Ce.media.buffered;return e&&e.length?x(e.end(0),s):"number"==typeof e?100*e:0}()}t&&(t.value=r),n&&(n.innerHTML=r)}function de(e,t){if(t){isNaN(e)&&(e=0),Ce.secs=parseInt(e%60),Ce.mins=parseInt(e/60%60),Ce.hours=parseInt(e/60/60%60);var n=parseInt(ne()/60/60%60)>0;Ce.secs=("0"+Ce.secs).slice(-2),Ce.mins=("0"+Ce.mins).slice(-2),t.innerHTML=(n?Ce.hours+":":"")+Ce.mins+":"+Ce.secs}}function fe(){if(Ce.supported.full){var e=ne()||0;!Ce.duration&&T.displayDuration&&Ce.media.paused&&de(e,Ce.currentTime),Ce.duration&&de(e,Ce.duration),ye()}}function me(e){de(Ce.media.currentTime,Ce.currentTime),e&&"timeupdate"==e.type&&Ce.media.seeking||pe(e)}function ye(e){if(T.tooltips.seek&&!Ce.browser.touch){var t=Ce.progress.container.getBoundingClientRect(),n=0,r=T.classes.tooltip+"--visible";if(e)n=100/t.width*(e.pageX-t.left);else{if(!y(Ce.progress.tooltip,r))return;n=Ce.progress.tooltip.style.left.replace("%","")}0>n?n=0:n>100&&(n=100),de(ne()/100*n,Ce.progress.tooltip),Ce.progress.tooltip.style.left=n+"%",e&&a(["mouseenter","mouseleave"],e.type)&&m(Ce.progress.tooltip,r,"mouseenter"===e.type)}}function be(t){Ce.isFullscreen&&(m(Ce.container,T.classes.hover,!0),e.clearTimeout(Ce.timers.hover),Ce.timers.hover=e.setTimeout(function(){Ce.controls.mouseover&&t!==!0||m(Ce.container,T.classes.hover,!1)},2e3))}function ve(e){if("undefined"!=typeof e)return void ge(e);var t;switch(Ce.type){case"youtube":t=Ce.embed.getVideoUrl();break;case"vimeo":Ce.embed.api("getVideoUrl",function(e){t=e});break;default:t=Ce.media.currentSrc}return t||""}function ge(n){if(!("undefined"!=typeof n&&"sources"in n&&n.sources.length))return void C("Invalid source format",!0);if(G(),"youtube"===Ce.type?(Ce.embed.destroy(),e.clearInterval(Ce.timer.buffering),e.clearInterval(Ce.timer.playing)):"video"===Ce.type&&Ce.videoContainer&&u(Ce.videoContainer),Ce.embed=null,xe(),u(Ce.media),"type"in n&&(Ce.type=n.type,"video"===Ce.type)){var r=n.sources[0];"type"in r&&a(T.types.embed,r.type)&&(Ce.type=r.type)}switch(Ce.supported=S.supported(Ce.type),Ce.type){case"video":Ce.media=t.createElement("video");break;case"audio":Ce.media=t.createElement("audio");break;case"youtube":case"vimeo":Ce.media=t.createElement("div"),Ce.embedId=n.sources[0].src}c(Ce.container,Ce.media),"undefined"!=typeof n.autoplay&&(T.autoplay=n.autoplay),a(T.types.html5,Ce.type)&&(T.crossorigin&&Ce.media.setAttribute("crossorigin",""),T.autoplay&&Ce.media.setAttribute("autoplay",""),"poster"in n&&Ce.media.setAttribute("poster",n.poster),T.loop&&Ce.media.setAttribute("loop","")),Ce.container.className=Ce.originalClassName,m(Ce.container,T.classes.fullscreen.active,Ce.isFullscreen),m(Ce.container,T.classes.captions.active,Ce.captionsEnabled),B(),a(T.types.html5,Ce.type)&&j("source",n.sources),W(),a(T.types.html5,Ce.type)&&("tracks"in n&&j("track",n.tracks),Ce.media.load(),Fe(),fe()),T.title=n.title,$(),Ce.container.plyr.media=Ce.media}function he(e){"video"===Ce.type&&Ce.media.setAttribute("poster",e)}function ke(){function n(){var e=Ce.media.paused;e?J():G();var t=Ce.buttons[e?"play":"pause"],n=Ce.buttons[e?"pause":"play"];if(n){var r=y(t,T.classes.tabFocus);setTimeout(function(){n.focus(),r&&(m(t,T.classes.tabFocus,!1),m(n,T.classes.tabFocus,!0))},100)}}function r(){var e=t.activeElement;e&&e!=t.body?t.querySelector&&(e=t.querySelector(":focus")):e=null;for(var n in Ce.buttons){var r=Ce.buttons[n];m(r,T.classes.tabFocus,r===e)}}var s="IE"==Ce.browser.name?"change":"input";b(e,"keyup",function(e){var t=e.keyCode?e.keyCode:e.which;9==t&&r()}),b(t.body,"click",function(){m(V("."+T.classes.tabFocus),T.classes.tabFocus,!1)});for(var a in Ce.buttons){var o=Ce.buttons[a];b(o,"blur",function(){m(o,"tab-focus",!1)})}g(Ce.buttons.play,"click",T.listeners.play,n),g(Ce.buttons.pause,"click",T.listeners.pause,n),g(Ce.buttons.restart,"click",T.listeners.restart,te),g(Ce.buttons.rewind,"click",T.listeners.rewind,Z),g(Ce.buttons.forward,"click",T.listeners.forward,ee),g(Ce.buttons.seek,s,T.listeners.seek,te),g(Ce.volume,s,T.listeners.volume,function(){ie(Ce.volume.value)}),g(Ce.buttons.mute,"click",T.listeners.mute,oe),g(Ce.buttons.fullscreen,"click",T.listeners.fullscreen,se),E.supportsFullScreen&&b(t,E.fullScreenEventName,se),b(Ce.buttons.captions,"click",ue),b(Ce.progress.container,"mouseenter mouseleave mousemove",ye);T.fullscreen.hideControls&&b(Ce.controls,"mouseenter mouseleave",function(e){Ce.controls.mouseover="mouseenter"===e.type})}function we(){b(Ce.media,"timeupdate seeking",me),b(Ce.media,"timeupdate",M),b(Ce.media,"durationchange loadedmetadata",fe),b(Ce.media,"ended",function(){"video"===Ce.type&&P(),re()}),b(Ce.media,"progress playing",pe),b(Ce.media,"volumechange",le),b(Ce.media,"play pause",re),b(Ce.media,"waiting canplay seeked",ce),T.click&&b(Ce.media,"click",function(){Ce.media.paused?J():Ce.media.ended?(te(),J()):G()}),T.fullscreen.hideControls&&b(Ce.media,"mousemove",be),b(Ce.media,T.events.join(" "),function(e){k(Ce.container,e.type)})}function xe(){if(a(T.types.html5,Ce.type)){Ce.media.setAttribute("src","");for(var e=Ce.media.querySelectorAll("source"),t=0;t<e.length;t++)u(e[t]);Ce.media.load(),C("Cancelled network requests for old media")}}function Te(){if(!Ce.init)return null;if(Ce.container.setAttribute("class",f(T.selectors.container)),Ce.init=!1,u(V(T.selectors.controls.wrapper)),"youtube"===Ce.type)return void Ce.embed.destroy();"video"===Ce.type&&(u(V(T.selectors.captions)),l(Ce.videoContainer)),Y(!0);var e=Ce.media.cloneNode(!0);Ce.media.parentNode.replaceChild(e,Ce.media)}function _e(){if(Ce.init)return null;E=_(),Ce.browser=n(),Ce.media=Ce.container.querySelectorAll("audio, video, div")[0],Ce.originalClassName=Ce.container.className;var e=Ce.media.tagName.toLowerCase();if("div"===e?(Ce.type=Ce.media.getAttribute("data-type"),Ce.embedId=Ce.media.getAttribute("data-video-id"),Ce.media.removeAttribute("data-type"),Ce.media.removeAttribute("data-video-id")):(Ce.type=e,T.crossorigin=null!==Ce.media.getAttribute("crossorigin"),T.autoplay=T.autoplay||null!==Ce.media.getAttribute("autoplay"),T.loop=T.loop||null!==Ce.media.getAttribute("loop")),Ce.supported=S.supported(Ce.type),B(),!Ce.supported.basic)return!1;if(C(Ce.browser.name+" "+Ce.browser.version),W(),a(T.types.html5,Ce.type)){if(!Ce.supported.full)return void(Ce.init=!0);Fe(),$(),T.autoplay&&J()}Ce.init=!0}function Fe(){if(!Ce.supported.full)return C("No full support for this media type ("+Ce.type+")",!0),u(V(T.selectors.controls.wrapper)),void Y(!0);var e=!O(T.selectors.controls.wrapper).length;e&&H(),D()&&(e&&ke(),we(),Y(),N(),I(),ie(),le(),me(),re(),fe(),k(Ce.container,"ready"))}var Ce=this;return Ce.container=h,Ce.timers={},C(T),_e(),Ce.init?{media:Ce.media,play:J,pause:G,restart:te,rewind:Z,forward:ee,seek:te,source:ve,poster:he,setVolume:ie,togglePlay:Q,toggleMute:oe,toggleCaptions:ue,toggleFullscreen:se,isFullscreen:function(){return Ce.isFullscreen||!1},support:function(e){return r(Ce,e)},destroy:Te,restore:_e}:{}}var E,S={},A={enabled:!0,debug:!1,autoplay:!1,loop:!1,seekTime:10,volume:5,duration:null,displayDuration:!0,iconPrefix:"icon",click:!0,tooltips:{controls:!1,seek:!0},selectors:{container:".plyr",controls:{container:null,wrapper:".plyr__controls"},labels:"[data-plyr]",buttons:{seek:'[data-plyr="seek"]',play:'[data-plyr="play"]',pause:'[data-plyr="pause"]',restart:'[data-plyr="restart"]',rewind:'[data-plyr="rewind"]',forward:'[data-plyr="fast-forward"]',mute:'[data-plyr="mute"]',volume:'[data-plyr="volume"]',captions:'[data-plyr="captions"]',fullscreen:'[data-plyr="fullscreen"]'},progress:{container:".plyr__progress",buffer:".plyr__progress--buffer",played:".plyr__progress--played"},captions:".plyr__captions",currentTime:".plyr__time--current",duration:".plyr__time--duration"},classes:{videoWrapper:"plyr__video-wrapper",embedWrapper:"plyr__video-embed",type:"plyr--{0}",stopped:"plyr--stopped",playing:"plyr--playing",muted:"plyr--muted",loading:"plyr--loading",hover:"plyr--hover",tooltip:"plyr__tooltip",hidden:"plyr__sr-only",isIos:"plyr--is-ios",isTouch:"plyr--is-touch",captions:{enabled:"plyr--captions-enabled",active:"plyr--captions-active"},fullscreen:{enabled:"plyr--fullscreen-enabled",active:"plyr--fullscreen-active",hideControls:"plyr--fullscreen--hide-controls"},tabFocus:"tab-focus"},captions:{defaultActive:!1},fullscreen:{enabled:!0,fallback:!0,hideControls:!0,allowAudio:!1},storage:{enabled:!0,key:"plyr"},controls:["restart","rewind","play","fast-forward","current-time","duration","mute","volume","captions","fullscreen"],i18n:{restart:"Restart",rewind:"Rewind {seektime} secs",play:"Play",pause:"Pause",forward:"Forward {seektime} secs",played:"played",buffered:"buffered",currentTime:"Current time",duration:"Duration",volume:"Volume",toggleMute:"Toggle Mute",toggleCaptions:"Toggle Captions",toggleFullscreen:"Toggle Fullscreen",frameTitle:"Player for {title}"},types:{embed:["youtube","vimeo"],html5:["video","audio"]},urls:{vimeo:{api:"https://cdn.plyr.io/froogaloop/1.0.1/plyr.froogaloop.js"},youtube:{api:"https://www.youtube.com/iframe_api"}},listeners:{seek:null,play:null,pause:null,restart:null,
-rewind:null,forward:null,mute:null,volume:null,captions:null,fullscreen:null},events:["ended","progress","stalled","playing","waiting","canplay","canplaythrough","loadstart","loadeddata","loadedmetadata","timeupdate","volumechange","play","pause","error","seeking","emptied"]};return S.supported=function(e){var r,s,a=n(),o="IE"===a.name&&a.version<=9,i=/iPhone|iPod/i.test(navigator.userAgent),l=!!t.createElement("audio").canPlayType,u=!!t.createElement("video").canPlayType;switch(e){case"video":r=u,s=r&&!o&&!i;break;case"audio":r=l,s=r&&!o;break;case"vimeo":case"youtube":r=!0,s=!o&&!i;break;default:r=l&&u,s=r&&!o}return{basic:r,full:s}},S.setup=function(e,n){var r=[];if("string"==typeof e?e=t.querySelectorAll(e):e instanceof HTMLElement?e=[e]:e instanceof NodeList||"string"==typeof e||("undefined"==typeof n&&"object"==typeof e&&(n=e),e=t.querySelectorAll(A.selectors.container)),!S.supported().basic||!e.length)return!1;for(var s=0;s<e.length;s++){var a=e[s];if("undefined"==typeof a.plyr){var o=T(A,n,JSON.parse(a.getAttribute("data-plyr")));if(!o.enabled)return;var i=new C(a,o);a.plyr=Object.keys(i).length?i:!1,k(a,"setup",{plyr:a.plyr})}r.push(a.plyr)}return r},S}),function(){function e(e,t){t=t||{bubbles:!1,cancelable:!1,detail:void 0};var n=document.createEvent("CustomEvent");return n.initCustomEvent(e,t.bubbles,t.cancelable,t.detail),n}return"function"==typeof window.CustomEvent?!1:(e.prototype=window.Event.prototype,void(window.CustomEvent=e))}();
+// ==========================================================================
+// Plyr
+// plyr.js v1.5.21
+// https://github.com/selz/plyr
+// License: The MIT License (MIT)
+// ==========================================================================
+// Credits: http://paypal.github.io/accessible-html5-video-player/
+// ==========================================================================
+
+;(function(root, factory) {
+    'use strict';
+    /*global define,module*/
+
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        // Node, CommonJS-like
+        module.exports = factory(root, document);
+    } else if (typeof define === 'function' && define.amd) {
+        // AMD
+        define(null, function() { factory(root, document) });
+    } else {
+        // Browser globals (root is window)
+        root.plyr = factory(root, document);
+    }
+}(typeof window !== 'undefined' ? window : this, function(window, document) {
+    'use strict';
+    /*global YT,$f*/
+
+    // Globals
+    var fullscreen, api = {};
+
+    // Default config
+    var defaults = {
+        enabled:                true,
+        debug:                  false,
+        autoplay:               false,
+        loop:                   false,
+        seekTime:               10,
+        volume:                 5,
+        duration:               null,
+        displayDuration:        true,
+        iconPrefix:             'icon',
+        click:                  true,
+        tooltips:               {
+            controls:           false,
+            seek:               true
+        },
+        selectors: {
+            container:          '.plyr',
+            controls: {
+                container:      null,
+                wrapper:        '.plyr__controls'
+            },
+            labels:             '[data-plyr]',
+            buttons: {
+                seek:           '[data-plyr="seek"]',
+                play:           '[data-plyr="play"]',
+                pause:          '[data-plyr="pause"]',
+                restart:        '[data-plyr="restart"]',
+                rewind:         '[data-plyr="rewind"]',
+                forward:        '[data-plyr="fast-forward"]',
+                mute:           '[data-plyr="mute"]',
+                volume:         '[data-plyr="volume"]',
+                captions:       '[data-plyr="captions"]',
+                fullscreen:     '[data-plyr="fullscreen"]'
+            },
+            progress: {
+                container:      '.plyr__progress',
+                buffer:         '.plyr__progress--buffer',
+                played:         '.plyr__progress--played'
+            },
+            captions:           '.plyr__captions',
+            currentTime:        '.plyr__time--current',
+            duration:           '.plyr__time--duration'
+        },
+        classes: {
+            videoWrapper:       'plyr__video-wrapper',
+            embedWrapper:       'plyr__video-embed',
+            type:               'plyr--{0}',
+            stopped:            'plyr--stopped',
+            playing:            'plyr--playing',
+            muted:              'plyr--muted',
+            loading:            'plyr--loading',
+            hover:              'plyr--hover',
+            tooltip:            'plyr__tooltip',
+            hidden:             'plyr__sr-only',
+            isIos:              'plyr--is-ios',
+            isTouch:            'plyr--is-touch',
+            captions: {
+                enabled:        'plyr--captions-enabled',
+                active:         'plyr--captions-active'
+            },
+            fullscreen: {
+                enabled:        'plyr--fullscreen-enabled',
+                active:         'plyr--fullscreen-active',
+                hideControls:   'plyr--fullscreen--hide-controls'
+            },
+            tabFocus:           'tab-focus'
+        },
+        captions: {
+            defaultActive:      false
+        },
+        fullscreen: {
+            enabled:            true,
+            fallback:           true,
+            hideControls:       true,
+            allowAudio:         false
+        },
+        storage: {
+            enabled:            true,
+            key:                'plyr'
+        },
+        controls:               ['restart', 'rewind', 'play', 'fast-forward', 'current-time', 'duration', 'mute', 'volume', 'captions', 'fullscreen'],
+        i18n: {
+            restart:            'Restart',
+            rewind:             'Rewind {seektime} secs',
+            play:               'Play',
+            pause:              'Pause',
+            forward:            'Forward {seektime} secs',
+            played:             'played',
+            buffered:           'buffered',
+            currentTime:        'Current time',
+            duration:           'Duration',
+            volume:             'Volume',
+            toggleMute:         'Toggle Mute',
+            toggleCaptions:     'Toggle Captions',
+            toggleFullscreen:   'Toggle Fullscreen',
+            frameTitle:         'Player for {title}'
+        },
+        types: {
+            embed:              ['youtube', 'vimeo', 'soundcloud'],
+            html5:              ['video', 'audio']
+        },
+        // URLs
+        urls: {
+            vimeo: {
+                api:            'https://cdn.plyr.io/froogaloop/1.0.1/plyr.froogaloop.js',
+            },
+            youtube: {
+                api:            'https://www.youtube.com/iframe_api'
+            },
+            soundcloud: {
+                api:            'https://w.soundcloud.com/player/api.js'
+            }
+        },
+        // Custom control listeners
+        listeners: {
+            seek:               null,
+            play:               null,
+            pause:              null,
+            restart:            null,
+            rewind:             null,
+            forward:            null,
+            mute:               null,
+            volume:             null,
+            captions:           null,
+            fullscreen:         null
+        },
+        // Events to watch on HTML5 media elements
+        events:                 ['ended', 'progress', 'stalled', 'playing', 'waiting', 'canplay', 'canplaythrough', 'loadstart', 'loadeddata', 'loadedmetadata', 'timeupdate', 'volumechange', 'play', 'pause', 'error', 'seeking', 'emptied']
+    };
+
+    // Credits: http://paypal.github.io/accessible-html5-video-player/
+    // Unfortunately, due to mixed support, UA sniffing is required
+    function _browserSniff() {
+        var nAgt = navigator.userAgent,
+            name = navigator.appName,
+            fullVersion = '' + parseFloat(navigator.appVersion),
+            majorVersion = parseInt(navigator.appVersion, 10),
+            nameOffset,
+            verOffset,
+            ix;
+
+        // MSIE 11
+        if ((navigator.appVersion.indexOf('Windows NT') !== -1) && (navigator.appVersion.indexOf('rv:11') !== -1)) {
+            name = 'IE';
+            fullVersion = '11;';
+        }
+        // MSIE
+        else if ((verOffset=nAgt.indexOf('MSIE')) !== -1) {
+            name = 'IE';
+            fullVersion = nAgt.substring(verOffset + 5);
+        }
+        // Chrome
+        else if ((verOffset=nAgt.indexOf('Chrome')) !== -1) {
+            name = 'Chrome';
+            fullVersion = nAgt.substring(verOffset + 7);
+        }
+        // Safari
+        else if ((verOffset=nAgt.indexOf('Safari')) !== -1) {
+            name = 'Safari';
+            fullVersion = nAgt.substring(verOffset + 7);
+            if ((verOffset=nAgt.indexOf('Version')) !== -1) {
+                fullVersion = nAgt.substring(verOffset + 8);
+            }
+        }
+        // Firefox
+        else if ((verOffset=nAgt.indexOf('Firefox')) !== -1) {
+            name = 'Firefox';
+            fullVersion = nAgt.substring(verOffset + 8);
+        }
+        // In most other browsers, 'name/version' is at the end of userAgent
+        else if ((nameOffset=nAgt.lastIndexOf(' ') + 1) < (verOffset=nAgt.lastIndexOf('/'))) {
+            name = nAgt.substring(nameOffset,verOffset);
+            fullVersion = nAgt.substring(verOffset + 1);
+
+            if (name.toLowerCase() == name.toUpperCase()) {
+                name = navigator.appName;
+            }
+        }
+        // Trim the fullVersion string at semicolon/space if present
+        if ((ix = fullVersion.indexOf(';')) !== -1) {
+            fullVersion = fullVersion.substring(0, ix);
+        }
+        if ((ix = fullVersion.indexOf(' ')) !== -1) {
+            fullVersion = fullVersion.substring(0, ix);
+        }
+        // Get major version
+        majorVersion = parseInt('' + fullVersion, 10);
+        if (isNaN(majorVersion)) {
+            fullVersion = '' + parseFloat(navigator.appVersion);
+            majorVersion = parseInt(navigator.appVersion, 10);
+        }
+
+        // Return data
+        return {
+            name:       name,
+            version:    majorVersion,
+            ios:        /(iPad|iPhone|iPod)/g.test(navigator.platform),
+            touch:      'ontouchstart' in document.documentElement
+        };
+    }
+
+    // Check for mime type support against a player instance
+    // Credits: http://diveintohtml5.info/everything.html
+    // Related: http://www.leanbackplyr.com/test/h5mt.html
+    function _supportMime(plyr, mimeType) {
+        var media = plyr.media;
+
+        // Only check video types for video players
+        if (plyr.type == 'video') {
+            // Check type
+            switch (mimeType) {
+                case 'video/webm':   return !!(media.canPlayType && media.canPlayType('video/webm; codecs="vp8, vorbis"').replace(/no/, ''));
+                case 'video/mp4':    return !!(media.canPlayType && media.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"').replace(/no/, ''));
+                case 'video/ogg':    return !!(media.canPlayType && media.canPlayType('video/ogg; codecs="theora"').replace(/no/, ''));
+            }
+        }
+
+        // Only check audio types for audio players
+        else if (plyr.type == 'audio') {
+            // Check type
+            switch (mimeType) {
+                case 'audio/mpeg':   return !!(media.canPlayType && media.canPlayType('audio/mpeg;').replace(/no/, ''));
+                case 'audio/ogg':    return !!(media.canPlayType && media.canPlayType('audio/ogg; codecs="vorbis"').replace(/no/, ''));
+                case 'audio/wav':    return !!(media.canPlayType && media.canPlayType('audio/wav; codecs="1"').replace(/no/, ''));
+            }
+        }
+
+        // If we got this far, we're stuffed
+        return false;
+    }
+
+    // Inject a script
+    function _injectScript(source) {
+        if (document.querySelectorAll('script[src="' + source + '"]').length) {
+            return;
+        }
+
+        var tag = document.createElement('script');
+        tag.src = source;
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+
+    // Element exists in an array
+    function _inArray(haystack, needle) {
+        return Array.prototype.indexOf && (haystack.indexOf(needle) != -1);
+    }
+
+    // Replace all
+    function _replaceAll(string, find, replace) {
+        return string.replace(new RegExp(find.replace(/([.*+?\^=!:${}()|\[\]\/\\])/g, '\\$1'), 'g'), replace);
+    }
+
+    // Wrap an element
+    function _wrap(elements, wrapper) {
+        // Convert `elements` to an array, if necessary.
+        if (!elements.length) {
+            elements = [elements];
+        }
+
+        // Loops backwards to prevent having to clone the wrapper on the
+        // first element (see `child` below).
+        for (var i = elements.length - 1; i >= 0; i--) {
+            var child   = (i > 0) ? wrapper.cloneNode(true) : wrapper;
+            var element = elements[i];
+
+            // Cache the current parent and sibling.
+            var parent  = element.parentNode;
+            var sibling = element.nextSibling;
+
+            // Wrap the element (is automatically removed from its current
+            // parent).
+            child.appendChild(element);
+
+            // If the element had a sibling, insert the wrapper before
+            // the sibling to maintain the HTML structure; otherwise, just
+            // append it to the parent.
+            if (sibling) {
+                parent.insertBefore(child, sibling);
+            }
+            else {
+                parent.appendChild(child);
+            }
+        }
+    }
+
+    // Unwrap an element
+    // http://plainjs.com/javascript/manipulation/unwrap-a-dom-element-35/
+    function _unwrap(wrapper) {
+        // Get the element's parent node
+        var parent = wrapper.parentNode;
+
+        // Move all children out of the element
+        while (wrapper.firstChild) {
+            parent.insertBefore(wrapper.firstChild, wrapper);
+        }
+
+        // Remove the empty element
+        parent.removeChild(wrapper);
+    }
+
+    // Remove an element
+    function _remove(element) {
+        if(!element) {
+            return;
+        }
+        element.parentNode.removeChild(element);
+    }
+
+    // Prepend child
+    function _prependChild(parent, element) {
+        parent.insertBefore(element, parent.firstChild);
+    }
+
+    // Set attributes
+    function _setAttributes(element, attributes) {
+        for (var key in attributes) {
+            element.setAttribute(key, (typeof attributes[key] === 'boolean' && attributes[key]) ? '' : attributes[key]);
+        }
+    }
+
+    // Insert a HTML element
+    function _insertElement(type, parent, attributes) {
+        // Create a new <element>
+        var element = document.createElement(type);
+
+        // Set all passed attributes
+        _setAttributes(element, attributes);
+
+        // Inject the new element
+        _prependChild(parent, element);
+    }
+
+    // Get a classname from selector
+    function _getClassname(selector) {
+        return selector.replace('.', '');
+    }
+
+    // Toggle class on an element
+    function _toggleClass(element, className, state) {
+        if (element) {
+            if (element.classList) {
+                element.classList[state ? 'add' : 'remove'](className);
+            }
+            else {
+                var name = (' ' + element.className + ' ').replace(/\s+/g, ' ').replace(' ' + className + ' ', '');
+                element.className = name + (state ? ' ' + className : '');
+            }
+        }
+    }
+
+    // Has class name
+    function _hasClass(element, className) {
+        if (element) {
+            if (element.classList) {
+                return element.classList.contains(className);
+            }
+            else {
+                return new RegExp('(\\s|^)' + className + '(\\s|$)').test(element.className);
+            }
+        }
+        return false;
+    }
+
+    // Bind event
+    function _on(element, events, callback) {
+        if (element) {
+            _toggleListener(element, events, callback, true);
+        }
+    }
+
+    // Unbind event
+    function _off(element, events, callback) {
+        if (element) {
+            _toggleListener(element, events, callback, false);
+        }
+    }
+
+    // Bind along with custom handler
+    function _proxyListener(element, eventName, userListener, defaultListener) {
+        _on(element, eventName, function(event) {
+            if(userListener) {
+                userListener.apply(element, [event]);
+            }
+            defaultListener.apply(element, [event]);
+        });
+    }
+
+    // Toggle event listener
+    function _toggleListener(element, events, callback, toggle) {
+        var eventList = events.split(' ');
+
+        // If a nodelist is passed, call itself on each node
+        if (element instanceof NodeList) {
+            for (var x = 0; x < element.length; x++) {
+                if (element[x] instanceof Node) {
+                    _toggleListener(element[x], arguments[1], arguments[2], arguments[3]);
+                }
+            }
+            return;
+        }
+
+        // If a single node is passed, bind the event listener
+        for (var i = 0; i < eventList.length; i++) {
+            element[toggle ? 'addEventListener' : 'removeEventListener'](eventList[i], callback, false);
+        }
+    }
+
+    // Trigger event
+    function _triggerEvent(element, eventName, properties) {
+        // Bail if no element
+        if(!element || !eventName) {
+            return;
+        }
+
+        // create and dispatch the event
+        var event = new CustomEvent(eventName, properties);
+
+        // Dispatch the event
+        element.dispatchEvent(event);
+    }
+
+    // Toggle aria-pressed state on a toggle button
+    // http://www.ssbbartgroup.com/blog/how-not-to-misuse-aria-states-properties-and-roles
+    function _toggleState(target, state) {
+        // Bail if no target
+        if(!target) {
+            return;
+        }
+
+        // Get state
+        state = (typeof state === 'boolean' ? state : !target.getAttribute('aria-pressed'));
+
+        // Set the attribute on target
+        target.setAttribute('aria-pressed', state);
+
+        return state;
+    }
+
+    // Get percentage
+    function _getPercentage(current, max) {
+        if (current === 0 || max === 0 || isNaN(current) || isNaN(max)) {
+            return 0;
+        }
+        return ((current / max) * 100).toFixed(2);
+    }
+
+    // Deep extend/merge destination object with N more objects
+    // http://andrewdupont.net/2009/08/28/deep-extending-objects-in-javascript/
+    // Removed call to arguments.callee (used explicit function name instead)
+    function _extend() {
+        // Get arguments
+        var objects = arguments;
+
+        // Bail if nothing to merge
+        if(!objects.length) {
+            return;
+        }
+
+        // Return first if specified but nothing to merge
+        if(objects.lenth == 1) {
+            return objects[0];
+        }
+
+        // First object is the destination
+        var destination = Array.prototype.shift.call(objects),
+            length      = objects.length;
+
+        // Loop through all objects to merge
+        for (var i = 0; i < length; i++) {
+            var source = objects[i];
+
+            for (var property in source) {
+                if (source[property] && source[property].constructor && source[property].constructor === Object) {
+                    destination[property] = destination[property] || {};
+                    _extend(destination[property], source[property]);
+                }
+                else {
+                    destination[property] = source[property];
+                }
+            }
+        }
+
+        return destination;
+    }
+
+    // Fullscreen API
+    function _fullscreen() {
+        var fullscreen = {
+                supportsFullScreen: false,
+                isFullScreen: function() { return false; },
+                requestFullScreen: function() {},
+                cancelFullScreen: function() {},
+                fullScreenEventName: '',
+                element: null,
+                prefix: ''
+            },
+            browserPrefixes = 'webkit moz o ms khtml'.split(' ');
+
+        // Check for native support
+        if (typeof document.cancelFullScreen !== 'undefined') {
+            fullscreen.supportsFullScreen = true;
+        }
+        else {
+            // Check for fullscreen support by vendor prefix
+            for (var i = 0, il = browserPrefixes.length; i < il; i++ ) {
+                fullscreen.prefix = browserPrefixes[i];
+
+                if (typeof document[fullscreen.prefix + 'CancelFullScreen'] !== 'undefined') {
+                    fullscreen.supportsFullScreen = true;
+                    break;
+                }
+                // Special case for MS (when isn't it?)
+                else if (typeof document.msExitFullscreen !== 'undefined' && document.msFullscreenEnabled) {
+                    fullscreen.prefix = 'ms';
+                    fullscreen.supportsFullScreen = true;
+                    break;
+                }
+            }
+        }
+
+        // Update methods to do something useful
+        if (fullscreen.supportsFullScreen) {
+            // Yet again Microsoft awesomeness,
+            // Sometimes the prefix is 'ms', sometimes 'MS' to keep you on your toes
+            fullscreen.fullScreenEventName = (fullscreen.prefix == 'ms' ? 'MSFullscreenChange' : fullscreen.prefix + 'fullscreenchange');
+
+            fullscreen.isFullScreen = function(element) {
+                if (typeof element === 'undefined') {
+                    element = document.body;
+                }
+                switch (this.prefix) {
+                    case '':
+                        return document.fullscreenElement == element;
+                    case 'moz':
+                        return document.mozFullScreenElement == element;
+                    default:
+                        return document[this.prefix + 'FullscreenElement'] == element;
+                }
+            };
+            fullscreen.requestFullScreen = function(element) {
+                if (typeof element === 'undefined') {
+                    element = document.body;
+                }
+                return (this.prefix === '') ? element.requestFullScreen() : element[this.prefix + (this.prefix == 'ms' ? 'RequestFullscreen' : 'RequestFullScreen')]();
+            };
+            fullscreen.cancelFullScreen = function() {
+                return (this.prefix === '') ? document.cancelFullScreen() : document[this.prefix + (this.prefix == 'ms' ? 'ExitFullscreen' : 'CancelFullScreen')]();
+            };
+            fullscreen.element = function() {
+                return (this.prefix === '') ? document.fullscreenElement : document[this.prefix + 'FullscreenElement'];
+            };
+        }
+
+        return fullscreen;
+    }
+
+    // Local storage
+    function _storage() {
+        var storage = {
+            supported: (function() {
+                if(!('localStorage' in window)) {
+                    return false;
+                }
+
+                // Try to use it (it might be disabled, e.g. user is in private/porn mode)
+                // see: https://github.com/Selz/plyr/issues/131
+                try {
+                    // Add test item
+                    window.localStorage.setItem('___test', 'OK');
+
+                    // Get the test item
+                    var result = window.localStorage.getItem('___test');
+
+                    // Clean up
+                    window.localStorage.removeItem('___test');
+
+                    // Check if value matches
+                    return (result === 'OK');
+                }
+                catch (e) {
+                    return false;
+                }
+
+                return false;
+            })()
+        };
+        return storage;
+    }
+
+    // Player instance
+    function Plyr(container, config) {
+        var plyr = this;
+        plyr.container = container;
+        plyr.timers = {};
+
+        // Log config options
+        _log(config);
+
+        // Debugging
+        function _log(text, warn) {
+            if (config.debug && window.console) {
+                console[(warn ? 'warn' : 'log')](text);
+            }
+        }
+
+        // Build the default HTML
+        function _buildControls() {
+            // Open and add the progress and seek elements
+            var html = [
+            '<div class="plyr__controls">',
+                '<div class="plyr__progress">',
+                    '<label for="seek{id}" class="plyr__sr-only">Seek</label>',
+                    '<input id="seek{id}" class="plyr__progress--seek" type="range" min="0" max="100" step="0.1" value="0" data-plyr="seek">',
+                    '<progress class="plyr__progress--played" max="100" value="0">',
+                        '<span>0</span>% ' + config.i18n.played,
+                    '</progress>',
+                    '<progress class="plyr__progress--buffer" max="100" value="0">',
+                        '<span>0</span>% ' + config.i18n.buffered,
+                    '</progress>'];
+
+            // Seek tooltip
+            if (config.tooltips.seek) {
+                html.push('<span class="plyr__tooltip">00:00</span>');
+            }
+
+            // Close progress
+            html.push('</div>',
+                '<span class="plyr__controls--left">');
+
+            // Restart button
+            if (_inArray(config.controls, 'restart')) {
+                html.push(
+                    '<button type="button" data-plyr="restart">',
+                        '<svg><use xlink:href="#' + config.iconPrefix + '-restart" /></svg>',
+                        '<span class="plyr__sr-only">' + config.i18n.restart + '</span>',
+                    '</button>'
+                );
+            }
+
+            // Rewind button
+            if (_inArray(config.controls, 'rewind')) {
+                html.push(
+                    '<button type="button" data-plyr="rewind">',
+                        '<svg><use xlink:href="#' + config.iconPrefix + '-rewind" /></svg>',
+                        '<span class="plyr__sr-only">' + config.i18n.rewind + '</span>',
+                    '</button>'
+                );
+            }
+
+            // Play/pause button
+            if (_inArray(config.controls, 'play')) {
+                html.push(
+                    '<button type="button" data-plyr="play">',
+                        '<svg><use xlink:href="#' + config.iconPrefix + '-play" /></svg>',
+                        '<span class="plyr__sr-only">' + config.i18n.play + '</span>',
+                    '</button>',
+                    '<button type="button" data-plyr="pause">',
+                        '<svg><use xlink:href="#' + config.iconPrefix + '-pause" /></svg>',
+                        '<span class="plyr__sr-only">' + config.i18n.pause + '</span>',
+                    '</button>'
+                );
+            }
+
+            // Fast forward button
+            if (_inArray(config.controls, 'fast-forward')) {
+                html.push(
+                    '<button type="button" data-plyr="fast-forward">',
+                        '<svg><use xlink:href="#' + config.iconPrefix + '-fast-forward" /></svg>',
+                        '<span class="plyr__sr-only">' + config.i18n.forward + '</span>',
+                    '</button>'
+                );
+            }
+
+            // Media current time display
+            if (_inArray(config.controls, 'current-time')) {
+                html.push(
+                    '<span class="plyr__time">',
+                        '<span class="plyr__sr-only">' + config.i18n.currentTime + '</span>',
+                        '<span class="plyr__time--current">00:00</span>',
+                    '</span>'
+                );
+            }
+
+            // Media duration display
+            if (_inArray(config.controls, 'duration')) {
+                html.push(
+                    '<span class="plyr__time">',
+                        '<span class="plyr__sr-only">' + config.i18n.duration + '</span>',
+                        '<span class="plyr__time--duration">00:00</span>',
+                    '</span>'
+                );
+            }
+
+            // Close left controls
+            html.push(
+                '</span>',
+                '<span class="plyr__controls--right">'
+            );
+
+            // Toggle mute button
+            if (_inArray(config.controls, 'mute')) {
+                html.push(
+                    '<button type="button" data-plyr="mute">',
+                        '<svg class="icon--muted"><use xlink:href="#' + config.iconPrefix + '-muted" /></svg>',
+                        '<svg><use xlink:href="#' + config.iconPrefix + '-volume" /></svg>',
+                        '<span class="plyr__sr-only">' + config.i18n.toggleMute + '</span>',
+                    '</button>'
+                );
+            }
+
+            // Volume range control
+            if (_inArray(config.controls, 'volume')) {
+                html.push(
+                    '<label for="volume{id}" class="plyr__sr-only">' + config.i18n.volume + '</label>',
+                    '<input id="volume{id}" class="plyr__volume" type="range" min="0" max="10" value="5" data-plyr="volume">'
+                );
+            }
+
+            // Toggle captions button
+            if (_inArray(config.controls, 'captions')) {
+                html.push(
+                    '<button type="button" data-plyr="captions">',
+                        '<svg class="icon--captions-on"><use xlink:href="#' + config.iconPrefix + '-captions-on" /></svg>',
+                        '<svg><use xlink:href="#' + config.iconPrefix + '-captions-off" /></svg>',
+                        '<span class="plyr__sr-only">' + config.i18n.toggleCaptions + '</span>',
+                    '</button>'
+                );
+            }
+
+            // Toggle fullscreen button
+            if (_inArray(config.controls, 'fullscreen')) {
+                html.push(
+                    '<button type="button" data-plyr="fullscreen">',
+                        '<svg class="icon--exit-fullscreen"><use xlink:href="#' + config.iconPrefix + '-exit-fullscreen" /></svg>',
+                        '<svg><use xlink:href="#' + config.iconPrefix + '-enter-fullscreen" /></svg>',
+                        '<span class="plyr__sr-only">' + config.i18n.toggleFullscreen + '</span>',
+                    '</button>'
+                );
+            }
+
+            // Close everything
+            html.push(
+                '</span>',
+            '</div>'
+            );
+
+            return html.join('');
+        }
+
+        // Setup fullscreen
+        function _setupFullscreen() {
+            if (!plyr.supported.full) {
+                return;
+            }
+
+            if ((plyr.type != 'audio' || config.fullscreen.allowAudio) && config.fullscreen.enabled) {
+                // Check for native support
+                var nativeSupport = fullscreen.supportsFullScreen;
+
+                if (nativeSupport || (config.fullscreen.fallback && !_inFrame())) {
+                    _log((nativeSupport ? 'Native' : 'Fallback') + ' fullscreen enabled');
+
+                    // Add styling hook
+                    _toggleClass(plyr.container, config.classes.fullscreen.enabled, true);
+                }
+                else {
+                    _log('Fullscreen not supported and fallback disabled');
+                }
+
+                // Toggle state
+                _toggleState(plyr.buttons.fullscreen, false);
+
+                // Setup focus trap
+                _focusTrap();
+
+                // Set control hide class hook
+                if (config.fullscreen.hideControls) {
+                    _toggleClass(plyr.container, config.classes.fullscreen.hideControls, true);
+                }
+            }
+        }
+
+        // Setup captions
+        function _setupCaptions() {
+            if (plyr.type !== 'video') {
+                return;
+            }
+
+            // Inject the container
+            if (!_getElement(config.selectors.captions)) {
+                plyr.videoContainer.insertAdjacentHTML('afterbegin', '<div class="' + _getClassname(config.selectors.captions) + '"></div>');
+            }
+
+            // Determine if HTML5 textTracks is supported
+            plyr.usingTextTracks = false;
+            if (plyr.media.textTracks) {
+                plyr.usingTextTracks = true;
+            }
+
+            // Get URL of caption file if exists
+            var captionSrc = '',
+                kind,
+                children = plyr.media.childNodes;
+
+            for (var i = 0; i < children.length; i++) {
+                if (children[i].nodeName.toLowerCase() === 'track') {
+                    kind = children[i].kind;
+                    if (kind === 'captions' || kind === 'subtitles') {
+                        captionSrc = children[i].getAttribute('src');
+                    }
+                }
+            }
+
+            // Record if caption file exists or not
+            plyr.captionExists = true;
+            if (captionSrc === '') {
+                plyr.captionExists = false;
+                _log('No caption track found');
+            }
+            else {
+                _log('Caption track found; URI: ' + captionSrc);
+            }
+
+            // If no caption file exists, hide container for caption text
+            if (!plyr.captionExists) {
+                _toggleClass(plyr.container, config.classes.captions.enabled);
+            }
+            // If caption file exists, process captions
+            else {
+                // Turn off native caption rendering to avoid double captions
+                // This doesn't seem to work in Safari 7+, so the <track> elements are removed from the dom below
+                var tracks = plyr.media.textTracks;
+                for (var x = 0; x < tracks.length; x++) {
+                    tracks[x].mode = 'hidden';
+                }
+
+                // Enable UI
+                _showCaptions(plyr);
+
+                // Disable unsupported browsers than report false positive
+                // Firefox bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1033144
+                if ((plyr.browser.name === 'IE' && plyr.browser.version >= 10) ||
+                    (plyr.browser.name === 'Firefox' && plyr.browser.version >= 31)) {
+
+                    // Debugging
+                    _log('Detected browser with known TextTrack issues - using manual fallback');
+
+                    // Set to false so skips to 'manual' captioning
+                    plyr.usingTextTracks = false;
+                }
+
+                // Rendering caption tracks
+                // Native support required - http://caniuse.com/webvtt
+                if (plyr.usingTextTracks) {
+                    _log('TextTracks supported');
+
+                    for (var y = 0; y < tracks.length; y++) {
+                        var track = tracks[y];
+
+                        if (track.kind === 'captions' || track.kind === 'subtitles') {
+                            _on(track, 'cuechange', function() {
+                                // Display a cue, if there is one
+                                if (this.activeCues[0] && 'text' in this.activeCues[0]) {
+                                    _setCaption(this.activeCues[0].getCueAsHTML());
+                                }
+                                else {
+                                    _setCaption();
+                                }
+                            });
+                        }
+                    }
+                }
+                // Caption tracks not natively supported
+                else {
+                    _log('TextTracks not supported so rendering captions manually');
+
+                    // Render captions from array at appropriate time
+                    plyr.currentCaption = '';
+                    plyr.captions = [];
+
+                    if (captionSrc !== '') {
+                        // Create XMLHttpRequest Object
+                        var xhr = new XMLHttpRequest();
+
+                        xhr.onreadystatechange = function() {
+                            if (xhr.readyState === 4) {
+                                if (xhr.status === 200) {
+                                    var captions = [],
+                                        caption,
+                                        req = xhr.responseText;
+
+                                    captions = req.split('\n\n');
+
+                                    for (var r = 0; r < captions.length; r++) {
+                                        caption = captions[r];
+                                        plyr.captions[r] = [];
+
+                                        // Get the parts of the captions
+                                        var parts = caption.split('\n'),
+                                            index = 0;
+
+                                        // Incase caption numbers are added
+                                        if(parts[index].indexOf(":") === -1) {
+                                            index = 1;
+                                        }
+
+                                        plyr.captions[r] = [parts[index], parts[index + 1]];
+                                    }
+
+                                    // Remove first element ('VTT')
+                                    plyr.captions.shift();
+
+                                    _log('Successfully loaded the caption file via AJAX');
+                                }
+                                else {
+                                    _log('There was a problem loading the caption file via AJAX', true);
+                                }
+                            }
+                        };
+
+                        xhr.open('get', captionSrc, true);
+
+                        xhr.send();
+                    }
+                }
+            }
+        }
+
+        // Set the current caption
+        function _setCaption(caption) {
+            var container = _getElement(config.selectors.captions),
+                content = document.createElement('span');
+
+            // Empty the container
+            container.innerHTML = '';
+
+            // Default to empty
+            if(typeof caption === 'undefined') {
+                caption = '';
+            }
+
+            // Set the span content
+            if(typeof caption === 'string') {
+                content.innerHTML = caption.trim();
+            }
+            else {
+                content.appendChild(caption);
+            }
+
+            // Set new caption text
+            container.appendChild(content);
+
+            // Force redraw
+            var redraw = container.offsetHeight;
+        }
+
+        // Captions functions
+        // Seek the manual caption time and update UI
+        function _seekManualCaptions(time) {
+            // Utilities for caption time codes
+            function _timecodeCommon(tc, pos) {
+                var tcpair = [];
+                tcpair = tc.split(' --> ');
+                for(var i = 0; i < tcpair.length; i++) {
+                    // WebVTT allows for extra meta data after the timestamp line
+                    // So get rid of this if it exists
+                    tcpair[i] = tcpair[i].replace(/(\d+:\d+:\d+\.\d+).*/, "$1");
+                }
+                return _subTcSecs(tcpair[pos]);
+            }
+            function _timecodeMin(tc) {
+                return _timecodeCommon(tc, 0);
+            }
+            function _timecodeMax(tc) {
+                return _timecodeCommon(tc, 1);
+            }
+            function _subTcSecs(tc) {
+                if (tc === null || tc === undefined) {
+                    return 0;
+                }
+                else {
+                    var tc1 = [],
+                        tc2 = [],
+                        seconds;
+                    tc1 = tc.split(',');
+                    tc2 = tc1[0].split(':');
+                    seconds = Math.floor(tc2[0]*60*60) + Math.floor(tc2[1]*60) + Math.floor(tc2[2]);
+                    return seconds;
+                }
+            }
+
+            // If it's not video, or we're using textTracks, bail.
+            if (plyr.usingTextTracks || plyr.type !== 'video' || !plyr.supported.full) {
+                return;
+            }
+
+            // Reset subcount
+            plyr.subcount = 0;
+
+            // Check time is a number, if not use currentTime
+            // IE has a bug where currentTime doesn't go to 0
+            // https://twitter.com/Sam_Potts/status/573715746506731521
+            time = typeof time === 'number' ? time : plyr.media.currentTime;
+
+            // If there's no subs available, bail
+            if (!plyr.captions[plyr.subcount]) {
+                return;
+            }
+
+            while (_timecodeMax(plyr.captions[plyr.subcount][0]) < time.toFixed(1)) {
+                plyr.subcount++;
+                if (plyr.subcount > plyr.captions.length-1) {
+                    plyr.subcount = plyr.captions.length-1;
+                    break;
+                }
+            }
+
+            // Check if the next caption is in the current time range
+            if (plyr.media.currentTime.toFixed(1) >= _timecodeMin(plyr.captions[plyr.subcount][0]) &&
+                plyr.media.currentTime.toFixed(1) <= _timecodeMax(plyr.captions[plyr.subcount][0])) {
+                    plyr.currentCaption = plyr.captions[plyr.subcount][1];
+
+                // Render the caption
+                _setCaption(plyr.currentCaption);
+            }
+            else {
+                _setCaption();
+            }
+        }
+
+        // Display captions container and button (for initialization)
+        function _showCaptions() {
+            // If there's no caption toggle, bail
+            if (!plyr.buttons.captions) {
+                return;
+            }
+
+            _toggleClass(plyr.container, config.classes.captions.enabled, true);
+
+            if (config.captions.defaultActive) {
+                _toggleClass(plyr.container, config.classes.captions.active, true);
+                _toggleState(plyr.buttons.captions, true);
+            }
+        }
+
+        // Find all elements
+        function _getElements(selector) {
+            return plyr.container.querySelectorAll(selector);
+        }
+
+        // Find a single element
+        function _getElement(selector) {
+            return _getElements(selector)[0];
+        }
+
+        // Determine if we're in an iframe
+        function _inFrame() {
+            try {
+                return window.self !== window.top;
+            }
+            catch (e) {
+                return true;
+            }
+        }
+
+        // Trap focus inside container
+        function _focusTrap() {
+            var tabbables   = _getElements('input:not([disabled]), button:not([disabled])'),
+                first       = tabbables[0],
+                last        = tabbables[tabbables.length - 1];
+
+            function _checkFocus(event) {
+                // If it is TAB
+                if (event.which === 9 && plyr.isFullscreen) {
+                    // Move focus to first element that can be tabbed if Shift isn't used
+                    if (event.target === last && !event.shiftKey) {
+                        event.preventDefault();
+                        first.focus();
+                    }
+                    // Move focus to last element that can be tabbed if Shift is used
+                    else if (event.target === first && event.shiftKey) {
+                        event.preventDefault();
+                        last.focus();
+                    }
+                }
+            }
+
+            // Bind the handler
+            _on(plyr.container, 'keydown', _checkFocus);
+        }
+
+        // Add elements to HTML5 media (source, tracks, etc)
+        function _insertChildElements(type, attributes) {
+            if (typeof attributes === 'string') {
+               _insertElement(type, plyr.media, { src: attributes });
+            }
+            else if (attributes.constructor === Array) {
+                for (var i = attributes.length - 1; i >= 0; i--) {
+                    _insertElement(type, plyr.media, attributes[i]);
+                }
+            }
+        }
+
+        // Insert controls
+        function _injectControls() {
+            // Make a copy of the html
+            var html = config.html;
+
+            // Insert custom video controls
+            _log('Injecting custom controls');
+
+            // If no controls are specified, create default
+            if (!html) {
+                html = _buildControls();
+            }
+
+            // Replace seek time instances
+            html = _replaceAll(html, '{seektime}', config.seekTime);
+
+            // Replace all id references with random numbers
+            html = _replaceAll(html, '{id}', Math.floor(Math.random() * (10000)));
+
+            // Controls container
+            var container;
+
+            // Inject to custom location
+            if (config.selectors.controls.container !== null) {
+                container = config.selectors.controls.container;
+
+                if(typeof selector === 'string') {
+                    container = document.querySelector(container);
+                }
+            }
+
+            // Inject into the container by default
+            if (!(container instanceof HTMLElement)) {
+                container = plyr.container
+            }
+
+            // Inject controls HTML
+            container.insertAdjacentHTML('beforeend', html);
+
+            // Setup tooltips
+            if (config.tooltips.controls) {
+                var labels = _getElements(config.selectors.labels + ' .' + config.classes.hidden);
+
+                for (var i = labels.length - 1; i >= 0; i--) {
+                    var label = labels[i];
+
+                    _toggleClass(label, config.classes.hidden, false);
+                    _toggleClass(label, config.classes.tooltip, true);
+                }
+            }
+        }
+
+        // Find the UI controls and store references
+        function _findElements() {
+            try {
+                plyr.controls                 = _getElement(config.selectors.controls.wrapper);
+
+                // Buttons
+                plyr.buttons = {};
+                plyr.buttons.seek             = _getElement(config.selectors.buttons.seek);
+                plyr.buttons.play             = _getElement(config.selectors.buttons.play);
+                plyr.buttons.pause            = _getElement(config.selectors.buttons.pause);
+                plyr.buttons.restart          = _getElement(config.selectors.buttons.restart);
+                plyr.buttons.rewind           = _getElement(config.selectors.buttons.rewind);
+                plyr.buttons.forward          = _getElement(config.selectors.buttons.forward);
+                plyr.buttons.fullscreen       = _getElement(config.selectors.buttons.fullscreen);
+
+                // Inputs
+                plyr.buttons.volume           = _getElement(config.selectors.buttons.volume);
+                plyr.buttons.mute             = _getElement(config.selectors.buttons.mute);
+                plyr.buttons.captions         = _getElement(config.selectors.buttons.captions);
+                plyr.checkboxes               = _getElements('[type="checkbox"]');
+
+                // Progress
+                plyr.progress = {};
+                plyr.progress.container       = _getElement(config.selectors.progress.container);
+
+                // Progress - Buffering
+                plyr.progress.buffer          = {};
+                plyr.progress.buffer.bar      = _getElement(config.selectors.progress.buffer);
+                plyr.progress.buffer.text     = plyr.progress.buffer.bar && plyr.progress.buffer.bar.getElementsByTagName('span')[0];
+
+                // Progress - Played
+                plyr.progress.played          = {};
+                plyr.progress.played.bar      = _getElement(config.selectors.progress.played);
+                plyr.progress.played.text     = plyr.progress.played.bar && plyr.progress.played.bar.getElementsByTagName('span')[0];
+
+                // Seek tooltip
+                plyr.progress.tooltip           = plyr.progress.container && plyr.progress.container.querySelector('.' + config.classes.tooltip);
+
+                // Volume
+                plyr.volume                   = _getElement(config.selectors.buttons.volume);
+
+                // Timing
+                plyr.duration                 = _getElement(config.selectors.duration);
+                plyr.currentTime              = _getElement(config.selectors.currentTime);
+                plyr.seekTime                 = _getElements(config.selectors.seekTime);
+
+                return true;
+            }
+            catch(e) {
+                _log('It looks like there is a problem with your controls html', true);
+
+                // Restore native video controls
+                _toggleControls(true);
+
+                return false;
+            }
+        }
+
+        // Toggle style hook
+        function _toggleStyleHook() {
+            _toggleClass(plyr.container, config.selectors.container.replace('.', ''), plyr.supported.full);
+        }
+
+        // Toggle native controls
+        function _toggleControls(toggle) {
+            if(toggle) {
+                plyr.media.setAttribute('controls', '');
+            }
+            else {
+                plyr.media.removeAttribute('controls');
+            }
+        }
+
+        // Setup aria attribute for play and iframe title
+        function _setTitle(iframe) {
+            // Find the current text
+            var label = config.i18n.play;
+
+            // If there's a media title set, use that for the label
+            if (typeof(config.title) !== 'undefined' && config.title.length) {
+                label += ', ' + config.title;
+            }
+
+            // If there's a play button, set label
+            if (plyr.supported.full && plyr.buttons.play) {
+                plyr.buttons.play.setAttribute('aria-label', label);
+            }
+
+            // Set iframe title
+            // https://github.com/Selz/plyr/issues/124
+            if (iframe instanceof HTMLElement) {
+                iframe.setAttribute('title', config.i18n.frameTitle.replace('{title}', config.title));
+            }
+        }
+
+        // Setup media
+        function _setupMedia() {
+            // If there's no media, bail
+            if (!plyr.media) {
+                _log('No audio or video element found', true);
+                return false;
+            }
+
+            if (plyr.supported.full) {
+                // Add type class
+                _toggleClass(plyr.container, config.classes.type.replace('{0}', plyr.type), true);
+
+                // If there's no autoplay attribute, assume the video is stopped and add state class
+                _toggleClass(plyr.container, config.classes.stopped, config.autoplay);
+
+                // Add iOS class
+                _toggleClass(plyr.container, config.classes.isIos, plyr.browser.ios);
+
+                // Add touch class
+                _toggleClass(plyr.container, config.classes.isTouch, plyr.browser.touch);
+
+                // Inject the player wrapper
+                if (plyr.type === 'video') {
+                    // Create the wrapper div
+                    var wrapper = document.createElement('div');
+                    wrapper.setAttribute('class', config.classes.videoWrapper);
+
+                    // Wrap the video in a container
+                    _wrap(plyr.media, wrapper);
+
+                    // Cache the container
+                    plyr.videoContainer = wrapper;
+                }
+            }
+
+            // Embeds
+            if (_inArray(config.types.embed, plyr.type)) {
+                _setupEmbed();
+
+                // Clean up
+                plyr.embedId = null;
+            }
+        }
+
+        // Setup YouTube/Vimeo
+        function _setupEmbed() {
+            var container = document.createElement('div'),
+                videoId = plyr.embedId,
+                id = plyr.type + '-' + Math.floor(Math.random() * (10000));
+
+            // Remove old containers
+            var containers = _getElements('[id^="' + plyr.type + '-"]');
+            for (var i = containers.length - 1; i >= 0; i--) {
+                _remove(containers[i]);
+            }
+
+            // Add embed class for responsive
+            _toggleClass(plyr.media, config.classes.videoWrapper, true);
+            _toggleClass(plyr.media, config.classes.embedWrapper, true);
+
+            // YouTube
+            if (plyr.type === 'youtube') {
+                // Create the YouTube container
+                plyr.media.appendChild(container);
+
+                // Set ID
+                container.setAttribute('id', id);
+
+                // Setup API
+                if (typeof YT === 'object') {
+                    _youTubeReady(videoId, container);
+                }
+                else {
+                    // Load the API
+                    _injectScript(config.urls.youtube.api);
+
+                    // Setup callback for the API
+                    window.onYouTubeReadyCallbacks = window.onYouTubeReadyCallbacks || [];
+
+                    // Add to queue
+                    window.onYouTubeReadyCallbacks.push(function() { _youTubeReady(videoId, container) });
+
+                    // Set callback to process queue
+                    window.onYouTubeIframeAPIReady = function () {
+                        window.onYouTubeReadyCallbacks.forEach(function(callback) { callback(); });
+                    };
+                }
+            }
+            // Vimeo
+            else if (plyr.type === 'vimeo') {
+                // Inject the iframe
+                var iframe = document.createElement('iframe');
+
+                // Watch for iframe load
+                iframe.loaded = false;
+                _on(iframe, 'load', function() { iframe.loaded = true; });
+
+                _setAttributes(iframe, {
+                    'src':                      'https://player.vimeo.com/video/' + videoId + '?player_id=' + id + '&api=1&badge=0&byline=0&portrait=0&title=0',
+                    'id':                       id,
+                    'webkitallowfullscreen':    '',
+                    'mozallowfullscreen':       '',
+                    'allowfullscreen':          '',
+                    'frameborder':              0
+                });
+
+                // If full support, we can use custom controls (hiding Vimeos), if not, use Vimeo
+                if(plyr.supported.full) {
+                    container.appendChild(iframe);
+                    plyr.media.appendChild(container);
+                }
+                else {
+                    plyr.media.appendChild(iframe);
+                }
+
+                // Load the API
+                if (!('$f' in window)) {
+                    _injectScript(config.urls.vimeo.api);
+                }
+
+                // Wait for fragaloop load
+                var timer = window.setInterval(function() {
+                    if ('$f' in window && iframe.loaded) {
+                        window.clearInterval(timer);
+                        _vimeoReady.call(iframe);
+                    }
+                }, 50);
+            }
+            // Soundcloud
+            else if (plyr.type === 'soundcloud') {
+                // Inject the iframe
+                var iframe = document.createElement('iframe');
+
+                // Watch for iframe load
+                iframe.loaded = false;
+                _on(iframe, 'load', function() { iframe.loaded = true; });
+
+                _setAttributes(iframe, {
+                    'src':                      'https://w.soundcloud.com/player/?url=https://api.soundcloud.com/tracks/' + videoId,
+                    'id':                       id
+                });
+
+                container.appendChild(iframe);
+                plyr.media.appendChild(container);
+
+                if (!window.SC) {
+                    _injectScript(config.urls.soundcloud.api);
+                }
+
+                // Wait for SC load
+                var timer = window.setInterval(function() {
+                    if (window.SC && iframe.loaded) {
+                        window.clearInterval(timer);
+                        _soundcloudReady.call(iframe);
+                    }
+                }, 50);
+            }
+        }
+
+        // When embeds are ready
+        function _embedReady() {
+            // Store reference to API
+            plyr.container.plyr.embed = plyr.embed;
+
+            // Setup the UI
+            _setupInterface();
+
+            // Set title
+            _setTitle(_getElement('iframe'));
+        }
+
+        // Handle YouTube API ready
+        function _youTubeReady(videoId, container) {
+            // Setup timers object
+            // We have to poll YouTube for updates
+            if (!('timer' in plyr)) {
+                plyr.timer = {};
+            }
+
+            // Setup instance
+            // https://developers.google.com/youtube/iframe_api_reference
+            plyr.embed = new YT.Player(container.id, {
+                videoId: videoId,
+                playerVars: {
+                    autoplay: (config.autoplay ? 1 : 0),
+                    controls: (plyr.supported.full ? 0 : 1),
+                    rel: 0,
+                    showinfo: 0,
+                    iv_load_policy: 3,
+                    cc_load_policy: (config.captions.defaultActive ? 1 : 0),
+                    cc_lang_pref: 'en',
+                    wmode: 'transparent',
+                    modestbranding: 1,
+                    disablekb: 1,
+                    origin: '*' // https://code.google.com/p/gdata-issues/issues/detail?id=5788#c45
+                },
+                events: {
+                    'onReady': function(event) {
+                        // Get the instance
+                        var instance = event.target;
+
+                        // Create a faux HTML5 API using the YouTube API
+                        plyr.media.play = function() {
+                            instance.playVideo();
+                            plyr.media.paused = false;
+                        };
+                        plyr.media.pause = function() {
+                            instance.pauseVideo();
+                            plyr.media.paused = true;
+                        };
+                        plyr.media.stop = function() {
+                            instance.stopVideo();
+                            plyr.media.paused = true;
+                        };
+                        plyr.media.duration = instance.getDuration();
+                        plyr.media.paused = true;
+                        plyr.media.currentTime = instance.getCurrentTime();
+                        plyr.media.muted = instance.isMuted();
+
+                        // Set title
+                        config.title = instance.getVideoData().title;
+
+                        // Trigger timeupdate
+                        _triggerEvent(plyr.media, 'timeupdate');
+
+                        // Reset timer
+                        window.clearInterval(plyr.timer.buffering);
+
+                        // Setup buffering
+                        plyr.timer.buffering = window.setInterval(function() {
+                            // Get loaded % from YouTube
+                            plyr.media.buffered = instance.getVideoLoadedFraction();
+
+                            // Trigger progress
+                            _triggerEvent(plyr.media, 'progress');
+
+                            // Bail if we're at 100%
+                            if (plyr.media.buffered === 1) {
+                                window.clearInterval(plyr.timer.buffering);
+
+                                // Trigger event
+                                _triggerEvent(plyr.media, 'canplaythrough');
+                            }
+                        }, 200);
+
+                        // Update UI
+                        _embedReady();
+
+                        // Display duration if available
+                        _displayDuration();
+                    },
+                    'onStateChange': function(event) {
+                        // Get the instance
+                        var instance = event.target;
+
+                        // Reset timer
+                        window.clearInterval(plyr.timer.playing);
+
+                        // Handle events
+                        // -1   Unstarted
+                        // 0    Ended
+                        // 1    Playing
+                        // 2    Paused
+                        // 3    Buffering
+                        // 5    Video cued
+                        switch (event.data) {
+                            case 0:
+                                plyr.media.paused = true;
+                                _triggerEvent(plyr.media, 'ended');
+                                break;
+
+                            case 1:
+                                plyr.media.paused = false;
+                                plyr.media.seeking = false;
+                                _triggerEvent(plyr.media, 'play');
+                                _triggerEvent(plyr.media, 'playing');
+
+                                // Poll to get playback progress
+                                plyr.timer.playing = window.setInterval(function() {
+                                    // Set the current time
+                                    plyr.media.currentTime = instance.getCurrentTime();
+
+                                    // Trigger timeupdate
+                                    _triggerEvent(plyr.media, 'timeupdate');
+                                }, 100);
+
+                                break;
+
+                            case 2:
+                                plyr.media.paused = true;
+                                _triggerEvent(plyr.media, 'pause');
+                                break;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Vimeo ready
+        function _vimeoReady() {
+            /* jshint validthis: true */
+            plyr.embed = $f(this);
+
+            // Setup on ready
+            plyr.embed.addEvent('ready', function() {
+
+                // Create a faux HTML5 API using the Vimeo API
+                plyr.media.play = function() {
+                    plyr.embed.api('play');
+                    plyr.media.paused = false;
+                };
+                plyr.media.pause = function() {
+                    plyr.embed.api('pause');
+                    plyr.media.paused = true;
+                };
+                plyr.media.stop = function() {
+                    plyr.embed.api('stop');
+                    plyr.media.paused = true;
+                };
+                plyr.media.paused = true;
+                plyr.media.currentTime = 0;
+
+                // Update UI
+                _embedReady();
+
+                plyr.embed.api('getCurrentTime', function (value) {
+                    plyr.media.currentTime = value;
+
+                    // Trigger timeupdate
+                    _triggerEvent(plyr.media, 'timeupdate');
+                });
+
+                plyr.embed.api('getDuration', function(value) {
+                    plyr.media.duration = value;
+
+                    // Display duration if available
+                    _displayDuration();
+                });
+
+                plyr.embed.addEvent('play', function() {
+                    plyr.media.paused = false;
+                    _triggerEvent(plyr.media, 'play');
+                    _triggerEvent(plyr.media, 'playing');
+                });
+
+                plyr.embed.addEvent('pause', function() {
+                    plyr.media.paused = true;
+                    _triggerEvent(plyr.media, 'pause');
+                });
+
+                plyr.embed.addEvent('playProgress', function(data) {
+                    plyr.media.seeking = false;
+                    plyr.media.currentTime = data.seconds;
+                    _triggerEvent(plyr.media, 'timeupdate');
+                });
+
+                plyr.embed.addEvent('loadProgress', function(data) {
+                    plyr.media.buffered = data.percent;
+                    _triggerEvent(plyr.media, 'progress');
+
+                    if(parseInt(data.percent) === 1) {
+                        // Trigger event
+                        _triggerEvent(plyr.media, 'canplaythrough');
+                    }
+                });
+
+                plyr.embed.addEvent('finish', function() {
+                    plyr.media.paused = true;
+                    _triggerEvent(plyr.media, 'ended');
+                });
+
+                // Always seek to 0
+                // plyr.embed.api('seekTo', 0);
+
+                // Autoplay
+                if (config.autoplay) {
+                    plyr.embed.api('play');
+                }
+            });
+        }
+
+        // Soundcloud ready
+        function _soundcloudReady() {
+            plyr.embed = SC.Widget(this);
+
+            // Setup on ready
+            plyr.embed.bind(SC.Widget.Events.READY, function() {
+                // Create a faux HTML5 API using the Soundcloud API
+                plyr.media.play = function() {
+                    plyr.embed.play();
+                    plyr.media.paused = false;
+                };
+                plyr.media.pause = function() {
+                    plyr.embed.pause();
+                    plyr.media.paused = true;
+                };
+                plyr.media.stop = function() {
+                    plyr.embed.seekTo(0);
+                    plyr.embed.pause();
+                    plyr.media.paused = true;
+                };
+                plyr.media.paused = true;
+                plyr.media.currentTime = 0;
+
+                // Update UI
+                _embedReady();
+
+                plyr.embed.getPosition(function(value) {
+                    plyr.media.currentTime = value;
+
+                    // Trigger timeupdate
+                    _triggerEvent(plyr.media, 'timeupdate');
+                });
+
+                plyr.embed.getDuration(function(value) {
+                    plyr.media.duration = value/1000;
+                    // Display duration if available
+                    _displayDuration();
+                });
+
+                plyr.embed.bind(SC.Widget.Events.PLAY, function() {
+                    plyr.media.paused = false;
+                    _triggerEvent(plyr.media, 'play');
+                    _triggerEvent(plyr.media, 'playing');
+                });
+
+                plyr.embed.bind(SC.Widget.Events.PAUSE, function() {
+                    plyr.media.paused = true;
+                    _triggerEvent(plyr.media, 'pause');
+                });
+
+                plyr.embed.bind(SC.Widget.Events.PLAY_PROGRESS, function(data) {
+                    plyr.media.seeking = false;
+                    plyr.media.currentTime = data.currentPosition/1000;
+                    _triggerEvent(plyr.media, 'timeupdate');
+                });
+
+                plyr.embed.bind(SC.Widget.Events.LOAD_PROGRESS, function(data) {
+                    plyr.media.buffered = data.loadProgress;
+                    _triggerEvent(plyr.media, 'progress');
+
+                    if(parseInt(data.percent) === 1) {
+                        // Trigger event
+                        _triggerEvent(plyr.media, 'canplaythrough');
+                    }
+                });
+
+                plyr.embed.bind(SC.Widget.Events.FINISH, function() {
+                    plyr.media.paused = true;
+                    _triggerEvent(plyr.media, 'ended');
+                });
+
+                // Always seek to 0
+                // plyr.embed.seekTo(0);
+
+                // Autoplay
+                if (config.autoplay) {
+                    plyr.embed.play();
+                }
+            });
+        }
+
+        // Play media
+        function _play() {
+            if('play' in plyr.media) {
+                plyr.media.play();
+            }
+        }
+
+        // Pause media
+        function _pause() {
+            if('pause' in plyr.media) {
+                plyr.media.pause();
+            }
+        }
+
+        // Toggle playback
+        function _togglePlay(toggle) {
+            // Play
+            if (toggle === true) {
+                _play();
+            }
+            // Pause
+            else if (toggle === false) {
+                _pause();
+            }
+            // True toggle
+            else {
+                plyr.media[plyr.media.paused ? 'play' : 'pause']();
+            }
+        }
+
+        // Rewind
+        function _rewind(seekTime) {
+            // Use default if needed
+            if (typeof seekTime !== 'number') {
+                seekTime = config.seekTime;
+            }
+            _seek(plyr.media.currentTime - seekTime);
+        }
+
+        // Fast forward
+        function _forward(seekTime) {
+            // Use default if needed
+            if (typeof seekTime !== 'number') {
+                seekTime = config.seekTime;
+            }
+            _seek(plyr.media.currentTime + seekTime);
+        }
+
+        // Seek to time
+        // The input parameter can be an event or a number
+        function _seek(input) {
+            var targetTime = 0,
+                paused = plyr.media.paused,
+                duration = _getDuration();
+
+            // Explicit position
+            if (typeof input === 'number') {
+                targetTime = input;
+            }
+            // Event
+            else if (typeof input === 'object' && (input.type === 'input' || input.type === 'change')) {
+                // It's the seek slider
+                // Seek to the selected time
+                targetTime = ((input.target.value / input.target.max) * duration);
+            }
+
+            // Normalise targetTime
+            if (targetTime < 0) {
+                targetTime = 0;
+            }
+            else if (targetTime > duration) {
+                targetTime = duration;
+            }
+
+            // Set the current time
+            // Try/catch incase the media isn't set and we're calling seek() from source() and IE moans
+            try {
+                plyr.media.currentTime = targetTime.toFixed(1);
+            }
+            catch(e) {}
+
+            // Embeds
+            if(_inArray(config.types.embed, plyr.type)) {
+                // YouTube
+                switch(plyr.type) {
+                    case 'youtube':
+                        plyr.embed.seekTo(targetTime);
+                        break;
+
+                    case 'vimeo':
+                        // Round to nearest second for vimeo
+                        plyr.embed.api('seekTo', targetTime.toFixed(0));
+                        break;
+
+                    case 'soundcloud':
+                        plyr.embed.seekTo(targetTime*1000);
+                        break;
+                }
+
+                if (paused) {
+                    _pause();
+                }
+
+                // Trigger timeupdate for embeds
+                _triggerEvent(plyr.media, 'timeupdate');
+
+                // Set seeking flag
+                plyr.media.seeking = true;
+            }
+
+            // Logging
+            _log('Seeking to ' + plyr.media.currentTime + ' seconds');
+
+            // Special handling for 'manual' captions
+            _seekManualCaptions(targetTime);
+        }
+
+        // Get the duration (or custom if set)
+        function _getDuration() {
+            // It should be a number, but parse it just incase
+            var duration = parseInt(config.duration);
+
+            // If custom duration is funky, use regular duration
+            return (isNaN(duration) ? plyr.media.duration : duration);
+        }
+
+        // Check playing state
+        function _checkPlaying() {
+            _toggleClass(plyr.container, config.classes.playing, !plyr.media.paused);
+            _toggleClass(plyr.container, config.classes.stopped, plyr.media.paused);
+        }
+
+        // Toggle fullscreen
+        function _toggleFullscreen(event) {
+            // Check for native support
+            var nativeSupport = fullscreen.supportsFullScreen;
+
+            // If it's a fullscreen change event, it's probably a native close
+            if (event && event.type === fullscreen.fullScreenEventName) {
+                plyr.isFullscreen = fullscreen.isFullScreen(plyr.container);
+            }
+            // If there's native support, use it
+            else if (nativeSupport) {
+                // Request fullscreen
+                if (!fullscreen.isFullScreen(plyr.container)) {
+                    fullscreen.requestFullScreen(plyr.container);
+                }
+                // Bail from fullscreen
+                else {
+                    fullscreen.cancelFullScreen();
+                }
+
+                // Check if we're actually full screen (it could fail)
+                plyr.isFullscreen = fullscreen.isFullScreen(plyr.container);
+            }
+            else {
+                // Otherwise, it's a simple toggle
+                plyr.isFullscreen = !plyr.isFullscreen;
+
+                // Bind/unbind escape key
+                if (plyr.isFullscreen) {
+                    _on(document, 'keyup', _handleEscapeFullscreen);
+                    document.body.style.overflow = 'hidden';
+                }
+                else {
+                    _off(document, 'keyup', _handleEscapeFullscreen);
+                    document.body.style.overflow = '';
+                }
+            }
+
+            // Set class hook
+            _toggleClass(plyr.container, config.classes.fullscreen.active, plyr.isFullscreen);
+
+            // Trap focus
+            if(plyr.isFullscreen) {
+                plyr.container.setAttribute('tabindex', '-1');
+            }
+            else {
+                plyr.container.removeAttribute('tabindex');
+            }
+
+            // Trap focus
+            _focusTrap(plyr.isFullscreen);
+
+            // Set button state
+            _toggleState(plyr.buttons.fullscreen, plyr.isFullscreen);
+
+            // Hide on entering full screen
+            if (config.fullscreen.hideControls) {
+                //_toggleClass(plyr.controls, config.classes.hover, false);
+                _showControls(true);
+            }
+
+            // Trigger an event
+            _triggerEvent(plyr.container, plyr.isFullscreen ? 'enterfullscreen' : 'exitfullscreen');
+        }
+
+        // Bail from faux-fullscreen
+        function _handleEscapeFullscreen(event) {
+            // If it's a keypress and not escape, bail
+            if ((event.which || event.charCode || event.keyCode) === 27 && plyr.isFullscreen) {
+                _toggleFullscreen();
+            }
+        }
+
+        // Mute
+        function _toggleMute(muted) {
+            // If the method is called without parameter, toggle based on current value
+            if (typeof muted !== 'boolean') {
+                muted = !plyr.media.muted;
+            }
+
+            // Set button state
+            _toggleState(plyr.buttons.mute, muted);
+
+            // Set mute on the player
+            plyr.media.muted = muted;
+
+            // Embeds
+            if(_inArray(config.types.embed, plyr.type)) {
+                // YouTube
+                switch(plyr.type) {
+                    case 'youtube':
+                        plyr.embed[plyr.media.muted ? 'mute' : 'unMute']();
+                        break;
+
+                    case 'vimeo':
+                        plyr.embed.api('setVolume', plyr.media.muted ? 0 : parseFloat(config.volume / 10));
+                        break;
+
+                    case 'soundcloud':
+                        plyr.embed.setVolume(plyr.media.muted ? 0 : parseFloat(config.volume / 10));
+                        break;
+                }
+
+                // Trigger volumechange for embeds
+                _triggerEvent(plyr.media, 'volumechange');
+            }
+        }
+
+        // Set volume
+        function _setVolume(volume) {
+            // Use default if no value specified
+            if (typeof volume === 'undefined') {
+                volume = config.volume;
+
+                if (config.storage.enabled && _storage().supported) {
+                    volume = window.localStorage.getItem(config.storage.key);
+
+                    // Clean up old volume
+                    // https://github.com/Selz/plyr/issues/171
+                    window.localStorage.removeItem('plyr-volume');
+                }
+            }
+
+            // Use config if all else fails
+            if(volume === null || isNaN(volume)) {
+                volume = config.volume;
+            }
+
+            // Maximum is 10
+            if (volume > 10) {
+                volume = 10;
+            }
+            // Minimum is 0
+            if (volume < 0) {
+                volume = 0;
+            }
+
+            // Set the player volume
+            plyr.media.volume = parseFloat(volume / 10);
+
+            // Store in config
+            config.volume = volume;
+
+            // Embeds
+            if(_inArray(config.types.embed, plyr.type)) {
+                // YouTube
+                switch(plyr.type) {
+                    case 'youtube':
+                        plyr.embed.setVolume(plyr.media.volume * 100);
+                        break;
+
+                    case 'vimeo':
+                        plyr.embed.api('setVolume', plyr.media.volume);
+                        break;
+
+                    case 'soundcloud':
+                        plyr.embed.setVolume(plyr.media.volume);
+                        break;
+                }
+
+                // Trigger volumechange for embeds
+                _triggerEvent(plyr.media, 'volumechange');
+            }
+
+            // Toggle muted state
+            if (plyr.media.muted && volume > 0) {
+                _toggleMute();
+            }
+        }
+
+        // Update volume UI and storage
+        function _updateVolume() {
+            // Get the current volume
+            var volume = plyr.media.muted ? 0 : (plyr.media.volume * 10);
+
+            // Update the <input type="range"> if present
+            if (plyr.supported.full && plyr.volume) {
+                plyr.volume.value = volume;
+            }
+
+            // Store the volume in storage
+            if (config.storage.enabled && _storage().supported && !isNaN(volume)) {
+                window.localStorage.setItem(config.storage.key, volume);
+            }
+
+            // Toggle class if muted
+            _toggleClass(plyr.container, config.classes.muted, (volume === 0));
+
+            // Update checkbox for mute state
+            if (plyr.supported.full && plyr.buttons.mute) {
+                _toggleState(plyr.buttons.mute, (volume === 0));
+            }
+        }
+
+        // Toggle captions
+        function _toggleCaptions(show) {
+            // If there's no full support, or there's no caption toggle
+            if (!plyr.supported.full || !plyr.buttons.captions) {
+                return;
+            }
+
+            // If the method is called without parameter, toggle based on current value
+            if (typeof show !== 'boolean') {
+                show = (plyr.container.className.indexOf(config.classes.captions.active) === -1);
+            }
+
+            // Set global
+            plyr.captionsEnabled = show;
+
+            // Toggle state
+            _toggleState(plyr.buttons.captions, plyr.captionsEnabled);
+
+            // Add class hook
+            _toggleClass(plyr.container, config.classes.captions.active, plyr.captionsEnabled);
+
+            // Trigger an event
+            _triggerEvent(plyr.container, plyr.captionsEnabled ? 'captionsenabled' : 'captionsdisabled');
+        }
+
+        // Check if media is loading
+        function _checkLoading(event) {
+            var loading = (event.type === 'waiting');
+
+            // Clear timer
+            clearTimeout(plyr.timers.loading);
+
+            // Timer to prevent flicker when seeking
+            plyr.timers.loading = setTimeout(function() {
+                _toggleClass(plyr.container, config.classes.loading, loading);
+            }, (loading ? 250 : 0));
+        }
+
+        // Update <progress> elements
+        function _updateProgress(event) {
+            var progress    = plyr.progress.played.bar,
+                text        = plyr.progress.played.text,
+                value       = 0,
+                duration    = _getDuration();
+
+            if (event) {
+                switch (event.type) {
+                    // Video playing
+                    case 'timeupdate':
+                    case 'seeking':
+                        value = _getPercentage(plyr.media.currentTime, duration);
+
+                        // Set seek range value only if it's a 'natural' time event
+                        if (event.type == 'timeupdate' && plyr.buttons.seek) {
+                            plyr.buttons.seek.value = value;
+                        }
+
+                        break;
+
+                    // Events from seek range
+                    case 'change':
+                    case 'input':
+                        value = event.target.value;
+                        break;
+
+
+                    // Check buffer status
+                    case 'playing':
+                    case 'progress':
+                        progress    = plyr.progress.buffer.bar;
+                        text        = plyr.progress.buffer.text;
+                        value       = (function() {
+                                        var buffered = plyr.media.buffered;
+
+                                        // HTML5
+                                        if (buffered && buffered.length) {
+                                            return _getPercentage(buffered.end(0), duration);
+                                        }
+                                        // YouTube returns between 0 and 1
+                                        else if (typeof buffered === 'number') {
+                                            return (buffered * 100);
+                                        }
+
+                                        return 0;
+                                    })();
+                }
+            }
+
+            // Set values
+            if (progress) {
+                progress.value = value;
+            }
+            if (text) {
+                text.innerHTML = value;
+            }
+        }
+
+        // Update the displayed time
+        function _updateTimeDisplay(time, element) {
+            // Bail if there's no duration display
+            if (!element) {
+                return;
+            }
+
+            // Fallback to 0
+            if (isNaN(time)) {
+                time = 0;
+            }
+
+            plyr.secs = parseInt(time % 60);
+            plyr.mins = parseInt((time / 60) % 60);
+            plyr.hours = parseInt(((time / 60) / 60) % 60);
+
+            // Do we need to display hours?
+            var displayHours = (parseInt(((_getDuration() / 60) / 60) % 60) > 0);
+
+            // Ensure it's two digits. For example, 03 rather than 3.
+            plyr.secs = ('0' + plyr.secs).slice(-2);
+            plyr.mins = ('0' + plyr.mins).slice(-2);
+
+            // Render
+            element.innerHTML = (displayHours ? plyr.hours + ':' : '') + plyr.mins + ':' + plyr.secs;
+        }
+
+        // Show the duration on metadataloaded
+        function _displayDuration() {
+            if (!plyr.supported.full) {
+                return;
+            }
+
+            // Determine duration
+            var duration = _getDuration() || 0;
+
+            // If there's only one time display, display duration there
+            if (!plyr.duration && config.displayDuration && plyr.media.paused) {
+                _updateTimeDisplay(duration, plyr.currentTime);
+            }
+
+            // If there's a duration element, update content
+            if (plyr.duration) {
+                _updateTimeDisplay(duration, plyr.duration);
+            }
+
+            // Update the tooltip (if visible)
+            _updateSeekTooltip();
+        }
+
+        // Handle time change event
+        function _timeUpdate(event) {
+            // Duration
+            _updateTimeDisplay(plyr.media.currentTime, plyr.currentTime);
+
+            // Ignore updates while seeking
+            if(event && event.type == 'timeupdate' && plyr.media.seeking) {
+                return;
+            }
+
+            // Playing progress
+            _updateProgress(event);
+        }
+
+        // Update hover tooltip for seeking
+        function _updateSeekTooltip(event) {
+            // Bail if setting not true
+            if (!config.tooltips.seek || plyr.browser.touch) {
+                return;
+            }
+
+            // Calculate percentage
+            var clientRect  = plyr.progress.container.getBoundingClientRect(),
+                percent     = 0,
+                visible     = config.classes.tooltip + '--visible';
+
+            // Determine percentage, if already visible
+            if (!event) {
+                if(_hasClass(plyr.progress.tooltip, visible)) {
+                    percent = plyr.progress.tooltip.style.left.replace('%', '');
+                }
+                else {
+                    return;
+                }
+            }
+            else {
+                percent = ((100 / clientRect.width) * (event.pageX - clientRect.left));
+            }
+
+            // Set bounds
+            if (percent < 0) {
+                percent = 0;
+            }
+            else if (percent > 100) {
+                percent = 100;
+            }
+
+            // Display the time a click would seek to
+            _updateTimeDisplay(((_getDuration() / 100) * percent), plyr.progress.tooltip);
+
+            // Set position
+            plyr.progress.tooltip.style.left = percent + "%";
+
+            // Show/hide the tooltip
+            // If the event is a moues in/out and percentage is inside bounds
+            if(event && _inArray(['mouseenter', 'mouseleave'], event.type)) {
+                _toggleClass(plyr.progress.tooltip, visible, (event.type === 'mouseenter'));
+            }
+        }
+
+        // Show the player controls in fullscreen mode
+        function _showControls(force) {
+            // We're only worried about fullscreen
+            if (!plyr.isFullscreen) {
+                return;
+            }
+
+            // Set shown class
+            _toggleClass(plyr.container, config.classes.hover, true);
+
+            // Clear timer every movement
+            window.clearTimeout(plyr.timers.hover);
+
+            // If the mouse is not over the controls, set a timeout to hide them
+            plyr.timers.hover = window.setTimeout(function() {
+                if (!plyr.controls.mouseover || (force === true)) {
+                    _toggleClass(plyr.container, config.classes.hover, false);
+                }
+            }, 2000);
+        }
+
+        // Add common function to retrieve media source
+        function _source(source) {
+            // If not null or undefined, parse it
+            if(typeof source !== 'undefined') {
+                _updateSource(source);
+                return;
+            }
+
+            // Return the current source
+            var url;
+            switch(plyr.type) {
+                case 'youtube':
+                    url = plyr.embed.getVideoUrl();
+                    break;
+
+                case 'vimeo':
+                    plyr.embed.api('getVideoUrl', function (value) {
+                        url = value;
+                    });
+                    break;
+
+                case 'soundcloud':
+                    plyr.embed.getCurrentSound(function(object) {
+                        /*
+                            TODO: PICK ONE
+                            uri: "https://api.soundcloud.com/tracks/258302982"
+                                or
+                            permalink_url: "https://soundcloud.com/mystdubs/bathos-w-weroh-k-raiku-sensi-sye"
+                        */
+                        url = object.permalink_url;
+                    });
+                    break;
+
+                default:
+                    url = plyr.media.currentSrc;
+                    break;
+            }
+
+            return url || '';
+        }
+
+        // Update source
+        // Sources are not checked for support so be careful
+        function _updateSource(source) {
+            if (typeof source === 'undefined' || !('sources' in source) || !source.sources.length) {
+                _log('Invalid source format', true);
+                return;
+            }
+
+            // Pause playback
+            _pause();
+
+            // Clean up YouTube stuff
+            if (plyr.type === 'youtube') {
+                // Destroy the embed instance
+                plyr.embed.destroy();
+
+                // Clear timer
+                window.clearInterval(plyr.timer.buffering);
+                window.clearInterval(plyr.timer.playing);
+            }
+            else if (plyr.type === 'video' && plyr.videoContainer) {
+                // Remove video wrapper
+                _remove(plyr.videoContainer);
+            }
+
+            // Remove embed object
+            plyr.embed = null;
+
+            // Cancel current network requests
+            _cancelRequests();
+
+            // Remove the old media
+            _remove(plyr.media);
+
+            // Set the type
+            if ('type' in source) {
+                plyr.type = source.type;
+
+                // Get child type for video (it might be an embed)
+                if(plyr.type === 'video') {
+                    var firstSource = source.sources[0];
+
+                    if('type' in firstSource && _inArray(config.types.embed, firstSource.type)) {
+                        plyr.type = firstSource.type;
+                    }
+                }
+            }
+
+            // Check for support
+            plyr.supported = api.supported(plyr.type);
+
+            // Create new markup
+            switch(plyr.type) {
+                case 'video':
+                    plyr.media = document.createElement('video');
+                    break;
+
+                case 'audio':
+                    plyr.media = document.createElement('audio');
+                    break;
+
+                case 'youtube':
+                case 'vimeo':
+                case 'soundcloud':
+                    plyr.media = document.createElement('div');
+                    plyr.embedId = source.sources[0].src;
+                    break;
+            }
+
+            // Inject the new element
+            _prependChild(plyr.container, plyr.media);
+
+            // Autoplay the new source?
+            if (typeof source.autoplay !== 'undefined') {
+                config.autoplay = source.autoplay;
+            }
+
+            // Set attributes for audio video
+            if (_inArray(config.types.html5, plyr.type)) {
+                if (config.crossorigin) {
+                    plyr.media.setAttribute('crossorigin', '');
+                }
+                if (config.autoplay) {
+                    plyr.media.setAttribute('autoplay', '');
+                }
+                if ('poster' in source) {
+                    plyr.media.setAttribute('poster', source.poster);
+                }
+                if (config.loop) {
+                    plyr.media.setAttribute('loop', '');
+                }
+            }
+
+            // Classname reset
+            plyr.container.className = plyr.originalClassName;
+
+            // Restore class hooks
+            _toggleClass(plyr.container, config.classes.fullscreen.active, plyr.isFullscreen);
+            _toggleClass(plyr.container, config.classes.captions.active, plyr.captionsEnabled);
+            _toggleStyleHook();
+
+            // Set new sources for html5
+            if (_inArray(config.types.html5, plyr.type)) {
+                _insertChildElements('source', source.sources);
+            }
+
+            // Set up from scratch
+            _setupMedia();
+
+            // HTML5 stuff
+            if (_inArray(config.types.html5, plyr.type)) {
+                // Setup captions
+                if ('tracks' in source) {
+                    _insertChildElements('track', source.tracks);
+                }
+
+                // Load HTML5 sources
+                plyr.media.load();
+
+                // Setup interface
+                _setupInterface();
+
+                // Display duration if available
+                _displayDuration();
+            }
+
+            // Set aria title and iframe title
+            config.title = source.title;
+            _setTitle();
+
+            // Reset media objects
+            plyr.container.plyr.media = plyr.media;
+        }
+
+        // Update poster
+        function _updatePoster(source) {
+            if (plyr.type === 'video') {
+                plyr.media.setAttribute('poster', source);
+            }
+        }
+
+        // Listen for control events
+        function _controlListeners() {
+            // IE doesn't support input event, so we fallback to change
+            var inputEvent = (plyr.browser.name == 'IE' ? 'change' : 'input');
+
+            // Click play/pause helper
+            function _togglePlay() {
+                var play = plyr.media.paused;
+
+                // Toggle playback
+                if (play) {
+                    _play();
+                }
+                else {
+                    _pause();
+                }
+
+                // Determine which buttons
+                var trigger = plyr.buttons[play ? 'play' : 'pause'],
+                    target = plyr.buttons[play ? 'pause' : 'play'];
+
+                // Setup focus and tab focus
+                if(target) {
+                    var hadTabFocus = _hasClass(trigger, config.classes.tabFocus);
+
+                    setTimeout(function() {
+                        target.focus();
+
+                        if(hadTabFocus) {
+                            _toggleClass(trigger, config.classes.tabFocus, false);
+                            _toggleClass(target, config.classes.tabFocus, true);
+                        }
+                    }, 100);
+                }
+            }
+
+            // Detect tab focus
+            function checkFocus() {
+                var focused = document.activeElement;
+                if (!focused || focused == document.body) {
+                    focused = null;
+                }
+                else if (document.querySelector) {
+                    focused = document.querySelector(':focus');
+                }
+                for (var button in plyr.buttons) {
+                    var element = plyr.buttons[button];
+
+                    _toggleClass(element, config.classes.tabFocus, (element === focused));
+                }
+            }
+            _on(window, 'keyup', function(event) {
+                var code = (event.keyCode ? event.keyCode : event.which);
+
+                if (code == 9) {
+                    checkFocus();
+                }
+            });
+            _on(document.body, 'click', function() {
+                _toggleClass(_getElement('.' + config.classes.tabFocus), config.classes.tabFocus, false);
+            });
+            for (var button in plyr.buttons) {
+                var element = plyr.buttons[button];
+
+                _on(element, 'blur', function() {
+                    _toggleClass(element, 'tab-focus', false);
+                });
+            }
+
+            // Play
+            _proxyListener(plyr.buttons.play, 'click', config.listeners.play, _togglePlay);
+
+            // Pause
+            _proxyListener(plyr.buttons.pause, 'click', config.listeners.pause, _togglePlay);
+
+            // Restart
+            _proxyListener(plyr.buttons.restart, 'click', config.listeners.restart, _seek);
+
+            // Rewind
+            _proxyListener(plyr.buttons.rewind, 'click', config.listeners.rewind, _rewind);
+
+            // Fast forward
+            _proxyListener(plyr.buttons.forward, 'click', config.listeners.forward, _forward);
+
+            // Seek
+            _proxyListener(plyr.buttons.seek, inputEvent, config.listeners.seek, _seek);
+
+            // Set volume
+            _proxyListener(plyr.volume, inputEvent, config.listeners.volume, function() {
+                _setVolume(plyr.volume.value);
+            });
+
+            // Mute
+            _proxyListener(plyr.buttons.mute, 'click', config.listeners.mute, _toggleMute);
+
+            // Fullscreen
+            _proxyListener(plyr.buttons.fullscreen, 'click', config.listeners.fullscreen, _toggleFullscreen);
+
+            // Handle user exiting fullscreen by escaping etc
+            if (fullscreen.supportsFullScreen) {
+                _on(document, fullscreen.fullScreenEventName, _toggleFullscreen);
+            }
+
+            // Captions
+            _on(plyr.buttons.captions, 'click', _toggleCaptions);
+
+            // Seek tooltip
+            _on(plyr.progress.container, 'mouseenter mouseleave mousemove', _updateSeekTooltip);
+
+            // Toggle controls visibility based on mouse movement and location
+            var hoverTimer, isMouseOver = false;
+
+            if (config.fullscreen.hideControls) {
+                // Keep an eye on the mouse location in relation to controls
+                _on(plyr.controls, 'mouseenter mouseleave', function(event) {
+                    plyr.controls.mouseover = (event.type === 'mouseenter');
+                });
+            }
+        }
+
+        // Listen for media events
+        function _mediaListeners() {
+            // Time change on media
+            _on(plyr.media, 'timeupdate seeking', _timeUpdate);
+
+            // Update manual captions
+            _on(plyr.media, 'timeupdate', _seekManualCaptions);
+
+            // Display duration
+            _on(plyr.media, 'durationchange loadedmetadata', _displayDuration);
+
+            // Handle the media finishing
+            _on(plyr.media, 'ended', function() {
+                // Clear
+                if (plyr.type === 'video') {
+                    _setCaption();
+                }
+
+                // Reset UI
+                _checkPlaying();
+            });
+
+            // Check for buffer progress
+            _on(plyr.media, 'progress playing', _updateProgress);
+
+            // Handle native mute
+            _on(plyr.media, 'volumechange', _updateVolume);
+
+            // Handle native play/pause
+            _on(plyr.media, 'play pause', _checkPlaying);
+
+            // Loading
+            _on(plyr.media, 'waiting canplay seeked', _checkLoading);
+
+            // Click video
+            if (config.click) {
+                _on(plyr.media, 'click', function() {
+                    if (plyr.media.paused) {
+                        _play();
+                    }
+                    else if (plyr.media.ended) {
+                        _seek();
+                        _play();
+                    }
+                    else {
+                        _pause();
+                    }
+                });
+            }
+
+            // Listen for mouse move to show controls
+            if (config.fullscreen.hideControls) {
+                // Show the controls on mouse move
+                _on(plyr.media, 'mousemove', _showControls);
+            }
+
+            // Proxy events to container
+            _on(plyr.media, config.events.join(' '), function(event) {
+                _triggerEvent(plyr.container, event.type);
+            });
+        }
+
+        // Cancel current network requests
+        // See https://github.com/Selz/plyr/issues/174
+        function _cancelRequests() {
+            if(!_inArray(config.types.html5, plyr.type)) {
+                return;
+            }
+
+            // Set empty src attribute
+            plyr.media.setAttribute('src', '');
+
+            // Remove child sources
+            var sources = plyr.media.querySelectorAll('source');
+            for (var i = 0; i < sources.length; i++) {
+                _remove(sources[i]);
+            }
+
+            // Load the new empty source
+            // This will cancel existing requests
+            // See https://github.com/Selz/plyr/issues/174
+            plyr.media.load();
+
+            // Debugging
+            _log("Cancelled network requests for old media");
+        }
+
+        // Destroy an instance
+        // Event listeners are removed when elements are removed
+        // http://stackoverflow.com/questions/12528049/if-a-dom-element-is-removed-are-its-listeners-also-removed-from-memory
+        function _destroy() {
+            // Bail if the element is not initialized
+            if (!plyr.init) {
+                return null;
+            }
+
+            // Reset container classname
+            plyr.container.setAttribute('class', _getClassname(config.selectors.container));
+
+            // Remove init flag
+            plyr.init = false;
+
+            // Remove controls
+            _remove(_getElement(config.selectors.controls.wrapper));
+
+            // YouTube
+            if (plyr.type === 'youtube') {
+                plyr.embed.destroy();
+                return;
+            }
+
+            // If video, we need to remove some more
+            if (plyr.type === 'video') {
+                // Remove captions container
+                _remove(_getElement(config.selectors.captions));
+
+                // Remove video wrapper
+                _unwrap(plyr.videoContainer);
+            }
+
+            // Restore native video controls
+            _toggleControls(true);
+
+            // Clone the media element to remove listeners
+            // http://stackoverflow.com/questions/19469881/javascript-remove-all-event-listeners-of-specific-type
+            var clone = plyr.media.cloneNode(true);
+            plyr.media.parentNode.replaceChild(clone, plyr.media);
+        }
+
+        // Setup a player
+        function _init() {
+            // Bail if the element is initialized
+
+            if (plyr.init) {
+                return null;
+            }
+
+            // Setup the fullscreen api
+            fullscreen = _fullscreen();
+
+            // Sniff out the browser
+            plyr.browser = _browserSniff();
+
+            // Get the media element
+            plyr.media = plyr.container.querySelectorAll('audio, video, div')[0];
+
+            // Get original classname
+            plyr.originalClassName = plyr.container.className;
+
+            // Set media type based on tag or data attribute
+            // Supported: video, audio, vimeo, youtube
+            var tagName = plyr.media.tagName.toLowerCase();
+            if (tagName === 'div') {
+                plyr.type     = plyr.media.getAttribute('data-type');
+                plyr.embedId  = plyr.media.getAttribute('data-video-id');
+
+                // Clean up
+                plyr.media.removeAttribute('data-type');
+                plyr.media.removeAttribute('data-video-id');
+            }
+            else {
+                plyr.type           = tagName;
+                config.crossorigin  = (plyr.media.getAttribute('crossorigin') !== null);
+                config.autoplay     = (config.autoplay || (plyr.media.getAttribute('autoplay') !== null));
+                config.loop         = (config.loop || (plyr.media.getAttribute('loop') !== null));
+            }
+
+            // Check for support
+            plyr.supported = api.supported(plyr.type);
+
+            // Add style hook
+            _toggleStyleHook();
+
+            // If no native support, bail
+            if (!plyr.supported.basic) {
+                return false;
+            }
+
+            // Debug info
+            _log(plyr.browser.name + ' ' + plyr.browser.version);
+
+            // Setup media
+            _setupMedia();
+
+            // Setup interface
+            if (_inArray(config.types.html5, plyr.type)) {
+                // Bail if no support
+                if (!plyr.supported.full) {
+                    // Successful setup
+                    plyr.init = true;
+
+                    // Don't inject controls if no full support
+                    return;
+                }
+
+                // Setup UI
+                _setupInterface();
+
+                // Set title on button and frame
+                _setTitle();
+
+                // Autoplay
+                if (config.autoplay) {
+                    _play();
+                }
+            }
+
+            // Successful setup
+            plyr.init = true;
+        }
+
+        function _setupInterface() {
+            // Don't setup interface if no support
+            if (!plyr.supported.full) {
+                _log('No full support for this media type (' + plyr.type + ')', true);
+
+                // Remove controls
+                _remove(_getElement(config.selectors.controls.wrapper));
+
+                // Restore native controls
+                _toggleControls(true);
+
+                // Bail
+                return;
+            }
+
+            // Inject custom controls if not present
+            var controlsMissing = !_getElements(config.selectors.controls.wrapper).length;
+            if (controlsMissing) {
+                // Inject custom controls
+                _injectControls();
+            }
+
+            // Find the elements
+            if (!_findElements()) {
+                return;
+            }
+
+            // If the controls are injected, re-bind listeners for controls
+            if (controlsMissing) {
+                _controlListeners();
+            }
+
+            // Media element listeners
+            _mediaListeners();
+
+            // Remove native controls
+            _toggleControls();
+
+            // Setup fullscreen
+            _setupFullscreen();
+
+            // Captions
+            _setupCaptions();
+
+            // Set volume
+            _setVolume();
+            _updateVolume();
+
+            // Reset time display
+            _timeUpdate();
+
+            // Update the UI
+            _checkPlaying();
+
+            // Display duration
+            _displayDuration();
+
+            // Ready event
+            _triggerEvent(plyr.container, 'ready');
+        }
+
+        // Initialize instance
+        _init();
+
+        // If init failed, return an empty object
+        if (!plyr.init) {
+            return {};
+        }
+
+        return {
+            media:              plyr.media,
+            play:               _play,
+            pause:              _pause,
+            restart:            _seek,
+            rewind:             _rewind,
+            forward:            _forward,
+            seek:               _seek,
+            source:             _source,
+            poster:             _updatePoster,
+            setVolume:          _setVolume,
+            togglePlay:         _togglePlay,
+            toggleMute:         _toggleMute,
+            toggleCaptions:     _toggleCaptions,
+            toggleFullscreen:   _toggleFullscreen,
+            isFullscreen:       function() { return plyr.isFullscreen || false; },
+            support:            function(mimeType) { return _supportMime(plyr, mimeType); },
+            destroy:            _destroy,
+            restore:            _init
+        };
+    }
+
+    // Check for support
+    api.supported = function(type) {
+        var browser = _browserSniff(),
+            oldIE   = (browser.name === 'IE' && browser.version <= 9),
+            iPhone  = /iPhone|iPod/i.test(navigator.userAgent),
+            audio   = !!document.createElement('audio').canPlayType,
+            video   = !!document.createElement('video').canPlayType,
+            basic, full;
+
+        switch (type) {
+            case 'video':
+                basic = video;
+                full  = (basic && (!oldIE && !iPhone));
+                break;
+
+            case 'audio':
+                basic = audio;
+                full  = (basic && !oldIE);
+                break;
+
+            case 'vimeo':
+            case 'youtube':
+            case 'soundcloud':
+                basic = true;
+                full  = (!oldIE && !iPhone);
+                break;
+
+            default:
+                basic = (audio && video);
+                full  = (basic && !oldIE);
+        }
+
+        return {
+            basic:  basic,
+            full:   full
+        };
+    };
+
+    // Expose setup function
+    api.setup = function(elements, options) {
+        // Get the players
+        var instances = [];
+
+        // Select the elements
+        // Assume elements is a NodeList by default
+        if (typeof elements === 'string') {
+            elements = document.querySelectorAll(elements);
+        }
+        // Single HTMLElement passed
+        else if (elements instanceof HTMLElement) {
+            elements = [elements];
+        }
+        // No selector passed, possibly options as first argument
+        else if (!(elements instanceof NodeList) && typeof elements !== 'string')  {
+            // If options are the first argument
+            if (typeof options === 'undefined' && typeof elements === 'object') {
+                options = elements;
+            }
+
+            // Use default selector
+            elements = document.querySelectorAll(defaults.selectors.container);
+        }
+
+        // Bail if disabled or no basic support
+        // You may want to disable certain UAs etc
+        if (!api.supported().basic || !elements.length) {
+            return false;
+        }
+
+        // Create a player instance for each element
+        for (var i = 0; i < elements.length; i++) {
+            // Get the current element
+            var element = elements[i];
+
+            // Setup a player instance and add to the element
+            if (typeof element.plyr === 'undefined') {
+                // Create instance-specific config
+                var config = _extend(defaults, options, JSON.parse(element.getAttribute("data-plyr")));
+
+                // Bail if not enabled
+                if(!config.enabled) {
+                    return;
+                }
+
+                // Create new instance
+                var instance = new Plyr(element, config);
+
+                // Set plyr to false if setup failed
+                element.plyr = (Object.keys(instance).length ? instance : false);
+
+                // Callback
+                _triggerEvent(element, 'setup', { plyr: element.plyr });
+            }
+
+            // Add to return array even if it's already setup
+            instances.push(element.plyr);
+        }
+
+        return instances;
+    };
+
+    return api;
+}));
+
+// Custom event polyfill
+// https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
+(function () {
+    if (typeof window.CustomEvent === 'function') {
+        return false;
+    }
+
+    function CustomEvent (event, params) {
+        params = params || { bubbles: false, cancelable: false, detail: undefined };
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        return evt;
+    }
+
+    CustomEvent.prototype = window.Event.prototype;
+
+    window.CustomEvent = CustomEvent;
+})();
