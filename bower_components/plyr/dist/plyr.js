@@ -1418,8 +1418,8 @@
                 _on(iframe, 'load', function() { iframe.loaded = true; });
 
                 _setAttributes(iframe, {
-                    'src':                      'https://w.soundcloud.com/player/?url=https://api.soundcloud.com/tracks/' + videoId,
-                    'id':                       id
+                    'src':  'https://w.soundcloud.com/player/?url=https://api.soundcloud.com/tracks/' + videoId,
+                    'id':   id
                 });
 
                 container.appendChild(iframe);
@@ -1721,7 +1721,7 @@
                     plyr.media.buffered = data.loadProgress;
                     _triggerEvent(plyr.media, 'progress');
 
-                    if(parseInt(data.percent) === 1) {
+                    if(parseInt(data.loadProgress) === 1) {
                         // Trigger event
                         _triggerEvent(plyr.media, 'canplaythrough');
                     }
@@ -1731,9 +1731,6 @@
                     plyr.media.paused = true;
                     _triggerEvent(plyr.media, 'ended');
                 });
-
-                // Always seek to 0
-                // plyr.embed.seekTo(0);
 
                 // Autoplay
                 if (config.autoplay) {
@@ -2319,12 +2316,6 @@
 
                 case 'soundcloud':
                     plyr.embed.getCurrentSound(function(object) {
-                        /*
-                            TODO: PICK ONE
-                            uri: "https://api.soundcloud.com/tracks/258302982"
-                                or
-                            permalink_url: "https://soundcloud.com/mystdubs/bathos-w-weroh-k-raiku-sensi-sye"
-                        */
                         url = object.permalink_url;
                     });
                     break;
@@ -2730,7 +2721,6 @@
         // Setup a player
         function _init() {
             // Bail if the element is initialized
-
             if (plyr.init) {
                 return null;
             }
