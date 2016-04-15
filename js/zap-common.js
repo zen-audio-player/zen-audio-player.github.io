@@ -88,7 +88,7 @@ function parseSoundcloudVideoID(url, clientID, callback) {
 // The url parameter could be the video ID
 function parseYoutubeVideoID(url) {
     var videoInfo = {
-        format: "other",
+        format: null,
         id: null
     };
     var shortUrlDomain = "youtu.be";
