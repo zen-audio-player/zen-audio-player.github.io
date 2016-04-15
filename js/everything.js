@@ -600,6 +600,8 @@ function verifyID(id, success, error) {
 }
 
 $(function() {
+    var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
+
     // Keen.io
     client = new Keen({ //eslint-disable-line no-undef
         projectId: "5690c384c1e0ab0c8a6c59c4",
@@ -619,6 +621,11 @@ $(function() {
 
             // Set the global current video id.
             currentVideoID = videoID;
+
+            // Hide the demo link if playing the demo video's audio
+            if (currentVideoID === starveTheEgoFeedTheSoulGlitchMob) {
+                $("#demo").hide();
+            }
 
             // Preload the form from the URL.
             $("#v").attr("value", currentVideoID);
@@ -727,14 +734,6 @@ $(function() {
             errorMessage.show("Try entering a YouTube video ID or URL!");
         }
     });
-
-
-    var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
-
-    // Hide the demo link if playing the demo video's audio
-    if (currentVideoID === starveTheEgoFeedTheSoulGlitchMob) {
-        $("#demo").hide();
-    }
 
     // Handle demo link click
     $("#demo").click(function(event) {
