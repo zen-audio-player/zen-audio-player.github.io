@@ -424,29 +424,27 @@ function toggleElement(event, toggleID, buttonText) {
     }
 }
 
-function getCurrentVideoID(callback) {
+function getCurrentVideoID(success, error) {
     var v = getParameterByName(window.location.search, "v");
     // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
     var vParams = window.location.search.match(/v=\w+/g);
     if (vParams && vParams.length > 1) {
         v = vParams[vParams.length - 1].replace("v=", "");
-        callback.success(v);
     }
-    else if (v.length > 1) {
+
+    if (v.length > 1) {
         wrapParseVideoID(
             v,
-            {
-                success: function(id) {
-                    callback.success(id);
-                },
-                fail: function() {
-                    callback.success(v);
-                }
+            function(id) {
+                success(id);
+            },
+            function() {
+                error(v);
             }
         );
     }
     else {
-        callback.fail();
+        error();
     }
 }
 
@@ -489,42 +487,69 @@ function anchorURLs(text) {
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
 }
 
-function wrapParseVideoID(url, callback) {
+function wrapParseVideoID(url, success, error) {
     if (currentVideoID && url === currentVideoID) {
         // We have already determined the video id
-        callback.success(currentVideoID);
+        success(currentVideoID);
     }
     else {
         // First try parse Soundcloud id from URL.
         parseSoundcloudVideoID(
             url,
             soundcloudClientID,
-            {
-                success: function(info) {
-                    // Success parsed ID from Soundcloud URL.
-                    ga("send", "event", "video ID format", info.format);
-                    currentVideoID = info.id;
-                    callback.success(info.id);
-                },
-                fail: function(info) {
-                    // Failed, so next try parse Youtube ID from URL.
-                    info = parseYoutubeVideoID(url);
-                    if (info.id) {
-                        // Success parsed Youtube ID.
-                        currentVideoID = info.id;
-                        callback.success(info.id);
-                    }
-                    else {
-                        // No Soundcloud or Youtube ID.
-                        callback.fail();
-         //               errorMessage.show("Failed to parse the video ID.");
-                    }
+            function(info) {
+                // Success parsed ID from Soundcloud URL.
+
+                if (info.format === "soundcloud.com") {
+                    // Don't need to verify from this format
+                    // because the id was request from Soundcloud API
+                    // which means that it is already valid.
+                    success(info.id);
                 }
-            });
+                else {
+                    // Verify id from all other format
+                    verifyID(
+                        info.id,
+                        function() {
+                            ga("send", "event", "video ID format", info.format);
+                            currentVideoID = info.id;
+                            success(info.id);
+                        },
+                        error
+                    );
+                }
+            },
+            function(info) {
+                // Failed, so next try parse Youtube ID from URL.
+                info = parseYoutubeVideoID(url);
+
+                var id;
+
+                // If success parse ID from a Youtube URL, verify it.
+                // Otherwise, verify the original string incase it is already an ID.
+                if (info.id) {
+                    id = info.id;
+                }
+                else {
+                    id = url;
+                }
+
+                verifyID(
+                    id,
+                    function() {
+                        // Success parsed Youtube ID.
+                        ga("send", "event", "video ID format", info.format);
+                        currentVideoID = id;
+                        success(id);
+                    },
+                    error
+                );
+            }
+        );
     }
 }
 
-function verifyYoutubeID(id, callback) {
+function verifyYoutubeID(id, success, error) {
     $.ajax({
         url: "https://www.googleapis.com/youtube/v3/videos",
         dataType: "json",
@@ -536,54 +561,41 @@ function verifyYoutubeID(id, callback) {
         },
         success: function(data) {
             if (data.items.length === 0) {
-                callback.fail(false);
+                error();
             }
             else {
-                callback.success(true);
+                success();
             }
         }
-    }).fail(function() {
-        callback.fail(false);
-    });
+    }).fail(error);
 }
 
-function verifySoundcloudID(id, callback) {
+function verifySoundcloudID(id, success, error) {
     $.ajax({
         url: "https://api.soundcloud.com/tracks/" + id + "?client_id=" + soundcloudClientID,
         dataType: "json",
         success: function(data) {
-            if (data.id.toString() === id.toString()) {
-                callback.success(true);
+            if (data.id && data.id.toString() === id.toString()) {
+                success();
             }
             else {
-                callback.fail(false);
+                error();
             }
         }
-    }).fail(function() {
-        callback.fail(false);
-    });
+    }).fail(error);
 }
 
 // Verifies ID for youtube and soundcloud
-function verifyID(id, callback) {
+function verifyID(id, success, error) {
     verifyYoutubeID(
         id,
-        {
-            success: function() {
-                callback.success();
-            },
-            fail: function() {
-                verifySoundcloudID(
-                    id,
-                    {
-                        success: function() {
-                            callback.success();
-                        },
-                        fail: function() {
-                            callback.fail();
-                        }
-                    });
-            }
+        success,
+        function() {
+            verifySoundcloudID(
+                id,
+                success,
+                error
+            );
         });
 }
 
@@ -601,62 +613,68 @@ $(function() {
      * If there's no id (v=), then we may get search results for the query (q=).
      */
     getCurrentVideoID(
-        {
-            success: function(videoID) {
-                // Able to get an id (v=) from the url.
-                // Proceed to set up a player and try to play it.
+        function(videoID) {
+            // Able to get an id (v=) from the url.
+            // Proceed to set up a player and try to play it.
 
-                // Set the global current video id.
-                currentVideoID = videoID;
+            // Set the global current video id.
+            currentVideoID = videoID;
 
-                // Preload the form from the URL.
-                $("#v").attr("value", currentVideoID);
+            // Preload the form from the URL.
+            $("#v").attr("value", currentVideoID);
 
-                // Load the player.
-                ZenPlayer.init(currentVideoID);
-            },
-            fail: function() {
+            // Load the player.
+            ZenPlayer.init(currentVideoID);
+        },
+        function(value) {
+            // Couldn't get an id (v=) from the url.
+            // If there was a v=, then try to get search results for it.
+            // If there wasn't a v=, then get search requests for q=
+            var currentSearchQuery;
 
-                // Couldn't get an id (v=) from the url.
-                // Proceed to check for a search query (q=).
-
-                var currentSearchQuery = getCurrentSearchQuery();
-                if (currentSearchQuery) {
-                    // Preload the form with the search query from the URL.
-                    $("#v").attr("value", currentSearchQuery);
-
-                    // Get search results using the search query string.
-                    getSearchResults(
-                        currentSearchQuery,
-                        youTubeDataApiKey,
-                        // Success
-                        function(data) {
-                            if (data.pageInfo.totalResults === 0) {
-                                errorMessage.show("No results.");
-                            }
-                            else {
-
-                                $("#search-results").show();
-
-                                // Clear out results
-                                $("#search-results ul").html("");
-
-                                // Add each result to the results list.
-                                var start = "<li><h4><a href=?v=";
-                                var end = "</a></h4></li>";
-                                $.each(data.items, function(index, result) {
-                                    $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title  + end);
-                                });
-                            }
-                        },
-                        // Fail
-                        function(jqXHR, textStatus, errorThrown) {
-                            logError(jqXHR, textStatus, errorThrown, "Search error");
-                        }
-                    );
-                }
+            if (value) {
+                currentSearchQuery = value;
             }
-        });
+            else {
+                currentSearchQuery = getCurrentSearchQuery();
+            }
+
+            if (currentSearchQuery) {
+                // Preload the form with the search query from the URL.
+                $("#v").attr("value", currentSearchQuery);
+
+                // Get search results using the search query string.
+                getSearchResults(
+                    currentSearchQuery,
+                    youTubeDataApiKey,
+                    // Success
+                    function(data) {
+                        if (data.pageInfo.totalResults === 0) {
+                            errorMessage.show("No results.");
+                        }
+                        else {
+
+                            $("#search-results").show();
+
+                            // Clear out results
+                            $("#search-results ul").html("");
+
+                            // Add each result to the results list.
+                            var start = "<li><h4><a href=?v=";
+                            var end = "</a></h4></li>";
+                            $.each(data.items, function(index, result) {
+                                $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title  + end);
+                            });
+                        }
+                    },
+                    // Fail
+                    function(jqXHR, textStatus, errorThrown) {
+                        logError(jqXHR, textStatus, errorThrown, "Search error");
+                    }
+                );
+            }
+        }
+    );
 
     /*
      * Autocomplete with youtube suggested queries.
@@ -695,40 +713,15 @@ $(function() {
             // Assume that the value is a URL, and try to get an ID from it.
             wrapParseVideoID(
                 formValue,
-                {
-                    success: function(id) {
-                        // Success parsed an id.
-                        // Verify this ID.
-                        verifyID(
-                            id,
-                            {
-                                success: function() {
-                                    // The parsed ID is a valid id, listen to it.
-                                    window.location.href = makeListenURL(id);
-                                },
-                                fail: function() {
-                                    // The parsed ID is not a valid id, proceed to search.
-                                    window.location.href = makeSearchURL(id);
-                                }
-                            });
-                    },
-                    fail: function() {
-                        // Couldn't parse an ID, form value might already be an ID
-                        // Check it.
-                        verifyID(
-                            formValue,
-                            {
-                                success: function() {
-                                    // The form value is already an ID, play it.
-                                    window.location.href = makeListenURL(formValue);
-                                },
-                                fail: function() {
-                                    // The form value is not an ID, get search results.
-                                    window.location.href = makeSearchURL(formValue);
-                                }
-                            });
-                    }
-                });
+                function(id) {
+                    // Success parsed a valid id.
+                    window.location.href = makeListenURL(id);
+                },
+                function() {
+                    // Couldn't parse an ID, form value might already be an ID
+                    window.location.href = makeSearchURL(formValue);
+                }
+            );
         }
         else {
             errorMessage.show("Try entering a YouTube video ID or URL!");

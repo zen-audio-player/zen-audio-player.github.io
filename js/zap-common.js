@@ -39,9 +39,9 @@ function getYouTubeVideoDescription(videoID, youTubeDataApiKey, onSuccess, onFai
     }).fail(onFail);
 }
 
-function parseSoundcloudVideoID(url, clientID, callback) {
+function parseSoundcloudVideoID(url, clientID, success, error) {
     var videoInfo = {
-        format: "other",
+        format: null,
         id: null
     };
 
@@ -55,7 +55,7 @@ function parseSoundcloudVideoID(url, clientID, callback) {
         if (url.indexOf(apiUrl) !== -1) {
             videoInfo.format = apiUrl;
             videoInfo.id = url.split("api.soundcloud.com/tracks/")[1];
-            callback.success(videoInfo);
+            success(videoInfo);
         }
         // api.soundcloud.com format
         else if (url.indexOf(trackUrl) !== -1) {
@@ -70,18 +70,18 @@ function parseSoundcloudVideoID(url, clientID, callback) {
                 },
                 success: function(data) {
                     videoInfo.id = data.id;
-                    callback.success(videoInfo);
+                    success(videoInfo);
                 }
             }).fail(function() {
-                callback.fail(videoInfo);
+                error(videoInfo);
             });
         }
         else {
-            callback.fail(videoInfo);
+            error(videoInfo);
         }
     }
     else {
-        callback.fail(videoInfo);
+        error(videoInfo);
     }
 }
 
