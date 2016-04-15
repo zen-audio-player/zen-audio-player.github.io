@@ -481,7 +481,7 @@
     // Removed call to arguments.callee (used explicit function name instead)
     function _extend() {
         // Get arguments
-        var objects = arguments;
+		var objects = arguments;
 
         // Bail if nothing to merge
         if(!objects.length) {
@@ -591,14 +591,14 @@
         var storage = {
             supported: (function() {
                 if(!('localStorage' in window)) {
-                    return false;
-                }
+				return false;
+			}
 
-                // Try to use it (it might be disabled, e.g. user is in private/porn mode)
+			// Try to use it (it might be disabled, e.g. user is in private/porn mode)
                 // see: https://github.com/Selz/plyr/issues/131
-                try {
+			try {
                     // Add test item
-                    window.localStorage.setItem('___test', 'OK');
+				window.localStorage.setItem('___test', 'OK');
 
                     // Get the test item
                     var result = window.localStorage.getItem('___test');
@@ -608,12 +608,12 @@
 
                     // Check if value matches
                     return (result === 'OK');
-                }
-                catch (e) {
-                    return false;
-                }
+			}
+			catch (e) {
+				return false;
+			}
 
-                return false;
+			return false;
             })()
         };
         return storage;
