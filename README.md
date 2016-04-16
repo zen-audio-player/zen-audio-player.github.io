@@ -37,10 +37,12 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 
 ## Compatibility
 
-Browser | Platform
------------- | -------------
-Content cell 1 | Content cell 2
-Content in the first column | Content in the second column
+|Browser|Platform|
+|---|:---:|
+|![chrome](img/icons/chrome.png) | ![mac](img/icons/mac.png) ![windows](img/icons/windows.png)|
+|![firefox](img/icons/firefox.png) | ![mac](img/icons/mac.png) ![windows](img/icons/windows.png)|
+|![edge](img/icons/edge.png) | ![windows](img/icons/windows.png)|
+|![ie](img/icons/ie.png) | ![windows](img/icons/windows.png)|
 
 ## Contributing to Zen Audio Player
 
