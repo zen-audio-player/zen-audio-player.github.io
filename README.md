@@ -35,14 +35,14 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 
 ![screenshot](img/screenshot.png)
 
-## Compatibility
+## Browser Support
 
-|Browser|Platform|
-|---|:---:|
-|![chrome](img/icons/chrome.png) | ![mac](img/icons/mac.png) ![windows](img/icons/windows.png)|
-|![firefox](img/icons/firefox.png) | ![mac](img/icons/mac.png) ![windows](img/icons/windows.png)|
-|![edge](img/icons/edge.png) | ![windows](img/icons/windows.png)|
-|![ie](img/icons/ie.png) | ![windows](img/icons/windows.png)|
+|Platform/Browser|![chrome](img/icons/chrome.png)|![safari](img/icons/safari.png)|![firefox](img/icons/firefox.png)|![edge](img/icons/edge.png)|![ie](img/icons/ie.png)|
+|:---:|:---:|:---:|:---:|:---:|:---:|
+|![windows](img/icons/windows.png)|Yes|-|Yes|Yes|Yes|
+|![mac](img/icons/mac.png)|Yes|No|Yes|-|-|
+|![ios](img/icons/ios.png)|-|No|-|-|-|
+|![android](img/icons/android.png)|No|-|No|-|-|
 
 ## Contributing to Zen Audio Player
 
