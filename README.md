@@ -35,6 +35,13 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 
 ![screenshot](img/screenshot.png)
 
+## Compatibility
+
+Browser | Platform
+------------ | -------------
+Content cell 1 | Content cell 2
+Content in the first column | Content in the second column
+
 ## Contributing to Zen Audio Player
 
 If you would like to contribute to this project please read the [guidelines on contributing](.github/CONTRIBUTING.md) before doing so.
