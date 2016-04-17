@@ -242,6 +242,9 @@ var ZenPlayer = {
                         }
                     });
                 }
+                else {
+                    errorMessage.show("Unknown format: " + format + ".");
+                }
 
                 // Start video from where we left off, if it makes sense
                 if (window.sessionStorage && window.sessionStorage.hasOwnProperty(videoID)) {
