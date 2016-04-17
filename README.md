@@ -41,7 +41,7 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 |:---:|:---:|:---:|:---:|:---:|:---:|
 |![windows](img/icons/windows.png)|Yes|-|Yes|Yes|Yes|
 |![mac](img/icons/mac.png)|Yes|No|Yes|-|-|
-|![ios](img/icons/ios.png)|-|No|-|-|-|
+|![ios](img/icons/ios.png)|No|No|No|-|-|
 |![android](img/icons/android.png)|No|-|No|-|-|
 
 ## Contributing to Zen Audio Player
