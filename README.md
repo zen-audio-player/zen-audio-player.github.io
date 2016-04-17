@@ -40,7 +40,7 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 |Platform/Browser|![chrome](img/icons/chrome.png)|![safari](img/icons/safari.png)|![firefox](img/icons/firefox.png)|![edge](img/icons/edge.png)|![ie](img/icons/ie.png)|
 |:---:|:---:|:---:|:---:|:---:|:---:|
 |![windows](img/icons/windows.png)|Yes|-|Yes|Yes|Yes|
-|![mac](img/icons/mac.png)|Yes|No|Yes|-|-|
+|![mac](img/icons/mac.png)|Yes|Yes|Yes|-|-|
 |![ios](img/icons/ios.png)|No|No|No|-|-|
 |![android](img/icons/android.png)|No|-|No|-|-|
 
