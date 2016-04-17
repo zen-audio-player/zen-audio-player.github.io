@@ -497,52 +497,40 @@ function wrapParseVideoID(url, success, error) {
         parseSoundcloudVideoID(
             url,
             soundcloudClientID,
+            // Success
             function(info) {
                 // Success parsed ID from Soundcloud URL.
-
-                if (info.format === "soundcloud.com") {
-                    // Don't need to verify from this format
-                    // because the id was request from Soundcloud API
-                    // which means that it is already valid.
-                    success(info.id);
-                }
-                else {
-                    // Verify id from all other format
-                    verifyID(
-                        info.id,
-                        function() {
-                            ga("send", "event", "video ID format", info.format);
-                            currentVideoID = info.id;
-                            success(info.id);
-                        },
-                        error
-                    );
-                }
+                ga("send", "event", "video ID format", info.format);
+                currentVideoID = info.id;
+                success(info.id);
             },
-            function(info) {
-                // Failed, so next try parse Youtube ID from URL.
-                info = parseYoutubeVideoID(url);
-
-                var id;
-
-                // If success parse ID from a Youtube URL, verify it.
-                // Otherwise, verify the original string incase it is already an ID.
-                if (info.id) {
-                    id = info.id;
-                }
-                else {
-                    id = url;
-                }
-
-                verifyID(
-                    id,
-                    function() {
-                        // Success parsed Youtube ID.
+            // Error
+            function() {
+                // Failed to parse valid ID from Soundcloud URL
+                // Try parse Youtube ID from URL.
+                parseYoutubeVideoID(
+                    url,
+                    // Success
+                    function(info) {
                         ga("send", "event", "video ID format", info.format);
-                        currentVideoID = id;
-                        success(id);
+                        currentVideoID = info.id;
+                        success(info.id);
                     },
-                    error
+                    // Error
+                    function() {
+                        // Failed to parse valid ID from Youtube URL.
+                        // The input might already be an ID. Verify it
+                        verifyID(
+                            url,
+                            // Success
+                            function() {
+                       //         ga("send", "event", "video ID format", info.format);
+                                currentVideoID = url;
+                                success(url);
+                            },
+                            error
+                        );
+                    }
                 );
             }
         );
@@ -596,7 +584,8 @@ function verifyID(id, success, error) {
                 success,
                 error
             );
-        });
+        }
+    );
 }
 
 $(function() {
@@ -616,7 +605,7 @@ $(function() {
      */
     getCurrentVideoID(
         function(videoID) {
-            // Able to get an id (v=) from the url.
+            // Able to get a valid id from v=.
             // Proceed to set up a player and try to play it.
 
             // Set the global current video id.
@@ -634,7 +623,7 @@ $(function() {
             ZenPlayer.init(currentVideoID);
         },
         function(value) {
-            // Couldn't get an id (v=) from the url.
+            // Couldn't get a valid id from v=.
             // If there was a v=, then try to get search results for it.
             // If there wasn't a v=, then get search requests for q=
             var currentSearchQuery;
@@ -674,7 +663,7 @@ $(function() {
                             });
                         }
                     },
-                    // Fail
+                    // Error
                     function(jqXHR, textStatus, errorThrown) {
                         logError(jqXHR, textStatus, errorThrown, "Search error");
                     }

@@ -55,7 +55,15 @@ function parseSoundcloudVideoID(url, clientID, success, error) {
         if (url.indexOf(apiUrl) !== -1) {
             videoInfo.format = apiUrl;
             videoInfo.id = url.split("api.soundcloud.com/tracks/")[1];
-            success(videoInfo);
+
+            // Got the ID from the URL. Now verify it.
+            verifySoundcloudID(
+                videoInfo.id,
+                function() {
+                    success(videoInfo);
+                },
+                error
+            );
         }
         // api.soundcloud.com format
         else if (url.indexOf(trackUrl) !== -1) {
@@ -72,21 +80,19 @@ function parseSoundcloudVideoID(url, clientID, success, error) {
                     videoInfo.id = data.id;
                     success(videoInfo);
                 }
-            }).fail(function() {
-                error(videoInfo);
-            });
+            }).fail(error);
         }
         else {
-            error(videoInfo);
+            error();
         }
     }
     else {
-        error(videoInfo);
+        error();
     }
 }
 
 // The url parameter could be the video ID
-function parseYoutubeVideoID(url) {
+function parseYoutubeVideoID(url, success, error) {
     var videoInfo = {
         format: null,
         id: null
@@ -107,6 +113,9 @@ function parseYoutubeVideoID(url) {
             var offset = url.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
             videoInfo.id = url.substring(offset, endPosition);
         }
+        else {
+            // format and id are null
+        }
     }
 
     if (videoInfo.id) {
@@ -117,7 +126,17 @@ function parseYoutubeVideoID(url) {
             videoInfo.id = videoInfo.id.substring(0, slashPos);
         }
 
+        // Parsed an ID from the URL, verify it.
+        verifySoundcloudID(
+            videoInfo.id,
+            function() {
+                success(videoInfo);
+            },
+            error
+        );
     }
-    return videoInfo;
+    else {
+        error();
+    }
 }
 /*eslint-enable */
