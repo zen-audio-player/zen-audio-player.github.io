@@ -1,4 +1,4 @@
-/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription*/
+/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, parseSoundcloudVideoID, getYouTubeVideoDescription*/
 
 // Pointer to Keen client
 var client;
@@ -55,6 +55,7 @@ function sendKeenEvent(_msg, _data) {
 // var player;
 var plyrPlayer;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
+var soundcloudClientID = "3edf3ef1a8b45ca19d2d53100544e969";
 var currentVideoID;
 
 // function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
@@ -171,6 +172,16 @@ function isFileProtocol() {
 
 var ZenPlayer = {
     init: function(videoID) {
+        // Determine youtube or soundcloud
+        // If the id is all numbers, then it's probably soundcloud.
+        var format;
+        if (isNaN(videoID)) {
+            format = "youtube";
+        }
+        else {
+            format = "soundcloud";
+        }
+
         // Inject svg with control icons
         $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
 
@@ -198,16 +209,42 @@ var ZenPlayer = {
                 }
 
                 // Gather video info
-                that.videoTitle = plyrPlayer.plyr.embed.getVideoData().title;
-                that.videoAuthor = plyrPlayer.plyr.embed.getVideoData().author;
-                that.videoDuration = plyrPlayer.plyr.embed.getDuration();
-                that.videoDescription = that.getVideoDescription(videoID);
-                that.videoUrl = plyrPlayer.plyr.embed.getVideoUrl();
+                if (format === "youtube") {
+                    that.videoTitle = plyrPlayer.plyr.embed.getVideoData().title;
+                    that.videoAuthor = plyrPlayer.plyr.embed.getVideoData().author;
+                    that.videoDuration = plyrPlayer.plyr.embed.getDuration();
+                    that.videoDescription = that.getVideoDescription(videoID);
+                    that.videoUrl = plyrPlayer.plyr.embed.getVideoUrl();
 
-                // Initialize UI
-                that.setupTitle();
-                that.setupVideoDescription();
-                that.setupPlyrToggle();
+                    // Initialize UI
+                    that.setupTitle();
+                    that.setupVideoDescription();
+                    that.setupPlyrToggle();
+                }
+                else if (format === "soundcloud") {
+                    $.ajax({
+                        url: "https://api.soundcloud.com/tracks/" + currentVideoID,
+                        dataType: "json",
+                        data : {
+                            client_id: soundcloudClientID //eslint-disable-line camelcase
+                        },
+                        success: function(data) {
+                            that.videoTitle = data.title;
+                            that.videoAuthor = data.user_id;
+                            that.videoDuration = data.duration;
+                            that.videoDescription = data.description;
+                            that.videoUrl = data.permalink_url;
+
+                            // Initialize UI
+                            that.setupTitle();
+                            that.setupVideoDescription();
+                            that.setupPlyrToggle();
+                        }
+                    });
+                }
+                else {
+                    errorMessage.show("Unknown format: " + format + ".");
+                }
 
                 // Start video from where we left off, if it makes sense
                 if (window.sessionStorage && window.sessionStorage.hasOwnProperty(videoID)) {
@@ -223,12 +260,15 @@ var ZenPlayer = {
                 ga("send", "event", "Playing YouTube video author", that.videoAuthor);
                 ga("send", "event", "Playing YouTube video duration (seconds)", that.videoDuration);
                 // For some reason author is always an empty string, but not when inspected in the browser...
+                // TODO: Commented out because need to implement for soundcloud too
+/*
                 sendKeenEvent("Playing YouTube video", {
                     author: plyrPlayer.plyr.embed.getVideoData().author,
                     title: plyrPlayer.plyr.embed.getVideoData().title,
                     seconds: plyrPlayer.plyr.embed.getDuration(),
                     youtubeID: plyrPlayer.plyr.embed.getVideoData().video_id
                 });
+*/
 
                 // TODO: if there was a video error it will happen before here, check that and avoid showing the player
                 // Show player
@@ -238,6 +278,8 @@ var ZenPlayer = {
 
             plyrPlayer.addEventListener("timeupdate", function() {
                 // Store the current time of the video.
+                // TODO: Fix this for soundcloud too
+/*
                 if (window.sessionStorage) {
                     var currentTime = plyrPlayer.plyr.embed.getCurrentTime();
                     var videoDuration = plyrPlayer.plyr.embed.getDuration();
@@ -253,6 +295,7 @@ var ZenPlayer = {
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
+*/
             });
 
             plyrPlayer.plyr.source({
@@ -260,7 +303,7 @@ var ZenPlayer = {
                 title: "Title",
                 sources: [{
                     src: currentVideoID,
-                    type: "youtube"
+                    type: format
                 }]
             });
         }
@@ -332,7 +375,9 @@ var ZenPlayer = {
     }
 };
 
+// TODO this is broken
 function updateTweetMessage() {
+/*
     var url = "https://ZenPlayer.Audio";
 
     var opts = {
@@ -341,17 +386,23 @@ function updateTweetMessage() {
         url: url
     };
 
-    var id = getCurrentVideoID();
-    if (id) {
-        opts.url += "/?v=" + id;
-        opts.text = "I'm listening to " + plyrPlayer.plyr.embed.getVideoData().title;
-    }
+    getCurrentVideoID(
+        {
+            success: function(id) {
+                opts.url += "/?v=" + id;
+        //        opts.text = "I'm listening to " + plyrPlayer.plyr.embed.getVideoData().title;
 
-    twttr.widgets.createHashtagButton(
-        "ZenAudioPlayer",
-        document.getElementById("tweetButton"),
-        opts
+                twttr.widgets.createHashtagButton(
+                    "ZenAudioPlayer",
+                    document.getElementById("tweetButton"),
+                    opts
+                );
+            },
+            fail: function(id) {
+            }
+        }
     );
+*/
 }
 
 function logError(jqXHR, textStatus, errorThrown, _errorMessage) {
@@ -376,17 +427,28 @@ function toggleElement(event, toggleID, buttonText) {
     }
 }
 
-function getCurrentVideoID() {
+function getCurrentVideoID(success, error) {
     var v = getParameterByName(window.location.search, "v");
     // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
     var vParams = window.location.search.match(/v=\w+/g);
     if (vParams && vParams.length > 1) {
         v = vParams[vParams.length - 1].replace("v=", "");
     }
-    else if (v.length > 1) {
-        return wrapParseYouTubeVideoID(v);
+
+    if (v.length > 1) {
+        wrapParseVideoID(
+            v,
+            function(id) {
+                success(id);
+            },
+            function() {
+                error(v);
+            }
+        );
     }
-    return v;
+    else {
+        error();
+    }
 }
 
 function getCurrentSearchQuery() {
@@ -428,25 +490,110 @@ function anchorURLs(text) {
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
 }
 
-function wrapParseYouTubeVideoID(url) {
+function wrapParseVideoID(url, success, error) {
     if (currentVideoID && url === currentVideoID) {
         // We have already determined the video id
-        return currentVideoID;
-    }
-
-    var info = parseYoutubeVideoID(url);
-
-    if (info.id) {
-        currentVideoID = info.id;
-        ga("send", "event", "video ID format", info.format);
-        return info.id;
+        success(currentVideoID);
     }
     else {
-        errorMessage.show("Failed to parse the video ID.");
+        // First try parse Soundcloud id from URL.
+        parseSoundcloudVideoID(
+            url,
+            soundcloudClientID,
+            // Success
+            function(info) {
+                // Success parsed ID from Soundcloud URL.
+                ga("send", "event", "video ID format", info.format);
+                currentVideoID = info.id;
+                success(info.id);
+            },
+            // Error
+            function() {
+                // Failed to parse valid ID from Soundcloud URL
+                // Try parse Youtube ID from URL.
+                parseYoutubeVideoID(
+                    url,
+                    // Success
+                    function(info) {
+                        ga("send", "event", "video ID format", info.format);
+                        currentVideoID = info.id;
+                        success(info.id);
+                    },
+                    // Error
+                    function() {
+                        // Failed to parse valid ID from Youtube URL.
+                        // The input might already be an ID. Verify it
+                        verifyID(
+                            url,
+                            // Success
+                            function() {
+                       //         ga("send", "event", "video ID format", info.format);
+                                currentVideoID = url;
+                                success(url);
+                            },
+                            error
+                        );
+                    }
+                );
+            }
+        );
     }
 }
 
+function verifyYoutubeID(id, success, error) {
+    $.ajax({
+        url: "https://www.googleapis.com/youtube/v3/videos",
+        dataType: "json",
+        data: {
+            key: youTubeDataApiKey,
+            part: "snippet",
+            fields: "items/snippet/description",
+            id: id
+        },
+        success: function(data) {
+            if (data.items.length === 0) {
+                error();
+            }
+            else {
+                success();
+            }
+        }
+    }).fail(error);
+}
+
+function verifySoundcloudID(id, success, error) {
+    $.ajax({
+        url: "https://api.soundcloud.com/tracks/" + id + "?client_id=" + soundcloudClientID,
+        dataType: "json",
+        success: function(data) {
+            if (data.id && data.id.toString() === id.toString()) {
+                success();
+            }
+            else {
+                error();
+            }
+        }
+    }).fail(error);
+}
+
+// Verifies ID for youtube and soundcloud
+function verifyID(id, success, error) {
+    verifyYoutubeID(
+        id,
+        success,
+        function() {
+            verifySoundcloudID(
+                id,
+                success,
+                error
+            );
+        }
+    );
+}
+
 $(function() {
+    var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
+
     // Keen.io
     client = new Keen({ //eslint-disable-line no-undef
         projectId: "5690c384c1e0ab0c8a6c59c4",
@@ -455,41 +602,82 @@ $(function() {
 
     errorMessage.init();
 
-    // Preload the form from the URL
-    var currentVideoID = getCurrentVideoID();
-    if (currentVideoID) {
-        $("#v").attr("value", currentVideoID);
-    }
-    else {
-        var currentSearchQuery = getCurrentSearchQuery();
-        if (currentSearchQuery) {
-            $("#v").attr("value", currentSearchQuery);
-            getSearchResults(
-                currentSearchQuery,
-                youTubeDataApiKey,
-                function(data) {
-                    if (data.pageInfo.totalResults === 0) {
-                        errorMessage.show("No results.");
-                        return;
+    /*
+     * Check if we should play a video/track.
+     * If there's no id (v=), then we may get search results for the query (q=).
+     */
+    getCurrentVideoID(
+        function(videoID) {
+            // Able to get a valid id from v=.
+            // Proceed to set up a player and try to play it.
+
+            // Set the global current video id.
+            currentVideoID = videoID;
+
+            // Hide the demo link if playing the demo video's audio
+            if (currentVideoID === starveTheEgoFeedTheSoulGlitchMob) {
+                $("#demo").hide();
+            }
+
+            // Preload the form from the URL.
+            $("#v").attr("value", currentVideoID);
+
+            // Load the player.
+            ZenPlayer.init(currentVideoID);
+        },
+        function(value) {
+            // Couldn't get a valid id from v=.
+            // If there was a v=, then try to get search results for it.
+            // If there wasn't a v=, then get search requests for q=
+            var currentSearchQuery;
+
+            if (value) {
+                currentSearchQuery = value;
+            }
+            else {
+                currentSearchQuery = getCurrentSearchQuery();
+            }
+
+            if (currentSearchQuery) {
+                // Preload the form with the search query from the URL.
+                $("#v").attr("value", currentSearchQuery);
+
+                // Get search results using the search query string.
+                getSearchResults(
+                    currentSearchQuery,
+                    youTubeDataApiKey,
+                    // Success
+                    function(data) {
+                        if (data.pageInfo.totalResults === 0) {
+                            errorMessage.show("No results.");
+                        }
+                        else {
+
+                            $("#search-results").show();
+
+                            // Clear out results
+                            $("#search-results ul").html("");
+
+                            // Add each result to the results list.
+                            var start = "<li><h4><a href=?v=";
+                            var end = "</a></h4></li>";
+                            $.each(data.items, function(index, result) {
+                                $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title  + end);
+                            });
+                        }
+                    },
+                    // Error
+                    function(jqXHR, textStatus, errorThrown) {
+                        logError(jqXHR, textStatus, errorThrown, "Search error");
                     }
-                    $("#search-results").show();
-                    // Clear out results
-                    $("#search-results ul").html("");
-
-                    var start = "<li><h4><a href=?v=";
-                    var end = "</a></h4></li>";
-                    $.each(data.items, function(index, result) {
-                        $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title  + end);
-                    });
-                },
-                function(jqXHR, textStatus, errorThrown) {
-                    logError(jqXHR, textStatus, errorThrown, "Search error");
-                }
-            );
+                );
+            }
         }
-    }
+    );
 
-    // Autocomplete with youtube suggested queries
+    /*
+     * Autocomplete with youtube suggested queries.
+     */
     $("#v").typeahead({
         hint: false,
         highlight: true,
@@ -506,54 +694,38 @@ $(function() {
         window.location.href = makeSearchURL(datum);
     });
 
-    // Handle form submission
+
+    /*
+     * Handle form submission.
+     */
+    // TODO: Need to test this to make sure that nothing broke.
     $("#form").submit(function(event) {
         event.preventDefault();
 
+        // Get the value in the form and if possible, play it by redirecting with (v=).
+        // Otherwise search for the term by redirecting with (q=).
         var formValue = $.trim($("#v").val());
         if (formValue) {
-            var videoID = wrapParseYouTubeVideoID(formValue, true);
-            ga("send", "event", "form submitted", videoID);
-            sendKeenEvent("Form submitted", {videoID: videoID});
+            ga("send", "event", "form submitted", formValue);
+            sendKeenEvent("Form submitted", {videoID: formValue});
 
-            if (isFileProtocol()) {
-                errorMessage.show("Skipping video lookup request as we're running the site locally.");
-            }
-            else {
-                $.ajax({
-                    url: "https://www.googleapis.com/youtube/v3/videos",
-                    dataType: "json",
-                    async: false,
-                    data: {
-                        key: youTubeDataApiKey,
-                        part: "snippet",
-                        fields: "items/snippet/description",
-                        id: videoID
-                    },
-                    success: function(data) {
-                        if (data.items.length === 0) {
-                            window.location.href = makeSearchURL(formValue);
-                        }
-                        else {
-                            window.location.href = makeListenURL(videoID);
-                        }
-                    }
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    logError(jqXHR, textStatus, errorThrown, "Lookup error");
-                });
-            }
+            // Assume that the value is a URL, and try to get an ID from it.
+            wrapParseVideoID(
+                formValue,
+                function(id) {
+                    // Success parsed a valid id.
+                    window.location.href = makeListenURL(id);
+                },
+                function() {
+                    // Couldn't parse an ID, form value might already be an ID
+                    window.location.href = makeSearchURL(formValue);
+                }
+            );
         }
         else {
             errorMessage.show("Try entering a YouTube video ID or URL!");
         }
     });
-
-    var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
-
-    // Hide the demo link if playing the demo video's audio
-    if (currentVideoID === starveTheEgoFeedTheSoulGlitchMob) {
-        $("#demo").hide();
-    }
 
     // Handle demo link click
     $("#demo").click(function(event) {
@@ -572,8 +744,6 @@ $(function() {
         }
     });
 
-    // Load the player
-    ZenPlayer.init(currentVideoID);
 });
 
 /*eslint-disable */
