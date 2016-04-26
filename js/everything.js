@@ -146,6 +146,9 @@ var errorMessage = {
         $("#zen-video-error").text("ERROR: " + message);
         $("#zen-video-error").show();
 
+        // Pause if we got an error
+        ZenPlayer.pause();
+
         // When the error message is shown, also hide the player
         ZenPlayer.hide();
 
@@ -216,6 +219,12 @@ var ZenPlayer = {
         $("#pause").show();
         $("#play").hide();
     },
+    play: function() {
+        player.playVideo();
+    },
+    pause: function() {
+        player.pauseVideo();
+    },
     showPlayButton: function() {
         $("#play").show();
         $("#pause").hide();
@@ -239,15 +248,16 @@ var ZenPlayer = {
         });
     },
     setupMediaControls: function() {
+        var that = this;
         // play/pause button click event
         $("#playPause").click(function(event) {
             event.preventDefault();
 
             if ($("#play").is(":visible")) {
-                player.playVideo();
+                that.play();
             }
             else {
-                player.pauseVideo();
+                that.pause();
             }
         });
 
