@@ -58,7 +58,7 @@
     "tag": "v3.4.0",
     "commit": "097b9ad725d094d071dfd54f97c9fc87f79f94f1"
   },
-  "_source": "git://github.com/keen/keen-js.git",
-  "_target": "~3.x",
+  "_source": "https://github.com/keen/keen-js.git",
+  "_target": "~3.4.0",
   "_originalSource": "keen-js"
 }
