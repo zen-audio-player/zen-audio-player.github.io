@@ -1,3 +1,77 @@
+### 3.5.0 (February 12, 2016)
+
+Adds:
+
+- `unverified`
+
+Refines:
+
+- `verified`
+
+### 3.4.1 (January 24, 2016)
+
+This includes various SVG viewport refinements.
+
+Refines:
+
+- `thumbs-down`
+- `logo-github`
+
+### 3.4.0 (January 22, 2016)
+
+Adds:
+
+- `verified`
+- `smiley`
+
+Removes:
+
+- `color-mode`
+
+Refines:
+
+- `primitive-dot`
+- `horizontal-rule`
+- `triangle-down`
+- `triangle-up`
+- `triangle-left`
+- `triangle-right`
+- `globe`
+- `flame`
+- `comment-discussion`
+
+### 3.3.0 (November 12, 2015)
+
+Adds:
+
+- `logo-gist`
+
+Resizes all our SVG to be 16x16 instead of 1024x1024
+
+### 3.2.0 (November 6, 2015)
+
+Adds:
+
+- `bold`
+- `text-size`
+- `italic`
+- `tasklist`
+
+It also normalizes some styling in:
+
+- `list-unordered`
+- `list-ordered`
+- `quote`
+- `mention`
+- `bookmark`
+- `threebars`
+
+Removes
+
+- `screen-normal`
+- `screen-full`
+
+
 ### 3.1.0 (August 13, 2015)
 
 Adds

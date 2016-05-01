@@ -24,7 +24,6 @@
     "declaration-colon-newline-after": "always-multi-line",
     "declaration-colon-space-after": "always",
     "declaration-colon-space-before": "never",
-    "declaration-no-important": true,
     "function-calc-no-unspaced-operator": true,
     "function-comma-newline-after": "never-multi-line",
     "function-comma-newline-before": "never-multi-line",

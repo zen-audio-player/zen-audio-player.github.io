@@ -857,6 +857,160 @@ new Slider("#ex16b", { min: 0, max: 10, value: [0, 10], focus: true });
               </pre>
       </div>
 
+      <div class="slider-example">
+        <h3>Example 18:</h3>
+        <p>Accessibility with ARIA labels</p>
+
+        <div class="well">
+          Slider with single value and label:<br/><br/>
+          <span id="ex18-label-1" class="hidden">
+            Example slider label
+          </span>
+          <input id="ex18a" type="text" /><br/><br/><br/>
+
+          Range slider with multiple labels:<br/><br/>
+          <span id="ex18-label-2a" class="hidden">
+            Example low value
+          </span>
+          <span id="ex18-label-2b" class="hidden">
+            Example high value
+          </span>
+          <input id="ex18b" type="text" />
+        </div>
+
+        <pre>
+          <code>
+        ###################
+        HTML
+        ###################
+        &lt;span id="ex18-label-1" class="hidden"&gt;Example slider label&lt;/span&gt;
+        &lt;input id="ex18a" type="text"/&gt;
+
+        &lt;span id="ex18-label-2a" class="hidden"&gt;Example low value&lt;/span&gt;
+        &lt;span id="ex18-label-2b" class="hidden"&gt;Example high value&lt;/span&gt;
+        &lt;input id="ex18b" type="text"/&gt;
+
+        ###################
+        JavaScript
+        ###################
+
+        // With JQuery
+        $("#ex18a").slider({min  : 0, max  : 10, value: 5, labelledby: 'ex18-label-1'});
+        $("#ex18b").slider({min  : 0, max  : 10, value: [3, 6], labelledby: ['ex18-label-2a', 'ex18-label-2b']});
+
+        // Without JQuery
+        new Slider("#ex18a", {min  : 0, max  : 10, value: 5, labelledby: 'ex18-label-1'});
+        new Slider("#ex18b", {min  : 0, max  : 10, value: [3, 6], olabelledby: ['ex18-label-2a', 'ex18-label-2b']});
+          </code>
+        </pre>
+
+      </div>
+
+      <div class="slider-example">
+        <h3>Example 19:</h3>
+        <p>Auto-Register data-provide="slider" Elements</p>
+
+        <div class="well">
+          Slider-Element not accompanied by any custom Javascript:<br/><br/>
+          <span id="ex18-label-1" class="hidden">
+            Example slider label
+          </span>
+          <input id="ex19" type="text"
+                data-provide="slider"
+                data-slider-ticks="[1, 2, 3]"
+                data-slider-ticks-labels='["short", "medium", "long"]'
+                data-slider-min="1"
+                data-slider-max="3"
+                data-slider-step="1"
+                data-slider-value="3"
+                data-slider-tooltip="hide" />
+        </div>
+
+        <pre>
+          <code>
+        ###################
+        HTML
+        ###################
+        &lt;span id="ex18-label-1" class="hidden">Example slider label&lt;/span&gt;
+        &lt;input id="ex19" type="text"
+              data-provide="slider"
+              data-slider-ticks="[1, 2, 3]"
+              data-slider-ticks-labels='["short", "medium", "long"]'
+              data-slider-min="1"
+              data-slider-max="3"
+              data-slider-step="1"
+              data-slider-value="3"
+              data-slider-tooltip="hide" /&gt;
+
+        ###################
+        JavaScript
+        ###################
+
+        // None
+          </code>
+        </pre>
+
+      </div>
+
+      <div class="slider-example">
+        <h3>Example 20:</h3>
+        <p>Slider-Elements initially hidden</p>
+
+        <a class="btn btn-primary" href="" id="ex20a">Show</a>
+        <br><br>
+        <div class="well" style="display: none">
+          Slider-Element initially hidden, revealed by Javascript:<br/><br/>
+          <span id="ex18-label-1" class="hidden">
+            Example slider label
+          </span>
+          <input id="ex20" type="text"
+                data-provide="slider"
+                data-slider-ticks="[1, 2, 3]"
+                data-slider-ticks-labels='["short", "medium", "long"]'
+                data-slider-min="1"
+                data-slider-max="3"
+                data-slider-step="1"
+                data-slider-value="3"
+                data-slider-tooltip="hide" />
+        </div>
+
+        <pre>
+          <code>
+        ###################
+        HTML
+        ###################
+        &lt;a class="btn btn-primary" href="" id="ex20a">Show&lt;/a&gt;
+        &lt;div class="well" style="display: none"&gt;
+            &lt;span id="ex18-label-1" class="hidden"&gt;Example slider label&lt;/span&gt;
+            &lt;input id="ex19" type="text"
+                  data-provide="slider"
+                  data-slider-ticks="[1, 2, 3]"
+                  data-slider-ticks-labels='["short", "medium", "long"]'
+                  data-slider-min="1"
+                  data-slider-max="3"
+                  data-slider-step="1"
+                  data-slider-value="3"
+                  data-slider-tooltip="hide" /&gt;
+        &lt;/div&gt;
+
+        ###################
+        JavaScript
+        ###################
+
+        $('#ex20a').on('click', function(e) {
+            $('#ex20a')
+                .parent()
+                .find(' >.well')
+                .toggle()
+                .find('input')
+                .slider('relayout');
+            e.preventDefault();
+        });
+          </code>
+        </pre>
+
+      </div>
+
 
 	  </div> <!-- /examples -->
     </div> <!-- /container -->
@@ -978,7 +1132,8 @@ new Slider("#ex16b", { min: 0, max: 10, value: [0, 10], focus: true });
 				ticks_labels: ['$0', '$100', '$200', '$300', '$400'],
 				ticks_positions: [0, 30, 70, 90, 100],
 				ticks_snap_bounds: 20,
-				value: 200
+				value: 200,
+				reversed: true
 			});
 
 			/* Example 15 */
@@ -1016,6 +1171,31 @@ new Slider("#ex16b", { min: 0, max: 10, value: [0, 10], focus: true });
 				value: 0,
 				orientation: 'vertical',
 				tooltip_position:'left'
+			});
+
+			/* Example 18 */
+			$('#ex18a').slider({
+				min  : 0,
+				max  : 10,
+				value: 5,
+				labelledby: 'ex18-label-1'
+			});
+
+			$('#ex18b').slider({
+				min  : 0,
+				max  : 10,
+				value: [3, 6],
+				labelledby: ['ex18-label-2a', 'ex18-label-2b']
+			});
+
+			$('#ex20a').on('click', function(e) {
+				$('#ex20a')
+					.parent()
+					.find(' >.well')
+					.toggle()
+					.find('input')
+					.slider('relayout');
+				e.preventDefault();
 			});
 		});
     </script>
