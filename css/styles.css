@@ -66,6 +66,7 @@ a {
     margin: 0 auto;
     width: 100%;
     text-align: center;
+    font-size: 16px;
 }
 
 #v::-ms-clear {
@@ -76,6 +77,10 @@ a {
     text-align: center;
     min-width: 100%;
     width: 100%;
+}
+
+#playerControls {
+    margin-bottom: 75px;
 }
 
 #zen-video-title, #demo {
@@ -231,4 +236,14 @@ a {
 
 .plyr__video-wrapper {
     display: none;
+}
+
+/* HACK: override the styles from ".plyr__audio .plyr__controls" */
+.plyr__controls {
+    padding: 10px !important;
+    border-radius: inherit !important;
+    background: #ffffff !important;
+    border: 1px solid #dbe3e8 !important;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) !important;
+    color: #565d64 !important;
 }

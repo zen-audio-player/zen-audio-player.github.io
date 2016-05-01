@@ -57,71 +57,6 @@ var plyrPlayer;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
 
-// function onYouTubeIframeAPIReady() { //eslint-disable-line no-unused-vars
-//     player = new YT.Player("player", {
-//         height: "300",
-//         width: "400",
-//         // Parse the querystring and populate the video when loading the page
-//         videoId: getCurrentVideoID(),
-//         playerVars: {
-//             "autoplay": 1,
-//             "cc_load_policy": 0
-//         },
-//         events: {
-//             "onReady": onPlayerReady,
-//             "onStateChange": function(event) {
-//                 // Look at playerState for debugging
-//                 var playerState = event.data;
-
-//                 switch (playerState) {
-//                     case YT.PlayerState.PLAYING:
-//                         ZenPlayer.showPauseButton();
-//                         break;
-//                     default:
-//                         ZenPlayer.showPlayButton();
-//                 }
-//             },
-//             "onError": function(event) {
-//                 // TODO: how can we replicate this?
-//                 var message = "Got an unknown error, check the JS console.";
-//                 var verboseMessage = message;
-
-//                 // Handle the different error codes
-//                 switch (event.data) {
-//                     case 2:
-//                         verboseMessage = "The request contains an invalid parameter value. For example, this error occurs if you specify a video ID that does not have 11 characters, or if the video ID contains invalid characters, such as exclamation points or asterisks.";
-//                         message = "looks like an invalid video ID";
-//                         break;
-//                     case 5:
-//                         verboseMessage = "The requested content cannot be played in an HTML5 player or another error related to the HTML5 player has occurred.";
-//                         message = "we can't play that video here, or something is wrong with YouTube's iframe API";
-//                         break;
-//                     case 100:
-//                         verboseMessage = "The video requested was not found. This error occurs when a video has been removed (for any reason) or has been marked as private.";
-//                         message = "we can't find that video, it might be private or removed";
-//                         break;
-//                     case 101:
-//                         verboseMessage = "The owner of the requested video does not allow it to be played in embedded players.";
-//                         message = "the video owner won't allow us to play that video";
-//                         break;
-//                     case 150:
-//                         verboseMessage = "This error is the same as 101. It's just a 101 error in disguise!";
-//                         message = "the video owner won't allow us to play that video";
-//                         break;
-//                 }
-
-//                 // Update the UI w/ error
-//                 errorMessage.show(message);
-//                 ga("send", "event", "YouTube iframe API error", verboseMessage);
-//                 sendKeenEvent("YouTube iframe API error", {verbose: verboseMessage, message: message, code: event.data});
-
-//                 // Log debug info
-//                 console.log("Verbose debug error message: ", verboseMessage);
-//             }
-//         }
-//     });
-// }
-
 // TODO: refactor away
 // function onPlayerReady(event) {
 //     var currentVideoID = getCurrentVideoID();
@@ -172,7 +107,48 @@ function isFileProtocol() {
     return window.location.protocol === "file:";
 }
 
+function handleYouTubeError(details) {
+    if (typeof details.code === "number") {
+        var message = "Got an unknown error, check the JS console.";
+        var verboseMessage = message;
+
+        // Handle the different error codes
+        switch (details.code) {
+            case 2:
+                verboseMessage = "The request contains an invalid parameter value. For example, this error occurs if you specify a video ID that does not have 11 characters, or if the video ID contains invalid characters, such as exclamation points or asterisks.";
+                message = "looks like an invalid video ID";
+                break;
+            case 5:
+                verboseMessage = "The requested content cannot be played in an HTML5 player or another error related to the HTML5 player has occurred.";
+                message = "we can't play that video here, or something is wrong with YouTube's iframe API";
+                break;
+            case 100:
+                verboseMessage = "The video requested was not found. This error occurs when a video has been removed (for any reason) or has been marked as private.";
+                message = "we can't find that video, it might be private or removed";
+                break;
+            case 101:
+                verboseMessage = "The owner of the requested video does not allow it to be played in embedded players.";
+                message = "the video owner won't allow us to play that video";
+                break;
+            case 150:
+                verboseMessage = "This error is the same as 101. It's just a 101 error in disguise!";
+                message = "the video owner won't allow us to play that video";
+                break;
+        }
+
+        // Update the UI w/ error
+        errorMessage.show(message);
+        ga("send", "event", "YouTube iframe API error", verboseMessage);
+        sendKeenEvent("YouTube iframe API error", {verbose: verboseMessage, message: message, code: details.code});
+
+        // Log debug info
+        console.log("Verbose debug error message: ", verboseMessage);
+    }
+}
+
+// One day, try to move all globals under the ZenPlayer object
 var ZenPlayer = {
+    updated: false,
     init: function(videoID) {
         // Inject svg with control icons
         $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
@@ -181,17 +157,18 @@ var ZenPlayer = {
 
         plyr.setup(plyrPlayer, {
             autoplay: true,
-            controls:["play", "current-time", "duration", "mute", "volume"]
+            controls:["play", "progress", "current-time", "duration", "mute", "volume"],
+            hideControls: false
         });
 
         // Load video into Plyr player
         if (plyrPlayer.plyr) {
             var that = this;
             plyrPlayer.addEventListener("error", function(event) {
-                // TODO: how do we see the real error message?
-                console.log("error");
-                console.log(event);
-                console.log(event.target.plyr);
+                if (event && event.detail && typeof event.detail.code === "number") {
+                    handleYouTubeError(event.detail);
+                    ZenPlayer.hide();
+                }
             });
 
             plyrPlayer.addEventListener("ready", function() {
@@ -211,6 +188,12 @@ var ZenPlayer = {
                 that.setupTitle();
                 that.setupVideoDescription();
                 that.setupPlyrToggle();
+            });
+
+            plyrPlayer.addEventListener("playing", function() {
+                if (that.updated) {
+                    return;
+                }
 
                 // Start video from where we left off, if it makes sense
                 if (window.sessionStorage && window.sessionStorage.hasOwnProperty(videoID)) {
@@ -220,6 +203,8 @@ var ZenPlayer = {
                         plyrPlayer.plyr.embed.seekTo(resumeTime);
                     }
                 }
+
+                that.updated = true;
 
                 // Analytics
                 ga("send", "event", "Playing YouTube video title", that.videoTitle);
@@ -233,7 +218,6 @@ var ZenPlayer = {
                     youtubeID: plyrPlayer.plyr.embed.getVideoData().video_id
                 });
 
-                // TODO: if there was a video error it will happen before here, check that and avoid showing the player
                 // Show player
                 that.show();
                 updateTweetMessage();
@@ -273,20 +257,6 @@ var ZenPlayer = {
     },
     hide: function() {
         $("#audioplayer").hide();
-    },
-    showPauseButton: function() {
-        $("#pause").show();
-        $("#play").hide();
-    },
-    play: function() {
-        player.playVideo();
-    },
-    pause: function() {
-        player.pauseVideo();
-    },
-    showPlayButton: function() {
-        $("#play").show();
-        $("#pause").hide();
     },
     setupTitle: function() {
         // Prepend music note only if title does not already begin with one.
@@ -335,6 +305,11 @@ var ZenPlayer = {
                     logError(jqXHR, textStatus, errorThrown, "Video Description error");
                 }
             );
+        }
+
+        // If there's no description to show, don't pretend there is
+        if (description.trim().length) {
+            $("#toggleDescription").hide();
         }
 
         return description;
