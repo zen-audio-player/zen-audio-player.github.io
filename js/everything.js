@@ -57,28 +57,6 @@ var plyrPlayer;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
 
-// TODO: refactor away
-// function onPlayerReady(event) {
-//     var currentVideoID = getCurrentVideoID();
-
-//     updateTweetMessage();
-
-//     // If the video isn't going to play, then return.
-//     if (event && event.target && event.target.getPlayerState() === YT.PlayerState.UNSTARTED) {
-//         errorMessage.show("Invalid YouTube videoID or URL.");
-//         return;
-//     }
-
-//     // Setup player
-//     if (currentVideoID) {
-//         if (plyrPlayer) {
-//             return;
-//         }
-//         // setupPlyr();
-//         alert("death");
-//     }
-// }
-
 var errorMessage = {
     init: function() {
         // nothing for now
@@ -439,6 +417,7 @@ $(function() {
 
     errorMessage.init();
 
+    // How do we know if the value is truly invalid?
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
