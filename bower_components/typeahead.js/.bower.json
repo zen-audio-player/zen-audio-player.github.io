@@ -19,6 +19,5 @@
   },
   "_source": "git://github.com/twitter/typeahead.js.git",
   "_target": "~0.11.1",
-  "_originalSource": "typeahead.js",
-  "_direct": true
+  "_originalSource": "typeahead.js"
 }

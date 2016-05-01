@@ -8,11 +8,11 @@ __Please ensure that you are using this library instead of the Petre version bef
 
 Installation
 ============
-Clone the repository, then run `npm install`
-
 Want to use bower? `bower install seiyria-bootstrap-slider`
 
 Want to use npm? `npm install bootstrap-slider`
+
+Want to get it from a CDN? https://cdnjs.com/libraries/bootstrap-slider
 
 __NOTE for NPM users__: In order to keep the version numbers in our dist/ file consistent with our Github tags, we do a patch version bump, generate a new dist, and create a commit/tag on postpublish.
 
@@ -54,12 +54,33 @@ var value = mySlider.slider('getValue');
 		.slider('setValue', 7);
 ```
 
+Using bootstrap-slider (via `data-provide`-API)
+======================
+
+Create an input element with the `data-provide="slider"` attribute automatically
+turns it into a slider. Options can be supplied via `data-slider-` attributes.
+
+```html
+<input
+	type="text"
+	name="somename"
+	data-provide="slider"
+	data-slider-ticks="[1, 2, 3]"
+	data-slider-ticks-labels='["short", "medium", "long"]'
+	data-slider-min="1"
+	data-slider-max="3"
+	data-slider-step="1"
+	data-slider-value="3"
+	data-slider-tooltip="hide"
+>
+```
+
 What if there is already a _slider_ plugin bound to the JQuery namespace?
 ======================
 
 If there is already a JQuery plugin named _slider_ bound to the JQuery namespace, then this plugin will take on the alternate namespace _bootstrapSlider_.
 
-```
+```js
 // Instantiate a slider
 var mySlider = $("input.slider").bootstrapSlider();
 
@@ -96,7 +117,7 @@ Using as CommonJS module
 =======
 bootstrap-slider can be loaded as a CommonJS module via [Browserify](https://github.com/substack/node-browserify), [Webpack](https://github.com/webpack/webpack), or some other build tool.
 
-```
+```js
 var Slider = require("bootstrap-slider");
 
 var mySlider = new Slider();
@@ -140,6 +161,7 @@ Options can be passed either as a data (data-slider-foo) attribute, or as part o
 | ticks_snap_bounds | float | 0 | Used to define the snap bounds of a tick. Snaps to the tick if value is within these bounds. |
 | scale | string | 'linear' | Set to 'logarithmic' to use a logarithmic scale. |
 | focus | bool | false | Focus the appropriate slider handle after a value change. |
+| labelledby | string,array | null | ARIA labels for the slider handle's, Use array for multiple values in a range slider. |
 
 Functions
 =========
@@ -173,6 +195,35 @@ Events
 | slideEnabled | This event fires when the slider is enabled | N/A |
 | slideDisabled | This event fires when the slider is disabled | N/A |
 
+
+How Do I Run This Locally?
+======
+- Clone the repository
+- Run `nvm use` in your Terminal to switch to the proper Node/NPM version
+- Once you are on specified Node version, run `npm install`
+- Install the Grunt CLI: `npm install grunt-cli -g`
+- Type `grunt dev` to launch browser window with Examples page
+
+Grunt Tasks
+======
+This plugin uses Grunt as its command-line task runner.
+
+To install the Grunt CLI, type `npm install grunt-cli -g`.
+
+To execute any of the commands, type `grunt <task-name>` in your terminal instance.
+
+The following is a list of the commonly-used command line tasks:
+
+* `grunt development`: Generates the `index.html`, compiles the LESS/JS to the `/temp` directory, and launches the index.html in your system's default browser. As changes are made to source code, the
+	browser window will auto-refresh.
+* `grunt production`: Generates the `/dist` directory with minified and unminified assetts.
+* `grunt dev`: Alias for `grunt development`
+* `grunt prod`: Alias for `grunt production`
+* `grunt build`: Transpiles JavaScript source via Babel and compiles LESS source to CSS to `temp` directory.
+* `grunt lint`: Runs JSLint on the JavaScript source code.
+* `grunt test`: Runs unit tests contained in `/test` directory via Jasmine.
+
+
 Version Bumping and Publishing (Maintainers Only)
 =======
 To bump the version number across all the various packagement systems the plugin is registered with, please use the [grunt bump](https://github.com/vojtajina/grunt-bump) plugin.
@@ -190,6 +241,7 @@ Other Platforms & Libraries
 - [knockout.js](https://github.com/cosminstefanxp/bootstrap-slider-knockout-binding) ([@cosminstefanxp](https://github.com/cosminstefanxp), [#81](https://github.com/seiyria/bootstrap-slider/issues/81))
 - [AngularJS](https://github.com/seiyria/angular-bootstrap-slider)
 - [EmberJS](https://github.com/lifegadget/ui-slider) ([@ksnyde](https://github.com/ksnyde))
+- [ReactJS](https://github.com/brownieboy/react.bootstrap.slidertest)
 - [NuGet](https://www.nuget.org/packages/bootstrap-slider/) ([@ChrisMissal](https://github.com/ChrisMissal))
 - [MeteorJS](https://github.com/kidovate/meteor-bootstrap-slider)
 - [Maven](http://mvnrepository.com/artifact/org.webjars.bower/seiyria-bootstrap-slider)

@@ -1,6 +1,6 @@
 {
   "name": "seiyria-bootstrap-slider",
-  "version": "5.0.13",
+  "version": "6.1.6",
   "homepage": "https://github.com/seiyria/bootstrap-slider",
   "authors": [
     "Kyle Kemp <kyle@seiyria.com>",
@@ -8,7 +8,7 @@
   ],
   "description": "a slider element for bootstrap 2/3",
   "main": [
-    "js/bootstrap-slider.js",
+    "dist/bootstrap-slider.js",
     "dist/css/bootstrap-slider.css"
   ],
   "keywords": [

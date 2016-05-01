@@ -59,7 +59,7 @@ describe("Page Structure", function () {
         assert.equal(browser.query("link ~ link ~ link ~ link").href, "bower_components/font-awesome/css/font-awesome.min.css");
 
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link").rel, "stylesheet");
-        assert.equal(browser.query("link ~ link ~ link ~ link ~ link").href, "bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css");
+        assert.equal(browser.query("link ~ link ~ link ~ link ~ link").href, "bower_components/plyr/dist/plyr.css");
 
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").rel, "stylesheet");
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").href, "css/styles.css");
@@ -82,11 +82,11 @@ describe("Page Structure", function () {
         // TODO: validate the rest of the form
         assert.ok(browser.query("#demo"), "Couldn't find #demo");
         assert.ok(browser.query("#submit"), "Couldn't find #submit");
-        assert.ok(browser.query("#zen-video-error"), "Couldn't find #zen-video-error");
+        assert.ok(browser.query("#zen-error"), "Couldn't find #zen-error");
         assert.ok(browser.query("#zen-video-title"), "Couldn't find #zen-video-title");
         assert.ok(browser.query("h3 > a#zen-video-title"), "Couldn't find a h3 > a#zen-video-title");
-        assert.ok(browser.query("#player"), "Couldn't find #player");
-        assert.ok(browser.query("#v"), "Couldn't find #v");
+        assert.ok(browser.query("#audioplayer"), "Couldn't find #audioplayer");
+        assert.ok(browser.query("#audioplayer > div.plyr"), "Couldn't find #audioplayer > div.plyr");
 
         assert.ok(browser.query("footer"), "Couldn't find footer");
         assert.ok(browser.query("footer > div.color-grey > p"), "Couldn't find footer > div.color-grey <p>Created by");
@@ -117,13 +117,6 @@ describe("JavaScript components", function() {
     it("should load jQuery", function() {
         assert.ok(browser.evaluate("$"));
     });
-    // TODO: test bootstrap-slider
-    it("should load YouTube iframe API", function() {
-        assert.ok(browser.evaluate("YT"));
-    });
-    it("should load ZenPlayer from everything.js", function() {
-        assert.ok(browser.evaluate("ZenPlayer"));
-    });
     it("should make all requests over https, not http", function() {
         assert.strictEqual(-1, _js.indexOf("http://"), "Please use HTTPS for all scripts");
     });
@@ -144,10 +137,10 @@ describe("Demo", function () {
             //     : info. But there's a race condition where sometimes the player object isn't ready yet...?
             //     : looks like can't rely on global variables.
             // TODO: How do we inspect the player object (title, etc.)?
-            browser.assert.element("#player");
-            assert.ok(browser.evaluate("window.player"));
+            browser.assert.element(".plyr");
+            assert.ok(browser.evaluate("window.plyrPlayer"));
             browser.assert.text("#togglePlayer", "Show Player");
-            browser.assert.text("#zen-video-error", "");
+            browser.assert.text("#zen-error", "");
             done();
         });
     });
@@ -155,11 +148,11 @@ describe("Demo", function () {
 
 describe("Form", function () {
     it("should break with nonsense input", function (done) {
-        browser.assert.text("#zen-video-error", "");
+        browser.assert.text("#zen-error", "");
         browser.fill("#v", "absolute rubbish");
         browser.pressButton("#submit", function() {
             // TODO: add tests for the error message, time, play/pause button, etc
-            browser.assert.text("#zen-video-error", "ERROR: Skipping video lookup request as we're running the site locally.");
+            browser.assert.text("#zen-error", "ERROR: Skipping video lookup request as we're running the site locally.");
             done();
         });
     });

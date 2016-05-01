@@ -1,5 +1,5 @@
 /*! =======================================================
-                      VERSION  5.1.1              
+                      VERSION  6.1.6              
 ========================================================= */
 /*! =========================================================
  * bootstrap-slider.js
@@ -107,6 +107,12 @@
   border-left-color: #0480be;
   margin-left: 0;
 }
+.slider.slider-vertical .slider-tick-label-container {
+  white-space: nowrap;
+}
+.slider.slider-vertical .slider-tick-label-container .slider-tick-label {
+  padding-left: 4px;
+}
 .slider.slider-disabled .slider-handle {
   background-image: -webkit-linear-gradient(top, #dfdfdf 0%, #bebebe 100%);
   background-image: -o-linear-gradient(top, #dfdfdf 0%, #bebebe 100%);
@@ -130,6 +136,7 @@
 }
 .slider .tooltip-inner {
   white-space: nowrap;
+  max-width: none;
 }
 .slider .hide {
   display: none;

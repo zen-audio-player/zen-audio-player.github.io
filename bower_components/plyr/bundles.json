@@ -1,0 +1,24 @@
+{
+    "plyr": {
+        "less": {
+            "plyr.css":     ["src/less/plyr.less"]
+        },
+        "scss": {
+            "plyr.css":     ["src/scss/plyr.scss"]
+        },
+        "js": {
+            "plyr.js":      ["src/js/plyr.js"]
+        }
+    },
+    "docs": {
+        "less": {
+            "docs.css":     ["docs/src/less/docs.less"]
+        },
+        "js": {
+            "docs.js": [
+                "docs/src/js/lib/classlist.js",
+                "docs/src/js/docs.js"
+            ]
+        }
+    }
+}

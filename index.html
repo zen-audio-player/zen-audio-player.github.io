@@ -14,17 +14,19 @@
 
     <link rel="stylesheet" href="bower_components/primer-css/css/primer.css">
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css">
+    <link rel="stylesheet" href="bower_components/plyr/dist/plyr.css">
     <link rel="stylesheet" href="css/styles.css">
 
     <script type="text/javascript">window._trackJs = { token: "f58d0b7c4b4248939fddc582f9e55c9d" };</script>
     <script src="bower_components/trackjs/tracker.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/keen-js/dist/keen.min.js"></script>
     <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
     <script src="bower_components/typeahead.js/dist/typeahead.jquery.min.js"></script>
     <script src="js/zap-common.js"></script>
     <script src="js/everything.js"></script>
-    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="bower_components/plyr/dist/plyr.js"></script>
+
 </head>
 <body>
     <header>
@@ -56,40 +58,32 @@
             <h3>Search Results</h3>
             <ul></ul>
         </div>
-        <div id="zen-video-error" class="hide flash flash-error"></div>
+        <div id="zen-error" class="hide flash flash-error"></div>
         <!-- The video, along with related content & messages -->
         <div id="audioplayer">
-            <h3><a id="zen-video-title"></a></h3>
-            <div id="playerTime">
-                <input id="timeSeek" type="text">
-                <br>
-                <span id="currentTime"></span> / <span id="totalTime"></span>
-            </div>
+            <h3>
+                <a id="zen-video-title" class="plyr__cite plyr__cite--video"></a>
+            </h3>
+
             <div id="playerControls">
-                <br>
-                <button class="btn" id="playPause">
-                    <i class="fa fa-play" id="play"></i>
-                    <i class="fa fa-pause" id="pause"></i>
-                </button>
                 <button class="btn" id="togglePlayer">
                     Show Player
                 </button>
                 <button class="btn" id="toggleDescription">
                     Show Description
                 </button>
-                <br>
-                <br>
-                <i class="fa fa-volume-down fa-lg"></i>
-                <input id="volume" type="text">
-                <i class="fa fa-volume-up fa-lg"></i>
+            </div>
+
+            <!-- Plyr controls' icons and Plyr player itself -->
+            <div id="plyr-svg" hidden>
+            </div>
+            <div class="plyr">
+                <audio></audio>
             </div>
             <br>
-            <div id="player">
-            </div>
             <div id="zen-video-description"></div>
             <br>
         </div>
-        <br>
         <button id="demo" class="btn">
             <i class="fa fa-mouse-pointer"></i>
             Click for Demo
@@ -112,16 +106,12 @@
         <!-- Sponsor links -->
         <h3>Sponsored by:</h3>
         <div class="sponsor">
-            <a href="https://browserstack.com" class="sponsor-a" target="_blank">
-                <img src="img/browserstack_logo.png" alt="Browserstack logo" class="img-100">
-            </a>
             <a href="https://keen.io/" class="sponsor-a" target="_blank">
                 <img src="img/keen_logo.png" alt="Keen Logo" class="img-100">
             </a>
             <a href="https://trackjs.com/" class="sponsor-a" target="_blank">
                 <img src="img/trackjs_logo.png" alt="TrackJS Logo" class="img-100">
             </a>
-
             <div class="clear-both"></div>
         </div>
     </footer>
