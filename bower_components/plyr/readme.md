@@ -3,7 +3,7 @@ A simple, accessible and customizable HTML5, YouTube and Vimeo media player.
 
 [Checkout the demo](https://plyr.io)
 
-[![Image of Plyr](https://cdn.plyr.io/static/plyr-v1.5.jpg)](https://plyr.io)
+[![Image of Plyr](https://cdn.plyr.io/static/plyr_v1.6.0.png)](https://plyr.io)
 
 ## Why?
 We wanted a lightweight, accessible and customizable media player that supports [*modern*](#browser-support) browsers. Sure, there are many other players out there but we wanted to keep things simple, using the right elements for the job.
@@ -40,10 +40,9 @@ If you have any cool ideas or features, please let me know by [creating an issue
 ## Implementation
 Check `docs/index.html` and `docs/dist/docs.js` for an example setup.
 
-**Heads up:** the example `index.html` file needs to be served from a webserver (such as Apache, Nginx, IIS or similar) unless you change the file sources to include http or https. e.g. change `//cdn.plyr.io/1.5.21/plyr.js` to `https://cdn.plyr.io/1.5.21/plyr.js`
+**Heads up:** the example `index.html` file needs to be served from a webserver (such as Apache, Nginx, IIS or similar) unless you change the file sources to include http or https. e.g. change `//cdn.plyr.io/1.6.4/plyr.js` to `https://cdn.plyr.io/1.6.4/plyr.js`
 
 ### Node Package Manager (NPM)
-[![npm version](https://badge.fury.io/js/plyr.svg)](https://badge.fury.io/js/plyr) 
 
 Using NPM, you can grab Plyr:
 ```
@@ -52,7 +51,6 @@ npm install plyr
 [https://www.npmjs.com/package/plyr](https://www.npmjs.com/package/plyr)
 
 ### Bower
-[![Bower version](https://badge.fury.io/bo/plyr.svg)](https://badge.fury.io/bo/plyr)
 
 If bower is your thang, you can grab Plyr using:
 ```
@@ -73,14 +71,14 @@ More info is on [npm](https://www.npmjs.com/package/ember-cli-plyr) and [GitHub]
 If you want to use our CDN, you can use the following:
 
 ```html
-<link rel="stylesheet" href="https://cdn.plyr.io/1.5.21/plyr.css">
-<script src="https://cdn.plyr.io/1.5.21/plyr.js"></script>
+<link rel="stylesheet" href="https://cdn.plyr.io/1.6.4/plyr.css">
+<script src="https://cdn.plyr.io/1.6.4/plyr.js"></script>
 ```
 
-You can also access the `sprite.svg` file at `https://cdn.plyr.io/1.5.21/sprite.svg`.
+You can also access the `sprite.svg` file at `https://cdn.plyr.io/1.6.4/sprite.svg`.
 
 ### CSS & Styling
-If you want to use the default css, add the `plyr.css` file from `/dist` into your head, or even better use `plyr.less` or `plyr.sass` file included in `/src` in your build to save a request.
+If you want to use the default css, add the `plyr.css` file from `/dist` into your head, or even better use `plyr.less` or `plyr.scss` file included in `/src` in your build to save a request.
 
 ```html
 <link rel="stylesheet" href="dist/plyr.css">
@@ -89,7 +87,18 @@ If you want to use the default css, add the `plyr.css` file from `/dist` into yo
 The default setup uses the BEM methodology with `plyr` as the block, e.g. `.plyr__controls`. You can change the class hooks in the options. Check out the source for more on this.
 
 ### SVG
-The SVG sprite for the controls icons is loaded in by AJAX to help with performance. This is best added before the closing `</body>`, before any other scripts.
+The SVG sprite for the controls icons can be loaded two ways:
+- By passing the *relative* path to the sprite as the `iconUrl` option; or
+- Using AJAX, injecting the sprite into a hidden div. 
+
+#### Using the `iconUrl` option
+This method requires the SVG sprite to be hosted on the *same domain* as your page hosting the player. Currently no browser supports cross origin SVG sprites due to XSS issues. Fingers crossed this will come soon though. An example value for this option would be:
+```
+/path/to/sprite.svg
+```
+
+#### Using AJAX
+Using AJAX means you can load the sprite from a different origin. Avoiding the issues above. This is an example script to load an SVG sprite best added before the closing `</body>`, before any other scripts.
 
 ```html
 <script>
@@ -104,7 +113,7 @@ The SVG sprite for the controls icons is loaded in by AJAX to help with performa
 		c.innerHTML = a.responseText;
 		b.insertBefore(c, b.childNodes[0]);
 	};
-})(document, 'path/to/sprite.svg');
+})(document, 'https://cdn.plyr.io/1.6.4/sprite.svg');
 </script>
 ```
 
@@ -179,7 +188,7 @@ Be sure to [validate your caption files](https://quuz.org/webvtt/)
 Here's an example of a default setup:
 
 ```html
-<script src="https://cdn.plyr.io/1.5.21/plyr.js"></script>
+<script src="https://cdn.plyr.io/1.6.4/plyr.js"></script>
 <script>plyr.setup();</script>
 ```
 
@@ -206,6 +215,9 @@ Passing just the options object:
 ```javascript
 plyr.setup(options);
 ```
+
+#### RangeTouch
+Some touch browsers (particularly Mobile Safari on iOS) seem to have issues with `<input type="range">` elements whereby touching the track to set the value doesn't work and sliding the thumb can be tricky. To combat this, I've created [RangeTouch](https://rangetouch.com) which I'd recommend including in your solution. It's a tiny script with a nice benefit for users on touch devices. 
 
 #### Options
 
@@ -252,6 +264,12 @@ Options must be passed as an object to the `setup()` method as above or as JSON 
     <td>Specify the id prefix for the icons used in the default controls (e.g. "icon-play" would be "icon"). This is to prevent clashes if you're using your own SVG defs file but with the default controls. Most people can ignore this option.</td>
   </tr>
   <tr>
+    <td><code>iconUrl</code></td>
+    <td>String</td>
+    <td><code>null</code></td>
+    <td>Specify a relative path to the SVG sprite, hosted on the *same domain* as the page the player is hosted on. Using this menthod means no requirement for the AJAX sprite loading script. See the <a href="#svg">SVG section</a> for more info.</td>
+  </tr>
+  <tr>
     <td><code>debug</code></td>
     <td>Boolean</td>
     <td><code>false</code></td>
@@ -276,10 +294,22 @@ Options must be passed as an object to the `setup()` method as above or as JSON 
     <td>A number, between 1 and 10, representing the initial volume of the player.</td>
   </tr>
   <tr>
-    <td><code>click</code></td>
+    <td><code>clickToPlay</code></td>
     <td>Boolean</td>
     <td><code>true</code></td>
-    <td>Click (or tap) will toggle pause/play of a <code>&lt;video&gt;</code>.</td>
+    <td>Click (or tap) of the video container will toggle pause/play.</td>
+  </tr>
+  <tr>
+    <td><code>hideControls</code></td>
+    <td>Boolean</td>
+    <td><code>true</code></td>
+    <td>Hide video controls automatically after 2s of no mouse or focus movement, on control element blur (tab out), on playback start or entering fullscreen. As soon as the mouse is moved, a control element is focused or playback is paused, the controls reappear instantly.</td>
+  </tr>
+  <tr>
+    <td><code>showPosterOnEnd</code></td>
+    <td>Boolean</td>
+    <td><code>false</code></td>
+    <td>This will restore and *reload* HTML5 video once playback is complete. Note: depending on the browser caching, this may result in the video downloading again (or parts of it). Use with caution.</td>
   </tr>
   <tr>
     <td><code>tooltips</code></td>
@@ -367,12 +397,6 @@ Options must be passed as an object to the `setup()` method as above or as JSON 
       <td>Enable a full viewport view for older browsers.</td>
     </tr>
     <tr>
-      <td><code>hideControls</code></td>
-      <td>Boolean</td>
-      <td><code>true</code></td>
-      <td>Hide the controls when fullscreen is active and the video is playing, after 1s. The controls reappear on hover of the progress bar (mouse), focusing a child control or pausing the video (by tap/click of video if `click` is `true`).</td>
-    </tr>
-    <tr>
       <td><code>allowAudio</code></td>
       <td>Boolean</td>
       <td><code>false</code></td>
@@ -389,7 +413,7 @@ A `plyr` object is added to any element that Plyr is initialized on. You can the
 There are two ways to access the instance, firstly you re-query the element container you used for setup (e.g. `.js-plyr`) like so:
 
 ```javascript
-var player = document.querySelector('.js-plyr');
+var player = document.querySelector('.js-plyr').plyr;
 ```
 
 Or you can use the returned object from your call to the setup method:
@@ -488,20 +512,8 @@ Here's a list of the methods supported:
     <td>
       Get/Set the media source.
       <br><br>
-      <strong>array</strong><br>
-      <pre><code>.source([
-      	{
-      		src: "/path/to/video.webm",
-      		type: "video/webm",
-      		...more attributes...
-      	},
-      	{
-      		src: "/path/to/video.mp4",
-      		type: "video/mp4",
-      		...more attributes...
-      	}
-      ])`</code></pre><br>
-      This will inject a child `source` element for every element in the array with the specified attributes. `src` is the only required attribute although adding `type` is recommended as it helps the browser decide which file to download and play.
+      <strong>Object</strong><br>
+      See <a href="#source-method">below</a>
       <br><br>
       <strong>YouTube</strong><br>
       Currently this API method only accepts a YouTube ID when used with a YouTube player. I will add URL support soon, along with being able to swap between types (e.g. YouTube to Audio or Video and vice versa.)

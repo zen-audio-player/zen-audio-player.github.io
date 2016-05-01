@@ -12,7 +12,7 @@ var fs          = require("fs"),
     uglify      = require("gulp-uglify"),
     less        = require("gulp-less"),
     sass        = require("gulp-sass"),
-    minify      = require("gulp-minify-css"),
+    cleanCSS    = require("gulp-clean-css"),
     run         = require("run-sequence"),
     prefix      = require("gulp-autoprefixer"),
     svgstore    = require("gulp-svgstore"),
@@ -30,7 +30,7 @@ paths = {
         // Source paths
         src: {
             less:       path.join(root, "src/less/**/*"),
-            sass:       path.join(root, "src/sass/**/*"),
+            scss:       path.join(root, "src/scss/**/*"),
             js:         path.join(root, "src/js/**/*"),
             sprite:     path.join(root, "src/sprite/*.svg")
         },
@@ -55,7 +55,7 @@ paths = {
 // Task arrays
 tasks = {
     less:   [],
-    sass:   [],
+    scss:   [],
     js:     [],
     sprite: []
 },
@@ -104,26 +104,26 @@ var build = {
                         .on("error", gutil.log)
                         .pipe(concat(key))
                         .pipe(prefix(["last 2 versions"], { cascade: true }))
-                        .pipe(minify())
+                        .pipe(cleanCSS())
                         .pipe(gulp.dest(paths[bundle].output));
                 });
             })(key);
         }
     },
-    sass: function(files, bundle) {
+    scss: function(files, bundle) {
         for (var key in files) {
             (function (key) {
-                var name = "sass-" + key;
-                tasks.sass.push(name);
+                var name = "scss-" + key;
+                tasks.scss.push(name);
 
                 gulp.task(name, function () {
                     return gulp
-                        .src(bundles[bundle].sass[key])
+                        .src(bundles[bundle].scss[key])
                         .pipe(sass())
                         .on("error", gutil.log)
                         .pipe(concat(key))
                         .pipe(prefix(["last 2 versions"], { cascade: true }))
-                        .pipe(minify())
+                        .pipe(cleanCSS())
                         .pipe(gulp.dest(paths[bundle].output));
                 });
             })(key);
@@ -152,7 +152,7 @@ var build = {
 // Plyr core files
 build.js(bundles.plyr.js, "plyr");
 build.less(bundles.plyr.less, "plyr");
-build.sass(bundles.plyr.sass, "plyr");
+build.scss(bundles.plyr.scss, "plyr");
 build.sprite("plyr");
 
 // Docs files
@@ -165,9 +165,9 @@ gulp.task("js", function(){
     run(tasks.js);
 });
 
-// Build SASS (for testing, default is LESS)
-gulp.task("sass", function(){
-    run(tasks.sass);
+// Build SCSS (for testing, default is LESS)
+gulp.task("scss", function(){
+    run(tasks.scss);
 });
 
 // Watch for file changes
@@ -214,7 +214,7 @@ options = {
 
 // If aws is setup
 if("cdn" in aws) {
-    var regex       = "(\\d+\\.)?(\\d+\\.)?(\\*|\\d+)",
+    var regex       = "(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-[\\da-z\\-]+(?:\.[\\da-z\\-]+)*)?(?:\\+[\\da-z\\-]+(?:\.[\\da-z\\-]+)*)?",
     cdnpath         = new RegExp(aws.cdn.bucket + "\/" + regex, "gi"),
     semver          = new RegExp("v" + regex, "gi"),
     localpath       = new RegExp("(\.\.\/)?dist", "gi");
