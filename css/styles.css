@@ -80,7 +80,7 @@ a {
 }
 
 #playerControls {
-    margin-bottom: 75px;
+    margin-bottom: 15px;
 }
 
 #zen-video-title, #demo {
@@ -246,4 +246,5 @@ a {
     border: 1px solid #dbe3e8 !important;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) !important;
     color: #565d64 !important;
+    position: relative !important;
 }
