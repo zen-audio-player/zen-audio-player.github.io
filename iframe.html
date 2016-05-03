@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Listen to YouTube videos, without the distracting visuals">
+    <meta name="author" content="Shakeel Mohamed">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="D3SjNR3tmNYOusESQijh_oH5SGmU9QsAIVwlqizwRBU" />
+
+    <title>Zen Audio Player</title>
+
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="bower_components/primer-css/css/primer.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="bower_components/plyr/dist/plyr.css">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <script type="text/javascript">window._trackJs = { token: "f58d0b7c4b4248939fddc582f9e55c9d" };</script>
+    <script src="bower_components/trackjs/tracker.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/keen-js/dist/keen.min.js"></script>
+    <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+    <script src="bower_components/typeahead.js/dist/typeahead.jquery.min.js"></script>
+    <script src="js/zap-common.js"></script>
+    <script src="js/iframe.js"></script>
+    <script src="bower_components/plyr/dist/plyr.js"></script>
+
+</head>
+<body>
+    <div id="container">
+        <!-- The video, along with related content & messages -->
+        <div id="audioplayer">
+            <h3>
+                <a id="zen-video-title" class="plyr__cite plyr__cite--video"></a>
+            </h3>
+            <!-- Plyr controls' icons and Plyr player itself -->
+            <div id="plyr-svg" hidden>
+            </div>
+            <div class="plyr">
+                <audio></audio>
+            </div>
+            <br>
+        </div>
+    </div>
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+        {
+            "@context": "http://schema.org",
+            "@type": "Organization",
+            "url": "https://zenplayer.audio",
+            "logo": "https://zenplayer.audio/img/zen-audio-player-905.png"
+        }
+    </script>
+</body>
+</html>
