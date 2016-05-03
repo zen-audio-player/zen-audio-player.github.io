@@ -1,4 +1,4 @@
-/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription*/
+/*global getParameterByName, getSearchResults, parseYoutubeVideoID*/
 
 // Pointer to Keen client
 var client;
@@ -80,10 +80,6 @@ var errorMessage = {
         ZenPlayer.show();
     }
 };
-
-function isFileProtocol() {
-    return window.location.protocol === "file:";
-}
 
 function handleYouTubeError(details) {
     if (typeof details.code === "number") {
@@ -198,7 +194,6 @@ var ZenPlayer = {
 
                 // Show player
                 that.show();
-                updateTweetMessage();
             });
 
             plyrPlayer.addEventListener("timeupdate", function() {
@@ -244,7 +239,7 @@ var ZenPlayer = {
         }
         $("#zen-video-title").html(tmpVideoTitle);
         $("#zen-video-title").attr("href", this.videoUrl);
-    },
+    }
 };
 
 function logError(jqXHR, textStatus, errorThrown, _errorMessage) {
