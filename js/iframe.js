@@ -273,33 +273,6 @@ function removeSearchQueryFromURL(url) {
     return url;
 }
 
-function makeListenURL(videoID) {
-    var url = removeSearchQueryFromURL(window.location.href);
-    // Remove any #s which break functionality
-    url = url.replace("#", "");
-
-    return url + "?v=" + videoID;
-}
-
-function makeSearchURL(searchQuery) {
-    var url = removeSearchQueryFromURL(window.location.href);
-    // Remove any #s which break functionality
-    url = url.replace("#", "");
-
-    return url + "?q=" + encodeURIComponent(searchQuery);
-}
-
-function anchorURLs(text) {
-    /* RegEx to match http or https addresses
-    * This will currently only match TLD of two or three letters
-    * Ends capture when:
-    *    (1) it encounters a TLD
-    *    (2) it encounters a period (.) or whitespace, if the TLD was followed by a forwardslash (/) */
-    var re = /((?:http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*[^\.\s])?)/g;
-    /* Wraps all found URLs in <a> tags */
-    return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
-}
-
 function wrapParseYouTubeVideoID(url) {
     if (currentVideoID && url === currentVideoID) {
         // We have already determined the video id
