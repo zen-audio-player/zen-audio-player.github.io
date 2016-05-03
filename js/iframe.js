@@ -266,13 +266,6 @@ function getCurrentSearchQuery() {
     return q;
 }
 
-function removeSearchQueryFromURL(url) {
-    if (window.location.search.length !== 0) {
-        url = window.location.href.replace(window.location.search, "");
-    }
-    return url;
-}
-
 function wrapParseYouTubeVideoID(url) {
     if (currentVideoID && url === currentVideoID) {
         // We have already determined the video id
