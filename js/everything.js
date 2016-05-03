@@ -291,6 +291,12 @@ var ZenPlayer = {
         }
 
         return description;
+    },
+    play: function() {
+        plyrPlayer.plyr.embed.playVideo();
+    },
+    pause: function() {
+        plyrPlayer.plyr.embed.pauseVideo();
     }
 };
 
