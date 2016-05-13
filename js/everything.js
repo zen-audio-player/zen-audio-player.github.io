@@ -517,10 +517,14 @@ $(function() {
         }
     });
 
-    var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
+    // Some demo video's audio, feel free to add more
+    var demos = ["koJv-j1usoI", "5cJIvC6AAkc" , "EBerFisqduk", "DlKXJ906pd8"];
+    function playDemo(){
+    return demos[Math.floor(Math.random() * demos.length)];
+    }
 
-    // Hide the demo link if playing the demo video's audio
-    if (currentVideoID === starveTheEgoFeedTheSoulGlitchMob) {
+    // Hide the demo link if playing any of the demo video's audio
+    if ($.inArray(currentVideoID, demos) != -1) {
         $("#demo").hide();
     }
 
@@ -532,13 +536,15 @@ $(function() {
 
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
-        if (window.location.href.indexOf(starveTheEgoFeedTheSoulGlitchMob) === -1) {
-            window.location.href = makeListenURL(starveTheEgoFeedTheSoulGlitchMob);
+        if (window.location.href.indexOf(playDemo()) === -1) {
+            window.location.href = makeListenURL(playDemo());
+
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
             sendKeenEvent("demo", {action: "already had video ID in URL"});
         }
+
     });
 
     // Load the player
