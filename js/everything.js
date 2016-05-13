@@ -520,11 +520,11 @@ $(function() {
     // Some demo video's audio, feel free to add more
     var demos = ["koJv-j1usoI", "5cJIvC6AAkc" , "EBerFisqduk", "DlKXJ906pd8"];
     function playDemo(){
-    return demos[Math.floor(Math.random() * demos.length)];
+      return demos[Math.floor(Math.random() * demos.length)];
     }
 
     // Hide the demo link if playing any of the demo video's audio
-    if ($.inArray(currentVideoID, demos) != -1) {
+    if ($.inArray(currentVideoID, demos) !== -1) {
         $("#demo").hide();
     }
 
@@ -544,7 +544,6 @@ $(function() {
             ga("send", "event", "demo", "already had video ID in URL");
             sendKeenEvent("demo", {action: "already had video ID in URL"});
         }
-
     });
 
     // Load the player
