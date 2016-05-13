@@ -414,6 +414,18 @@ function wrapParseYouTubeVideoID(url) {
     }
 }
 
+// Some demo video's audio, feel free to add more
+var demos = [
+    "koJv-j1usoI", // The Glitch Mob - Starve the Ego, Feed the Soul
+    "5cJIvC6AAkc", // Family Force 5 - Dance Or Die Official Music Video
+    "EBerFisqduk", // Cazzette - Together (Lost Kings Remix)
+    "DlKXJ906pd8" // Ronald Jenkees - Throwing Fire
+];
+
+function pickDemo() {
+    return demos[Math.floor(Math.random() * demos.length)];
+}
+
 $(function() {
     // Keen.io
     client = new Keen({ //eslint-disable-line no-undef
@@ -517,17 +529,6 @@ $(function() {
         }
     });
 
-    // Some demo video's audio, feel free to add more
-    var demos = [
-        "koJv-j1usoI", // The Glitch Mob - Starve the Ego, Feed the Soul
-        "5cJIvC6AAkc", // Family Force 5 - Dance Or Die Official Music Video
-        "EBerFisqduk", // Cazzette - Together (Lost Kings Remix)
-        "DlKXJ906pd8" // Ronald Jenkees - Throwing Fire
-    ];
-    function pickDemo() {
-        return demos[Math.floor(Math.random() * demos.length)];
-    }
-
     // Hide the demo link if playing any of the demo video's audio
     if ($.inArray(currentVideoID, demos) !== -1) {
         $("#demo").hide();
@@ -540,9 +541,9 @@ $(function() {
 
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
-        var demoPicked = pickDemo();
+        var pickedDemo = pickDemo();
         if (window.location.href.indexOf(demos) === -1) {
-            window.location.href = makeListenURL(demoPicked);
+            window.location.href = makeListenURL(pickedDemo);
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
