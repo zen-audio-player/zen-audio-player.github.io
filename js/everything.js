@@ -518,8 +518,13 @@ $(function() {
     });
 
     // Some demo video's audio, feel free to add more
-    var demos = ["koJv-j1usoI", "5cJIvC6AAkc" , "EBerFisqduk", "DlKXJ906pd8"];
-    function playDemo(){
+    var demos = [
+        "koJv-j1usoI", // The Glitch Mob - Starve the Ego, Feed the Soul
+        "5cJIvC6AAkc", // Family Force 5 - Dance Or Die Official Music Video
+        "EBerFisqduk", // Cazzette - Together (Lost Kings Remix)
+        "DlKXJ906pd8" // Ronald Jenkees - Throwing Fire
+    ];
+    function pickDemo() {
         return demos[Math.floor(Math.random() * demos.length)];
     }
 
@@ -527,7 +532,6 @@ $(function() {
     if ($.inArray(currentVideoID, demos) !== -1) {
         $("#demo").hide();
     }
-
     // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
@@ -536,9 +540,9 @@ $(function() {
 
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
-        if (window.location.href.indexOf(playDemo()) === -1) {
-            window.location.href = makeListenURL(playDemo());
-
+        var demoPicked = pickDemo();
+        if (window.location.href.indexOf(demos) === -1) {
+            window.location.href = makeListenURL(demoPicked);
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
