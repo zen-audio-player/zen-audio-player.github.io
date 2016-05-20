@@ -1,4 +1,4 @@
-/*eslint-disable no-unused-vars*/
+/* eslint-disable no-unused-vars */
 function getParameterByName(url, name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -77,4 +77,4 @@ function parseYoutubeVideoID(url) {
         return videoInfo;
     }
 }
-/*eslint-enable */
+/* eslint-enable */
