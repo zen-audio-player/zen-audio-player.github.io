@@ -162,6 +162,13 @@ var ZenPlayer = {
                 that.videoDescription = that.getVideoDescription(videoID);
                 that.videoUrl = plyrPlayer.plyr.embed.getVideoUrl();
 
+                // Updates the time position by a given argument in URL
+                // IE https://zenplayer.audio/?v=koJv-j1usoI&t=30 starts at 0:30
+                var t = getCurrentTimePosition();
+                if(t){
+                    window.sessionStorage[videoID] = t;
+                }
+
                 // Initialize UI
                 that.setupTitle();
                 that.setupVideoDescription();
@@ -357,6 +364,11 @@ function getCurrentVideoID() {
     return v;
 }
 
+function getCurrentTimePosition() {
+    var t = getParameterByName(window.location.search, "t");
+    return t;
+}
+
 function getCurrentSearchQuery() {
     var q = getParameterByName(window.location.search, "q");
     return q;
@@ -368,12 +380,11 @@ function removeSearchQueryFromURL(url) {
     }
     return url;
 }
-
 function makeListenURL(videoID) {
+
     var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
-
     return url + "?v=" + videoID;
 }
 
@@ -438,8 +449,15 @@ $(function() {
     // How do we know if the value is truly invalid?
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
+    var currentVideoPosition = getCurrentTimePosition();
+    if(currentVideoPosition){
+        currentVideoPosition = "&t=" + currentVideoPosition;
+    }
+    else{
+        currentVideoPosition = "";
+    }
     if (currentVideoID) {
-        $("#v").attr("value", currentVideoID);
+        $("#v").attr("value", currentVideoID + currentVideoPosition);
     }
     else {
         var currentSearchQuery = getCurrentSearchQuery();
@@ -490,13 +508,17 @@ $(function() {
     // Handle form submission
     $("#form").submit(function(event) {
         event.preventDefault();
-
         var formValue = $.trim($("#v").val());
+        var formValueTime = formValue.match(/(&t=\d*)$/g);
+        if(formValueTime){
+            formValueTime = formValueTime[0];
+            currentVideoPosition = formValueTime;
+            formValue = formValue.replace(/(&t=\d*)$/g, "");
+        }
         if (formValue) {
             var videoID = wrapParseYouTubeVideoID(formValue, true);
             ga("send", "event", "form submitted", videoID);
             sendKeenEvent("Form submitted", {videoID: videoID});
-
             if (isFileProtocol()) {
                 errorMessage.show("Skipping video lookup request as we're running the site locally.");
             }
@@ -509,13 +531,17 @@ $(function() {
                         key: youTubeDataApiKey,
                         part: "snippet",
                         fields: "items/snippet/description",
-                        id: videoID
+                        id: videoID,
+                        startSeconds:50
                     },
                     success: function(data) {
                         if (data.items.length === 0) {
                             window.location.href = makeSearchURL(formValue);
                         }
                         else {
+                            if(formValueTime){
+                                videoID +=  formValueTime;
+                            }
                             window.location.href = makeListenURL(videoID);
                         }
                     }
@@ -550,7 +576,6 @@ $(function() {
             sendKeenEvent("demo", {action: "already had video ID in URL"});
         }
     });
-
     // Load the player
     ZenPlayer.init(currentVideoID);
 });
