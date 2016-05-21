@@ -50,7 +50,8 @@
         "space-before-blocks": 2,
         "spaced-comment": 2,
         "space-infix-ops": 2,
-        "space-after-keywords": 2
+        "space-after-keywords": 2,
+        "comma-spacing": 2
     },
     "extends": "eslint:recommended"
 }
