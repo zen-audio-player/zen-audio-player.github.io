@@ -165,7 +165,7 @@ var ZenPlayer = {
                 // Updates the time position by a given argument in URL
                 // IE https://zenplayer.audio/?v=koJv-j1usoI&t=30 starts at 0:30
                 var t = getCurrentTimePosition();
-                if(t){
+                if (t) {
                     window.sessionStorage[videoID] = t;
                 }
 
@@ -384,7 +384,7 @@ function makeListenURL(videoID,videoPosition) {
     var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
-    if(videoPosition){
+    if (videoPosition) {
         return url + "?v=" + videoID + videoPosition;
     }
     else {
@@ -454,10 +454,10 @@ $(function() {
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
     var currentVideoPosition = getCurrentTimePosition();
-    if(currentVideoPosition){
+    if (currentVideoPosition) {
         currentVideoPosition = "&t=" + currentVideoPosition;
     }
-    else{
+    else {
         currentVideoPosition = "";
     }
     if (currentVideoID) {
@@ -514,7 +514,7 @@ $(function() {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
         var formValueTime = formValue.match(/(&t=\d*)$/g);
-        if(formValueTime){
+        if (formValueTime) {
             formValueTime = formValueTime[0];
             formValue = formValue.replace(/(&t=\d*)$/g, "");
         }
