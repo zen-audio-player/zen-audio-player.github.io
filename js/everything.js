@@ -365,8 +365,13 @@ function getCurrentVideoID() {
 }
 
 function getCurrentTimePosition() {
-    var t = getParameterByName(window.location.search, "t");
-    return t;
+    var t = parseInt(getParameterByName(window.location.search, "t"), 10);
+    if (t >= 0 && t < 999999) {
+        return t;
+    }
+    else {
+        return;
+    }
 }
 
 function getCurrentSearchQuery() {
@@ -384,13 +389,11 @@ function makeListenURL(videoID, videoPosition) {
     var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
+    url += "?v=" + videoID;
     if (videoPosition) {
-        videoPosition = "&t=" + videoPosition;
+        url += "&t=" + videoPosition;
     }
-    else {
-        videoPosition = "";
-    }
-    return url + "?v=" + videoID + videoPosition;
+    return url;
 }
 
 function makeSearchURL(searchQuery) {
@@ -508,8 +511,8 @@ $(function() {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
         var formValueTime = formValue.match(/(&t=\d*)$/g);
-        if (formValueTime) {
-            formValueTime = parseInt(formValueTime[0].substring(3));
+        if (formValueTime && formValueTime.length > 0) {
+            formValueTime = parseInt(formValueTime[0].substring(3), 10);
             formValue = formValue.replace(/(&t=\d*)$/g, "");
         }
         if (formValue) {
