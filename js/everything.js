@@ -380,7 +380,7 @@ function removeSearchQueryFromURL(url) {
     }
     return url;
 }
-function makeListenURL(videoID,videoPosition) {
+function makeListenURL(videoID, videoPosition) {
     var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
@@ -535,7 +535,7 @@ $(function() {
                             window.location.href = makeSearchURL(formValue);
                         }
                         else {
-                            window.location.href = makeListenURL(videoID,formValueTime);
+                            window.location.href = makeListenURL(videoID, formValueTime);
                         }
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
