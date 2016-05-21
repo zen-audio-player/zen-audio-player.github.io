@@ -385,11 +385,12 @@ function makeListenURL(videoID,videoPosition) {
     // Remove any #s which break functionality
     url = url.replace("#", "");
     if (videoPosition) {
-        return url + "?v=" + videoID + videoPosition;
+        videoPosition = "&t=" + videoPosition;
     }
     else {
-        return url + "?v=" + videoID;
+        videoPosition = "";
     }
+    return url + "?v=" + videoID + videoPosition;
 }
 
 function makeSearchURL(searchQuery) {
@@ -453,15 +454,8 @@ $(function() {
     // How do we know if the value is truly invalid?
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
-    var currentVideoPosition = getCurrentTimePosition();
-    if (currentVideoPosition) {
-        currentVideoPosition = "&t=" + currentVideoPosition;
-    }
-    else {
-        currentVideoPosition = "";
-    }
     if (currentVideoID) {
-        $("#v").attr("value", currentVideoID + currentVideoPosition);
+        $("#v").attr("value", currentVideoID);
     }
     else {
         var currentSearchQuery = getCurrentSearchQuery();
@@ -515,7 +509,7 @@ $(function() {
         var formValue = $.trim($("#v").val());
         var formValueTime = formValue.match(/(&t=\d*)$/g);
         if (formValueTime) {
-            formValueTime = formValueTime[0];
+            formValueTime = parseInt(formValueTime[0].substring(3));
             formValue = formValue.replace(/(&t=\d*)$/g, "");
         }
         if (formValue) {
