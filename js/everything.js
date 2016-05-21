@@ -380,12 +380,16 @@ function removeSearchQueryFromURL(url) {
     }
     return url;
 }
-function makeListenURL(videoID) {
-
+function makeListenURL(videoID,videoPosition) {
     var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
-    return url + "?v=" + videoID;
+    if(videoPosition){
+        return url + "?v=" + videoID + videoPosition;
+    }
+    else {
+        return url + "?v=" + videoID;
+    }
 }
 
 function makeSearchURL(searchQuery) {
@@ -512,7 +516,6 @@ $(function() {
         var formValueTime = formValue.match(/(&t=\d*)$/g);
         if(formValueTime){
             formValueTime = formValueTime[0];
-            currentVideoPosition = formValueTime;
             formValue = formValue.replace(/(&t=\d*)$/g, "");
         }
         if (formValue) {
@@ -531,18 +534,14 @@ $(function() {
                         key: youTubeDataApiKey,
                         part: "snippet",
                         fields: "items/snippet/description",
-                        id: videoID,
-                        startSeconds:50
+                        id: videoID
                     },
                     success: function(data) {
                         if (data.items.length === 0) {
                             window.location.href = makeSearchURL(formValue);
                         }
                         else {
-                            if(formValueTime){
-                                videoID +=  formValueTime;
-                            }
-                            window.location.href = makeListenURL(videoID);
+                            window.location.href = makeListenURL(videoID,formValueTime);
                         }
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
