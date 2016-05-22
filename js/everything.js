@@ -366,11 +366,8 @@ function getCurrentVideoID() {
 
 function getCurrentTimePosition() {
     var t = parseInt(getParameterByName(window.location.search, "t"), 10);
-    if (t >= 0 && t < 999999) {
+    if (t > 0 && t < Number.MAX_VALUE) {
         return t;
-    }
-    else {
-        return;
     }
 }
 
@@ -510,7 +507,7 @@ $(function() {
     $("#form").submit(function(event) {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
-        var formValueTime = formValue.match(/(&t=\d*)$/g);
+        var formValueTime = formValue.match(/(&t=\d+)$/g);
         if (formValueTime && formValueTime.length > 0) {
             formValueTime = parseInt(formValueTime[0].substring(3), 10);
             formValue = formValue.replace(/(&t=\d*)$/g, "");
