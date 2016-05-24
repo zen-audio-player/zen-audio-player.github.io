@@ -166,6 +166,7 @@ var ZenPlayer = {
                 // IE https://zenplayer.audio/?v=koJv-j1usoI&t=30 starts at 0:30
                 var t = getCurrentTimePosition();
                 if (t) {
+                    that.videoPosition = t;
                     window.sessionStorage[videoID] = t;
                 }
 
@@ -210,10 +211,11 @@ var ZenPlayer = {
 
             plyrPlayer.addEventListener("timeupdate", function() {
                 // Store the current time of the video.
+                var resumeTime;
                 if (window.sessionStorage) {
                     var currentTime = plyrPlayer.plyr.embed.getCurrentTime();
                     var videoDuration = plyrPlayer.plyr.embed.getDuration();
-                    var resumeTime = 0;
+                    resumeTime = 0;
 
                     // Only store the current time if the video isn't done
                     // playing yet. If the video finished already, then it
@@ -225,6 +227,8 @@ var ZenPlayer = {
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
+                var updatedUrl = that.videoUrl + "&t=" + parseInt(resumeTime, 10);
+                $("#zen-video-title").attr("href", updatedUrl);
             });
 
             plyrPlayer.plyr.source({
@@ -507,9 +511,9 @@ $(function() {
     $("#form").submit(function(event) {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
-        var formValueTime = formValue.match(/(&t=\d+)$/g);
-        if (formValueTime && formValueTime.length > 0) {
-            formValueTime = parseInt(formValueTime[0].substring(3), 10);
+        var formValueTime = /&t=(\d+)$/g.exec(formValue);
+        if (formValueTime && formValueTime.length > 1) {
+            formValueTime = parseInt(formValueTime[1], 10);
             formValue = formValue.replace(/(&t=\d*)$/g, "");
         }
         if (formValue) {
