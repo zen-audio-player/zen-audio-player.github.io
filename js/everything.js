@@ -3,7 +3,7 @@
 // Pointer to Keen client
 var client;
 var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-if(iOS==true)
+if (iOS===true)
 {
   window.alert("You're using an iOS device! Sorry , we don't support those yet :/");
 }
