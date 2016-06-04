@@ -12,6 +12,10 @@ function anonymizeFileUrl() {
 }
 
 function sendKeenEvent(_msg, _data) {
+    if (client === undefined) {
+        console.warn("Apparently, Keen.io was blocked by AdBlock.");
+        return;
+    }
     var d = {
         page_url: anonymizeFileUrl(), // eslint-disable-line camelcase
         user_agent: "${keen.user_agent}", // eslint-disable-line camelcase
@@ -428,10 +432,15 @@ function pickDemo() {
 
 $(function() {
     // Keen.io
-    client = new Keen({ // eslint-disable-line no-undef
-        projectId: "5690c384c1e0ab0c8a6c59c4",
-        writeKey: "630fa16847ce5ffb01c9cc00327498e4e7716e0f324fb14fdf0e83ffc06f9eacff5fad1313c2701efe4a91c88c34b8d8153cbb121c454056bb63caf60a46336dd9c9e9855ecc5202ef3151d798eda40896d5111f44005c707cbfb32c7ae31070d129d6f520d5604fdbce5ad31e9c7232"
-    });
+    if (Keen === undefined) { // eslint-disable-line no-undef
+        console.warn("Apparently, Keen.io was blocked by AdBlock.");
+    }
+    else {
+        client = new Keen({ // eslint-disable-line no-undef
+            projectId: "5690c384c1e0ab0c8a6c59c4",
+            writeKey: "630fa16847ce5ffb01c9cc00327498e4e7716e0f324fb14fdf0e83ffc06f9eacff5fad1313c2701efe4a91c88c34b8d8153cbb121c454056bb63caf60a46336dd9c9e9855ecc5202ef3151d798eda40896d5111f44005c707cbfb32c7ae31070d129d6f520d5604fdbce5ad31e9c7232"
+        });
+    }
 
     errorMessage.init();
 
