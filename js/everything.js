@@ -262,19 +262,20 @@ var ZenPlayer = {
         // Show player button click event
         $("#togglePlayer").click(function(event) {
             toggleElement(event, ".plyr__video-wrapper", "Player");
+            	
         });
     },
-	setupSongSave: function() {
-		$("#save").click(function() {
-			var mySongs = JSON.parse(localStorage.getItem("mySongs"));
-			if (mySongs === null) {
-				localStorage.setItem("mySongs", JSON.stringify([getCurrentVideoID()]));
-			}
-			else {
-				localStorage.setItem("mySongs", JSON.stringify(mySongs.push(getCurrentVideoID())));
-			}
-		});
-	},
+    setupSongSave: function() {
+    	$("#save").click(function() {
+	    var mySongs = JSON.parse(localStorage.getItem("mySongs"));
+	    if (mySongs === null) {
+		localStorage.setItem("mySongs", JSON.stringify([getCurrentVideoID()]));
+	    }
+	    else {
+		localStorage.setItem("mySongs", JSON.stringify(mySongs.push(getCurrentVideoID())));
+	    }
+	});
+    },
     getVideoDescription: function(videoID) {
         var description = "";
 
