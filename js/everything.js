@@ -272,7 +272,8 @@ var ZenPlayer = {
     			localStorage.setItem("mySongs", JSON.stringify([getCurrentVideoID()]));
     		}
     		else {
-    			localStorage.setItem("mySongs", JSON.stringify(mySongs.push(getCurrentVideoID())));
+    			mySongs.push(getCurrentVideoID());
+    			localStorage.setItem("mySongs", JSON.stringify(mySongs));
     		}
     	});
     }
