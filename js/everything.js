@@ -169,7 +169,7 @@ var ZenPlayer = {
                 that.setupTitle();
                 that.setupVideoDescription();
                 that.setupPlyrToggle();
-				that.setupSongSave();
+		that.setupSongSave();
             });
 
             plyrPlayer.addEventListener("playing", function() {
