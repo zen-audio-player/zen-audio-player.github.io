@@ -473,7 +473,13 @@ $(function() {
             );
         }
     }
-
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
+    {
+      $("#container").ready(function(){
+        $("#container").html("<p></p>");
+        $("#change-mobile").html("Whoops! Sorry , we don't support mobile devices.");
+      });
+    }
     // Autocomplete with youtube suggested queries
     $("#v").typeahead({
         hint: false,
