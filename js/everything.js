@@ -427,11 +427,11 @@ function pickDemo() {
 }
 
 $(function() {
-  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.usersAgent))
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.usersAgent))
     {
-      $("#container").hide();
-      $("#mobile-message").text("Whoops! Sorry , we don't support mobile devices.");
-      return;
+        $("#container").hide();
+        $("#mobile-message").text("Whoops! Sorry , we don't support mobile devices.");
+        return;
     }
     // Keen.io
     client = new Keen({ // eslint-disable-line no-undef
