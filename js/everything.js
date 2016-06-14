@@ -430,14 +430,13 @@ function pickDemo() {
 }
 
 $(function() {
-    // Keen.io
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.usersAgent))
-    {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.usersAgent)) {
         $("#container").hide();
         $("#mobile-message").html("Sorry , we don't support mobile devices.");
         $("#mobile-message").show();
         return;
     }
+    // Keen.io
     if (typeof Keen !== "undefined") { // eslint-disable-line no-undef
         client = new Keen({ // eslint-disable-line no-undef
             projectId: "5690c384c1e0ab0c8a6c59c4",
