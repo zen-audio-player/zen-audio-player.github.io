@@ -430,7 +430,7 @@ function pickDemo() {
 }
 
 $(function() {
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.usersAgent)) {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         $("#container").hide();
         $("#mobile-message").html("Sorry, we don't support mobile devices.");
         $("#mobile-message").show();
