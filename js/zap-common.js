@@ -1,4 +1,4 @@
-/*eslint-disable no-unused-vars*/
+/* eslint-disable no-unused-vars */
 function getParameterByName(url, name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -90,7 +90,7 @@ function parseSoundcloudVideoID(url, clientID, success, error) {
                 dataType: "json",
                 data: {
                     url: url,
-                    client_id: clientID //eslint-disable-line camelcase
+                    client_id: clientID // eslint-disable-line camelcase
                 },
                 success: function(data) {
                     videoInfo.id = data.id;
@@ -156,4 +156,5 @@ function parseYoutubeVideoID(url, soundcloudClientID, success, error) {
         error();
     }
 }
-/*eslint-enable */
+
+/* eslint-enable */

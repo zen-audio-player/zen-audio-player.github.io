@@ -1,4 +1,4 @@
-/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, parseSoundcloudVideoID, getYouTubeVideoDescription, verifySoundcloudID*/
+/* global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, parseSoundcloudVideoID, getYouTubeVideoDescription, verifySoundcloudID */
 
 // Pointer to Keen client
 var client;
@@ -12,10 +12,13 @@ function anonymizeFileUrl() {
 }
 
 function sendKeenEvent(_msg, _data) {
+    if (!client) {
+        return;
+    }
     var d = {
-        page_url: anonymizeFileUrl(), //eslint-disable-line camelcase
-        user_agent: "${keen.user_agent}", //eslint-disable-line camelcase
-        ip_address: "${keen.ip}", //eslint-disable-line camelcase
+        page_url: anonymizeFileUrl(), // eslint-disable-line camelcase
+        user_agent: "${keen.user_agent}", // eslint-disable-line camelcase
+        ip_address: "${keen.ip}", // eslint-disable-line camelcase
         keen: {
             addons: [
                 {
@@ -28,7 +31,7 @@ function sendKeenEvent(_msg, _data) {
                 {
                     name: "keen:ua_parser",
                     input: {
-                        ua_string: "user_agent" //eslint-disable-line camelcase
+                        ua_string: "user_agent" // eslint-disable-line camelcase
                     },
                     output: "parsed_user_agent"
                 },
@@ -184,7 +187,7 @@ var ZenPlayer = {
                         url: "https://api.soundcloud.com/tracks/" + currentVideoID,
                         dataType: "json",
                         data : {
-                            client_id: soundcloudClientID //eslint-disable-line camelcase
+                            client_id: soundcloudClientID // eslint-disable-line camelcase
                         },
                         success: function(data) {
                             that.videoTitle = data.title;
@@ -333,6 +336,12 @@ var ZenPlayer = {
         }
 
         return description;
+    },
+    play: function() {
+        plyrPlayer.plyr.embed.playVideo();
+    },
+    pause: function() {
+        plyrPlayer.plyr.embed.pauseVideo();
     }
 };
 
@@ -538,14 +547,33 @@ function verifyID(id, success, error) {
     );
 }
 
+// Some demo video's audio, feel free to add more
+var demos = [
+    "koJv-j1usoI", // The Glitch Mob - Starve the Ego, Feed the Soul
+    "5cJIvC6AAkc", // Family Force 5 - Dance Or Die Official Music Video
+    "EBerFisqduk", // Cazzette - Together (Lost Kings Remix)
+    "DlKXJ906pd8" // Ronald Jenkees - Throwing Fire
+];
+
+function pickDemo() {
+    return demos[Math.floor(Math.random() * demos.length)];
+}
+
 $(function() {
-    var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        $("#container").hide();
+        $("#mobile-message").html("Sorry, we don't support mobile devices.");
+        $("#mobile-message").show();
+        return;
+    }
 
     // Keen.io
-    client = new Keen({ //eslint-disable-line no-undef
-        projectId: "5690c384c1e0ab0c8a6c59c4",
-        writeKey: "630fa16847ce5ffb01c9cc00327498e4e7716e0f324fb14fdf0e83ffc06f9eacff5fad1313c2701efe4a91c88c34b8d8153cbb121c454056bb63caf60a46336dd9c9e9855ecc5202ef3151d798eda40896d5111f44005c707cbfb32c7ae31070d129d6f520d5604fdbce5ad31e9c7232"
-    });
+    if (typeof Keen !== "undefined") { // eslint-disable-line no-undef
+        client = new Keen({ // eslint-disable-line no-undef
+            projectId: "5690c384c1e0ab0c8a6c59c4",
+            writeKey: "630fa16847ce5ffb01c9cc00327498e4e7716e0f324fb14fdf0e83ffc06f9eacff5fad1313c2701efe4a91c88c34b8d8153cbb121c454056bb63caf60a46336dd9c9e9855ecc5202ef3151d798eda40896d5111f44005c707cbfb32c7ae31070d129d6f520d5604fdbce5ad31e9c7232"
+        });
+    }
 
     errorMessage.init();
 
@@ -564,8 +592,8 @@ $(function() {
             // Set the global current video id.
             currentVideoID = videoID;
 
-            // Hide the demo link if playing the demo video's audio
-            if (currentVideoID === starveTheEgoFeedTheSoulGlitchMob) {
+            // Hide the demo link if playing any of the demo video's audio
+            if ($.inArray(currentVideoID, demos) !== -1) {
                 $("#demo").hide();
             }
 
@@ -685,8 +713,9 @@ $(function() {
 
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
-        if (window.location.href.indexOf(starveTheEgoFeedTheSoulGlitchMob) === -1) {
-            window.location.href = makeListenURL(starveTheEgoFeedTheSoulGlitchMob);
+        var pickedDemo = pickDemo();
+        if (window.location.href.indexOf(demos) === -1) {
+            window.location.href = makeListenURL(pickedDemo);
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
@@ -696,7 +725,7 @@ $(function() {
 
 });
 
-/*eslint-disable */
+/* eslint-disable */
 // Google Analytics goodness
 (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -704,4 +733,4 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,"script","//www.google-analytics.com/analytics.js","ga");
 ga("create", "UA-62983413-1", "auto");
 ga("send", "pageview");
-/*eslint-enable */
+/* eslint-enable */

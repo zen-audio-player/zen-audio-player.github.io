@@ -19,9 +19,12 @@ header {
 
 }
 
+#audioplayer .plyr__controls, .tt-menu, footer {
+    background-color: #ffffff;
+}
+
 footer {
     border-top: 1px solid #eeeeee;
-    background-color: #ffffff;
     margin-top: 50px;
     padding: 50px 0;
 }
@@ -67,6 +70,7 @@ a {
     width: 100%;
     text-align: center;
     font-size: 16px;
+    padding-left: 50px;
 }
 
 #v::-ms-clear {
@@ -147,7 +151,6 @@ a {
 }
 
 .tt-menu {
-    background-color: #ffffff;
     border: 1px solid #cccccc;
     width: 100%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
@@ -238,13 +241,11 @@ a {
     display: none;
 }
 
-/* HACK: override the styles from ".plyr__audio .plyr__controls" */
-.plyr__controls {
-    padding: 10px !important;
-    border-radius: inherit !important;
-    background: #ffffff !important;
-    border: 1px solid #dbe3e8 !important;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) !important;
-    color: #565d64 !important;
-    position: relative !important;
+#audioplayer .plyr__controls {
+    padding: 10px;
+    border-radius: inherit;
+    border: 1px solid #dbe3e8;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    color: #565d64;
+    position: relative;
 }
