@@ -1,4 +1,4 @@
-/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, parseSoundcloudVideoID, getYouTubeVideoDescription*/
+/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, parseSoundcloudVideoID, getYouTubeVideoDescription, verifySoundcloudID*/
 
 // Pointer to Keen client
 var client;
@@ -474,6 +474,7 @@ function wrapParseVideoID(url, success, error) {
                 // Try parse Youtube ID from URL.
                 parseYoutubeVideoID(
                     url,
+                    soundcloudClientID,
                     // Success
                     function(info) {
                         ga("send", "event", "video ID format", info.format);
@@ -517,21 +518,6 @@ function verifyYoutubeID(id, success, error) {
             }
             else {
                 success();
-            }
-        }
-    }).fail(error);
-}
-
-function verifySoundcloudID(id, success, error) {
-    $.ajax({
-        url: "https://api.soundcloud.com/tracks/" + id + "?client_id=" + soundcloudClientID,
-        dataType: "json",
-        success: function(data) {
-            if (data.id && data.id.toString() === id.toString()) {
-                success();
-            }
-            else {
-                error();
             }
         }
     }).fail(error);

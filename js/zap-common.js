@@ -39,6 +39,21 @@ function getYouTubeVideoDescription(videoID, youTubeDataApiKey, onSuccess, onFai
     }).fail(onFail);
 }
 
+function verifySoundcloudID(id, clientID, success, error) {
+    $.ajax({
+        url: "https://api.soundcloud.com/tracks/" + id + "?client_id=" + clientID,
+        dataType: "json",
+        success: function(data) {
+            if (data.id && data.id.toString() === id.toString()) {
+                success();
+            }
+            else {
+                error();
+            }
+        }
+    }).fail(error);
+}
+
 function parseSoundcloudVideoID(url, clientID, success, error) {
     var videoInfo = {
         format: null,
@@ -59,6 +74,7 @@ function parseSoundcloudVideoID(url, clientID, success, error) {
             // Got the ID from the URL. Now verify it.
             verifySoundcloudID(
                 videoInfo.id,
+                clientID,
                 function() {
                     success(videoInfo);
                 },
@@ -92,7 +108,7 @@ function parseSoundcloudVideoID(url, clientID, success, error) {
 }
 
 // The url parameter could be the video ID
-function parseYoutubeVideoID(url, success, error) {
+function parseYoutubeVideoID(url, soundcloudClientID, success, error) {
     var videoInfo = {
         format: null,
         id: null
@@ -129,6 +145,7 @@ function parseYoutubeVideoID(url, success, error) {
         // Parsed an ID from the URL, verify it.
         verifySoundcloudID(
             videoInfo.id,
+            soundcloudClientID,
             function() {
                 success(videoInfo);
             },
