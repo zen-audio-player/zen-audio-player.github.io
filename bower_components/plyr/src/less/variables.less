@@ -3,6 +3,11 @@
 // https://github.com/selz/plyr
 // ==========================================================================
 
+// Settings
+@plyr-border-box:                       true;
+@plyr-touch-action:                     true;
+@plyr-sr-only-important:                true;
+
 // Colors
 @plyr-color-main:                       #3498db;
 
@@ -11,12 +16,16 @@
 @plyr-font-size-base:                   16px;
 
 // Captions
-@plyr-font-size-captions-base:          ceil(@plyr-font-size-base * 1.25);
+@plyr-captions-bg:                      fade(#000, 70%);
+@plyr-captions-color:                   #fff;
+@plyr-font-size-captions-base:          @plyr-font-size-base;
 @plyr-font-size-captions-medium:        ceil(@plyr-font-size-base * 1.5);
 @plyr-font-size-captions-large:         (@plyr-font-size-base * 2);
 
 // Controls
+@plyr-control-icon-size:                18px;
 @plyr-control-spacing:                  10px;
+@plyr-control-padding:                  (@plyr-control-spacing * .7);
 @plyr-video-controls-bg:                #000;
 @plyr-video-control-color:              #fff;
 @plyr-video-control-color-hover:        #fff;
@@ -29,12 +38,8 @@
 @plyr-audio-control-bg-hover:           @plyr-color-main;
 
 // Tooltips
-@plyr-tooltip-bg:                       @plyr-video-controls-bg;
-@plyr-tooltip-border-color:             fade(darken(@plyr-video-controls-bg, 75%), 10%);
-@plyr-tooltip-arrow-border-color:       fade(darken(@plyr-video-controls-bg, 75%), 20%);
-@plyr-tooltip-border-width:             1px;
-@plyr-tooltip-shadow:                   0 0 5px @plyr-tooltip-border-color, 0 0 0 @plyr-tooltip-border-width @plyr-tooltip-border-color;
-@plyr-tooltip-color:                    @plyr-video-control-color;
+@plyr-tooltip-bg:                       fade(#000, 70%);
+@plyr-tooltip-color:                    #fff;
 @plyr-tooltip-padding:                  (@plyr-control-spacing / 2);
 @plyr-tooltip-arrow-size:               4px;
 @plyr-tooltip-radius:                   3px;
@@ -59,7 +64,7 @@
 @plyr-range-thumb-active-scale:         1.25;
 @plyr-video-range-track-bg:             @plyr-video-progress-buffered-bg;
 @plyr-audio-range-track-bg:             @plyr-audio-progress-buffered-bg;
-@plyr-range-selected-bg: 				@plyr-color-main;
+@plyr-range-selected-bg:                @plyr-color-main;
 
 // Breakpoints
 @plyr-bp-screen-sm:                     480px;

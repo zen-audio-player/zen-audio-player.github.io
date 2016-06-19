@@ -3,7 +3,7 @@ A simple, accessible and customizable HTML5, YouTube and Vimeo media player.
 
 [Checkout the demo](https://plyr.io)
 
-[![Image of Plyr](https://cdn.plyr.io/static/plyr_v1.6.0.png)](https://plyr.io)
+[![Image of Plyr](https://cdn.selz.com/plyr/1.5/plyr_v1.6.6.png)](https://plyr.io)
 
 ## Why?
 We wanted a lightweight, accessible and customizable media player that supports [*modern*](#browser-support) browsers. Sure, there are many other players out there but we wanted to keep things simple, using the right elements for the job.
@@ -21,6 +21,7 @@ We wanted a lightweight, accessible and customizable media player that supports 
 - **[Fullscreen](#fullscreen)** - supports native fullscreen with fallback to "full window" modes
 - **i18n support** - support for internationalization of controls
 - **No dependencies** - written in "vanilla" JavaScript, no jQuery required
+- **SASS and LESS provided** - If you like _these_ over plain CSS
 
 Oh and yes, it works with Bootstrap.
 
@@ -38,13 +39,13 @@ Check out the [changelog](changelog.md) to see what's new with Plyr.
 If you have any cool ideas or features, please let me know by [creating an issue](https://github.com/Selz/plyr/issues/new) or, of course, forking and sending a pull request.
 
 ## Implementation
-Check `docs/index.html` and `docs/dist/docs.js` for an example setup.
+Check `docs/index.html` and `docs/src/js/docs.js` for an example setup.
 
-**Heads up:** the example `index.html` file needs to be served from a webserver (such as Apache, Nginx, IIS or similar) unless you change the file sources to include http or https. e.g. change `//cdn.plyr.io/1.6.4/plyr.js` to `https://cdn.plyr.io/1.6.4/plyr.js`
+**Heads up:** the example `index.html` file needs to be served from a webserver (such as Apache, Nginx, IIS or similar) unless you change the file sources to include http or https. e.g. change `//cdn.plyr.io/1.6.20/plyr.js` to `https://cdn.plyr.io/1.6.20/plyr.js`
 
-### Node Package Manager (NPM)
+### npm
 
-Using NPM, you can grab Plyr:
+Using `npm`, you can grab Plyr:
 ```
 npm install plyr
 ```
@@ -52,7 +53,7 @@ npm install plyr
 
 ### Bower
 
-If bower is your thang, you can grab Plyr using:
+If bower is your thing, you can grab Plyr using:
 ```
 bower install plyr
 ```
@@ -71,11 +72,11 @@ More info is on [npm](https://www.npmjs.com/package/ember-cli-plyr) and [GitHub]
 If you want to use our CDN, you can use the following:
 
 ```html
-<link rel="stylesheet" href="https://cdn.plyr.io/1.6.4/plyr.css">
-<script src="https://cdn.plyr.io/1.6.4/plyr.js"></script>
+<link rel="stylesheet" href="https://cdn.plyr.io/1.6.20/plyr.css">
+<script src="https://cdn.plyr.io/1.6.20/plyr.js"></script>
 ```
 
-You can also access the `sprite.svg` file at `https://cdn.plyr.io/1.6.4/sprite.svg`.
+The SVG sprite/defs file can be found here: `https://cdn.plyr.io/1.6.20/plyr.svg`.
 
 ### CSS & Styling
 If you want to use the default css, add the `plyr.css` file from `/dist` into your head, or even better use `plyr.less` or `plyr.scss` file included in `/src` in your build to save a request.
@@ -87,35 +88,10 @@ If you want to use the default css, add the `plyr.css` file from `/dist` into yo
 The default setup uses the BEM methodology with `plyr` as the block, e.g. `.plyr__controls`. You can change the class hooks in the options. Check out the source for more on this.
 
 ### SVG
-The SVG sprite for the controls icons can be loaded two ways:
-- By passing the *relative* path to the sprite as the `iconUrl` option; or
-- Using AJAX, injecting the sprite into a hidden div. 
+The icons used in the Plyr controls are loaded in an SVG sprite. The sprite is automatically loaded from our CDN by default. If you already have an icon build system in place, you can include the source plyr icons (see `/src/sprite` for source icons).
 
 #### Using the `iconUrl` option
-This method requires the SVG sprite to be hosted on the *same domain* as your page hosting the player. Currently no browser supports cross origin SVG sprites due to XSS issues. Fingers crossed this will come soon though. An example value for this option would be:
-```
-/path/to/sprite.svg
-```
-
-#### Using AJAX
-Using AJAX means you can load the sprite from a different origin. Avoiding the issues above. This is an example script to load an SVG sprite best added before the closing `</body>`, before any other scripts.
-
-```html
-<script>
-(function(d, p){
-	var a = new XMLHttpRequest(),
-		b = d.body;
-	a.open('GET', p, true);
-	a.send();
-	a.onload = function() {
-		var c = d.createElement('div');
-		c.setAttribute('hidden', '');
-		c.innerHTML = a.responseText;
-		b.insertBefore(c, b.childNodes[0]);
-	};
-})(document, 'https://cdn.plyr.io/1.6.4/sprite.svg');
-</script>
-```
+You can however specify your own `iconUrl` option and Plyr will determine if the url is absolute and requires loading by AJAX/CORS due to current browser limitations or if it's a relative path, just use the path directly. 
 
 If you're using the `<base>` tag on your site, you may need to use something like this:
 [svgfixer.js](https://gist.github.com/leonderijke/c5cf7c5b2e424c0061d2)
@@ -188,7 +164,7 @@ Be sure to [validate your caption files](https://quuz.org/webvtt/)
 Here's an example of a default setup:
 
 ```html
-<script src="https://cdn.plyr.io/1.6.4/plyr.js"></script>
+<script src="https://cdn.plyr.io/1.6.20/plyr.js"></script>
 <script>plyr.setup();</script>
 ```
 
@@ -221,7 +197,13 @@ Some touch browsers (particularly Mobile Safari on iOS) seem to have issues with
 
 #### Options
 
-Options must be passed as an object to the `setup()` method as above or as JSON in `data-plyr` attribute on each of your target elements (e.g. data-plyr='{ title: "testing" }') - note the single quotes encapsulating the JSON.
+Options must be passed as an object to the `setup()` method as above or as JSON in `data-plyr` attribute on each of your target elements:
+
+```html
+<div class="plyr" data-plyr='{ title: "testing" }'>
+```
+
+Note the single quotes encapsulating the JSON and double quotes on the object keys.
 
 <table class="table" width="100%">
 <thead>
@@ -248,7 +230,7 @@ Options must be passed as an object to the `setup()` method as above or as JSON 
   <tr>
     <td><code>controls</code></td>
     <td>Array</td>
-    <td><code>["restart", "rewind", "play", "fast-forward", "current-time", "duration", "mute", "volume", "captions", "fullscreen"]</code></td>
+    <td><code>['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen']</code></td>
     <td>Toggle which control elements you would like to display when using the default controls html. If you specify a <code>html</code> option, this is redundant. The default value is to display everything.</td>
   </tr>
   <tr>
@@ -258,16 +240,22 @@ Options must be passed as an object to the `setup()` method as above or as JSON 
     <td>Used for internationalization (i18n) of the tooltips/labels within the buttons.</td>
   </tr>
   <tr>
-    <td><code>iconPrefix</code></td>
-    <td>String</td>
-    <td><code>icon</code></td>
-    <td>Specify the id prefix for the icons used in the default controls (e.g. "icon-play" would be "icon"). This is to prevent clashes if you're using your own SVG defs file but with the default controls. Most people can ignore this option.</td>
+    <td><code>loadSprite</code></td>
+    <td>Boolean</td>
+    <td><code>true</code></td>
+    <td>Load the SVG sprite specified as the <code>iconUrl</code> option (if a URL). If <code>false</code>, it is assumed you are handling sprite loading yourself.</td>
   </tr>
   <tr>
     <td><code>iconUrl</code></td>
     <td>String</td>
     <td><code>null</code></td>
-    <td>Specify a relative path to the SVG sprite, hosted on the *same domain* as the page the player is hosted on. Using this menthod means no requirement for the AJAX sprite loading script. See the <a href="#svg">SVG section</a> for more info.</td>
+    <td>Specify a URL or path to the SVG sprite. See the <a href="#svg">SVG section</a> for more info.</td>
+  </tr>
+  <tr>
+    <td><code>iconPrefix</code></td>
+    <td>String</td>
+    <td><code>plyr</code></td>
+    <td>Specify the id prefix for the icons used in the default controls (e.g. "plyr-play" would be "plyr"). This is to prevent clashes if you're using your own SVG sprite but with the default controls. Most people can ignore this option.</td>
   </tr>
   <tr>
     <td><code>debug</code></td>
@@ -298,6 +286,12 @@ Options must be passed as an object to the `setup()` method as above or as JSON 
     <td>Boolean</td>
     <td><code>true</code></td>
     <td>Click (or tap) of the video container will toggle pause/play.</td>
+  </tr>
+  <tr>
+    <td><code>disableContextMenu</code></td>
+    <td>Boolean</td>
+    <td><code>true</code></td>
+    <td>Disable right click menu on video to <em>help</em> as very primitive obfuscation to prevent downloads of content.</td>
   </tr>
   <tr>
     <td><code>hideControls</code></td>
@@ -422,7 +416,7 @@ Or you can use the returned object from your call to the setup method:
 var player = plyr.setup('.js-plyr')[0];
 ```
 
-This will return an array of plyr instances setup, so you need to specify the index of the instance you want. This is less useful if you are setting up mutliple instances. You can listen for the `setup` [event](#events) documented below which will return each instance one by one, as they are setup (in the `plyr` key of the event object).
+This will return an array of plyr instances setup, so you need to specify the index of the instance you want. This is less useful if you are setting up multiple instances. You can listen for the `setup` [event](#events) documented below which will return each instance one by one, as they are setup (in the `plyr` key of the event object).
 
 Once you have your instance, you can use the API methods below on it. For example to pause it:
 
@@ -654,7 +648,7 @@ Some more details on the object parameters
 
 ## Events
 
-You can listen for events on the element you setup Plyr on. Some events only apply to HTML5 audio and video.
+You can listen for events on the target element you setup Plyr on (see example under the table). Some events only apply to HTML5 audio and video.
 
 <table class="table" width="100%">
   <thead>
@@ -788,7 +782,7 @@ Details borrowed from: [https://developer.mozilla.org/en-US/docs/Web/Guide/Event
 Here's an example of binding an event listener:
 
 ```javascript
-document.querySelector('.js-plyr').addEventListener('ready', function() {
+document.querySelector('.js-plyr').addEventListener('ready', function(event) {
 	var player = event.target.plyr;
 });
 ```
@@ -802,7 +796,7 @@ Plyr references a custom version of the Vimeo Froogaloop API as Vimeo have negle
 The native API's can be accessed through the `embed` property of the plyr object. For example:
 
 ```javascript
-document.querySelector('.js-plyr').addEventListener('ready', function() {
+document.querySelector('.js-plyr').addEventListener('ready', function(event) {
 	var player = event.target.plyr;
 
 	// YouTube
@@ -848,7 +842,7 @@ Fullscreen in Plyr is supported for all browsers that [currently support it](htt
   </tbody>
 </table>
 
-&sup1; Mobile Safari on the iPhone forces the native player for `<video>` so no useful customisation is possible. `<audio>` elements have volume controls disabled.
+&sup1; Mobile Safari on the iPhone forces the native player for `<video>` so no useful customization is possible. `<audio>` elements have volume controls disabled.
 
 &sup2; Native player used (no support for `<progress>` or `<input type="range">`) but the API is supported (v1.0.28+)
 
@@ -873,6 +867,7 @@ If you find anything weird with Plyr, please let us know using the GitHub issues
 Plyr is developed by [@sam_potts](https://twitter.com/sam_potts) / [sampotts.me](http://sampotts.me) with help from the awesome [contributors](https://github.com/Selz/plyr/graphs/contributors)
 
 ## Mentions
+- [ProductHunt](https://www.producthunt.com/tech/plyr)
 - [The Changelog](http://thechangelog.com/plyr-simple-html5-media-player-custom-controls-webvtt-captions/)
 - [HTML5 Weekly #177](http://html5weekly.com/issues/177)
 - [Responsive Design #149](http://us4.campaign-archive2.com/?u=559bc631fe5294fc66f5f7f89&id=451a61490f)
