@@ -20,19 +20,24 @@
     max-width: 100%;
     min-width: 200px;
     font-family: Avenir, "Avenir Next", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+    direction: ltr;
 
-    // border-box everything
-    // http://paulirish.com/2012/box-sizing-border-box-ftw/
-    &,
-    *,
-    *::after,
-    *::before {
-        box-sizing: border-box;
+    @if $plyr-border-box == true {
+        // border-box everything
+        // http://paulirish.com/2012/box-sizing-border-box-ftw/
+        &,
+        *,
+        *::after,
+        *::before {
+            box-sizing: border-box;
+        }
     }
 
-    // Fix 300ms delay
-    a, button, input, label {
+    @if $plyr-touch-action == true {
+      // Fix 300ms delay
+      a, button, input, label {
         touch-action: manipulation;
+      }
     }
 
     // Media elements
@@ -75,9 +80,6 @@
         }
         &::-moz-range-thumb {
             @include plyr-range-thumb();
-        }
-        &::-moz-focus-outer {
-            border: 0;
         }
         
         // Microsoft
@@ -141,13 +143,23 @@
 
 // Screen reader only elements
 .plyr__sr-only {
-    position: absolute !important;
     clip: rect(1px, 1px, 1px, 1px);
-    padding: 0 !important;
-    border: 0 !important;
-    height: 1px !important;
-    width: 1px !important;
     overflow: hidden;
+
+    // !important is not always needed
+    @if $plyr-sr-only-important == true {
+        position: absolute !important;
+        padding: 0 !important;
+        border: 0 !important;
+        height: 1px !important;
+        width: 1px !important;
+    } @else {
+        position: absolute;
+        padding: 0;
+        border: 0;
+        height: 1px;
+        width: 1px;
+    }
 }
 
 // Video
@@ -204,7 +216,7 @@
     padding: ($plyr-control-spacing * 2);
     transform: translateY(-($plyr-control-spacing * 6));
     transition: transform .3s ease;
-    color: #fff;
+    color: $plyr-captions-color;
     font-size: $plyr-font-size-captions-base;
     text-align: center;
     font-weight: 400;
@@ -212,7 +224,7 @@
     span {
         border-radius: 2px;
         padding: floor($plyr-control-spacing / 3) $plyr-control-spacing;
-        background: transparentize(#000, .15);
+        background: $plyr-captions-bg;
     }
     span:empty {
         display: none;
@@ -234,6 +246,11 @@
 
 // Controls
 // --------------------------------------------------------------
+// Hide native controls
+.plyr ::-webkit-media-controls {
+    display: none;
+}
+
 // Playback controls
 .plyr__controls {
     display: flex;
@@ -266,8 +283,9 @@
         position: relative;
         display: inline-block;
         flex-shrink: 0;
+        overflow: visible; // IE11
         vertical-align: middle;
-        padding: ($plyr-control-spacing / 2);
+        padding: ($plyr-control-spacing * .7);
         border: 0;
         background: transparent;
         border-radius: 3px;
@@ -301,9 +319,6 @@
         .plyr__time {
             margin-left: $plyr-control-spacing;
         }
-        button {
-            padding: ($plyr-control-spacing / 2) $plyr-control-spacing;
-        }
     }
 }
 // Hide controls 
@@ -331,11 +346,6 @@
             color: $plyr-video-control-color-hover;
         }
     }
-
-    @media (min-width: $plyr-bp-screen-sm) {
-        padding-left: ($plyr-control-spacing * 1.5);
-        padding-right: ($plyr-control-spacing * 1.5);
-    }
 }
 
 // Audio controls
@@ -359,6 +369,7 @@
 
 // Large play button (video only)
 .plyr__play-large {
+    display: none;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -369,7 +380,7 @@
     border-radius: 100%;
     box-shadow: 0 1px 1px transparentize($plyr-video-controls-bg, .85);
     color: $plyr-video-control-color;
-    transition: opacity .3s ease, visibility .3s ease;
+    transition: all .3s ease;
 
     svg {
         position: relative;
@@ -383,6 +394,9 @@
     &:focus {
         outline: 1px dotted transparentize($plyr-video-control-color, .5);
     }
+}
+.plyr .plyr__play-large {
+    display: inline-block;
 }
 .plyr--audio .plyr__play-large {
     display: none;
@@ -434,7 +448,6 @@
 
     opacity: 0;
     background: $plyr-tooltip-bg;
-    box-shadow: $plyr-tooltip-shadow;
     border-radius: $plyr-tooltip-radius;
 
     color: $plyr-tooltip-color;
@@ -445,17 +458,16 @@
     transform-origin: 50% 100%;
     transition: transform .2s .1s ease, opacity .2s .1s ease;
 
-    // Arrows
     &::before {
+        // Arrows
         content: '';
         position: absolute;
         width: 0;
         height: 0;
         left: 50%;
         transform: translateX(-50%);
-    }
-    // The background triangle
-    &::before {
+    
+        // The background triangle
         bottom: -$plyr-tooltip-arrow-size;
         border-right: $plyr-tooltip-arrow-size solid transparent;
         border-top: $plyr-tooltip-arrow-size solid $plyr-tooltip-bg;
@@ -473,10 +485,45 @@
     z-index: 3;
 }
 
+// First tooltip
+.plyr__controls button:first-child .plyr__tooltip {
+    $tooltip-arrow-offset: ;
+    left: 0;
+    transform: translate(0, 10px) scale(.8);
+    transform-origin: 0 100%;
+
+    &::before {
+        left: ($plyr-control-icon-size / 2) + $plyr-control-padding;
+    }
+}
+
+// Last tooltip
+.plyr__controls button:last-child .plyr__tooltip {
+    right: 0;
+    transform: translate(0, 10px) scale(.8);
+    transform-origin: 100% 100%;
+
+    &::before {
+        left: auto;
+        right: ($plyr-control-icon-size / 2) + $plyr-control-padding;
+        transform: translateX(50%);
+    }
+}
+
+.plyr__controls button:first-child,
+.plyr__controls button:last-child {
+    &:hover .plyr__tooltip,
+    &.tab-focus:focus .plyr__tooltip,
+    .plyr__tooltip--visible {
+        transform: translate(0, 0) scale(1);
+    }
+}
+
 // Playback progress
 // --------------------------------------------------------------
 // <progress> element
 .plyr__progress {
+    display: none;
     position: relative;
     flex: 1;
 
@@ -499,6 +546,9 @@
     .plyr__tooltip {
         left: 0;
     }
+}
+.plyr .plyr__progress {
+    display: inline-block;
 }
 
 .plyr__progress--buffer,
@@ -545,12 +595,14 @@
         max-width: 99%;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
+        transition: none;
     }
     &::-moz-progress-bar {
         min-width: $plyr-range-track-height;
         max-width: 99%;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
+        transition: none;
     }
     &::-ms-fill {
         display: none;
@@ -630,8 +682,11 @@
 
 // Volume
 // --------------------------------------------------------------
-.plyr .plyr__volume { 
+.plyr__volume {
     display: none;
+}
+.plyr .plyr__volume {
+    flex: 1;
     position: relative;
 
     input[type="range"] {
@@ -682,5 +737,12 @@
         bottom: 0;
         left: 0;
         right: 0;
+    }
+
+    // Vimeo requires some different styling
+    &.plyr--vimeo .plyr__video-wrapper {
+        height: 0;
+        top: 50%;
+        transform: translateY(-50%);
     }
 }
