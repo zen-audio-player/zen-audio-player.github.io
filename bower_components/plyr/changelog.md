@@ -1,5 +1,58 @@
 # Changelog
 
+# v1.6.20
+- Fix for multiple sprites being requested (fixes #259)
+
+# v1.6.19
+- Fix for scroll direction issues on volume control (fixes #258)
+
+# v1.6.18
+- Reduced rounding of seek value from 1 decimal point to 4 (fixes #242)
+
+# v1.6.17
+- Added `disableContextMenu` option to hide the right click context menu (fixes #248 and #225)
+
+# v1.6.16
+- Always hide standard controls (fixes #225)
+- Fix for Tooltips overflowing (fixes #230)
+
+## v1.6.15
+- Restore scroll position when exiting full screen (fixes #236)
+
+## v1.6.14
+- SVG sprite loading automatically for an easier setup
+- Touch devices now show controls on touch rather than pausing playback
+
+## v1.6.13
+- Decreased sensitivity and inverted scroll on volume slider (scroll up to increase, down to decrease)
+
+## v1.6.12
+- Fix for undefined buffer error 
+- Add scroll listener on volume slider (PR #227 bty @igoradamenko)
+
+## v1.6.11
+- Fix for Vimeo fullscreen (fixes #214)
+
+## v1.6.10
+- Changed default icon prefix from 'icon' to 'plyr' to avoid clashes
+
+## v1.6.9
+- Added 'latest' CDN option
+- Renamed `sprite.svg` to `plyr.svg` to be inline with the other package files
+
+## v1.6.8
+- Fix for bug introduced in v1.6.7
+
+## v1.6.7
+- Fixes for using `source` API method on iOS
+
+## v1.6.6
+- Icons cleaned up
+- IE11 button fix for tooltips (fixes #210)
+
+## v1.6.5
+- IE UI bug fixes
+
 ## v1.6.4
 - Bug fix for undefined progress bar
 
@@ -48,18 +101,18 @@
 - Docs fixes inc controls HTML (fixes #180)
 
 ## v1.5.17
-- Expose YouTube and Vimeo API (docs update required) (Fixes #176)
+- Expose YouTube and Vimeo API (docs update required) (fixes #176)
 - Auto set title based on YouTube getVideoData() title property
 - Bug fix for Vimeo API change (Uncaught TypeError: Cannot read property 'value' of undefined) due to a change their end
 
 ## v1.5.16
-- Cancel requests on source change (Fixes #174)
+- Cancel requests on source change (fixes #174)
 
 ## v1.5.15
-- Fix for CustomEvent polyfill and related bug (See #172)
+- Fix for CustomEvent polyfill and related bug (see #172)
 
 ## v1.5.14
-- Volume storage fix (Fixes #171)
+- Volume storage fix (fixes #171)
 
 ## v1.5.13
 - Fix for manual caption rendering
@@ -162,11 +215,11 @@
 ## v1.2.3
 - Fix for YouTube on iPhone or unsupported browsers (fallback to YouTube native)
 - Docs tidy up
-- Fullscreen for Safari fix (Fixes #96)
+- Fullscreen for Safari fix (fixes #96)
 
 ## v1.2.2
-- Fix for :focus keyboard vs mouse (Fixes #61)
-- Fix for caption positioning in full screen (Fixes #92)
+- Fix for :focus keyboard vs mouse (fixes #61)
+- Fix for caption positioning in full screen (fixes #92)
 
 ## v1.2.1
 - Tooltip bug fix
@@ -193,7 +246,7 @@
 - Bug fix for 1.1.8
 
 ## v1.1.8
-- setVolume API method improvements (Fixes #83)
+- setVolume API method improvements (fixes #83)
 
 ## v1.1.7
 - Restore classname on destroy()
@@ -202,7 +255,7 @@
 - New API methods (fixes #77), Fix for non strict mode (fixes #78)
 
 ## v1.1.5
-- Fix for incorrect `isFullscreen()` return value in Mozilla (Fixes #38)
+- Fix for incorrect `isFullscreen()` return value in Mozilla (fixes #38)
 
 ## v1.1.4
 - Minor bug fixes
@@ -226,17 +279,17 @@
 - Display duration on `metadataloaded`
 
 ## v1.0.30
-- Fixed bug with media longer than 60 minutes (Fixes #69)
+- Fixed bug with media longer than 60 minutes (fixes #69)
 
 ## v1.0.29
-- Added option to hide controls on fullscreen (default `true`) while palying, after 1s. Pause, mouse hover on progress, or focus on a child control re-shows the controls. On touch a tap of the video (which plays/pauses the video by default) is required. (Fixes #47)
+- Added option to hide controls on fullscreen (default `true`) while palying, after 1s. Pause, mouse hover on progress, or focus on a child control re-shows the controls. On touch a tap of the video (which plays/pauses the video by default) is required. (fixes #47)
 - Fixed a bug with caption toggle in 1.0.28
 
 ## v1.0.28
 - Added API support for browsers that don't have full plyr support (pretty much <=IE9 and `<video>` on iPhone/iPod)
 
 ## v1.0.27
-- Keyboard accessibility improvements (Fixes #66)
+- Keyboard accessibility improvements (fixes #66)
 
 ## v1.0.26
 - Fixes for SASS (cheers @brunowego)
@@ -247,29 +300,29 @@
 - Classnames for left/right controls changed
 
 ## v1.0.24
-- Added tooltip option to display labels as tooltips (Fixes #50)
+- Added tooltip option to display labels as tooltips (fixes #50)
 
 ## v1.0.23
-- Handling loading states in the UI (Fixes #36)
+- Handling loading states in the UI (fixes #36)
 
 ## v1.0.22
 - Added support() API method for checking mimetype support
-- Added source() API method for setting media source(s) (Fixes #44)
+- Added source() API method for setting media source(s) (fixes #44)
 - Added poster() API method for setting poster source
 - Refactored captions logic for manual captions
 
 ## v1.0.21
-- Added an <input type="range"> for seeking to improve experience (and support dragging) (Fixes #40, #42)
-- Icons for restart and captions improved (and some IDs changed) (Fixes #49)
+- Added an <input type="range"> for seeking to improve experience (and support dragging) (fixes #40, #42)
+- Icons for restart and captions improved (and some IDs changed) (fixes #49)
 
 ## v1.0.20
 - Default controls included (Fixes #45)
-- Volume changes on `input` as well as `change` (Fixes #43)
+- Volume changes on `input` as well as `change` (fixes #43)
 - Fix for undefined Play text
 - License changed to MIT
 
 ## v1.0.19
-- Fixed firefox fullscreen issue (Fixes #38)
+- Fixed firefox fullscreen issue (fixes #38)
 
 ## v1.0.18
 - Added CDN references
@@ -293,7 +346,7 @@
 - Minor tweaks
 
 ## v1.0.12
-- Handle native events (Issue #34)
+- Handle native events (issue #34)
 
 ## v1.0.11
 - Bug fixes for fullscreen mode

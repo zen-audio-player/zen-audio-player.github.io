@@ -1,6 +1,6 @@
 // ==========================================================================
 // Plyr
-// plyr.js v1.6.4
+// plyr.js v1.6.20
 // https://github.com/selz/plyr
 // License: The MIT License (MIT)
 // ==========================================================================
@@ -26,23 +26,29 @@
     /*global YT,$f*/
 
     // Globals
-    var fullscreen, api = {};
+    var fullscreen, 
+    scroll = { x: 0, y: 0 },
 
     // Default config
-    var defaults = {
+    defaults = {
         enabled:                true,
         debug:                  false,
         autoplay:               false,
         loop:                   false,
         seekTime:               10,
         volume:                 5,
+        volumeMin:              0, 
+        volumeMax:              10, 
+        volumeStep:             1,
         duration:               null,
         displayDuration:        true,
-        iconPrefix:             'icon',
-        iconUrl:                '',
+        loadSprite:             true,
+        iconPrefix:             'plyr',
+        iconUrl:                'https://cdn.plyr.io/1.6.20/plyr.svg',
         clickToPlay:            true,
         hideControls:           true,
         showPosterOnEnd:        false,
+        disableContextMenu:     true,
         tooltips: {
             controls:           false,
             seek:               true
@@ -194,7 +200,7 @@
         else if ((verOffset=nAgt.indexOf('Safari')) !== -1) {
             name = 'Safari';
             fullVersion = nAgt.substring(verOffset + 7);
-            if ((verOffset=nAgt.indexOf('Version')) !== -1) {
+            if ((verOffset = nAgt.indexOf('Version')) !== -1) {
                 fullVersion = nAgt.substring(verOffset + 8);
             }
         }
@@ -654,11 +660,20 @@
             }
         }
 
+        // Get icon URL
+        function _getIconUrl() {
+            return {
+                url:        config.iconUrl,
+                external:   (config.iconUrl.indexOf("http") === 0)
+            };
+        }
+
         // Build the default HTML
         function _buildControls() {
             // Create html array
-            var html = [],
-                iconPath = config.iconUrl + '#' + config.iconPrefix;
+            var html        = [],
+                iconUrl     = _getIconUrl(),
+                iconPath    = (!iconUrl.external ? iconUrl.url : '') + '#' + config.iconPrefix;
 
             // Larger overlaid play button
             if (_inArray(config.controls, 'play-large')) {
@@ -773,8 +788,8 @@
                 html.push(
                     '<span class="plyr__volume">',
                         '<label for="volume{id}" class="plyr__sr-only">' + config.i18n.volume + '</label>',
-                        '<input id="volume{id}" class="plyr__volume--input" type="range" min="0" max="10" value="5" data-plyr="volume">',
-                        '<progress class="plyr__volume--display" max="10" value="0" role="presentation"></progress>',
+                        '<input id="volume{id}" class="plyr__volume--input" type="range" min="' + config.volumeMin + '" max="' + config.volumeMax + '" value="' + config.volume + '" data-plyr="volume">',
+                        '<progress class="plyr__volume--display" max="' + config.volumeMax + '" value="' + config.volumeMin + '" role="presentation"></progress>',
                     '</span>'
                 );
             }
@@ -1159,6 +1174,20 @@
 
         // Insert controls
         function _injectControls() {
+            // Sprite
+            if (config.loadSprite) {
+                var iconUrl = _getIconUrl();
+
+                // Only load external sprite using AJAX
+                if (iconUrl.external) {
+                    _log('Loading external SVG sprite');
+                    loadSprite(iconUrl.url, "sprite-plyr");
+                }
+                else {
+                    _log('Sprite will be used inline');
+                }
+            }
+
             // Make a copy of the html
             var html = config.html;
 
@@ -1390,7 +1419,7 @@
                     window.onYouTubeReadyCallbacks = window.onYouTubeReadyCallbacks || [];
 
                     // Add to queue
-                    window.onYouTubeReadyCallbacks.push(function() { _youTubeReady(mediaId, container) });
+                    window.onYouTubeReadyCallbacks.push(function() { _youTubeReady(mediaId, container); });
 
                     // Set callback to process queue
                     window.onYouTubeIframeAPIReady = function () {
@@ -1410,8 +1439,6 @@
                 _setAttributes(vimeo, {
                     'src':                      'https://player.vimeo.com/video/' + mediaId + '?player_id=' + id + '&api=1&badge=0&byline=0&portrait=0&title=0',
                     'id':                       id,
-                    'webkitallowfullscreen':    '',
-                    'mozallowfullscreen':       '',
                     'allowfullscreen':          '',
                     'frameborder':              0
                 });
@@ -1610,6 +1637,10 @@
                                 _triggerEvent(plyr.media, 'pause');
                                 break;
                         }
+
+                        _triggerEvent(plyr.container, 'statechange', false, {
+                            code: event.data
+                        });
                     }
                 }
             });
@@ -1857,7 +1888,7 @@
             // Set the current time
             // Try/catch incase the media isn't set and we're calling seek() from source() and IE moans
             try {
-                plyr.media.currentTime = targetTime.toFixed(1);
+                plyr.media.currentTime = targetTime.toFixed(4);
             }
             catch(e) {}
 
@@ -1922,6 +1953,19 @@
             _toggleControls(plyr.media.paused);
         }
 
+        // Save scroll position
+        function _saveScrollPosition() {
+            scroll = {
+                x: window.pageXOffset || 0,
+                y: window.pageYOffset || 0
+            };
+        }
+
+        // Restore scroll position
+        function _restoreScrollPosition() {
+            window.scrollTo(scroll.x, scroll.y);
+        }
+
         // Toggle fullscreen
         function _toggleFullscreen(event) {
             // Check for native support
@@ -1935,6 +1979,10 @@
             else if (nativeSupport) {
                 // Request fullscreen
                 if (!fullscreen.isFullScreen(plyr.container)) {
+                    // Save scroll position
+                    _saveScrollPosition();
+
+                    // Request full screen
                     fullscreen.requestFullScreen(plyr.container);
                 }
                 // Bail from fullscreen
@@ -1979,6 +2027,11 @@
 
             // Trigger an event
             _triggerEvent(plyr.container, plyr.isFullscreen ? 'enterfullscreen' : 'exitfullscreen');
+
+            // Restore scroll position
+            if (!plyr.isFullscreen && nativeSupport) {
+                _restoreScrollPosition();
+            }
         }
 
         // Bail from faux-fullscreen
@@ -2016,11 +2069,11 @@
                         break;
 
                     case 'vimeo':
-                        plyr.embed.api('setVolume', plyr.media.muted ? 0 : parseFloat(config.volume / 10));
+                        plyr.embed.api('setVolume', plyr.media.muted ? 0 : parseFloat(config.volume / config.volumeMax));
                         break;
 
                     case 'soundcloud':
-                        plyr.embed.setVolume(plyr.media.muted ? 0 : parseFloat(config.volume / 10));
+                        plyr.embed.setVolume(plyr.media.muted ? 0 : parseFloat(config.volume / config.volumeMax));
                         break;
                 }
 
@@ -2031,6 +2084,9 @@
 
         // Set volume
         function _setVolume(volume) {
+            var max = config.volumeMax,
+                min = config.volumeMin;
+
             // Use default if no value specified
             if (typeof volume === 'undefined') {
                 volume = config.volume;
@@ -2049,17 +2105,17 @@
                 volume = config.volume;
             }
 
-            // Maximum is 10
-            if (volume > 10) {
-                volume = 10;
+            // Maximum is volumeMax
+            if (volume > max) {
+                volume = max;
             }
-            // Minimum is 0
-            if (volume < 0) {
-                volume = 0;
+            // Minimum is volumeMin
+            if (volume < min) {
+                volume = min;
             }
 
             // Set the player volume
-            plyr.media.volume = parseFloat(volume / 10);
+            plyr.media.volume = parseFloat(volume / max);
 
             // Set the display
             if (plyr.volume.display) {
@@ -2093,10 +2149,24 @@
             }
         }
 
+        // Increase volume
+        function _increaseVolume() {
+            var volume = plyr.media.muted ? 0 : (plyr.media.volume * config.volumeMax);
+
+            _setVolume(volume + (config.volumeStep / 5));
+        }
+
+        // Decrease volume
+        function _decreaseVolume() {
+            var volume = plyr.media.muted ? 0 : (plyr.media.volume * config.volumeMax);
+
+            _setVolume(volume - (config.volumeStep / 5));
+        }
+
         // Update volume UI and storage
         function _updateVolume() {
             // Get the current volume
-            var volume = plyr.media.muted ? 0 : (plyr.media.volume * 10);
+            var volume = plyr.media.muted ? 0 : (plyr.media.volume * config.volumeMax);
 
             // Update the <input type="range"> if present
             if (plyr.supported.full) {
@@ -2162,6 +2232,10 @@
 
         // Update <progress> elements
         function _updateProgress(event) {
+            if (!plyr.supported.full) {
+                return;
+            }
+
             var progress    = plyr.progress.played,
                 value       = 0,
                 duration    = _getDuration();
@@ -2209,8 +2283,22 @@
 
         // Set <progress> value
         function _setProgress(progress, value) {
+            if (!plyr.supported.full) {
+                return;
+            }
+            
+            // Default to 0
             if (typeof value === 'undefined') {
                 value = 0;
+            }
+            // Default to buffer or bail
+            if (typeof progress === 'undefined') {
+                if (plyr.progress && plyr.progress.buffer) {
+                    progress = plyr.progress.buffer;
+                }
+                else {
+                    return;
+                }
             }
 
             // One progress element passed
@@ -2390,7 +2478,7 @@
                     }
                 }
                 else {
-                    show = false;
+                    show = !_hasClass(plyr.container, config.classes.hideControls);
                 }
             }
 
@@ -2401,21 +2489,26 @@
             if (show || plyr.media.paused) {
                 _toggleClass(plyr.container, config.classes.hideControls, false);
 
-                // Always show controls when paused
+                // Always show controls when paused or if touch
                 if (plyr.media.paused) {
                     return;
                 }
+
+                // Delay for hiding on touch
+                if (plyr.browser.touch) {
+                    delay = 3000;
+                }
             }
 
-            // If toggle is false or if we're playing (regardless of toggle), then
-            // set the timer to hide the controls 
+            // If toggle is false or if we're playing (regardless of toggle), 
+            // then set the timer to hide the controls 
             if (!show || !plyr.media.paused) {
                 plyr.timers.hover = window.setTimeout(function() {
                     // If the mouse is over the controls (and not entering fullscreen), bail
                     if (plyr.controls.active && !isEnterFullscreen) {
                         return;
                     }
-
+                    
                     _toggleClass(plyr.container, config.classes.hideControls, true);
                 }, delay);
             }
@@ -2471,7 +2564,7 @@
             _updateSeekDisplay();
 
             // Reset buffer progress
-            _setProgress(plyr.progress.buffer);
+            _setProgress();
 
             // Cancel current network requests
             _cancelRequests();
@@ -2512,7 +2605,7 @@
             }
 
             // Check for support
-            plyr.supported = api.supported(plyr.type);
+            plyr.supported = supported(plyr.type);
 
             // Create new markup
             switch(plyr.type) {
@@ -2671,6 +2764,7 @@
                     }
                 }
             }
+
             _on(window, 'keyup', function(event) {
                 var code = (event.keyCode ? event.keyCode : event.which);
 
@@ -2742,6 +2836,35 @@
                 // Focus in/out on controls
                 _on(plyr.controls, 'focus blur', _toggleControls, true);
             }
+
+            // Adjust volume on scroll
+            _on(plyr.volume.input, 'wheel', function(event) {
+                event.preventDefault();
+
+                // Detect "natural" scroll - suppored on OS X Safari only
+                // Other browsers on OS X will be inverted until support improves
+                var inverted = event.webkitDirectionInvertedFromDevice;
+
+                // Scroll down (or up on natural) to decrease
+                if (event.deltaY < 0 || event.deltaX > 0) {
+                    if (inverted) {
+                        _decreaseVolume();
+                    }
+                    else {
+                        _increaseVolume();
+                    }
+                }
+
+                // Scroll up (or down on natural) to increase
+                if (event.deltaY > 0 || event.deltaX < 0) {
+                    if (inverted) {
+                        _increaseVolume();
+                    }
+                    else {
+                        _decreaseVolume();
+                    }
+                }
+            });
         }
 
         // Listen for media events
@@ -2805,6 +2928,11 @@
 
                 // On click play, pause ore restart
                 _on(wrapper, 'click', function() {
+                    if (plyr.browser.touch && !plyr.media.paused) {
+                        _toggleControls(true);
+                        return;
+                    }
+
                     if (plyr.media.paused) {
                         _play();
                     }
@@ -2816,6 +2944,11 @@
                         _pause();
                     }
                 });
+            }
+
+            // Disable right click
+            if (config.disableContextMenu) {
+                _on(plyr.media, 'contextmenu', function(event) { event.preventDefault(); });
             }
 
             // Proxy events to container
@@ -2942,7 +3075,7 @@
             }
 
             // Check for support
-            plyr.supported = api.supported(plyr.type);
+            plyr.supported = supported(plyr.type);
 
             // Add style hook
             _toggleStyleHook();
@@ -3072,6 +3205,7 @@
             toggleMute:         _toggleMute,
             toggleCaptions:     _toggleCaptions,
             toggleFullscreen:   _toggleFullscreen,
+            toggleControls:     _toggleControls,
             isFullscreen:       function() { return plyr.isFullscreen || false; },
             support:            function(mimeType) { return _supportMime(plyr, mimeType); },
             destroy:            _destroy,
@@ -3079,8 +3213,39 @@
         };
     }
 
+    // Load a sprite
+    function loadSprite(url, id) {
+        var x = new XMLHttpRequest();
+
+        // If the id is set and sprite exists, bail
+        if (typeof id === 'string' && document.querySelector('#' + id) !== null) {
+            return;
+        }
+
+        // Check for CORS support
+        if ('withCredentials' in x) {
+            x.open('GET', url, true);
+        }
+        else {
+            return;
+        }
+
+        // Inject hidden div with sprite on load
+        x.onload = function() {
+            var c = document.createElement('div');
+            c.setAttribute('hidden', '');
+            if (typeof id === 'string') {
+                c.setAttribute('id', id);
+            }
+            c.innerHTML = x.responseText;
+            document.body.insertBefore(c, document.body.childNodes[0]);
+        }
+
+        x.send();
+    }
+
     // Check for support
-    api.supported = function(type) {
+    function supported(type) {
         var browser = _browserSniff(),
             oldIE   = (browser.name === 'IE' && browser.version <= 9),
             iPhone  = /iPhone|iPod/i.test(navigator.userAgent),
@@ -3115,10 +3280,10 @@
             basic:  basic,
             full:   full
         };
-    };
+    }
 
-    // Expose setup function
-    api.setup = function(elements, options) {
+    // Setup function
+    function setup(elements, options) {
         // Get the players
         var instances = [];
 
@@ -3144,7 +3309,7 @@
 
         // Bail if disabled or no basic support
         // You may want to disable certain UAs etc
-        if (!api.supported().basic || !elements.length) {
+        if (!supported().basic || !elements.length) {
             return false;
         }
 
@@ -3160,7 +3325,7 @@
 
                 // Bail if not enabled
                 if (!config.enabled) {
-                    return;
+                    return null;
                 }
 
                 // Create new instance
@@ -3178,9 +3343,13 @@
         }
 
         return instances;
-    };
+    }
 
-    return api;
+    return {
+        setup:      setup,
+        supported:  supported,
+        loadSprite: loadSprite
+    };
 }));
 
 // Custom event polyfill
