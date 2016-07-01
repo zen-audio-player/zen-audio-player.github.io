@@ -1,3 +1,4 @@
+/* global URI */
 /* eslint-disable no-unused-vars */
 
 function getSearchResults(query, youTubeDataApiKey, onData, onFail) {
@@ -71,7 +72,6 @@ function parseYoutubeVideoID(uri) {
             videoInfo.id = uri;
         }
 
-        // TODO Is there an example of this "in the wild"?
         var slashPos = videoInfo.id.indexOf("/");
         // We found a slash in the video ID (ex: real id is ABC123, but saw ABC123/zen)
         // So, only keep what's before the slash
