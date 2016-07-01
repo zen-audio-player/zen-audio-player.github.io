@@ -1,14 +1,13 @@
-/* global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
+/* global URI, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
 
 // Pointer to Keen client
 var client;
+function isFileProtocol() {
+    return URI(window.location).protocol() === "file";
+}
 
 function anonymizeFileUrl() {
-    var url = window.location.href;
-    if (url.indexOf("file://") === 0) {
-        url = "localhost";
-    }
-    return url;
+    return (isFileProtocol()) ? "localhost" : window.location;
 }
 
 function sendKeenEvent(_msg, _data) {
@@ -84,10 +83,6 @@ var errorMessage = {
     }
 };
 
-function isFileProtocol() {
-    return window.location.protocol === "file:";
-}
-
 function handleYouTubeError(details) {
     if (typeof details.code === "number") {
         var message = "Got an unknown error, check the JS console.";
@@ -123,7 +118,7 @@ function handleYouTubeError(details) {
         sendKeenEvent("YouTube iframe API error", {verbose: verboseMessage, message: message, code: details.code});
 
         // Log debug info
-        console.log("Verbose debug error message: ", verboseMessage);
+        console.log("Verbose debug error message: ", verboseMessage); // eslint-disable-line no-console
     }
 }
 
@@ -267,7 +262,7 @@ var ZenPlayer = {
         var description = "";
 
         if (isFileProtocol()) {
-            console.log("Skipping video description request as we're running the site locally.");
+            console.log("Skipping video description request as we're running the site locally."); // eslint-disable-line no-console
             $("#toggleDescription").hide();
         }
         else {
@@ -304,17 +299,18 @@ var ZenPlayer = {
 };
 
 function updateTweetMessage() {
-    var url = "https://ZenPlayer.Audio";
+    var url = URI("https://ZenPlayer.Audio");
 
     var opts = {
         text: "Listen to YouTube videos without the distracting visuals",
         hashTags: "ZenAudioPlayer",
-        url: url
+        url: url.toString()
     };
 
     var id = getCurrentVideoID();
     if (id) {
-        opts.url += "/?v=" + id;
+        url.setSearch("v", id);
+        opts.url = url.toString();
         opts.text = "I'm listening to " + plyrPlayer.plyr.embed.getVideoData().title;
     }
 
@@ -328,7 +324,7 @@ function updateTweetMessage() {
 function logError(jqXHR, textStatus, errorThrown, _errorMessage) {
     var responseText = JSON.parse(jqXHR.error().responseText);
     errorMessage.show(responseText.error.errors[0].message);
-    console.log(_errorMessage, errorThrown);
+    console.log(_errorMessage, errorThrown); // eslint-disable-line no-console
 }
 
 function toggleElement(event, toggleID, buttonText) {
@@ -347,53 +343,47 @@ function toggleElement(event, toggleID, buttonText) {
     }
 }
 
+/**
+ * Get the v query param from window.lcation object. If multiple exist,
+ * return the last instance.
+ *
+ * @returns {string} - Value of 'v' query param
+ */
 function getCurrentVideoID() {
-    var v = getParameterByName(window.location.search, "v");
-    // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
-    var vParams = window.location.search.match(/v=\w+/g);
-    if (vParams && vParams.length > 1) {
-        v = vParams[vParams.length - 1].replace("v=", "");
-    }
-    else if (v.length > 1) {
-        return wrapParseYouTubeVideoID(v);
-    }
-    return v;
+    var v = URI(window.location).search(true).v;
+
+    // If URI returned an array, we know we have multiple values, so we'll return the last.
+    return (Array.isArray(v)) ? v.pop() : v;
 }
 
+/**
+ * Return the q param from window.location.
+ * @returns {string} - 'q' query param/
+ */
 function getCurrentSearchQuery() {
-    var q = getParameterByName(window.location.search, "q");
-    return q;
+    return URI(window.location).search(true).q;
 }
 
-function removeSearchQueryFromURL(url) {
-    if (window.location.search.length !== 0) {
-        url = window.location.href.replace(window.location.search, "");
-    }
-    return url;
-}
-
-function makeListenURL(videoID) {
-    var url = removeSearchQueryFromURL(window.location.href);
-    // Remove any #s which break functionality
-    url = url.replace("#", "");
-
-    return url + "?v=" + videoID;
-}
-
-function makeSearchURL(searchQuery) {
-    var url = removeSearchQueryFromURL(window.location.href);
-    // Remove any #s which break functionality
-    url = url.replace("#", "");
-
-    return url + "?q=" + encodeURIComponent(searchQuery);
+/**
+ * Append search params to a URI.
+ *
+ * @param {string} key - The query param key.
+ * @param {string} value - The query param value.
+ * @param {string} [url=window.location] - Optional URI.
+ * @returns {string} - Encoded URI with query param
+ */
+function makeQueryURL(key, value, url) {
+    url = (url) ? URI(url) : URI(window.location);
+    url.setSearch(key, value);
+    return url.toString().replace("#", "");
 }
 
 function anchorURLs(text) {
     /* RegEx to match http or https addresses
-    * This will currently only match TLD of two or three letters
-    * Ends capture when:
-    *    (1) it encounters a TLD
-    *    (2) it encounters a period (.) or whitespace, if the TLD was followed by a forwardslash (/) */
+     * This will currently only match TLD of two or three letters
+     * Ends capture when:
+     *    (1) it encounters a TLD
+     *    (2) it encounters a period (.) or whitespace, if the TLD was followed by a forwardslash (/) */
     var re = /((?:http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*[^\.\s])?)/g;
     /* Wraps all found URLs in <a> tags */
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
@@ -495,7 +485,7 @@ $(function() {
             });
         }
     }).bind("typeahead:selected", function(obj, datum) {
-        window.location.href = makeSearchURL(datum);
+        window.location.href = makeQueryURL("q", datum);
     });
 
     // Handle form submission
@@ -524,10 +514,10 @@ $(function() {
                     },
                     success: function(data) {
                         if (data.items.length === 0) {
-                            window.location.href = makeSearchURL(formValue);
+                            window.location.href = makeQueryURL("q", formValue);
                         }
                         else {
-                            window.location.href = makeListenURL(videoID);
+                            window.location.href = makeQueryURL("v", videoID);
                         }
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -554,7 +544,7 @@ $(function() {
         // This is likely only a problem if the demo link didn't work right the first time
         var pickedDemo = pickDemo();
         if (window.location.href.indexOf(demos) === -1) {
-            window.location.href = makeListenURL(pickedDemo);
+            window.location.href = makeQueryURL("v", pickedDemo);
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
@@ -569,8 +559,8 @@ $(function() {
 /*eslint-disable */
 // Google Analytics goodness
 (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,"script","//www.google-analytics.com/analytics.js","ga");
 ga("create", "UA-62983413-1", "auto");
 ga("send", "pageview");
