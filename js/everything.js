@@ -347,13 +347,7 @@ function getCurrentVideoID() {
     var v = URI(window.location).search(true).v;
 
     // If URI returned an array, we know we have multiple values, so we'll return the last.
-    if(Array.isArray(v)){
-        return v.pop();
-    } else if(v.length > 0) {
-        return wrapParseYouTubeVideoID(v);
-    }
-
-    return v;
+    return (Array.isArray(v)) ? v.pop() : v;
 }
 
 function getCurrentSearchQuery() {
