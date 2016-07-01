@@ -420,9 +420,9 @@ function wrapParseYouTubeVideoID(url) {
 // Some demo video's audio, feel free to add more
 var demos = [
     "koJv-j1usoI", // The Glitch Mob - Starve the Ego, Feed the Soul
-    "5cJIvC6AAkc", // Family Force 5 - Dance Or Die Official Music Video
     "EBerFisqduk", // Cazzette - Together (Lost Kings Remix)
-    "DlKXJ906pd8" // Ronald Jenkees - Throwing Fire
+    "jxKjOOR9sPU", // The Temper Trap - Sweet Disposition
+    "03O2yKUgrKw"  // Mike Mago & Dragonette - Outlines
 ];
 
 function pickDemo() {
