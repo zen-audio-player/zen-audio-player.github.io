@@ -132,7 +132,7 @@ var ZenPlayer = {
     updated: false,
     init: function(videoID) {
         // Inject svg with control icons
-        $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
+        $("#plyr-svg").load("../bower_components/plyr/dist/plyr.svg");
 
         plyrPlayer = document.querySelector(".plyr");
 
