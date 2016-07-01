@@ -1,13 +1,13 @@
-/* global getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
+/* global URI, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
 
 // Pointer to Keen client
 var client;
 function isFileProtocol() {
-    return URI(window.location).protocol() === 'file';
+    return URI(window.location).protocol() === "file";
 }
 
 function anonymizeFileUrl() {
-    return (isFileProtocol()) ? 'localhost' : window.location;
+    return (isFileProtocol()) ? "localhost" : window.location;
 }
 
 function sendKeenEvent(_msg, _data) {
@@ -309,7 +309,7 @@ function updateTweetMessage() {
 
     var id = getCurrentVideoID();
     if (id) {
-        url.setSearch('v', id);
+        url.setSearch("v", id);
         opts.url = url.toString();
         opts.text = "I'm listening to " + plyrPlayer.plyr.embed.getVideoData().title;
     }
@@ -365,24 +365,16 @@ function getCurrentSearchQuery() {
 }
 
 /**
- * Set the query param of the current window.location to v=videoID and removes # characters.
- * @param videoID
- * @returns {string}
+ * Append search params to a URI.
+ *
+ * @param {string} key - The query param key.
+ * @param {string} value - The query param value.
+ * @param {string} [url=window.location] - Optional URI.
+ * @returns {string} - Encoded URI with query param
  */
-function makeListenURL(videoID) {
-    var url = URI(window.location);
-    url.setSearch('v', videoID);
-    return url.toString().replace("#", "");
-}
-
-/**
- * Set the query param of the window.location to q=searchQuery and removes # characters.
- * @param searchQuery
- * @returns {string}
- */
-function makeSearchURL(searchQuery) {
-    var url = URI(window.location);
-    url.setSearch('q', searchQuery);
+function makeQueryURL(key, value, url) {
+    url = (url) ? URI(url) : URI(window.location);
+    url.setSearch(key, value);
     return url.toString().replace("#", "");
 }
 
@@ -493,7 +485,7 @@ $(function() {
             });
         }
     }).bind("typeahead:selected", function(obj, datum) {
-        window.location.href = makeSearchURL(datum);
+        window.location.href = makeQueryURL("q", datum);
     });
 
     // Handle form submission
@@ -522,10 +514,10 @@ $(function() {
                     },
                     success: function(data) {
                         if (data.items.length === 0) {
-                            window.location.href = makeSearchURL(formValue);
+                            window.location.href = makeQueryURL("q", formValue);
                         }
                         else {
-                            window.location.href = makeListenURL(videoID);
+                            window.location.href = makeQueryURL("v", videoID);
                         }
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -552,7 +544,7 @@ $(function() {
         // This is likely only a problem if the demo link didn't work right the first time
         var pickedDemo = pickDemo();
         if (window.location.href.indexOf(demos) === -1) {
-            window.location.href = makeListenURL(pickedDemo);
+            window.location.href = makeQueryURL("v", pickedDemo);
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
