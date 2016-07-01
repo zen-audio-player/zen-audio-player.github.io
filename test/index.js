@@ -129,7 +129,12 @@ describe("Demo", function () {
             // Make sure the URL changed
             assert.notEqual(oldUrl, browser.location.href);
             // Check for any of the demo videos ID in the URL
-            var demos = ["koJv-j1usoI", "5cJIvC6AAkc",  "EBerFisqduk", "DlKXJ906pd8"];
+            var demos = [
+                "koJv-j1usoI", // The Glitch Mob - Starve the Ego, Feed the Soul
+                "EBerFisqduk", // Cazzette - Together (Lost Kings Remix)
+                "jxKjOOR9sPU", // The Temper Trap - Sweet Disposition
+                "03O2yKUgrKw"  // Mike Mago & Dragonette - Outlines
+            ];
             assert.notEqual(demos.indexOf(getParameterByName(browser.location.search, "v")), -1);
             // Check for any of the demo videos ID in the textbox
             assert.notEqual(demos.indexOf(browser.query("#v").value), -1);
