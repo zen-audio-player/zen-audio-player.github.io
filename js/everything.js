@@ -118,7 +118,7 @@ function handleYouTubeError(details) {
         sendKeenEvent("YouTube iframe API error", {verbose: verboseMessage, message: message, code: details.code});
 
         // Log debug info
-        console.log("Verbose debug error message: ", verboseMessage);
+        console.log("Verbose debug error message: ", verboseMessage); // eslint-disable-line no-console
     }
 }
 
@@ -262,7 +262,7 @@ var ZenPlayer = {
         var description = "";
 
         if (isFileProtocol()) {
-            console.log("Skipping video description request as we're running the site locally.");
+            console.log("Skipping video description request as we're running the site locally."); // eslint-disable-line no-console
             $("#toggleDescription").hide();
         }
         else {
@@ -324,7 +324,7 @@ function updateTweetMessage() {
 function logError(jqXHR, textStatus, errorThrown, _errorMessage) {
     var responseText = JSON.parse(jqXHR.error().responseText);
     errorMessage.show(responseText.error.errors[0].message);
-    console.log(_errorMessage, errorThrown);
+    console.log(_errorMessage, errorThrown); // eslint-disable-line no-console
 }
 
 function toggleElement(event, toggleID, buttonText) {
