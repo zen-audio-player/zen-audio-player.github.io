@@ -343,6 +343,12 @@ function toggleElement(event, toggleID, buttonText) {
     }
 }
 
+/**
+ * Get the v query param from window.lcation object. If multiple exist,
+ * return the last instance.
+ *
+ * @returns {string} - Value of 'v' query param
+ */
 function getCurrentVideoID() {
     var v = URI(window.location).search(true).v;
 
@@ -350,16 +356,30 @@ function getCurrentVideoID() {
     return (Array.isArray(v)) ? v.pop() : v;
 }
 
+/**
+ * Return the q param from window.location.
+ * @returns {string} - 'q' query param/
+ */
 function getCurrentSearchQuery() {
     return URI(window.location).search(true).q;
 }
 
+/**
+ * Set the query param of the current window.location to v=videoID and removes # characters.
+ * @param videoID
+ * @returns {string}
+ */
 function makeListenURL(videoID) {
     var url = URI(window.location);
     url.setSearch('v', videoID);
     return url.toString().replace("#", "");
 }
 
+/**
+ * Set the query param of the window.location to q=searchQuery and removes # characters.
+ * @param searchQuery
+ * @returns {string}
+ */
 function makeSearchURL(searchQuery) {
     var url = URI(window.location);
     url.setSearch('q', searchQuery);
