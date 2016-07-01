@@ -19,7 +19,7 @@ header {
 
 }
 
-#audioplayer .plyr__controls, .tt-menu, footer {
+.tt-menu, footer {
     background-color: #ffffff;
 }
 
@@ -248,4 +248,5 @@ a {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
     color: #565d64;
     position: relative;
+    background: #ffffff;
 }
