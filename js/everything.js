@@ -214,11 +214,10 @@ var ZenPlayer = {
 
             plyrPlayer.addEventListener("timeupdate", function() {
                 // Store the current time of the video.
-                var resumeTime;
+                var resumeTime = 0;
                 if (window.sessionStorage) {
                     var currentTime = plyrPlayer.plyr.embed.getCurrentTime();
                     var videoDuration = plyrPlayer.plyr.embed.getDuration();
-                    resumeTime = 0;
 
                     // Only store the current time if the video isn't done
                     // playing yet. If the video finished already, then it
@@ -230,8 +229,13 @@ var ZenPlayer = {
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
-                var updatedUrl = that.videoUrl + "&t=" + parseInt(resumeTime, 10);
-                $("#zen-video-title").attr("href", updatedUrl);
+                if (resumeTime > 0) {
+                    var updatedUrl = that.videoUrl + "&t=" + Math.round(resumeTime);
+                    $("#zen-video-title").attr("href", updatedUrl);
+                }
+                else if (resumeTime <= 0 && $("#zen-video-title").attr("href") !== that.videoUrl) {
+                    $("#zen-video-title").attr("href", that.videoUrl);
+                }
             });
 
             plyrPlayer.plyr.source({
@@ -376,6 +380,7 @@ function getCurrentTimePosition() {
     if (t > 0 && t < Number.MAX_VALUE) {
         return t;
     }
+    return 0;
 }
 
 function getCurrentSearchQuery() {
@@ -522,10 +527,10 @@ $(function() {
     $("#form").submit(function(event) {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
-        var formValueTime = /&t=(\d+)$/g.exec(formValue);
+        var formValueTime = /&t=(\d*)$/g.exec(formValue);
         if (formValueTime && formValueTime.length > 1) {
             formValueTime = parseInt(formValueTime[1], 10);
-            formValue = formValue.replace(/(&t=\d*)$/g, "");
+            formValue = formValue.replace(/&t=\d*$/g, "");
         }
         if (formValue) {
             var videoID = wrapParseYouTubeVideoID(formValue, true);
