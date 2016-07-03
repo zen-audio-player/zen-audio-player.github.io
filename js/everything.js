@@ -229,13 +229,15 @@ var ZenPlayer = {
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
+                var updatedUrl;
                 if (resumeTime > 0) {
-                    var updatedUrl = that.videoUrl + "&t=" + Math.round(resumeTime);
+                    updatedUrl = that.videoUrl + "&t=" + Math.round(resumeTime);
                     $("#zen-video-title").attr("href", updatedUrl);
                 }
                 else if (resumeTime <= 0 && $("#zen-video-title").attr("href") !== that.videoUrl) {
-                    $("#zen-video-title").attr("href", that.videoUrl);
+                    updatedUrl = that.videoUrl;
                 }
+                $("#zen-video-title").attr("href", updatedUrl);
             });
 
             plyrPlayer.plyr.source({
@@ -394,6 +396,7 @@ function removeSearchQueryFromURL(url) {
     }
     return url;
 }
+
 function makeListenURL(videoID, videoPosition) {
     var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
