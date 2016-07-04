@@ -165,6 +165,14 @@ var ZenPlayer = {
                 that.videoDescription = that.getVideoDescription(videoID);
                 that.videoUrl = plyrPlayer.plyr.embed.getVideoUrl();
 
+                // Updates the time position by a given argument in URL
+                // IE https://zenplayer.audio/?v=koJv-j1usoI&t=30 starts at 0:30
+                var t = getCurrentTimePosition();
+                if (t) {
+                    that.videoPosition = t;
+                    window.sessionStorage[videoID] = t;
+                }
+
                 // Initialize UI
                 that.setupTitle();
                 that.setupVideoDescription();
@@ -206,10 +214,10 @@ var ZenPlayer = {
 
             plyrPlayer.addEventListener("timeupdate", function() {
                 // Store the current time of the video.
+                var resumeTime = 0;
                 if (window.sessionStorage) {
                     var currentTime = plyrPlayer.plyr.embed.getCurrentTime();
                     var videoDuration = plyrPlayer.plyr.embed.getDuration();
-                    var resumeTime = 0;
 
                     // Only store the current time if the video isn't done
                     // playing yet. If the video finished already, then it
@@ -221,6 +229,15 @@ var ZenPlayer = {
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
+                var updatedUrl = that.videoUrl;
+                if (resumeTime > 0) {
+                    updatedUrl = that.videoUrl + "&t=" + Math.round(resumeTime);
+                    $("#zen-video-title").attr("href", updatedUrl);
+                }
+                else if (resumeTime <= 0 && $("#zen-video-title").attr("href") !== that.videoUrl) {
+                    updatedUrl = that.videoUrl;
+                }
+                $("#zen-video-title").attr("href", updatedUrl);
             });
 
             plyrPlayer.plyr.source({
@@ -360,6 +377,14 @@ function getCurrentVideoID() {
     return v;
 }
 
+function getCurrentTimePosition() {
+    var t = parseInt(getParameterByName(window.location.search, "t"), 10);
+    if (t > 0 && t < Number.MAX_VALUE) {
+        return t;
+    }
+    return 0;
+}
+
 function getCurrentSearchQuery() {
     var q = getParameterByName(window.location.search, "q");
     return q;
@@ -372,12 +397,15 @@ function removeSearchQueryFromURL(url) {
     return url;
 }
 
-function makeListenURL(videoID) {
+function makeListenURL(videoID, videoPosition) {
     var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
-
-    return url + "?v=" + videoID;
+    url += "?v=" + videoID;
+    if (videoPosition) {
+        url += "&t=" + videoPosition;
+    }
+    return url;
 }
 
 function makeSearchURL(searchQuery) {
@@ -501,13 +529,16 @@ $(function() {
     // Handle form submission
     $("#form").submit(function(event) {
         event.preventDefault();
-
         var formValue = $.trim($("#v").val());
+        var formValueTime = /&t=(\d*)$/g.exec(formValue);
+        if (formValueTime && formValueTime.length > 1) {
+            formValueTime = parseInt(formValueTime[1], 10);
+            formValue = formValue.replace(/&t=\d*$/g, "");
+        }
         if (formValue) {
             var videoID = wrapParseYouTubeVideoID(formValue, true);
             ga("send", "event", "form submitted", videoID);
             sendKeenEvent("Form submitted", {videoID: videoID});
-
             if (isFileProtocol()) {
                 errorMessage.show("Skipping video lookup request as we're running the site locally.");
             }
@@ -527,7 +558,7 @@ $(function() {
                             window.location.href = makeSearchURL(formValue);
                         }
                         else {
-                            window.location.href = makeListenURL(videoID);
+                            window.location.href = makeListenURL(videoID, formValueTime);
                         }
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -561,7 +592,6 @@ $(function() {
             sendKeenEvent("demo", {action: "already had video ID in URL"});
         }
     });
-
     // Load the player
     ZenPlayer.init(currentVideoID);
 });
