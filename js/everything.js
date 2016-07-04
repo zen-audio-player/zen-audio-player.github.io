@@ -229,7 +229,7 @@ var ZenPlayer = {
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
-                var updatedUrl;
+                var updatedUrl = that.videoUrl;
                 if (resumeTime > 0) {
                     updatedUrl = that.videoUrl + "&t=" + Math.round(resumeTime);
                     $("#zen-video-title").attr("href", updatedUrl);
