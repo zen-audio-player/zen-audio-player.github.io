@@ -383,7 +383,7 @@ function getCurrentVideoID() {
     }
 
     if (Array.isArray(v)) {
-        v = v[0];
+        v = v.pop();
     }
 
     return wrapParseYouTubeVideoID(v);
