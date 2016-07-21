@@ -378,20 +378,20 @@ function toggleElement(event, toggleID, buttonText) {
  */
 function getCurrentVideoID() {
     var v = URI(window.location).search(true).v;
-    if (!v) {
-        return null;
-    }
+    var r;
 
     if (Array.isArray(v)) {
-        v = v.pop();
+        r = wrapParseYouTubeVideoID(v.pop());
+    } else {
+        r = wrapParseYouTubeVideoID(v);
     }
 
-    return wrapParseYouTubeVideoID(v);
+    return r;
 }
 
 /**
  * Return the current times position, provided by the t query param, parsed to seconds.
- * @returns {*}
+ * @returns {number}
  */
 function getCurrentTimePosition() {
     var t = parseInt(URI(window.location).search(true).t, 10);
@@ -400,9 +400,10 @@ function getCurrentTimePosition() {
     }
     return 0;
 }
+
 /**
  * Return the q query param if one exists.
- * @returns {boolean|string|*|Array}
+ * @returns {string|bool|null}
  */
 function getCurrentSearchQuery() {
     return URI(window.location).search(true).q;
@@ -416,14 +417,15 @@ function getCurrentSearchQuery() {
  * @returns {string}
  */
 function makeListenURL(videoID, videoPosition) {
-    var url = URI(window.location);
+    var url = cleanURL(window.location);
+
     url.setSearch("v", videoID);
 
     if (videoPosition) {
-        url.addSearch("t", videoPosition);
+        url.setSearch("t", videoPosition);
     }
 
-    return url.toString().replace("#", "");
+    return url.toString();
 }
 
 /**
@@ -433,9 +435,20 @@ function makeListenURL(videoID, videoPosition) {
  * @returns {string}
  */
 function makeSearchURL(searchQuery) {
-    var url = URI(window.location);
-    url.setSearch("q", searchQuery);
-    return url.toString().replace("#", "");
+    return cleanURL(window.location)
+      .setSearch("q", searchQuery)
+      .toString();
+}
+
+/**
+ * Remove any search params or fragments from a URL.
+ * @param url
+ * @returns {string} The stripped URL
+ */
+function cleanURL(url) {
+    return URI(url)
+      .search("")
+      .fragment("");
 }
 
 function anchorURLs(text) {
