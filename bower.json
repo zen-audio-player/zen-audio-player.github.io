@@ -21,6 +21,6 @@
     "trackjs": "~2.1.16",
     "typeahead.js": "~0.11.1",
     "plyr": "1.6.x",
-    "urijs": "uri.js#^1.18.1"
+    "urijs": "1.18.1"
   }
 }

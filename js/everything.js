@@ -379,11 +379,12 @@ function toggleElement(event, toggleID, buttonText) {
 function getCurrentVideoID() {
     var v = URI(window.location).search(true).v;
     var r;
-
-    if (Array.isArray(v)) {
-        r = wrapParseYouTubeVideoID(v.pop());
-    } else {
-        r = wrapParseYouTubeVideoID(v);
+    if (v) {
+        if (Array.isArray(v)) {
+            r = wrapParseYouTubeVideoID(v.pop());
+        } else if (v) {
+            r = wrapParseYouTubeVideoID(v);
+        }
     }
 
     return r;
