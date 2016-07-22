@@ -392,7 +392,7 @@ function getCurrentVideoID() {
 
 /**
  * Return the current times position, provided by the t query param, parsed to seconds.
- * @returns {number}
+ * @returns {Number}
  */
 function getCurrentTimePosition() {
     var t = parseInt(URI(window.location).search(true).t, 10);
