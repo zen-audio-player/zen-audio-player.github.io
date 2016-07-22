@@ -411,6 +411,17 @@ function getCurrentSearchQuery() {
 }
 
 /**
+ * Remove any search params or fragments from a URL.
+ * @param url
+ * @returns {string} The stripped URL
+ */
+function cleanURL(url) {
+    return URI(url)
+      .search("")
+      .fragment("");
+}
+
+/**
  * Return the current URL, appending v=videoID and t=videoPosition, if set.
  * Remove hashes from the URL.
  * @param {string} videoID
@@ -439,17 +450,6 @@ function makeSearchURL(searchQuery) {
     return cleanURL(window.location)
       .setSearch("q", searchQuery)
       .toString();
-}
-
-/**
- * Remove any search params or fragments from a URL.
- * @param url
- * @returns {string} The stripped URL
- */
-function cleanURL(url) {
-    return URI(url)
-      .search("")
-      .fragment("");
 }
 
 function anchorURLs(text) {
