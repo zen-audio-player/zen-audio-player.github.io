@@ -376,6 +376,7 @@ var ZenPlayer = {
         var description = "";
 
         if (isFileProtocol()) {
+            console.log("Skipping video description request as we're running the site locally.");
             $("#toggleDescription").hide();
         }
         else {
@@ -433,9 +434,10 @@ function updateTweetMessage() {
     );
 }
 
-function logError(jqXHR, textStatus, errorThrown, errorMessage) {
+function logError(jqXHR, textStatus, errorThrown, _errorMessage) {
     var responseText = JSON.parse(jqXHR.error().responseText);
     errorMessage.show(responseText.error.errors[0].message);
+    console.log(_errorMessage, errorThrown);
 }
 
 function toggleElement(event, toggleID, buttonText) {
