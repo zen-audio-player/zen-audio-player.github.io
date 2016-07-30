@@ -141,14 +141,13 @@ a {
     margin: 0 auto;
     clear: left;
     float: left;
-    margin: 5px;
 }
 
 #search-results h4 a img {
-	vertical-align: middle;
-	border-radius: 8px;
-	margin-right: 5px;
-	padding: 2px;
+    vertical-align: middle;
+    border-radius: 8px;
+    margin-right: 5px;
+    padding: 2px;
 }
 
 

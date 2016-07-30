@@ -259,7 +259,6 @@ var ZenPlayer = {
     setupTitle: function() {
         // Prepend music note only if title does not already begin with one.
         var tmpVideoTitle = this.videoTitle;
-        var tmpVideoID = this.videoID;
         if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(tmpVideoTitle)) {
             tmpVideoTitle = "<i class=\"fa fa-music\"></i> " + tmpVideoTitle;
         }
@@ -497,7 +496,6 @@ $(function() {
                     $("#search-results").show();
                     // Clear out results
                     $("#search-results ul").html("");
-                    
                     var start = "<li><h4><a style='float:right' href=?v=";
                     var end = "</a></h4></li>";
                     $.each(data.items, function(index, result) {
