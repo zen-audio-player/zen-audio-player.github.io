@@ -264,11 +264,8 @@ var ZenPlayer = {
             tmpVideoTitle = "<i class=\"fa fa-music\"></i> " + tmpVideoTitle;
         }
         
-        //var thumbURL = "http://img.youtube.com/vi/" + tmpVideoID + "/1.jpg";
-        
         $("#zen-video-title").html(tmpVideoTitle);
         $("#zen-video-title").attr("href", this.videoUrl);
-        //$("#zen-video-thumb").attr("src", thumbURL);
     },
     setupVideoDescription: function() {
         var description = anchorURLs(this.videoDescription);
