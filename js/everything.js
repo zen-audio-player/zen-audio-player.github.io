@@ -498,9 +498,9 @@ $(function() {
                     var start = "<li><h4><a style='float:right' href=?v=";
                     var end = "</a></h4></li>";
                     $.each(data.items, function(index, result) {
-	                    var thumbTag = "<img style='float:left; margin: auto' src='http://img.youtube.com/vi/" + result.id.videoId + "/1.jpg'>";
+                        var thumbTag = "<img style='float:left; margin: auto' src='http://img.youtube.com/vi/" + result.id.videoId + "/1.jpg'>";
 	                    $("#search-results ul").append(start + result.id.videoId + ">" + thumbTag + result.snippet.title  + end);
-	                    });
+                    });
                 },
                 function(jqXHR, textStatus, errorThrown) {
                     logError(jqXHR, textStatus, errorThrown, "Search error");
