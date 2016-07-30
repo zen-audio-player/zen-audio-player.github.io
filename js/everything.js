@@ -256,7 +256,7 @@ var ZenPlayer = {
     hide: function() {
         $("#audioplayer").hide();
     },
-    setupTitle: function(videoID) {
+    setupTitle: function() {
         // Prepend music note only if title does not already begin with one.
         var tmpVideoTitle = this.videoTitle;
         var tmpVideoID = this.videoID;
