@@ -143,7 +143,7 @@ a {
     float: left;
 }
 
-#search-results h4 a img {
+#search-results a img {
     vertical-align: middle;
     border-radius: 8px;
     margin-right: 5px;
