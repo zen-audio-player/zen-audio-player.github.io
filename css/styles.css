@@ -137,7 +137,20 @@ a {
 
 #search-results li {
     list-style-type: none;
+    display: block;
+    margin: 0 auto;
+    clear: left;
+    float: left;
+    margin: 5px;
 }
+
+#search-results h4 a img {
+	vertical-align: middle;
+	border-radius: 8px;
+	margin-right: 5px;
+	padding: 2px;
+}
+
 
 /* Input field fixes and search suggestion style.
  * typeahead conflicts with primercss */

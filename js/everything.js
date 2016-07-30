@@ -256,14 +256,19 @@ var ZenPlayer = {
     hide: function() {
         $("#audioplayer").hide();
     },
-    setupTitle: function() {
+    setupTitle: function(videoID) {
         // Prepend music note only if title does not already begin with one.
         var tmpVideoTitle = this.videoTitle;
+        var tmpVideoID = this.videoID;
         if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(tmpVideoTitle)) {
             tmpVideoTitle = "<i class=\"fa fa-music\"></i> " + tmpVideoTitle;
         }
+        
+        //var thumbURL = "http://img.youtube.com/vi/" + tmpVideoID + "/1.jpg";
+        
         $("#zen-video-title").html(tmpVideoTitle);
         $("#zen-video-title").attr("href", this.videoUrl);
+        //$("#zen-video-thumb").attr("src", thumbURL);
     },
     setupVideoDescription: function() {
         var description = anchorURLs(this.videoDescription);
@@ -495,11 +500,12 @@ $(function() {
                     $("#search-results").show();
                     // Clear out results
                     $("#search-results ul").html("");
-
-                    var start = "<li><h4><a href=?v=";
+                    
+                    var start = "<li><h4><a style='float:right' href=?v=";
                     var end = "</a></h4></li>";
                     $.each(data.items, function(index, result) {
-                        $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title  + end);
+	                    var thumbTag = "<img style='float:left; margin: auto' src='http://img.youtube.com/vi/" + result.id.videoId + "/1.jpg'>" 
+                        $("#search-results ul").append(start + result.id.videoId + ">" + thumbTag + result.snippet.title  + end);
                     });
                 },
                 function(jqXHR, textStatus, errorThrown) {
