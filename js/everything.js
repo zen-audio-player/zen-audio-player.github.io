@@ -1,4 +1,4 @@
-/*global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription*/
+/* global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
 
 // Pointer to Keen client
 var client;
@@ -12,10 +12,13 @@ function anonymizeFileUrl() {
 }
 
 function sendKeenEvent(_msg, _data) {
+    if (!client) {
+        return;
+    }
     var d = {
-        page_url: anonymizeFileUrl(), //eslint-disable-line camelcase
-        user_agent: "${keen.user_agent}", //eslint-disable-line camelcase
-        ip_address: "${keen.ip}", //eslint-disable-line camelcase
+        page_url: anonymizeFileUrl(), // eslint-disable-line camelcase
+        user_agent: "${keen.user_agent}", // eslint-disable-line camelcase
+        ip_address: "${keen.ip}", // eslint-disable-line camelcase
         keen: {
             addons: [
                 {
@@ -28,7 +31,7 @@ function sendKeenEvent(_msg, _data) {
                 {
                     name: "keen:ua_parser",
                     input: {
-                        ua_string: "user_agent" //eslint-disable-line camelcase
+                        ua_string: "user_agent" // eslint-disable-line camelcase
                     },
                     output: "parsed_user_agent"
                 },
@@ -129,7 +132,7 @@ var ZenPlayer = {
     updated: false,
     init: function(videoID) {
         // Inject svg with control icons
-        $("#plyr-svg").load("../bower_components/plyr/dist/sprite.svg");
+        $("#plyr-svg").load("../bower_components/plyr/dist/plyr.svg");
 
         plyrPlayer = document.querySelector(".plyr");
 
@@ -161,6 +164,14 @@ var ZenPlayer = {
                 that.videoDuration = plyrPlayer.plyr.embed.getDuration();
                 that.videoDescription = that.getVideoDescription(videoID);
                 that.videoUrl = plyrPlayer.plyr.embed.getVideoUrl();
+
+                // Updates the time position by a given argument in URL
+                // IE https://zenplayer.audio/?v=koJv-j1usoI&t=30 starts at 0:30
+                var t = getCurrentTimePosition();
+                if (t) {
+                    that.videoPosition = t;
+                    window.sessionStorage[videoID] = t;
+                }
 
                 // Initialize UI
                 that.setupTitle();
@@ -203,10 +214,10 @@ var ZenPlayer = {
 
             plyrPlayer.addEventListener("timeupdate", function() {
                 // Store the current time of the video.
+                var resumeTime = 0;
                 if (window.sessionStorage) {
                     var currentTime = plyrPlayer.plyr.embed.getCurrentTime();
                     var videoDuration = plyrPlayer.plyr.embed.getDuration();
-                    var resumeTime = 0;
 
                     // Only store the current time if the video isn't done
                     // playing yet. If the video finished already, then it
@@ -218,6 +229,15 @@ var ZenPlayer = {
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
+                var updatedUrl = that.videoUrl;
+                if (resumeTime > 0) {
+                    updatedUrl = that.videoUrl + "&t=" + Math.round(resumeTime);
+                    $("#zen-video-title").attr("href", updatedUrl);
+                }
+                else if (resumeTime <= 0 && $("#zen-video-title").attr("href") !== that.videoUrl) {
+                    updatedUrl = that.videoUrl;
+                }
+                $("#zen-video-title").attr("href", updatedUrl);
             });
 
             plyrPlayer.plyr.source({
@@ -291,6 +311,12 @@ var ZenPlayer = {
         }
 
         return description;
+    },
+    play: function() {
+        plyrPlayer.plyr.embed.playVideo();
+    },
+    pause: function() {
+        plyrPlayer.plyr.embed.pauseVideo();
     }
 };
 
@@ -351,6 +377,14 @@ function getCurrentVideoID() {
     return v;
 }
 
+function getCurrentTimePosition() {
+    var t = parseInt(getParameterByName(window.location.search, "t"), 10);
+    if (t > 0 && t < Number.MAX_VALUE) {
+        return t;
+    }
+    return 0;
+}
+
 function getCurrentSearchQuery() {
     var q = getParameterByName(window.location.search, "q");
     return q;
@@ -363,12 +397,15 @@ function removeSearchQueryFromURL(url) {
     return url;
 }
 
-function makeListenURL(videoID) {
+function makeListenURL(videoID, videoPosition) {
     var url = removeSearchQueryFromURL(window.location.href);
     // Remove any #s which break functionality
     url = url.replace("#", "");
-
-    return url + "?v=" + videoID;
+    url += "?v=" + videoID;
+    if (videoPosition) {
+        url += "&t=" + videoPosition;
+    }
+    return url;
 }
 
 function makeSearchURL(searchQuery) {
@@ -408,12 +445,32 @@ function wrapParseYouTubeVideoID(url) {
     }
 }
 
+// Some demo video's audio, feel free to add more
+var demos = [
+    "koJv-j1usoI", // The Glitch Mob - Starve the Ego, Feed the Soul
+    "EBerFisqduk", // Cazzette - Together (Lost Kings Remix)
+    "jxKjOOR9sPU", // The Temper Trap - Sweet Disposition
+    "03O2yKUgrKw"  // Mike Mago & Dragonette - Outlines
+];
+
+function pickDemo() {
+    return demos[Math.floor(Math.random() * demos.length)];
+}
+
 $(function() {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        $("#container").hide();
+        $("#mobile-message").html("Sorry, we don't support mobile devices.");
+        $("#mobile-message").show();
+        return;
+    }
     // Keen.io
-    client = new Keen({ //eslint-disable-line no-undef
-        projectId: "5690c384c1e0ab0c8a6c59c4",
-        writeKey: "630fa16847ce5ffb01c9cc00327498e4e7716e0f324fb14fdf0e83ffc06f9eacff5fad1313c2701efe4a91c88c34b8d8153cbb121c454056bb63caf60a46336dd9c9e9855ecc5202ef3151d798eda40896d5111f44005c707cbfb32c7ae31070d129d6f520d5604fdbce5ad31e9c7232"
-    });
+    if (typeof Keen !== "undefined") { // eslint-disable-line no-undef
+        client = new Keen({ // eslint-disable-line no-undef
+            projectId: "5690c384c1e0ab0c8a6c59c4",
+            writeKey: "630fa16847ce5ffb01c9cc00327498e4e7716e0f324fb14fdf0e83ffc06f9eacff5fad1313c2701efe4a91c88c34b8d8153cbb121c454056bb63caf60a46336dd9c9e9855ecc5202ef3151d798eda40896d5111f44005c707cbfb32c7ae31070d129d6f520d5604fdbce5ad31e9c7232"
+        });
+    }
 
     errorMessage.init();
 
@@ -472,13 +529,16 @@ $(function() {
     // Handle form submission
     $("#form").submit(function(event) {
         event.preventDefault();
-
         var formValue = $.trim($("#v").val());
+        var formValueTime = /&t=(\d*)$/g.exec(formValue);
+        if (formValueTime && formValueTime.length > 1) {
+            formValueTime = parseInt(formValueTime[1], 10);
+            formValue = formValue.replace(/&t=\d*$/g, "");
+        }
         if (formValue) {
             var videoID = wrapParseYouTubeVideoID(formValue, true);
             ga("send", "event", "form submitted", videoID);
             sendKeenEvent("Form submitted", {videoID: videoID});
-
             if (isFileProtocol()) {
                 errorMessage.show("Skipping video lookup request as we're running the site locally.");
             }
@@ -498,7 +558,7 @@ $(function() {
                             window.location.href = makeSearchURL(formValue);
                         }
                         else {
-                            window.location.href = makeListenURL(videoID);
+                            window.location.href = makeListenURL(videoID, formValueTime);
                         }
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -511,13 +571,10 @@ $(function() {
         }
     });
 
-    var starveTheEgoFeedTheSoulGlitchMob = "koJv-j1usoI";
-
-    // Hide the demo link if playing the demo video's audio
-    if (currentVideoID === starveTheEgoFeedTheSoulGlitchMob) {
+    // Hide the demo link if playing any of the demo video's audio
+    if ($.inArray(currentVideoID, demos) !== -1) {
         $("#demo").hide();
     }
-
     // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
@@ -526,15 +583,15 @@ $(function() {
 
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
-        if (window.location.href.indexOf(starveTheEgoFeedTheSoulGlitchMob) === -1) {
-            window.location.href = makeListenURL(starveTheEgoFeedTheSoulGlitchMob);
+        var pickedDemo = pickDemo();
+        if (window.location.href.indexOf(demos) === -1) {
+            window.location.href = makeListenURL(pickedDemo);
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
             sendKeenEvent("demo", {action: "already had video ID in URL"});
         }
     });
-
     // Load the player
     ZenPlayer.init(currentVideoID);
 });
