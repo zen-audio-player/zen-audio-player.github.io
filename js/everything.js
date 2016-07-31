@@ -175,7 +175,7 @@ var ZenPlayer = {
 
                 // Initialize UI
                 that.setupTitle();
-                that.setupVideoDescription();
+                that.setupVideoDescription(videoID);
                 that.setupPlyrToggle();
             });
 
@@ -265,8 +265,9 @@ var ZenPlayer = {
         $("#zen-video-title").html(tmpVideoTitle);
         $("#zen-video-title").attr("href", this.videoUrl);
     },
-    setupVideoDescription: function() {
+    setupVideoDescription: function(videoID) {
         var description = anchorURLs(this.videoDescription);
+        description = anchorTimestamps(description, videoID);
         $("#zen-video-description").html(description);
         $("#zen-video-description").hide();
 
@@ -425,6 +426,30 @@ function anchorURLs(text) {
     var re = /((?:http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*[^\.\s])?)/g;
     /* Wraps all found URLs in <a> tags */
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
+}
+
+function anchorTimestamps(text, videoID) {
+    /* RegEx to match
+      hh:mm:ss
+      h:mm:ss
+      mm:ss
+      m:ss
+    and wraps the timestamps in <a> tags
+    */
+    var re = /((?:[0-5]\d|\d|)(?:\d|\:[0-5]\d)(?:$|\:[0-5]\d))/g;
+    return text.replace(re, (match, $1) => "<a href=\"" + makeListenURL(videoID, convertTimestamp($1)) + "\">" + $1 + "</a>");
+}
+
+function convertTimestamp(stamp) {
+    // changes timestamps from 01:00:00 to 01h00m00s for example for the makeListenURL function
+    if (stamp.substr(0, stamp.indexOf(":")) !== "00") {
+        stamp = stamp.replace(":", "h");
+    } else {
+        stamp = stamp.slice(3, stamp.length);
+    }
+    stamp = stamp.replace(":", "m");
+    stamp += "s";
+    return stamp;
 }
 
 function wrapParseYouTubeVideoID(url) {
