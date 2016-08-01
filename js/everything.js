@@ -435,21 +435,26 @@ function anchorTimestamps(text, videoID) {
       mm:ss
       m:ss
     and wraps the timestamps in <a> tags
+    RegEx explanation:
+    ((?:[0-5]\d|\d|) either the string is "colon 00-59" or "0-9" or "blank"
+    (?:\d|\:[0-5]\d) either the string is "colon 0-9" or "colon 00-59"
+    (?:$|\:[0-5]\d)) either the string ends or is a a number between 00-59
     */
     var re = /((?:[0-5]\d|\d|)(?:\d|\:[0-5]\d)(?:$|\:[0-5]\d))/g;
-    return text.replace(re, (match, $1) => "<a href=\"" + makeListenURL(videoID, convertTimestamp($1)) + "\">" + $1 + "</a>");
+    return text.replace(re, function(match) { return "<a href=\"" + makeListenURL(videoID, convertTimestamp(match)) + "\">" + match + "</a>"; });
 }
 
 function convertTimestamp(stamp) {
-    // changes timestamps from 01:00:00 to 01h00m00s for example for the makeListenURL function
-    if (stamp.substr(0, stamp.indexOf(":")) !== "00") {
-        stamp = stamp.replace(":", "h");
+    var numberOfColons = stamp.match(/:/g).length;
+    var seconds = 0;
+    stamp = stamp.split(":");
+    if (numberOfColons === 2) {
+        seconds = (+stamp[0]) * 60 * 60 + (+stamp[1]) * 60 + (+stamp[2]);
     } else {
-        stamp = stamp.slice(3, stamp.length);
+        seconds = (+stamp[0]) * 60 + (+stamp[1]);
     }
-    stamp = stamp.replace(":", "m");
-    stamp += "s";
-    return stamp;
+    console.log(seconds);
+    return seconds;
 }
 
 function wrapParseYouTubeVideoID(url) {
