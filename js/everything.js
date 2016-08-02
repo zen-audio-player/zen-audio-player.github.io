@@ -441,20 +441,26 @@ function anchorTimestamps(text, videoID) {
     (?:$|\:[0-5]\d)) either the string ends or is a a number between 00-59
     */
     var re = /((?:[0-5]\d|\d|)(?:\d|\:[0-5]\d)(?:$|\:[0-5]\d))/g;
-    return text.replace(re, function(match) { return "<a href=\"" + makeListenURL(videoID, convertTimestamp(match)) + "\">" + match + "</a>"; });
+    return text.replace(re, function(match) {
+        return "<a href=\"" + makeListenURL(videoID, convertTimestamp(match)) + "\">" + match + "</a>";
+    });
 }
 
-function convertTimestamp(stamp) {
-    var numberOfColons = stamp.match(/:/g).length;
+function convertTimestamp(timestamp) {
     var seconds = 0;
-    stamp = stamp.split(":");
+    var minutes = 0;
+    var hours = 0;
+    var numberOfColons = timestamp.match(/:/g).length;
+    timestamp = timestamp.split(":");
     if (numberOfColons === 2) {
-        seconds = (+stamp[0]) * 60 * 60 + (+stamp[1]) * 60 + (+stamp[2]);
+        hours += parseInt(timestamp[0]) * 60 * 60; // convert hours to seocnds
+        minutes += parseInt(timestamp[1]) * 60; // convert minutes to seconds
+        seconds += parseInt(timestamp[2]); // add remaining seconds
     } else {
-        seconds = (+stamp[0]) * 60 + (+stamp[1]);
+        minutes += parseInt(timestamp[0]) * 60; // convert minutes to sec§onds
+        seconds += parseInt(timestamp[1]); // add remaining seconds
     }
-    console.log(seconds);
-    return seconds;
+    return hours + minutes + seconds;
 }
 
 function wrapParseYouTubeVideoID(url) {
