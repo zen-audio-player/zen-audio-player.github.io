@@ -64,9 +64,6 @@ var currentVideoID;
 var playList = [];
 var autoplayState;
 
-
-
-
 var errorMessage = {
     init: function() {
         // nothing for now
@@ -218,7 +215,7 @@ var ZenPlayer = {
                 that.show();
                 updateTweetMessage();
             });
-			// when player has finished playing
+            // when player has finished playing
             plyrPlayer.addEventListener("ended", function() {
                 if (autoplayState !== null && autoplayState === "true") {
                     plyrPlayer.removeEventListener("ended");
@@ -251,12 +248,8 @@ var ZenPlayer = {
                                 }
                             }
 					// nothing to be played if empty playlist
-                            if (playList.length === 0)
+                            if (playList.length !== 0)
                             {
-                                newId = null;
-                            }
-                            else {
-								// write 'history' dict to storage
                                 idMap[newId] = true;
                                 window.sessionStorage.setItem("idMap", JSON.stringify(idMap));
                             }
@@ -580,32 +573,32 @@ $(function() {
     // How do we know if the value is truly invalid?
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
-    if (currentVideoID) {
+    if (currentVideoID)
+    {
         $("#v").attr("value", currentVideoID);
                             // get similar videos, populate playList
-        $.ajax({
-            url: "https://www.googleapis.com/youtube/v3/search",
-            dataType: "json",
-            async: false,
-            data: {
-                key: youTubeDataApiKey,
-                part: "snippet",
-                type: "video",
-                relatedToVideoId: currentVideoID
-            },
-            success: function(data) {
-				// push items into playlist
-                for (var i = 0;i < data.items.length;i ++ )
-				{
-                    playList.push(data.items[i].id.videoId);
+        if (!isFileProtocol()) {
+            $.ajax({
+                url: "https://www.googleapis.com/youtube/v3/search",
+                dataType: "json",
+                async: false,
+                data: {
+                    key: youTubeDataApiKey,
+                    part: "snippet",
+                    type: "video",
+                    relatedToVideoId: currentVideoID
+                },
+                success: function(data) {
+                    // push items into playlist
+                    for (var i = 0;i < data.items.length;i ++ )
+                    {
+                        playList.push(data.items[i].id.videoId);
+                    }
                 }
-            }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            logError(jqXHR, textStatus, errorThrown, "Lookup error");
-        });
-
-
-
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                logError(jqXHR, textStatus, errorThrown, "Lookup error");
+            });
+        }
     }
     else {
         var currentSearchQuery = getCurrentSearchQuery();
