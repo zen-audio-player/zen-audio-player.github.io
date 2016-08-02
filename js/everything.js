@@ -219,35 +219,35 @@ var ZenPlayer = {
             plyrPlayer.addEventListener("ended", function() {
                 if (autoplayState !== null && autoplayState === "true") {
                     plyrPlayer.removeEventListener("ended");
-					/*
-					 idMap is dict- history of all songs played till now, of the form
-					 <key=videoId>: <value=true>. It is stored in the session storage of the
-					 browser. When the player has finished playing, the last entry from the playlist
-					 is picked as a possible candidate and checked for presence in idMap. If its present ie its
-					 already been played, we pop() and get the new last entry from playlist, looking for a new song. Whatever
-					 is a valid new entry gets added to the dict which is then written to session storage again
-					*/
-					// if playList songs left
+                    /*
+                    idMap is dict- history of all songs played till now, of the form
+                    <key=videoId>: <value=true>. It is stored in the session storage of the
+                    browser. When the player has finished playing, the last entry from the playlist
+                    is picked as a possible candidate and checked for presence in idMap. If its present ie its
+                    already been played, we pop() and get the new last entry from playlist, looking for a new song. Whatever
+                    is a valid new entry gets added to the dict which is then written to session storage again
+                    */
+                    // if playList songs left
                     if (playList.length !== 0)
-					{
-						// get autoplay candidate from playlist
+                    {
+                        // get autoplay candidate from playlist
                         var newId = playList[playList.length - 1];
-						// load 'history' dict from storage
+                        // load 'history' dict from storage
                         var idMap  = window.sessionStorage.getItem("idMap");
                         idMap = JSON.parse(idMap);
                         // first time?
                         if (idMap !== null && newId !== "")
-						{
+                        {
                             // keep popping till unique next song found
                             while ( (newId in idMap) && (playList.length !== 0))
-							{
+                            {
                                 playList.pop();
                                 if (playList.length >= 1)
                                 {
                                     newId = playList[playList.length - 1];
                                 }
                             }
-					// nothing to be played if empty playlist
+                        // nothing to be played if empty playlist
                             if (playList.length !== 0)
                             {
                                 idMap[newId] = true;
@@ -341,23 +341,23 @@ var ZenPlayer = {
         });
     },
     setupAutoplayToggle: function()
-	{
-		// toggle auto next song playing
+    {
+        // toggle auto next song playing
         $("#toggleAutoplay").click(function(event)
-		{
+        {
             var toggleTextElement = $("#" + event.currentTarget.id);
             if (autoplayState === null)
-			{
+            {
                 autoplayState = "true";
                 toggleTextElement.text("Stop autoplay");
             }
             else {
                 if (autoplayState === "true")
-				{
+                {
                     toggleTextElement.text("Start autoplay");
                     autoplayState = "false";
                 }
-				else {
+                else {
                     toggleTextElement.text("Stop autoplay");
                     autoplayState = "true";
                 }
@@ -560,9 +560,9 @@ $(function() {
     errorMessage.init();
     autoplayState = window.sessionStorage.getItem("autoplayState");
     if (autoplayState !== null)
-	{
+    {
         if (autoplayState === "true")
-		{
+        {
             $("#toggleAutoplay").text("Stop autoplay");
         }
         else {
