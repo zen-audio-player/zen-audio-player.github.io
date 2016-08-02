@@ -259,7 +259,7 @@ var ZenPlayer = {
                             idMap[newId] = true;
                             window.sessionStorage.setItem("idMap", JSON.stringify(idMap));
                         }
-						// play the new song from autoplay
+                        // play the new song from autoplay
                         that.playNext(newId);
                     }
                 }
