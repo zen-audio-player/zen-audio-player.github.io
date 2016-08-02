@@ -15,6 +15,13 @@
         "plyr": true
     },
     "rules": {
+        "padded-blocks": [
+            2,
+            "never"
+        ],
+        "no-spaced-func": 2,
+        "no-dupe-args": 2,
+        "no-tabs": 2,
         "indent": [
             2,
             4,
@@ -22,7 +29,10 @@
                 "SwitchCase": 1
             }
         ],
-        "curly": 2,
+        "curly": [
+            2,
+            "all"
+        ],
         "linebreak-style": [
             2,
             "unix"
@@ -37,7 +47,7 @@
         "quotes": [
             2,
             "double",
-            "avoid-escape"
+            {"avoidEscape": false}
         ],
         "no-trailing-spaces": 2,
         "no-unused-expressions": 2,
@@ -50,7 +60,7 @@
         "space-before-blocks": 2,
         "spaced-comment": 2,
         "space-infix-ops": 2,
-        "space-after-keywords": 2,
+        "keyword-spacing": 2,
         "comma-spacing": 2
     },
     "extends": "eslint:recommended"
