@@ -456,7 +456,7 @@ function convertTimestamp(timestamp) {
         minutes += parseInt(timeComponents[1], 10) * 60; // convert minutes to seconds
         seconds += parseInt(timeComponents[2], 10); // add remaining seconds
     } else {
-        minutes += parseInt(timeComponents[0], 10) * 60; // convert minutes to sec§onds
+        minutes += parseInt(timeComponents[0], 10) * 60; // convert minutes to seconds
         seconds += parseInt(timeComponents[1], 10); // add remaining seconds
     }
     return hours + minutes + seconds;
