@@ -452,12 +452,12 @@ function convertTimestamp(timestamp) {
     var hours = 0;
     var timeComponents = timestamp.split(":");
     if (timeComponents.length === 3) {
-        hours += parseInt(timeComponents[0], 10) * 60 * 60; // convert hours to seocnds
-        minutes += parseInt(timeComponents[1], 10) * 60; // convert minutes to seconds
-        seconds += parseInt(timeComponents[2], 10); // add remaining seconds
+        hours = parseInt(timeComponents[0], 10) * 60 * 60; // convert hours to seocnds
+        minutes = parseInt(timeComponents[1], 10) * 60; // convert minutes to seconds
+        seconds = parseInt(timeComponents[2], 10); // add remaining seconds
     } else {
-        minutes += parseInt(timeComponents[0], 10) * 60; // convert minutes to seconds
-        seconds += parseInt(timeComponents[1], 10); // add remaining seconds
+        minutes = parseInt(timeComponents[0], 10) * 60; // convert minutes to seconds
+        seconds = parseInt(timeComponents[1], 10); // add remaining seconds
     }
     return hours + minutes + seconds;
 }
