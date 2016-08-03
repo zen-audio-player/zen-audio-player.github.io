@@ -450,9 +450,8 @@ function convertTimestamp(timestamp) {
     var seconds = 0;
     var minutes = 0;
     var hours = 0;
-    var numberOfColons = timestamp.match(/:/g).length;
     var timeComponents = timestamp.split(":");
-    if (numberOfColons === 2) {
+    if (timeComponents.length === 3) {
         hours += parseInt(timeComponents[0], 10) * 60 * 60; // convert hours to seocnds
         minutes += parseInt(timeComponents[1], 10) * 60; // convert minutes to seconds
         seconds += parseInt(timeComponents[2], 10); // add remaining seconds
