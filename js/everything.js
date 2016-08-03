@@ -453,12 +453,12 @@ function convertTimestamp(timestamp) {
     var numberOfColons = timestamp.match(/:/g).length;
     timestamp = timestamp.split(":");
     if (numberOfColons === 2) {
-        hours += parseInt(timestamp[0]) * 60 * 60; // convert hours to seocnds
-        minutes += parseInt(timestamp[1]) * 60; // convert minutes to seconds
-        seconds += parseInt(timestamp[2]); // add remaining seconds
+        hours += parseInt(timestamp[0], 10) * 60 * 60; // convert hours to seocnds
+        minutes += parseInt(timestamp[1], 10) * 60; // convert minutes to seconds
+        seconds += parseInt(timestamp[2], 10); // add remaining seconds
     } else {
-        minutes += parseInt(timestamp[0]) * 60; // convert minutes to sec§onds
-        seconds += parseInt(timestamp[1]); // add remaining seconds
+        minutes += parseInt(timestamp[0], 10) * 60; // convert minutes to sec§onds
+        seconds += parseInt(timestamp[1], 10); // add remaining seconds
     }
     return hours + minutes + seconds;
 }
