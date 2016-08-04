@@ -307,7 +307,7 @@ var ZenPlayer = {
         }
 
         // If there's no description to show, don't pretend there is
-        if (description.trim().length) {
+        if (description.trim().length === 0) {
             $("#toggleDescription").hide();
         }
 
