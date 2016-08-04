@@ -179,7 +179,7 @@ var ZenPlayer = {
 
                 // Initialize UI
                 that.setupTitle();
-                that.setupVideoDescription();
+                that.setupVideoDescription(videoID);
                 that.setupPlyrToggle();
                 that.setupAutoplayToggle();
             });
@@ -325,8 +325,9 @@ var ZenPlayer = {
         $("#zen-video-title").html(tmpVideoTitle);
         $("#zen-video-title").attr("href", this.videoUrl);
     },
-    setupVideoDescription: function() {
+    setupVideoDescription: function(videoID) {
         var description = anchorURLs(this.videoDescription);
+        description = anchorTimestamps(description, videoID);
         $("#zen-video-description").html(description);
         $("#zen-video-description").hide();
 
@@ -391,7 +392,7 @@ var ZenPlayer = {
         }
 
         // If there's no description to show, don't pretend there is
-        if (description.trim().length) {
+        if (description.trim().length === 0) {
             $("#toggleDescription").hide();
         }
 
@@ -510,6 +511,40 @@ function anchorURLs(text) {
     var re = /((?:http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*[^\.\s])?)/g;
     /* Wraps all found URLs in <a> tags */
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
+}
+
+function anchorTimestamps(text, videoID) {
+    /* RegEx to match
+      hh:mm:ss
+      h:mm:ss
+      mm:ss
+      m:ss
+    and wraps the timestamps in <a> tags
+    RegEx explanation:
+    ((?:[0-5]\d|\d|) either the string is "colon 00-59" or "0-9" or "blank"
+    (?:\d|\:[0-5]\d) either the string is "colon 0-9" or "colon 00-59"
+    (?:$|\:[0-5]\d)) either the string ends or is a a number between 00-59
+    */
+    var re = /((?:[0-5]\d|\d|)(?:\d|\:[0-5]\d)(?:$|\:[0-5]\d))/g;
+    return text.replace(re, function(match) {
+        return "<a href=\"" + makeListenURL(videoID, convertTimestamp(match)) + "\">" + match + "</a>";
+    });
+}
+
+function convertTimestamp(timestamp) {
+    var seconds = 0;
+    var minutes = 0;
+    var hours = 0;
+    var timeComponents = timestamp.split(":");
+    if (timeComponents.length === 3) {
+        hours = parseInt(timeComponents[0], 10) * 60 * 60; // convert hours to seocnds
+        minutes = parseInt(timeComponents[1], 10) * 60; // convert minutes to seconds
+        seconds = parseInt(timeComponents[2], 10); // add remaining seconds
+    } else {
+        minutes = parseInt(timeComponents[0], 10) * 60; // convert minutes to seconds
+        seconds = parseInt(timeComponents[1], 10); // add remaining seconds
+    }
+    return hours + minutes + seconds;
 }
 
 function wrapParseYouTubeVideoID(url) {
