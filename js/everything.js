@@ -63,6 +63,7 @@ var currentVideoID;
 // global playlist, this is populated with an ajax call
 var playList = [];
 var autoplayState;
+var videoMetaData = {};
 
 var errorMessage = {
     init: function() {
@@ -217,52 +218,47 @@ var ZenPlayer = {
             });
             // when player has finished playing
             plyrPlayer.addEventListener("ended", function() {
-                if (autoplayState !== null && autoplayState === "true") {
-                    plyrPlayer.removeEventListener("ended");
-                    /*
-                    idMap is dict- history of all songs played till now, of the form
-                    <key=videoId>: <value=true>. It is stored in the session storage of the
-                    browser. When the player has finished playing, the last entry from the playlist
-                    is picked as a possible candidate and checked for presence in idMap. If its present ie its
-                    already been played, we pop() and get the new last entry from playlist, looking for a new song. Whatever
-                    is a valid new entry gets added to the dict which is then written to session storage again
-                    */
-                    // if playList songs left
-                    if (playList.length !== 0)
-                    {
-                        // get autoplay candidate from playlist
-                        var newId = playList[playList.length - 1];
-                        // load 'history' dict from storage
-                        var idMap  = window.sessionStorage.getItem("idMap");
-                        idMap = JSON.parse(idMap);
-                        // first time?
-                        if (idMap !== null && newId !== "")
+                plyrPlayer.removeEventListener("ended");
+                videoMetaData = window.sessionStorage.getItem("videoMetaData");
+                videoMetaData = JSON.parse(videoMetaData);
+                if (videoMetaData !== null) {
+                    videoMetaData["items"].push({"type" : "youtube", "id" : currentVideoID, "played" : "true" });
+                    videoMetaData["autoplayState"] = autoplayState ;
+                    if (autoplayState !== null && autoplayState === "true") {
+                        /*
+                        videoMetaData contains two variables, an autoplay state and information (list) about all videos played till now.
+                        It is stored in session storage, and retrieved when relevant entries need to be added/modified.
+                        */
+                        // if playList songs left
+                        if (playList.length !== 0)
                         {
+                            // get autoplay candidate from playlist
+                            var newId = playList[playList.length - 1];
                             // keep popping till unique next song found
-                            while ( (newId in idMap) && (playList.length !== 0))
-                            {
-                                playList.pop();
-                                if (playList.length >= 1)
-                                {
-                                    newId = playList[playList.length - 1];
+                            var retry;
+                            var videos = videoMetaData["items"];
+                            do {
+                                retry = false;
+                                for (var i = 0; i < videos.length; i++) {
+                                    if (videos[i]["id"] === newId) {
+                                        playList.pop() ;
+                                        if (playList.length >= 1) {
+                                            newId = playList[playList.length - 1];
+                                            retry = true;
+                                        }
+                                        break;
+                                    }
                                 }
-                            }
-                        // nothing to be played if empty playlist
-                            if (playList.length !== 0)
-                            {
-                                idMap[newId] = true;
-                                window.sessionStorage.setItem("idMap", JSON.stringify(idMap));
-                            }
+                            } while ( retry === true) ;
+                            // play the new song from autoplay
+                            that.playNext(newId);
                         }
-                        else {
-                            idMap = {};
-                            idMap[newId] = true;
-                            window.sessionStorage.setItem("idMap", JSON.stringify(idMap));
-                        }
-                        // play the new song from autoplay
-                        that.playNext(newId);
                     }
                 }
+                else {
+                    videoMetaData = {"autoplayState": "false", "items" : [{"type" : "youtube", "id" : currentVideoID, "played" : "true" }] };
+                }
+                window.sessionStorage.setItem("videoMetaData", JSON.stringify(videoMetaData));
             });
 
 
@@ -363,7 +359,11 @@ var ZenPlayer = {
                     autoplayState = "true";
                 }
             }
-            window.sessionStorage.setItem("autoplayState", autoplayState);
+            // need to load videoMetaData, change autoplay toggle and set it back again
+           /* videoMetaData =  window.sessionStorage.getItem("videoMetaData");
+            videoMetaData = JSON.parse(videoMetaData);
+            videoMetaData["autoplayState"] = autoplayState;
+            window.sessionStorage.setItem("videoMetaData", JSON.stringify(videoMetaData));*/
         });
     },
     getVideoDescription: function(videoID) {
@@ -593,7 +593,13 @@ $(function() {
     }
 
     errorMessage.init();
-    autoplayState = window.sessionStorage.getItem("autoplayState");
+
+    videoMetaData = window.sessionStorage.getItem("videoMetaData");
+
+    if (videoMetaData !== null ) {
+        videoMetaData = JSON.parse(videoMetaData);
+        autoplayState = videoMetaData["autoplayState"];
+    }
     if (autoplayState !== null)
     {
         if (autoplayState === "true")
@@ -625,7 +631,7 @@ $(function() {
                 },
                 success: function(data) {
                     // push items into playlist
-                    for (var i = 0;i < data.items.length;i ++ )
+                    for (var i = 0; i < data.items.length; i++ )
                     {
                         playList.push(data.items[i].id.videoId);
                     }
