@@ -15,6 +15,10 @@
         "plyr": true
     },
     "rules": {
+        "brace-style": [
+            2,
+            "stroustrup"
+        ],
         "padded-blocks": [
             2,
             "never"
