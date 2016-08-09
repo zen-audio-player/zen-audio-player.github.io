@@ -540,7 +540,8 @@ function convertTimestamp(timestamp) {
         hours = parseInt(timeComponents[0], 10) * 60 * 60; // convert hours to seocnds
         minutes = parseInt(timeComponents[1], 10) * 60; // convert minutes to seconds
         seconds = parseInt(timeComponents[2], 10); // add remaining seconds
-    } else {
+    }
+    else {
         minutes = parseInt(timeComponents[0], 10) * 60; // convert minutes to seconds
         seconds = parseInt(timeComponents[1], 10); // add remaining seconds
     }
