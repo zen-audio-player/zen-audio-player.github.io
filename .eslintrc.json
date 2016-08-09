@@ -65,7 +65,14 @@
         "spaced-comment": 2,
         "space-infix-ops": 2,
         "keyword-spacing": 2,
-        "comma-spacing": 2
+        "comma-spacing": 2,
+        "no-extra-semi": 2,
+        "semi-spacing": [
+            2,
+            {
+                "before": false
+            }
+        ]
     },
     "extends": "eslint:recommended"
 }
