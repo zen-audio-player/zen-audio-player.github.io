@@ -62,7 +62,7 @@ var currentVideoID;
 
 // global playlist, this is populated with an ajax call
 var playList = [];
-var autoplayState;
+var autoplayState = false;
 var videoMetaData = {};
 
 var errorMessage = {
@@ -212,53 +212,33 @@ var ZenPlayer = {
                     seconds: plyrPlayer.plyr.embed.getDuration(),
                     youtubeID: plyrPlayer.plyr.embed.getVideoData().video_id
                 });
+
                 // Show player
                 that.show();
                 updateTweetMessage();
             });
             // when player has finished playing
             plyrPlayer.addEventListener("ended", function() {
-                plyrPlayer.removeEventListener("ended");
-                videoMetaData = window.sessionStorage.getItem("videoMetaData");
-                videoMetaData = JSON.parse(videoMetaData);
-                if (videoMetaData !== null) {
-                    videoMetaData["items"].push({"type" : "youtube", "id" : currentVideoID, "played" : "true" });
-                    videoMetaData["autoplayState"] = autoplayState ;
-                    if (autoplayState !== null && autoplayState === "true") {
-                        /*
-                        videoMetaData contains two variables, an autoplay state and information (list) about all videos played till now.
-                        It is stored in session storage, and retrieved when relevant entries need to be added/modified.
-                        */
-                        // if playList songs left
-                        if (playList.length !== 0)
-                        {
-                            // get autoplay candidate from playlist
-                            var newId = playList[playList.length - 1];
-                            // keep popping till unique next song found
-                            var retry;
-                            var videos = videoMetaData["items"];
-                            do {
-                                retry = false;
-                                for (var i = 0; i < videos.length; i++) {
-                                    if (videos[i]["id"] === newId) {
-                                        playList.pop() ;
-                                        if (playList.length >= 1) {
-                                            newId = playList[playList.length - 1];
-                                            retry = true;
-                                        }
-                                        break;
-                                    }
-                                }
-                            } while ( retry === true) ;
-                            // play the new song from autoplay
-                            that.playNext(newId);
-                        }
-                    }
+                videoMetaData = getParsedVideoMetaData();
+                if (videoMetaData) {
+                    videoMetaData["items"].push({"type" :"youtube", "id" :currentVideoID, "played" :true });
+                    videoMetaData["autoplayState"] = autoplayState;
                 }
                 else {
-                    videoMetaData = {"autoplayState": "false", "items" : [{"type" : "youtube", "id" : currentVideoID, "played" : "true" }] };
+                    videoMetaData = {
+                        "autoplayState": autoplayState,
+                        "items": [{
+                            "type": "youtube",
+                            "id": currentVideoID,
+                            "played": true
+                        }]
+                    };
                 }
                 window.sessionStorage.setItem("videoMetaData", JSON.stringify(videoMetaData));
+                if (autoplayState) {
+                    var newId = getNewVideoID();
+                    that.playNext(newId);
+                }
             });
 
 
@@ -337,26 +317,22 @@ var ZenPlayer = {
             toggleElement(event, ".plyr__video-wrapper", "Player");
         });
     },
-    setupAutoplayToggle: function()
-    {
+    setupAutoplayToggle: function() {
         // toggle auto next song playing
-        $("#toggleAutoplay").click(function(event)
-        {
+        $("#toggleAutoplay").click(function(event) {
             var toggleTextElement = $("#" + event.currentTarget.id);
-            if (autoplayState === null)
-            {
-                autoplayState = "true";
+            if (!autoplayState) {
+                autoplayState = true;
                 toggleTextElement.text("Stop autoplay");
             }
             else {
-                if (autoplayState === "true")
-                {
+                if (autoplayState === true) {
                     toggleTextElement.text("Start autoplay");
-                    autoplayState = "false";
+                    autoplayState = false;
                 }
                 else {
                     toggleTextElement.text("Stop autoplay");
-                    autoplayState = "true";
+                    autoplayState = true;
                 }
             }
             // need to load videoMetaData, change autoplay toggle and set it back again
@@ -578,6 +554,44 @@ function pickDemo() {
     return demos[Math.floor(Math.random() * demos.length)];
 }
 
+function updateAutoplayToggle(state) {
+    if (state === true) {
+        $("#toggleAutoplay").text("Stop autoplay");
+    }
+    else {
+        $("#toggleAutoplay").text("Start autoplay");
+    }
+}
+
+function getParsedVideoMetaData() {
+    videoMetaData = window.sessionStorage.getItem("videoMetaData");
+    if (videoMetaData) {
+        videoMetaData = JSON.parse(videoMetaData);
+    }
+    return videoMetaData;
+}
+
+function getNewVideoID() {
+    /*
+    videoMetaData contains two variables, an autoplay state and information (list) about all videos played till now.
+    It is stored in session storage, and retrieved when relevant entries need to be added/modified.
+    */
+    // if playList songs left
+    var nextID = null;
+    while (playList.length > 0) {
+        nextID = playList.pop();
+        for (var i = 0; i < videoMetaData["items"].length && nextID; i++) {
+            var curVideo = videoMetaData["items"][i];
+            if (curVideo["id"] === nextID) {
+                // restart the for loop
+                nextID = playList.pop();
+                i = -1;
+            }
+        }
+    }
+    return nextID;
+}
+
 $(function() {
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         $("#container").hide();
@@ -595,28 +609,19 @@ $(function() {
 
     errorMessage.init();
 
-    videoMetaData = window.sessionStorage.getItem("videoMetaData");
+    videoMetaData = getParsedVideoMetaData();
 
-    if (videoMetaData !== null ) {
-        videoMetaData = JSON.parse(videoMetaData);
+    if (videoMetaData) {
         autoplayState = videoMetaData["autoplayState"];
     }
-    if (autoplayState !== null)
-    {
-        if (autoplayState === "true")
-        {
-            $("#toggleAutoplay").text("Stop autoplay");
-        }
-        else {
-            $("#toggleAutoplay").text("Start autoplay");
-        }
+    if (autoplayState) {
+        updateAutoplayToggle(autoplayState);
     }
 
     // How do we know if the value is truly invalid?
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
-    if (currentVideoID)
-    {
+    if (currentVideoID) {
         $("#v").attr("value", currentVideoID);
                             // get similar videos, populate playList
         if (!isFileProtocol()) {
@@ -632,13 +637,12 @@ $(function() {
                 },
                 success: function(data) {
                     // push items into playlist
-                    for (var i = 0; i < data.items.length; i++ )
-                    {
+                    for (var i = 0; i < data.items.length; i++ ) {
                         playList.push(data.items[i].id.videoId);
                     }
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
-                logError(jqXHR, textStatus, errorThrown, "Lookup error");
+                logError(jqXHR, textStatus, errorThrown, "Related video lookup error");
             });
         }
     }
