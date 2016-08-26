@@ -39,7 +39,7 @@
         ],
         "linebreak-style": [
             2,
-            "unix"
+            "windows"
         ],
         "camelcase": [
             2,
