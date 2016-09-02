@@ -643,8 +643,8 @@ $(function() {
     ZenPlayer.init(currentVideoID);
 
     $(document).on("keyup", function(evt) {
-        evt.preventDefault();
-        if (evt.keyCode === 32) {
+         if (evt.keyCode === 32 && !$("#v").is(':focus')) {
+            evt.preventDefault();     
             if (ZenPlayer.isPlaying) {
                 ZenPlayer.pause();
             }
@@ -656,7 +656,10 @@ $(function() {
 
         // event handler for keydown , prevent default scrolling handler
     $(document).on("keydown", function(evt) {
-        evt.preventDefault();
+        // check if space and search input not focused
+          if (evt.keyCode === 32 && !$("#v").is(':focus')) {                 
+                     evt.preventDefault();            
+             }
     });
 });
 
