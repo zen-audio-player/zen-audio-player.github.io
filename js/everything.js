@@ -643,8 +643,8 @@ $(function() {
     ZenPlayer.init(currentVideoID);
 
     $(document).on("keyup", function(evt) {
-         if (evt.keyCode === 32 && !$("#v").is(':focus')) {
-            evt.preventDefault();     
+        if (evt.keyCode === 32 && !$("#v").is(":focus")) {
+            evt.preventDefault();
             if (ZenPlayer.isPlaying) {
                 ZenPlayer.pause();
             }
@@ -657,9 +657,9 @@ $(function() {
         // event handler for keydown , prevent default scrolling handler
     $(document).on("keydown", function(evt) {
         // check if space and search input not focused
-          if (evt.keyCode === 32 && !$("#v").is(':focus')) {                 
-                     evt.preventDefault();            
-             }
+        if (evt.keyCode === 32 && !$("#v").is(":focus")) {
+            evt.preventDefault();
+        }
     });
 });
 
