@@ -368,7 +368,7 @@ function toggleElement(event, toggleID, buttonText) {
 function getCurrentVideoID() {
     var v = getParameterByName(window.location.search, "v");
     // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
-    var vParams = window.location.search.match(/v=\w+/g);
+    var vParams = window.location.search.match(/v=\w+\-+/g);
     if (vParams && vParams.length > 1) {
         v = vParams[vParams.length - 1].replace("v=", "");
     }
