@@ -1,14 +1,13 @@
-/* global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
+/* global URI getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
 
 // Pointer to Keen client
 var client;
-
+/**
+ * Return localhost if file is served via file:// protocol
+ * @returns {string}
+ */
 function anonymizeFileUrl() {
-    var url = window.location.href;
-    if (url.indexOf("file://") === 0) {
-        url = "localhost";
-    }
-    return url;
+    return isFileProtocol() ? "localhost" : window.location.href;
 }
 
 function sendKeenEvent(_msg, _data) {
@@ -84,8 +83,12 @@ var errorMessage = {
     }
 };
 
+/**
+ * Are we serving the file over file://
+ * @returns {boolean}
+ */
 function isFileProtocol() {
-    return window.location.protocol === "file:";
+    return URI(window.location).protocol() === "file";
 }
 
 function handleYouTubeError(details) {
@@ -321,18 +324,22 @@ var ZenPlayer = {
     }
 };
 
+/**
+ * Create a twitter message with current song if we have one.
+ */
 function updateTweetMessage() {
-    var url = "https://ZenPlayer.Audio";
+    var url = URI("https://ZenPlayer.Audio");
 
     var opts = {
         text: "Listen to YouTube videos without the distracting visuals",
         hashTags: "ZenAudioPlayer",
-        url: url
+        url: url.toString()
     };
 
     var id = getCurrentVideoID();
     if (id) {
-        opts.url += "/?v=" + id;
+        url.setSearch("v", id);
+        opts.url = url.toString();
         opts.text = "I'm listening to " + plyrPlayer.plyr.embed.getVideoData().title;
     }
 
@@ -365,56 +372,85 @@ function toggleElement(event, toggleID, buttonText) {
     }
 }
 
+/**
+ * wrapParseYouTubeVideoID the first v query value.
+ * Will return null if there's no v query param
+ * @return {string|null}
+ */
 function getCurrentVideoID() {
-    var v = getParameterByName(window.location.search, "v");
-    // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
-    var vParams = window.location.search.match(/v=\w+/g);
-    if (vParams && vParams.length > 1) {
-        v = vParams[vParams.length - 1].replace("v=", "");
+    var v = URI(window.location).search(true).v;
+    var r;
+    if (v) {
+        if (Array.isArray(v)) {
+            r = wrapParseYouTubeVideoID(v.pop());
+        } else if (v) {
+            r = wrapParseYouTubeVideoID(v);
+        }
     }
-    else if (v.length > 1) {
-        return wrapParseYouTubeVideoID(v);
-    }
-    return v;
+
+    return r;
 }
 
+/**
+ * Return the current times position, provided by the t query param, parsed to seconds.
+ * @returns {Number}
+ */
 function getCurrentTimePosition() {
-    var t = parseInt(getParameterByName(window.location.search, "t"), 10);
+    var t = parseInt(URI(window.location).search(true).t, 10);
     if (t > 0 && t < Number.MAX_VALUE) {
         return t;
     }
     return 0;
 }
 
+/**
+ * Return the q query param if one exists.
+ * @returns {string|bool|null}
+ */
 function getCurrentSearchQuery() {
-    var q = getParameterByName(window.location.search, "q");
-    return q;
+    return URI(window.location).search(true).q;
 }
 
-function removeSearchQueryFromURL(url) {
-    if (window.location.search.length !== 0) {
-        url = window.location.href.replace(window.location.search, "");
-    }
-    return url;
+/**
+ * Remove any search params or fragments from a URL.
+ * @param url
+ * @returns {string} The stripped URL
+ */
+function cleanURL(url) {
+    return URI(url)
+      .search("")
+      .fragment("");
 }
 
+/**
+ * Return the current URL, appending v=videoID and t=videoPosition, if set.
+ * Remove hashes from the URL.
+ * @param {string} videoID
+ * @param {number} [videoPosition]
+ * @returns {string}
+ */
 function makeListenURL(videoID, videoPosition) {
-    var url = removeSearchQueryFromURL(window.location.href);
-    // Remove any #s which break functionality
-    url = url.replace("#", "");
-    url += "?v=" + videoID;
+    var url = cleanURL(window.location);
+
+    url.setSearch("v", videoID);
+
     if (videoPosition) {
-        url += "&t=" + videoPosition;
+        url.setSearch("t", videoPosition);
     }
-    return url;
+
+    return url.toString();
 }
 
+/**
+ * Return the current url with the Q query param set to the searchQuery.
+ * Strip any hashes from the URL.
+ * @param {string} searchQuery
+ * @returns {string}
+ */
 function makeSearchURL(searchQuery) {
-    var url = removeSearchQueryFromURL(window.location.href);
-    // Remove any #s which break functionality
-    url = url.replace("#", "");
-
-    return url + "?q=" + encodeURIComponent(searchQuery);
+    return cleanURL(window.location)
+      .setSearch("q", searchQuery)
+      .toString();
 }
 
 function anchorURLs(text) {
