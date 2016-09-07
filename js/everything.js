@@ -130,6 +130,7 @@ function handleYouTubeError(details) {
 // One day, try to move all globals under the ZenPlayer object
 var ZenPlayer = {
     updated: false,
+    isPlaying:false,
     init: function(videoID) {
         // Inject svg with control icons
         $("#plyr-svg").load("../bower_components/plyr/dist/plyr.svg");
@@ -239,6 +240,16 @@ var ZenPlayer = {
                 }
                 $("#zen-video-title").attr("href", updatedUrl);
             });
+
+               // event handler for playing : set isPlaying to true
+            plyrPlayer.addEventListener("playing", function() {
+                this.isPlaying = true;
+            }.bind(this));
+
+            // event handler for playing : set isPlaying to false
+            plyrPlayer.addEventListener("pause", function() {
+                this.isPlaying = false;
+            }.bind(this));
 
             plyrPlayer.plyr.source({
                 type: "video",
@@ -630,6 +641,26 @@ $(function() {
     });
     // Load the player
     ZenPlayer.init(currentVideoID);
+
+    $(document).on("keyup", function(evt) {
+        if (evt.keyCode === 32 && !$("#v").is(":focus")) {
+            evt.preventDefault();
+            if (ZenPlayer.isPlaying) {
+                ZenPlayer.pause();
+            }
+            else {
+                ZenPlayer.play();
+            }
+        }
+    });
+
+        // event handler for keydown , prevent default scrolling handler
+    $(document).on("keydown", function(evt) {
+        // check if space and search input not focused
+        if (evt.keyCode === 32 && !$("#v").is(":focus")) {
+            evt.preventDefault();
+        }
+    });
 });
 
 /*eslint-disable */
