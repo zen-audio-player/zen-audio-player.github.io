@@ -240,12 +240,10 @@ var ZenPlayer = {
                 $("#zen-video-title").attr("href", updatedUrl);
             });
 
-               // event handler for playing : set isPlaying to true
             plyrPlayer.addEventListener("playing", function() {
                 this.isPlaying = true;
             }.bind(this));
 
-            // event handler for playing : set isPlaying to false
             plyrPlayer.addEventListener("pause", function() {
                 this.isPlaying = false;
             }.bind(this));
@@ -644,6 +642,7 @@ $(function() {
     ZenPlayer.init(currentVideoID);
 
     $(document).on("keyup", function(evt) {
+        // 32 = spacebar, toggle play/pause if not typing in the search box
         if (evt.keyCode === 32 && !$("#v").is(":focus")) {
             evt.preventDefault();
             if (ZenPlayer.isPlaying) {
@@ -655,9 +654,8 @@ $(function() {
         }
     });
 
-    // event handler for keydown , prevent default scrolling handler
     $(document).on("keydown", function(evt) {
-        // check if space and search input not focused
+        // 32 = spacebar, if not typing in the search prevent "page down" scrolling
         if (evt.keyCode === 32 && !$("#v").is(":focus")) {
             evt.preventDefault();
         }
