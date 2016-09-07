@@ -55,7 +55,6 @@ function sendKeenEvent(_msg, _data) {
 /**
  * YouTube iframe API required setup
  */
-// var player;
 var plyrPlayer;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
@@ -130,6 +129,7 @@ function handleYouTubeError(details) {
 // One day, try to move all globals under the ZenPlayer object
 var ZenPlayer = {
     updated: false,
+    isPlaying: false,
     init: function(videoID) {
         // Inject svg with control icons
         $("#plyr-svg").load("../bower_components/plyr/dist/plyr.svg");
@@ -138,7 +138,7 @@ var ZenPlayer = {
 
         plyr.setup(plyrPlayer, {
             autoplay: true,
-            controls:["play", "progress", "current-time", "duration", "mute", "volume"],
+            controls: ["play", "progress", "current-time", "duration", "mute", "volume"],
             hideControls: false
         });
 
@@ -239,6 +239,14 @@ var ZenPlayer = {
                 }
                 $("#zen-video-title").attr("href", updatedUrl);
             });
+
+            plyrPlayer.addEventListener("playing", function() {
+                this.isPlaying = true;
+            }.bind(this));
+
+            plyrPlayer.addEventListener("pause", function() {
+                this.isPlaying = false;
+            }.bind(this));
 
             plyrPlayer.plyr.source({
                 type: "video",
@@ -611,6 +619,7 @@ $(function() {
     if ($.inArray(currentVideoID, demos) !== -1) {
         $("#demo").hide();
     }
+
     // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
@@ -628,8 +637,29 @@ $(function() {
             sendKeenEvent("demo", {action: "already had video ID in URL"});
         }
     });
+
     // Load the player
     ZenPlayer.init(currentVideoID);
+
+    $(document).on("keyup", function(evt) {
+        // 32 = spacebar, toggle play/pause if not typing in the search box
+        if (evt.keyCode === 32 && !$("#v").is(":focus")) {
+            evt.preventDefault();
+            if (ZenPlayer.isPlaying) {
+                ZenPlayer.pause();
+            }
+            else {
+                ZenPlayer.play();
+            }
+        }
+    });
+
+    $(document).on("keydown", function(evt) {
+        // 32 = spacebar, if not typing in the search prevent "page down" scrolling
+        if (evt.keyCode === 32 && !$("#v").is(":focus")) {
+            evt.preventDefault();
+        }
+    });
 });
 
 /*eslint-disable */
