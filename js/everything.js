@@ -55,7 +55,6 @@ function sendKeenEvent(_msg, _data) {
 /**
  * YouTube iframe API required setup
  */
-// var player;
 var plyrPlayer;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
@@ -130,7 +129,7 @@ function handleYouTubeError(details) {
 // One day, try to move all globals under the ZenPlayer object
 var ZenPlayer = {
     updated: false,
-    isPlaying:false,
+    isPlaying: false,
     init: function(videoID) {
         // Inject svg with control icons
         $("#plyr-svg").load("../bower_components/plyr/dist/plyr.svg");
@@ -139,7 +138,7 @@ var ZenPlayer = {
 
         plyr.setup(plyrPlayer, {
             autoplay: true,
-            controls:["play", "progress", "current-time", "duration", "mute", "volume"],
+            controls: ["play", "progress", "current-time", "duration", "mute", "volume"],
             hideControls: false
         });
 
@@ -622,6 +621,7 @@ $(function() {
     if ($.inArray(currentVideoID, demos) !== -1) {
         $("#demo").hide();
     }
+
     // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
@@ -639,6 +639,7 @@ $(function() {
             sendKeenEvent("demo", {action: "already had video ID in URL"});
         }
     });
+
     // Load the player
     ZenPlayer.init(currentVideoID);
 
@@ -654,7 +655,7 @@ $(function() {
         }
     });
 
-        // event handler for keydown , prevent default scrolling handler
+    // event handler for keydown , prevent default scrolling handler
     $(document).on("keydown", function(evt) {
         // check if space and search input not focused
         if (evt.keyCode === 32 && !$("#v").is(":focus")) {
