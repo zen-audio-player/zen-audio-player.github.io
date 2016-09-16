@@ -39,6 +39,21 @@ function getYouTubeVideoDescription(videoID, youTubeDataApiKey, onSuccess, onFai
     }).fail(onFail);
 }
 
+function getYouTubeListItems(listID, youTubeDataApiKey, onSuccess, onFail) {
+    // Request the video description
+    $.ajax({
+        url: "https://www.googleapis.com/youtube/v3/playlistItems",
+        dataType: "json",
+        async: false,
+        data: {
+            key: youTubeDataApiKey,
+            part: "snippet",
+            id: listID
+        },
+        success: onSuccess
+    }).fail(onFail);
+}
+
 // The url parameter could be the video ID
 function parseYoutubeVideoID(url) {
     var videoInfo = {
@@ -47,10 +62,17 @@ function parseYoutubeVideoID(url) {
     };
     var shortUrlDomain = "youtu.be";
     var longUrlDomain = "youtube.com";
+    var playlistUrlElement = "&list=";
 
     if (url && url.length > 0) {
+        // youtube playlist url
+        if(url.indexOf(playlistUrlElement) !== -1) {
+            videoInfo.format = "list";   
+            videoInfo.listID = getParameterByName(url, "list");
+            videoInfo.id = getParameterByName(url, "v");
+        }
         // youtube.com format
-        if (url.indexOf(longUrlDomain) !== -1) {
+        else if (url.indexOf(longUrlDomain) !== -1) {
             videoInfo.format = longUrlDomain;
             videoInfo.id = getParameterByName(url, "v");
         }

@@ -59,6 +59,30 @@ function sendKeenEvent(_msg, _data) {
 var plyrPlayer;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
+var currentListID;
+var currentListIndex;
+var listData;
+var isPlayingPlaylist = false;
+
+function getSource(url) {
+        var xmlHttp = null;
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", url, false );
+        xmlHttp.send( null );
+        return xmlHttp.responseText;
+}
+
+function loadList(listID) {
+    console.log("list=" + listID);
+    isPlayingPlaylist = true;
+    var url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2C+id&maxResults=50&playlistId=" + listID + "&key=" + youTubeDataApiKey;
+    var source=getSource(url);
+    listData = JSON.parse(source);
+    currentListIndex = 0;
+    //console.log(listData);
+    var firstSongID = listData.items[0].snippet.resourceId.videoId;
+    window.location.href = makeListenURL(firstSongID);
+}
 
 var errorMessage = {
     init: function() {
@@ -145,6 +169,26 @@ var ZenPlayer = {
         // Load video into Plyr player
         if (plyrPlayer.plyr) {
             var that = this;
+            plyrPlayer.addEventListener("ended", function(event) {
+                console.log("ended");
+                if(window.location.href.indexOf("playlistid=") !== -1) {
+                    currentListIndex = getParameterByName(window.location.search, "playlistindex");
+                    currentListIndex++;
+                    currentListID = getParameterByName(window.location.search, "playlistid");
+                    var url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2C+id&maxResults=50&playlistId=" + currentListID + "&key=" + youTubeDataApiKey;
+                    var source=getSource(url);
+                    listData = JSON.parse(source);
+                    if(currentListIndex < listData.items.length) {
+                        isPlayingPlaylist = true;
+                        var nextSongID = listData.items[currentListIndex].snippet.resourceId.videoId;
+                        window.location.href = makeListenURL(nextSongID);
+                    }
+                    else {
+                        console.log("playlist ended");
+                    }
+                }
+            });
+
             plyrPlayer.addEventListener("error", function(event) {
                 if (event && event.detail && typeof event.detail.code === "number") {
                     handleYouTubeError(event.detail);
@@ -377,6 +421,11 @@ function getCurrentVideoID() {
     return v;
 }
 
+function getCurrentListID() {
+    var v = getParameterByName(window.location.search, "list");
+    return v;
+}
+
 function getCurrentTimePosition() {
     var t = parseInt(getParameterByName(window.location.search, "t"), 10);
     if (t > 0 && t < Number.MAX_VALUE) {
@@ -402,6 +451,23 @@ function makeListenURL(videoID, videoPosition) {
     // Remove any #s which break functionality
     url = url.replace("#", "");
     url += "?v=" + videoID;
+    if(isPlayingPlaylist) {
+        url += "&playlistindex=" + currentListIndex + "&playlistid=" + currentListID;
+    }
+    else {
+        //console.log("no appending");
+    }
+    if (videoPosition) {
+        url += "&t=" + videoPosition;
+    }
+    return url;
+}
+
+function makeListenListURL(listID, videoPosition) {
+    var url = removeSearchQueryFromURL(window.location.href);
+    // Remove any #s which break functionality
+    url = url.replace("#", "");
+    url += "?list=" + listID;
     if (videoPosition) {
         url += "&t=" + videoPosition;
     }
@@ -435,7 +501,15 @@ function wrapParseYouTubeVideoID(url) {
 
     var info = parseYoutubeVideoID(url);
 
-    if (info.id) {
+    if(info.listID) {
+        currentVideoID = info.id;
+        currentListID= info.listID;
+        isPlayingPlaylist = true;
+        currentListIndex = 0;
+        ga("send", "event", "video ID format", info.format);
+        return info.id;
+    }
+    else if (info.id) {
         currentVideoID = info.id;
         ga("send", "event", "video ID format", info.format);
         return info.id;
@@ -476,7 +550,8 @@ $(function() {
 
     // How do we know if the value is truly invalid?
     // Preload the form from the URL
-    var currentVideoID = getCurrentVideoID();
+    currentVideoID = getCurrentVideoID();
+    currentListID = getCurrentListID();
     if (currentVideoID) {
         $("#v").attr("value", currentVideoID);
     }
@@ -557,6 +632,9 @@ $(function() {
                         if (data.items.length === 0) {
                             window.location.href = makeSearchURL(formValue);
                         }
+                        else if(currentListID) {
+                            window.location.href = makeListenListURL(currentListID, formValueTime);
+                        }
                         else {
                             window.location.href = makeListenURL(videoID, formValueTime);
                         }
@@ -593,7 +671,16 @@ $(function() {
         }
     });
     // Load the player
-    ZenPlayer.init(currentVideoID);
+    if(window.location.href.indexOf("list=") !== -1) {
+        console.log("loading list");
+        isPlayingPlaylist = true;
+        loadList(currentListID);
+    }
+    else {
+        console.log("loading song");
+        if(window.location.href.indexOf("playlistid=") !== -1) isPlayingPlaylist = true;
+        ZenPlayer.init(currentVideoID);
+    }
 });
 
 /*eslint-disable */
