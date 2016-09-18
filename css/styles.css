@@ -54,7 +54,7 @@ a {
 
 #container {
     width: 80%;
-    margin: 0 auto;
+    margin: 10px auto 0;
 }
 
 @media all and (min-width: 480px) {
@@ -84,7 +84,7 @@ a {
 }
 
 #playerControls {
-    margin-bottom: 15px;
+    margin: 8px 0 15px;
 }
 
 #zen-video-title, #demo {
@@ -249,4 +249,8 @@ a {
     color: #565d64;
     position: relative;
     background: #ffffff;
+}
+
+#audioplayer .plyr__volume--display, #audioplayer .plyr__progress--buffer {
+    background-color: #f9f9f9;
 }
