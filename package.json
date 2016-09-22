@@ -7,7 +7,7 @@
     "lint:js": "eslint js/*.js",
     "lint:tests": "eslint test/*.js",
     "lint:html": "htmlhint index.html",
-    "lint:css": "csslint --format=compact --warnings=box-model,ids css/*.css",
+    "lint:css": "csslint --format=compact --warnings=box-model,ids css/",
     "stylelint:css": "stylelint css/*.css",
     "lint": "npm run lint:js && npm run lint:html && npm run lint:css && npm run lint:tests",
     "pretest": "npm run stylelint:css && npm run lint",
@@ -32,12 +32,12 @@
   },
   "homepage": "https://zen-audio-player.github.io",
   "devDependencies": {
+    "csslint": "0.10.x",
     "eslint": "3.x",
     "htmlhint": "0.9.x",
-    "mocha": "2.3.x",
-    "zombie": "4.x",
-    "csslint": "0.10.x",
-    "stylelint": "3.2.x"
+    "mocha": "^2.3.4",
+    "stylelint": "3.2.x",
+    "zombie": "4.x"
   },
   "engines": {
     "node": ">=4.x"

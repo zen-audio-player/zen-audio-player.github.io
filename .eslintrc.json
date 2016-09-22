@@ -72,7 +72,15 @@
             {
                 "before": false
             }
-        ]
+        ],
+        "key-spacing": [
+            2,
+            {
+                "mode": "strict"
+            }
+        ],
+        "no-irregular-whitespace": 2,
+        "spaced-comment": 2
     },
     "extends": "eslint:recommended"
 }
