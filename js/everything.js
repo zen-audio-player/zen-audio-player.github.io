@@ -386,27 +386,16 @@ function toggleElement(event, toggleID, buttonText) {
  * @return {string|null}
  */
 function getCurrentVideoID() {
-// <<<<<<< HEAD
     var v = URI(window.location).search(true).v;
-    var r;
-    if (v) {
-        if (Array.isArray(v)) {
-            r = wrapParseYouTubeVideoID(v.pop());
-        } else if (v) {
-            r = wrapParseYouTubeVideoID(v);
-        }
-// =======
-//     var v = getParameterByName(window.location.search, "v");
-//     // If the URL had 2 v parameters, try parsing the second (usually when ?v=someurl&v=xyz)
-//     var vParams = window.location.search.match(/v=[\w-]+/g);
-//     if (vParams && vParams.length > 1) {
-//         v = vParams[vParams.length - 1].replace("v=", "");
-//     }
-//     else if (v.length > 1) {
-//         return wrapParseYouTubeVideoID(v);
-// >>>>>>> master
-    }
 
+    // If the URL has multiple v parameters, take parsing the last one (usually when ?v=someurl&v=xyz)
+    var r;
+    if (Array.isArray(v)) {
+        r = wrapParseYouTubeVideoID(v.pop());
+    }
+    else if (v) {
+        r = wrapParseYouTubeVideoID(v);
+    }
     return r;
 }
 
@@ -436,9 +425,7 @@ function getCurrentSearchQuery() {
  * @returns {string} The stripped URL
  */
 function cleanURL(url) {
-    return URI(url)
-      .search("")
-      .fragment("");
+    return URI(url).search("").fragment("");
 }
 
 /**
@@ -467,9 +454,7 @@ function makeListenURL(videoID, videoPosition) {
  * @returns {string}
  */
 function makeSearchURL(searchQuery) {
-    return cleanURL(window.location)
-      .setSearch("q", searchQuery)
-      .toString();
+    return cleanURL(window.location).setSearch("q", searchQuery).toString();
 }
 
 function anchorURLs(text) {
