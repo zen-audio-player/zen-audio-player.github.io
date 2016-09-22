@@ -1,10 +1,5 @@
-/* eslint-disable no-unused-vars */
-function getParameterByName(url, name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(url);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
+/* eslint-disable no-unused-vars*/
+/* global URI */
 
 function getSearchResults(query, youTubeDataApiKey, onData, onFail) {
     $.getJSON("https://www.googleapis.com/youtube/v3/search", {
@@ -39,8 +34,17 @@ function getYouTubeVideoDescription(videoID, youTubeDataApiKey, onSuccess, onFai
     }).fail(onFail);
 }
 
-// The url parameter could be the video ID
-function parseYoutubeVideoID(url) {
+/**
+ * Given a YouTube video ID, YouTube.com video URL, or YouTu.Be video URL, return an object
+ * containing the method used to derive the ID, and the ID itself. The following were used to test;
+ * FdeioVndUhs
+ * https://youtu.be/FdeioVndUhs
+ * https://www.youtube.com/watch?v=FdeioVndUhs&feature=youtu.be
+ *
+ * @param {string} uri - YouTube video ID, YouTube.com url, or YouTu.be url.
+ * @returns {{format: string, id: string}} - Object containing format and YouTube ID.
+ */
+function parseYoutubeVideoID(uri) {
     var videoInfo = {
         format: "other",
         id: null
@@ -48,23 +52,24 @@ function parseYoutubeVideoID(url) {
     var shortUrlDomain = "youtu.be";
     var longUrlDomain = "youtube.com";
 
-    if (url && url.length > 0) {
+    var url = URI(uri);
+    var domain = url.domain();
+
+    if (uri && uri.length > 0) {
         // youtube.com format
-        if (url.indexOf(longUrlDomain) !== -1) {
+        if (domain === longUrlDomain) {
             videoInfo.format = longUrlDomain;
-            videoInfo.id = getParameterByName(url, "v");
+            videoInfo.id = url.search(true).v;
         }
         // youtu.be format
-        else if (url.indexOf(shortUrlDomain) !== -1) {
+        else if (domain === shortUrlDomain) {
             videoInfo.format = shortUrlDomain;
-            var endPosition = url.indexOf("?") === -1 ? url.length : url.indexOf("?");
-            var offset = url.indexOf(shortUrlDomain) + shortUrlDomain.length + 1; // Skip over the slash also
-            videoInfo.id = url.substring(offset, endPosition);
+            videoInfo.id = url.path().slice(1);
         }
         // Assume YouTube video ID string
         else {
             videoInfo.format = "video ID";
-            videoInfo.id = url;
+            videoInfo.id = uri;
         }
 
         var slashPos = videoInfo.id.indexOf("/");
@@ -76,5 +81,4 @@ function parseYoutubeVideoID(url) {
 
         return videoInfo;
     }
-}
-/* eslint-enable */
+}/* eslint-enable */
