@@ -64,24 +64,20 @@ var currentListIndex;
 var listData;
 var isPlayingPlaylist = false;
 
-function getSource(url) {
-        var xmlHttp = null;
-        xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "GET", url, false );
-        xmlHttp.send( null );
-        return xmlHttp.responseText;
-}
-
 function loadList(listID) {
-    console.log("list=" + listID);
     isPlayingPlaylist = true;
-    var url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2C+id&maxResults=50&playlistId=" + listID + "&key=" + youTubeDataApiKey;
-    var source=getSource(url);
-    listData = JSON.parse(source);
     currentListIndex = 0;
-    //console.log(listData);
-    var firstSongID = listData.items[0].snippet.resourceId.videoId;
-    window.location.href = makeListenURL(firstSongID);
+    getYouTubeListItems(
+        listID, 
+        youTubeDataApiKey, 
+        function(data){
+            var firstSongID = data.items[0].snippet.resourceId.videoId;
+            window.location.href = makeListenURL(firstSongID);
+        },
+        function(jqXHR, textStatus, errorThrown) {
+            logError(jqXHR, textStatus, errorThrown, "Search error");
+        }
+    );
 }
 
 var errorMessage = {
@@ -175,17 +171,23 @@ var ZenPlayer = {
                     currentListIndex = getParameterByName(window.location.search, "playlistindex");
                     currentListIndex++;
                     currentListID = getParameterByName(window.location.search, "playlistid");
-                    var url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2C+id&maxResults=50&playlistId=" + currentListID + "&key=" + youTubeDataApiKey;
-                    var source=getSource(url);
-                    listData = JSON.parse(source);
-                    if(currentListIndex < listData.items.length) {
-                        isPlayingPlaylist = true;
-                        var nextSongID = listData.items[currentListIndex].snippet.resourceId.videoId;
-                        window.location.href = makeListenURL(nextSongID);
-                    }
-                    else {
-                        console.log("playlist ended");
-                    }
+                    getYouTubeListItems(
+                        currentListID,
+                        youTubeDataApiKey,
+                        function(listData) {
+                            if(currentListIndex < listData.items.length) {
+                                isPlayingPlaylist = true;
+                                var nextSongID = listData.items[currentListIndex].snippet.resourceId.videoId;
+                                window.location.href = makeListenURL(nextSongID);
+                            }
+                            else {
+                                console.log("playlist ended");
+                            }
+                        },
+                        function(jqXHR, textStatus, errorThrown) {
+                            logError(jqXHR, textStatus, errorThrown, "Search error");
+                        }
+                        );
                 }
             });
 
@@ -422,8 +424,8 @@ function getCurrentVideoID() {
 }
 
 function getCurrentListID() {
-    var v = getParameterByName(window.location.search, "list");
-    return v;
+    var listParam = getParameterByName(window.location.search, "list");
+    return listParam;
 }
 
 function getCurrentTimePosition() {
@@ -453,9 +455,6 @@ function makeListenURL(videoID, videoPosition) {
     url += "?v=" + videoID;
     if(isPlayingPlaylist) {
         url += "&playlistindex=" + currentListIndex + "&playlistid=" + currentListID;
-    }
-    else {
-        //console.log("no appending");
     }
     if (videoPosition) {
         url += "&t=" + videoPosition;
@@ -500,7 +499,7 @@ function wrapParseYouTubeVideoID(url) {
     }
 
     var info = parseYoutubeVideoID(url);
-
+    console.log(info);
     if(info.listID) {
         currentVideoID = info.id;
         currentListID= info.listID;
@@ -677,7 +676,7 @@ $(function() {
         loadList(currentListID);
     }
     else {
-        console.log("loading song");
+        console.log("loading song : " + currentVideoID);
         if(window.location.href.indexOf("playlistid=") !== -1) isPlayingPlaylist = true;
         ZenPlayer.init(currentVideoID);
     }
