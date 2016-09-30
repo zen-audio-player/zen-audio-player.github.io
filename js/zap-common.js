@@ -58,12 +58,12 @@ function parseYoutubeVideoID(url) {
     };
     var shortUrlDomain = "youtu.be";
     var longUrlDomain = "youtube.com";
-    //var playlistUrlElement = "&list=";
+
 
     if (url && url.length > 0) {
         // youtube playlist url
-        if(getParameterByName(url, "list") != "") {
-            videoInfo.format = "list";   
+        if (getParameterByName(url, "list") !== "") {
+            videoInfo.format = "list";
             videoInfo.listID = getParameterByName(url, "list");
             videoInfo.id = getParameterByName(url, "v");
         }

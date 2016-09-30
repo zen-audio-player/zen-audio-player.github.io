@@ -61,16 +61,16 @@ var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
 var currentListID;
 var currentListIndex;
-var listData;
+
 var isPlayingPlaylist = false;
 
 function loadList(listID) {
     isPlayingPlaylist = true;
     currentListIndex = 0;
     getYouTubeListItems(
-        listID, 
-        youTubeDataApiKey, 
-        function(data){
+        listID,
+        youTubeDataApiKey,
+        function(data) {
             var firstSongID = data.items[0].snippet.resourceId.videoId;
             window.location.href = makeListenURL(firstSongID);
         },
@@ -167,7 +167,7 @@ var ZenPlayer = {
             var that = this;
             plyrPlayer.addEventListener("ended", function(event) {
                 console.log("ended");
-                if(window.location.href.indexOf("playlistid=") !== -1) {
+                if (window.location.href.indexOf("playlistid=") !== -1) {
                     currentListIndex = getParameterByName(window.location.search, "playlistindex");
                     currentListIndex++;
                     currentListID = getParameterByName(window.location.search, "playlistid");
@@ -175,7 +175,7 @@ var ZenPlayer = {
                         currentListID,
                         youTubeDataApiKey,
                         function(listData) {
-                            if(currentListIndex < listData.items.length) {
+                            if (currentListIndex < listData.items.length) {
                                 isPlayingPlaylist = true;
                                 var nextSongID = listData.items[currentListIndex].snippet.resourceId.videoId;
                                 window.location.href = makeListenURL(nextSongID);
@@ -453,7 +453,7 @@ function makeListenURL(videoID, videoPosition) {
     // Remove any #s which break functionality
     url = url.replace("#", "");
     url += "?v=" + videoID;
-    if(isPlayingPlaylist) {
+    if (isPlayingPlaylist) {
         url += "&playlistindex=" + currentListIndex + "&playlistid=" + currentListID;
     }
     if (videoPosition) {
@@ -500,9 +500,9 @@ function wrapParseYouTubeVideoID(url) {
 
     var info = parseYoutubeVideoID(url);
     console.log(info);
-    if(info.listID) {
+    if (info.listID) {
         currentVideoID = info.id;
-        currentListID= info.listID;
+        currentListID = info.listID;
         isPlayingPlaylist = true;
         currentListIndex = 0;
         ga("send", "event", "video ID format", info.format);
@@ -631,7 +631,7 @@ $(function() {
                         if (data.items.length === 0) {
                             window.location.href = makeSearchURL(formValue);
                         }
-                        else if(currentListID) {
+                        else if (currentListID) {
                             window.location.href = makeListenListURL(currentListID, formValueTime);
                         }
                         else {
@@ -670,14 +670,16 @@ $(function() {
         }
     });
     // Load the player
-    if(window.location.href.indexOf("list=") !== -1) {
+    if (window.location.href.indexOf("list=") !== -1) {
         console.log("loading list");
         isPlayingPlaylist = true;
         loadList(currentListID);
     }
     else {
         console.log("loading song : " + currentVideoID);
-        if(window.location.href.indexOf("playlistid=") !== -1) isPlayingPlaylist = true;
+        if (window.location.href.indexOf("playlistid=") !== -1) {
+            isPlayingPlaylist = true;
+        }
         ZenPlayer.init(currentVideoID);
     }
 });
