@@ -1,4 +1,4 @@
-/* global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
+/* global getParameterByName, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription, getYouTubeListItems */
 
 // Pointer to Keen client
 var client;
@@ -165,7 +165,7 @@ var ZenPlayer = {
         // Load video into Plyr player
         if (plyrPlayer.plyr) {
             var that = this;
-            plyrPlayer.addEventListener("ended", function(event) {
+            plyrPlayer.addEventListener("ended", function() {
                 console.log("ended");
                 if (window.location.href.indexOf("playlistid=") !== -1) {
                     currentListIndex = getParameterByName(window.location.search, "playlistindex");
