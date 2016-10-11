@@ -1,256 +1,269 @@
 body {
-    background-color: #f9f9f9;
+	background-color: #f9f9f9;
 }
 
-header, footer {
-    text-align: center;
+header,
+footer {
+	text-align: center;
 }
 
 header {
-    width: 80%;
-    margin: 50px auto 0 auto;
+	width: 80%;
+	margin: 50px auto 0 auto;
 }
 
 @media all and (min-width: 480px) {
-
-    header {
-        max-width: 450px;
-    }
-
+	header {
+		max-width: 450px;
+	}
 }
 
-.tt-menu, footer {
-    background-color: #ffffff;
+.tt-menu,
+footer {
+	background-color: #ffffff;
 }
 
 footer {
-    border-top: 1px solid #eeeeee;
-    margin-top: 50px;
-    padding: 50px 0;
+	border-top: 1px solid #eeeeee;
+	margin-top: 50px;
+	padding: 50px 0;
 }
 
 hgroup {
-    margin-top: 30px;
+	margin-top: 30px;
 }
 
 h2 {
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 150%;
+	font-weight: normal;
+	font-size: 16px;
+	line-height: 150%;
 }
 
 a {
-    color: #3498db;
+	color: #3498db;
 }
 
 .hide {
-    display: none;
+	display: none;
 }
 
 #audioplayer {
-    text-align: center;
-    display: none;
+	text-align: center;
+	display: none;
 }
 
 #container {
-    width: 80%;
-    margin: 10px auto 0;
+	width: 80%;
+	margin: 10px auto 0;
 }
 
 @media all and (min-width: 480px) {
-
-    #container {
-        max-width: 450px;
-    }
-
+	#container {
+		max-width: 450px;
+	}
 }
 
 #v {
-    margin: 0 auto;
-    width: 100%;
-    text-align: center;
-    font-size: 16px;
-    padding-left: 50px;
+	margin: 0 auto;
+	width: 100%;
+	text-align: center;
+	font-size: 16px;
+	padding-left: 50px;
 }
 
 #v::-ms-clear {
-    display: none;
+	display: none;
 }
 
 #player {
-    text-align: center;
-    min-width: 100%;
-    width: 100%;
+	text-align: center;
+	min-width: 100%;
+	width: 100%;
 }
 
 #playerControls {
-    margin: 8px 0 15px;
+	margin: 8px 0 15px;
 }
 
-#zen-video-title, #demo {
-    margin-top: 5px;
-    font-weight: bold;
-    word-wrap: break-word;
-}
-
-#zen-video-error, #zen-error {
-    text-align: center;
-}
-
+#zen-video-title,
 #demo {
-    display: block;
-    margin: 0 auto;
+	margin-top: 5px;
+	font-weight: bold;
+	word-wrap: break-word;
+}
+
+#zen-video-error,
+#zen-error {
+	text-align: center;
+}
+
+#demo:not(.expanded),
+#youtube-login.visible {
+	display: inline-block;
+	width: 49.6%;
+	margin: 0;
+}
+
+#demo.expanded {
+	display: block;
+	margin: 0 auto;
 }
 
 #zen-video-description {
-    white-space: pre-line;
+	white-space: pre-line;
 }
 
 #form {
-    margin-bottom: 20px;
+	margin-bottom: 20px;
 }
 
+
 /* Media controls */
+
 #pause {
-    display: none;
+	display: none;
 }
 
 .slider-handle {
-    background-color: #000000;
-    background-image: none;
+	background-color: #000000;
+	background-image: none;
 }
 
 #volumeSliderControl .slider-handle.custom::before {
-    /* Unicode bar */
-    content: "\258C";
-    color: #000000;
+	/* Unicode bar */
+	content: "\258C";
+	color: #000000;
 }
 
 #timeSeekSliderControl {
-    width: 350px;
+	width: 350px;
 }
 
 #search-results {
-    text-align: center;
-    display: none;
+	text-align: center;
+	display: none;
 }
 
 #search-results li {
-    list-style-type: none;
+	list-style-type: none;
 }
+
 
 /* Input field fixes and search suggestion style.
  * typeahead conflicts with primercss */
+
 .twitter-typeahead {
-    width: 100%;
+	width: 100%;
 }
 
 .twitter-typeahead input {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
 }
 
 .tt-menu {
-    border: 1px solid #cccccc;
-    width: 100%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+	border: 1px solid #cccccc;
+	width: 100%;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
 }
 
 .tt-suggestion {
-    text-align: center;
+	text-align: center;
 }
 
-.tt-cursor, .tt-suggestion:hover {
-    background-color: #efefef;
+.tt-cursor,
+.tt-suggestion:hover {
+	background-color: #efefef;
 }
 
 .zen-logo {
-    width: 100px;
-    height: 100px;
-    display: block;
-    overflow: hidden;
-    border-radius: 6px;
-    margin: 0 auto;
+	width: 100px;
+	height: 100px;
+	display: block;
+	overflow: hidden;
+	border-radius: 6px;
+	margin: 0 auto;
 }
 
 .btn-search {
-    width: 50px;
+	width: 50px;
 }
 
 @media all and (min-width: 480px) {
-
-    .input-search {
-        height: 50px;
-    }
-
-    .btn-search {
-        height: 50px;
-    }
-
-    .fa-search {
-        font-size: 20px;
-    }
-
+	.input-search {
+		height: 50px;
+	}
+	.btn-search {
+		height: 50px;
+	}
+	.fa-search {
+		font-size: 20px;
+	}
 }
 
 .sponsor {
-    width: 70%;
-    margin: 30px 30px 0 auto;
+	width: 70%;
+	margin: 30px 30px 0 auto;
 }
 
 .sponsor-a {
-    width: 100%;
-    display: block;
-    margin-top: 20px;
+	width: 100%;
+	display: block;
+	margin-top: 20px;
 }
 
 .sponsor-a:first-of-type {
-    margin-top: 0;
+	margin-top: 0;
+}
+
+@media all and (max-width: 640px) {
+	#demo,
+	#youtube-login.visible {
+		width: calc(98.8%/2);
+	}
 }
 
 @media all and (min-width: 640px) {
-
-    .sponsor-a {
-        width: 30.666666667%;
-        float: left;
-        margin-left: 4%;
-        margin-top: 0;
-    }
-
-    .sponsor-a:first-of-type {
-        margin: 0;
-    }
-
+	.sponsor-a {
+		width: 30.666666667%;
+		float: left;
+		margin-left: 4%;
+		margin-top: 0;
+	}
+	.sponsor-a:first-of-type {
+		margin: 0;
+	}
 }
 
 .color-grey {
-    color: #666666;
+	color: #666666;
 }
 
 .clear-both {
-    clear: both;
-    height: 0;
-    overflow: hidden;
+	clear: both;
+	height: 0;
+	overflow: hidden;
 }
 
 .img-100 {
-    width: 100%;
+	width: 100%;
 }
 
 .plyr__video-wrapper {
-    display: none;
+	display: none;
 }
 
 #audioplayer .plyr__controls {
-    padding: 10px;
-    border-radius: inherit;
-    border: 1px solid #dbe3e8;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    color: #565d64;
-    position: relative;
-    background: #ffffff;
+	padding: 10px;
+	border-radius: inherit;
+	border: 1px solid #dbe3e8;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+	color: #565d64;
+	position: relative;
+	background: #ffffff;
 }
 
-#audioplayer .plyr__volume--display, #audioplayer .plyr__progress--buffer {
-    background-color: #f9f9f9;
+#audioplayer .plyr__volume--display,
+#audioplayer .plyr__progress--buffer {
+	background-color: #f9f9f9;
 }
