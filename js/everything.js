@@ -701,6 +701,8 @@ var OAUTH2_CLIENT_ID = '763547295554-ubbn5qqth37ov4j11a2jt8mjl95eqm2l.apps.googl
 var OAUTH2_SCOPES = 'https://www.googleapis.com/auth/youtube';
 var auth2; // OAuth2 variable
 var tmpYouTubeApiKey = 'AIzaSyBvkfhXrqTMk8WJuhN4CeRrIg4BUm5Md0E';
+var YOUTUBE_PLAYLIST_NAME = 'Zen Audio Player';
+var LOCALSTORAGE_PLAYLIST_ID_KEY = 'zap_playlist_id';
 
 /**
  * This function will get called wheve the page loads successfully
@@ -729,6 +731,8 @@ function handleAuthResult(authResult) {
 	if (authResult && !authResult.error) {
 		// Authorization was successful. Hide authorization prompts and show
 		// content that should be visible after authorization succeeds.
+
+		hideSignInButton();
 		makeApiCall();
 	} else {
 		showSignInButton();
@@ -759,35 +763,59 @@ function makeApiCall() {
  */
 function handleAPILoaded() {
 	// if not video is currently playing
-	if (!getCurrentVideoID()) {
-		if (!localStorage.getItem("zap_playlist_id")) {
-			// Request to insert playlist
-			var request = gapi.client.youtube.playlists.insert({
-				part: 'snippet,status',
-				resource: {
-					snippet: {
-						title: 'Zen Audio Player',
-						description: 'A private playlist created with the YouTube API via Zen Audio Player'
-					},
-					status: {
-						privacyStatus: 'private'
-					}
-				}
-			});
-			request.execute(function (response) {
-				var result = response.result;
-				if (result) { // get and store playlist ID
-					playlistId = result.id;
-					localStorage.setItem("zap_playlist_id", playlistId);
-				} else {
-					alert('Could not create Zen Audio Player playlist')
-				}
-			});
-		}
-	} else {
+	if (!getCurrentVideoID() && !localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)) {
+		if (checkIfUserAlreadyHaveZapYoutubePlaylist() && !localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY))
+			addNewPlaylistIntoYoutube();
+	} else if (getCurrentVideoID() && localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)) {
 		// Check if the video doesn't exist, insert it.
 		checkIfVideoExistsInPlaylistThenAddIt(currentVideoID);
 	}
+}
+/**
+ * If the user for some reason cleared the browser localstorage, we don't want to re-create another playlist. So we will list all the playlists, searching for a playlist called "Zen Audio Player", if found get its id and store it 
+ */
+function checkIfUserAlreadyHaveZapYoutubePlaylist() {
+	var request = gapi.client.youtube.playlists.list({
+		part: 'snippet',
+		mine: true,
+		maxResults: 50
+	});
+	request.execute(function (response) {
+		for (var i = 0; i < response.items.length; i++) {
+			if (response.items[i].snippet.title === YOUTUBE_PLAYLIST_NAME) {
+				localStorage.setItem(LOCALSTORAGE_PLAYLIST_ID_KEY, response.items[i].id);
+				break;
+			}
+		}
+		console.log(localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY));
+	});
+}
+/**
+ * This function adds new playlist in youtube account of the current user
+ */
+function addNewPlaylistIntoYoutube() {
+	// Request to insert playlist
+	var request = gapi.client.youtube.playlists.insert({
+		part: 'snippet,status',
+		resource: {
+			snippet: {
+				title: YOUTUBE_PLAYLIST_NAME,
+				description: 'A private playlist created with the YouTube API via Zen Audio Player'
+			},
+			status: {
+				privacyStatus: 'private'
+			}
+		}
+	});
+	request.execute(function (response) {
+		var result = response.result;
+		if (result) { // get and store playlist ID
+			playlistId = result.id;
+			localStorage.setItem(LOCALSTORAGE_PLAYLIST_ID_KEY, playlistId);
+		} else {
+			alert('Could not create Zen Audio Player playlist')
+		}
+	});
 }
 /**
  * This function checks if the currently playing video is already added to the user's playlist, if so ignore it, else add it
@@ -799,7 +827,8 @@ function checkIfVideoExistsInPlaylistThenAddIt(videoID) {
 	var request = gapi.client.youtube.playlistItems.list({
 		part: 'snippet',
 		mine: true,
-		playlistId: localStorage.getItem("zap_playlist_id")
+		maxResults: 50,
+		playlistId: localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)
 	});
 	var doesTheVideoExist = false;
 	request.execute(function (response) {
@@ -809,7 +838,7 @@ function checkIfVideoExistsInPlaylistThenAddIt(videoID) {
 				break;
 			}
 		}
-		if(!doesTheVideoExist){
+		if (!doesTheVideoExist) {
 			addVideoToPlaylist(videoID);
 		}
 	});
@@ -827,13 +856,23 @@ function addVideoToPlaylist(videoID) {
 		part: 'snippet',
 		resource: {
 			snippet: {
-				playlistId: localStorage.getItem("zap_playlist_id"),
+				playlistId: localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY),
 				resourceId: details
 			}
 		}
 	});
 	request.execute(function (response) {
-		console.log(response);
+		//console.log(response);
+	});
+}
+/**
+ * This function shows th login button from the page
+ */
+function hideSignInButton() {
+	$(document).ready(function () {
+		$('#demo').addClass('expanded');
+		$('#youtube-login').hide();
+		$('#youtube-login').removeClass('visible');
 	});
 }
 /**
