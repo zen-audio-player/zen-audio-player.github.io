@@ -97,6 +97,10 @@ a {
 	text-align: center;
 }
 
+#youtube-login {
+	display: none;
+}
+
 #demo:not(.expanded),
 #youtube-login.visible {
 	display: inline-block;
