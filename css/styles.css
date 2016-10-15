@@ -97,21 +97,24 @@ a {
 	text-align: center;
 }
 
+#demo,
+#youtube-login {
+	display: inline-block;
+	width: 49%;
+	margin: 0 auto;
+}
+
 #youtube-login {
 	display: none;
 }
 
-#demo:not(.expanded),
-#youtube-login.visible {
-	display: inline-block;
-	width: 49.6%;
-	margin: 0;
-}
 
-#demo.expanded {
+/*
+#demo {
 	display: block;
 	margin: 0 auto;
 }
+*/
 
 #zen-video-description {
 	white-space: pre-line;
@@ -218,13 +221,6 @@ a {
 
 .sponsor-a:first-of-type {
 	margin-top: 0;
-}
-
-@media all and (max-width: 640px) {
-	#demo,
-	#youtube-login.visible {
-		width: calc(98.8%/2);
-	}
 }
 
 @media all and (min-width: 640px) {
