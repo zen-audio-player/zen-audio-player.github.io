@@ -576,6 +576,7 @@ $(function() {
                     var end = "</a></h4></li>";
                     $.each(data.items, function(index, result) {
                         $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title  + end);
+                        $("#search-results ul").append("<li><img height='42' width='42' src=" + result.snippet.thumbnails.medium.url + "></li>");
                     });
                 },
                 function(jqXHR, textStatus, errorThrown) {
