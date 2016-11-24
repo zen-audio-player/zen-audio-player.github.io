@@ -572,11 +572,13 @@ $(function() {
                     // Clear out results
                     $("#search-results ul").html("");
 
-                    var start = "<li><h4><a href=?v=";
-                    var end = "</a></h4></li>";
+                    var start = "<li class=search-result-item><h4><a href=?v=";
                     $.each(data.items, function(index, result) {
-                        $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title  + end);
-                        $("#search-results ul").append("<li><img height='42' width='42' src=" + result.snippet.thumbnails.medium.url + "></li>");
+                        $("#search-results ul").append(start + result.id.videoId + ">" + 
+                            result.snippet.title + "</a></h4><a href=?v="+
+                            result.id.videoId+"><img src=" + 
+                            result.snippet.thumbnails.medium.url + " alt='" + 
+                            result.snippet.title +"'></a></li>" );
                     });
                 },
                 function(jqXHR, textStatus, errorThrown) {
