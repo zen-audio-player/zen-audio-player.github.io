@@ -139,11 +139,6 @@ a {
     list-style-type: none;
 }
 
-.search-result-item {
-    vertical-align: middle;
-    margin-right: 10px;
-}
-
 /* Input field fixes and search suggestion style.
  * typeahead conflicts with primercss */
 .twitter-typeahead {

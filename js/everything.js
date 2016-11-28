@@ -572,7 +572,7 @@ $(function() {
                     // Clear out results
                     $("#search-results ul").html("");
 
-                    var start = "<li class=search-result-item><h4><a href=?v=";
+                    var start = "<li><h4><a href=?v=";
                     $.each(data.items, function(index, result) {
                         $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title + "</a></h4><a href=?v=" + result.id.videoId + "><img src=" + result.snippet.thumbnails.medium.url + " alt='" + result.snippet.title + "'></a></li>");
                     });
