@@ -144,7 +144,6 @@ var ZenPlayer = {
 		$("#plyr-svg").load("../bower_components/plyr/dist/plyr.svg");
 
 		plyrPlayer = document.querySelector(".plyr");
-
 		plyr.setup(plyrPlayer, {
 			autoplay: true,
 			controls: ["play", "progress", "current-time", "duration", "mute", "volume"],
@@ -166,7 +165,6 @@ var ZenPlayer = {
 				if (!currentVideoID || currentVideoID.length === 0) {
 					return;
 				}
-
 				// Gather video info
 				that.videoTitle = plyrPlayer.plyr.embed.getVideoData().title;
 				that.videoAuthor = plyrPlayer.plyr.embed.getVideoData().author;
@@ -258,6 +256,7 @@ var ZenPlayer = {
 			plyrPlayer.addEventListener("pause", function () {
 				this.isPlaying = false;
 			}.bind(this));
+
 
 			plyrPlayer.plyr.source({
 				type: "video",
@@ -703,7 +702,7 @@ var auth2; // OAuth2 variable
 var tmpYouTubeApiKey = 'AIzaSyBvkfhXrqTMk8WJuhN4CeRrIg4BUm5Md0E';
 var YOUTUBE_PLAYLIST_NAME = 'Zen Audio Player';
 var LOCALSTORAGE_PLAYLIST_ID_KEY = 'zap_playlist_id';
-
+var youtubeVideos;
 /**
  * This function will be called after loading the page
  */
@@ -756,17 +755,38 @@ function makeApiCall() {
 		handleAPILoaded();
 	});
 }
-
+/**
+ * This function gets user videos from Zap playlist and store them into array
+ */
+function getUserVideosFromZapPlaylist() {
+	var request = gapi.client.youtube.playlistItems.list({
+		part: 'snippet',
+		mine: true,
+		maxResults: 50,
+		playlistId: localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)
+	});
+	request.execute(function (response) {
+		if (response.code == 404) {
+			// playlist not found
+			checkIfUserAlreadyHasZapYoutubePlaylist();
+		} else {
+			youtubeVideos = response.items;
+		}
+	});
+}
 /**
  * This function contains the requests that will be executed after the load is completed
  * IF the localStorage doesn't contain zap_playlist_id: create the playlist in the user YouTube account and then store the zap_playlist_id
  * IF the current page displays video: check if it doesn't exist in the play list then add it
  */
 function handleAPILoaded() {
+	// Get user videos and store them into array
+	if (localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY) && !youtubeVideos && !getCurrentVideoID() && !getCurrentSearchQuery()) {
+		getUserVideosFromZapPlaylist();
+	}
 	// if not video is currently playing
 	if (!getCurrentVideoID() && !localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)) {
-		if (checkIfUserAlreadyHasZapYoutubePlaylist() && !localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY))
-			addNewPlaylistToYoutube();
+		checkIfUserAlreadyHasZapYoutubePlaylist();
 	} else if (getCurrentVideoID() && localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)) {
 		// Check if the video doesn't exist, insert it.
 		checkIfVideoExistsInPlaylistThenAddIt(currentVideoID);
@@ -782,11 +802,16 @@ function checkIfUserAlreadyHasZapYoutubePlaylist() {
 		maxResults: 50
 	});
 	request.execute(function (response) {
+		var isZenPlaylistFound = false;
 		for (var i = 0; i < response.items.length; i++) {
-			if (response.items[i].snippet.title === YOUTUBE_PLAYLIST_NAME) {
+			if (response.items[i].snippet.title == YOUTUBE_PLAYLIST_NAME) {
 				localStorage.setItem(LOCALSTORAGE_PLAYLIST_ID_KEY, response.items[i].id);
+				isZenPlaylistFound = true;
 				break;
 			}
+		}
+		if (!isZenPlaylistFound) {
+			addNewPlaylistToYoutube();
 		}
 	});
 }
@@ -869,7 +894,7 @@ function addVideoToPlaylist(videoID) {
  * This function shows th login button from the page
  * @param {boolean} hide if true the button will be hidden
  */
-function changeSignInButtonVisibility(var hide) {
+function changeSignInButtonVisibility(hide) {
 	$(document).ready(function () {
 		if (hide)
 			$('#youtube-login').hide();
