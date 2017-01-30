@@ -771,8 +771,43 @@ function getUserVideosFromZapPlaylist() {
 			checkIfUserAlreadyHasZapYoutubePlaylist();
 		} else {
 			youtubeVideos = response.items;
+			if (youtubeVideos.length > 0) {
+				console.log("Videos", youtubeVideos);
+				fetchYoutubeVideosIntoQueue();
+			}
 		}
 	});
+}
+/**
+ * This function uses the filled youtubeVideos array and fills the UI videos queue
+ */
+function fetchYoutubeVideosIntoQueue() {
+	var i = 0;
+	youtubeVideos.forEach(function (video) {
+		var $div = $("<div>", {
+			"class": "queue__vid"
+		});
+		$div.append($("<span class='queue__vid__span'>" + video.snippet.title + "</span>"));
+		$div.append($("<img class='queue__vid__img' src='" + video.snippet.thumbnails.default.url + "'/>"));
+		$div.append($("<i class='queue__vid__cancel fa fa-trash' data-vidid='" + video.id + "' data-vidindex='"+i+"'></i>"));
+
+		$div.click(function () {
+			window.location.href = makeListenURL(video.snippet.resourceId.videoId, 0);
+		});
+		$(".queue").append($div);
+		i++;
+	});
+	$(".queue__vid__cancel").click(function (e) {
+		youtubeVideos.splice($(this).data('vidindex'), 1);
+		$(this).parent().hide();
+		if(youtubeVideos.length==0){
+			$(".queue").hide();
+		}
+		removeYoutubeVideoFromPlaylist($(this).data('vidid'));
+		e.stopPropagation();
+		return true;
+	});
+	$(".queue").css("visibility", "visible");
 }
 /**
  * This function contains the requests that will be executed after the load is completed
@@ -780,16 +815,18 @@ function getUserVideosFromZapPlaylist() {
  * IF the current page displays video: check if it doesn't exist in the play list then add it
  */
 function handleAPILoaded() {
-	// Get user videos and store them into array
-	if (localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY) && !youtubeVideos && !getCurrentVideoID() && !getCurrentSearchQuery()) {
-		getUserVideosFromZapPlaylist();
-	}
 	// if not video is currently playing
 	if (!getCurrentVideoID() && !localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)) {
 		checkIfUserAlreadyHasZapYoutubePlaylist();
 	} else if (getCurrentVideoID() && localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)) {
 		// Check if the video doesn't exist, insert it.
 		checkIfVideoExistsInPlaylistThenAddIt(currentVideoID);
+	}
+	// Get user videos and store them into array
+	if (localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY) && !youtubeVideos && !getCurrentSearchQuery()) {
+		getUserVideosFromZapPlaylist();
+	}else if(getCurrentSearchQuery()){
+		$(".queue").hide();//Hide queue in case of search keyword exists
 	}
 }
 /**
@@ -886,8 +923,18 @@ function addVideoToPlaylist(videoID) {
 			}
 		}
 	});
+	request.execute(function (response) {});
+}
+/**
+ * This function removes video from ZAP YouTube playlist
+ * @param {string} videoID videoID to be removed 
+ */
+function removeYoutubeVideoFromPlaylist(videoID) {
+	var request = gapi.client.youtube.playlistItems.delete({
+		id: videoID
+	});
 	request.execute(function (response) {
-		//console.log(response);
+		console.log(response);
 	});
 }
 /**

@@ -267,3 +267,114 @@ a {
 #audioplayer .plyr__progress--buffer {
 	background-color: #f9f9f9;
 }
+
+
+/*
+
+.queue::-webkit-scrollbar {
+	-webkit-appearance: none;
+	width: 2px;
+	height: 6px;
+}
+
+.queue::-webkit-scrollbar-thumb {
+	border-radius: 6px;
+	height: 3px;
+	
+	background-color: rgba(255, 255, 255, 1);
+	-webkit-box-shadow: 0 0 1px rgba(255, 0, 0, 0.5);
+}
+*/
+
+.queue::-webkit-scrollbar {
+	width: 14px;
+	height: 12px;
+}
+
+.queue::-webkit-scrollbar-thumb {
+	/*    height: 2px;*/
+	border: 4px solid rgba(0, 0, 0, 0);
+	background-clip: padding-box;
+	-webkit-border-radius: 7px;
+	background-color: rgba(255, 255, 255, 1);
+	-webkit-box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+}
+
+.queue::-webkit-scrollbar-button {
+	width: 0;
+	height: 0;
+	display: none;
+}
+
+.queue::-webkit-scrollbar-corner {
+	background-color: transparent;
+}
+
+.queue {
+	border-radius: 4px;
+	padding: 5px;
+	background: rgb(15, 15, 20);
+	height: 100px;
+	overflow: auto;
+	overflow-y: visible;
+	margin: 30px auto 0 auto;
+	display: flex;
+	text-align: center;
+	visibility: hidden;
+}
+
+.queue__vid {
+	color: #fff;
+	padding: 4px;
+	width: 80px;
+	height: 80px;
+	word-wrap: break-word;
+	display: inline-block;
+	text-align: center;
+	cursor: pointer;
+	transition: 0.5s;
+	position: relative;
+}
+
+.queue__vid:hover {
+	background: rgba(255, 255, 255, 0.2);
+	transition: 0.5s;
+}
+
+.queue__vid:not(:last-child) {
+	border-right: 1px rgba(255, 255, 255, 0.15) solid;
+}
+
+.queue__vid__span {
+	text-align: center;
+	display: block;
+	width: 70px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.queue__vid__img {
+	width: 70px;
+}
+
+.queue__vid__cancel {
+	color: rgba(255, 255, 255, 0.92);
+	font-size: 15px;
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	right: 4px;
+	bottom: 8px;
+	border-radius: 5px;
+	background: rgba(0, 0, 0, 0.55);
+	visibility: hidden;
+}
+
+.queue__vid__cancel:hover {
+	color: #ff0;
+}
+
+.queue__vid:hover .queue__vid__cancel {
+	visibility: visible;
+}
