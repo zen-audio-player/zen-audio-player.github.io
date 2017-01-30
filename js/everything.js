@@ -708,9 +708,9 @@ $(function () {
 });
 
 // Youtube Authentication and Playlist code
-var OAUTH2_CLIENT_ID = "763547295554-ubbn5qqth37ov4j11a2jt8mjl95eqm2l.apps.googleusercontent.com";
+var OAUTH2_CLIENT_ID = "763547295554-ubbn5qqth37ov4j11a2jt8mjl95eqm2l.apps.googleusercontent.com"; // ToDo: use another client id
 var OAUTH2_SCOPES = "https://www.googleapis.com/auth/youtube";
-var tmpYouTubeApiKey = "AIzaSyBvkfhXrqTMk8WJuhN4CeRrIg4BUm5Md0E";
+var tmpYouTubeApiKey = "AIzaSyBvkfhXrqTMk8WJuhN4CeRrIg4BUm5Md0E"; // ToDo: assign to youTubeDataApiKey
 var YOUTUBE_PLAYLIST_NAME = "Zen Audio Player";
 var LOCALSTORAGE_PLAYLIST_ID_KEY = "zap_playlist_id";
 var youtubeVideos;
