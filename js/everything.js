@@ -772,6 +772,7 @@ function makeApiCall() {
 }
 /**
  * This function gets user videos from Zap playlist and store them into array
+ * It also checks if the current playing video isn't in the Youtube playlist, it calls the fucntion which adds it
  */
 function getUserVideosFromZapPlaylist() {
     var request = gapi.client.youtube.playlistItems.list({
@@ -788,11 +789,26 @@ function getUserVideosFromZapPlaylist() {
         else {
             youtubeVideos = response.items;
             if (youtubeVideos.length > 0) {
+                // Check if current played video not in playlist add it
+                if (getCurrentVideoID()) {
+                    var doesTheVideoExist = false;
+                    for (var i = 0; i < youtubeVideos.length; i++) {
+                        if (youtubeVideos[i].snippet.resourceId.videoId === currentVideoID) {
+                            doesTheVideoExist = true;
+                            break;
+                        }
+                    }
+                    if (!doesTheVideoExist) {
+                        addVideoToPlaylist(currentVideoID);
+                    }
+                }
+                // Add videos to queue
                 fetchYoutubeVideosIntoQueue();
             }
         }
     });
 }
+
 /**
  * This function uses the filled youtubeVideos array and fills the UI videos queue
  */
@@ -835,10 +851,6 @@ function handleAPILoaded() {
     // if not video is currently playing
     if (!getCurrentVideoID() && !localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)) {
         checkIfUserAlreadyHasZapYoutubePlaylist();
-    }
-    else if (getCurrentVideoID() && localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)) {
-        // Check if the video doesn't exist, insert it.
-        checkIfVideoExistsInPlaylistThenAddIt(currentVideoID);
     }
     // Get user videos and store them into array
     if (localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY) && !youtubeVideos && !getCurrentSearchQuery()) {
@@ -899,32 +911,7 @@ function addNewPlaylistToYoutube() {
         }
     });
 }
-/**
- * This function checks if the currently playing video is already added to the user's playlist, if so ignore it, else add it
- * @param {string}  videoID videoID
- * @returns {boolean} True if the video already exists in the playlist
- */
-function checkIfVideoExistsInPlaylistThenAddIt(videoID) {
-    // Get the videos of the playlist
-    var request = gapi.client.youtube.playlistItems.list({
-        part: "snippet",
-        mine: true,
-        maxResults: 50,
-        playlistId: localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)
-    });
-    var doesTheVideoExist = false;
-    request.execute(function (response) {
-        for (var i = 0; i < response.items.length; i++) {
-            if (response.items[i].snippet.resourceId.videoId === videoID) {
-                doesTheVideoExist = true;
-                break;
-            }
-        }
-        if (!doesTheVideoExist) {
-            addVideoToPlaylist(videoID);
-        }
-    });
-}
+
 /**
  * This function adds video to YouTube playlist
  * @param {string} videoID videoID to be added
