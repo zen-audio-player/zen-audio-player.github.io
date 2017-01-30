@@ -355,3 +355,7 @@ a {
 .queue__vid:hover .queue__vid__cancel {
     visibility: visible;
 }
+
+.buttons-div {
+    text-align: center;
+}
