@@ -774,39 +774,42 @@ function makeApiCall() {
  * It also checks if the current playing video isn't in the Youtube playlist, it calls the fucntion which adds it
  */
 function getUserVideosFromZapPlaylist() {
-    var request = gapi.client.youtube.playlistItems.list({
-        part: "snippet",
-        mine: true,
-        maxResults: 50,
-        playlistId: localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)
-    });
-    request.execute(function (response) {
-        if (response.code === 404) {
-            // playlist not found
-            checkIfUserAlreadyHasZapYoutubePlaylist();
-        }
-        else {
-            youtubeVideos = response.items;
-            if (youtubeVideos.length > 0) {
-                // Check if current played video not in playlist add it
-                if (getCurrentVideoID()) {
-                    var doesTheVideoExist = false;
-                    for (var i = 0; i < youtubeVideos.length; i++) {
-                        if (youtubeVideos[i].snippet.resourceId.videoId === currentVideoID) {
-                            doesTheVideoExist = true;
-                            break;
+    if (localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY) && !youtubeVideos && !getCurrentSearchQuery()) {
+        var request = gapi.client.youtube.playlistItems.list({
+            part: "snippet",
+            mine: true,
+            maxResults: 50,
+            playlistId: localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY)
+        });
+        request.execute(function (response) {
+            if (response.code === 404) {
+                // playlist not found
+                checkIfUserAlreadyHasZapYoutubePlaylist();
+            }
+            else {
+                youtubeVideos = response.items;
+                if (youtubeVideos.length > 0) {
+                    // Check if current played video not in playlist add it
+                    if (getCurrentVideoID()) {
+                        var doesTheVideoExist = false;
+                        for (var i = 0; i < youtubeVideos.length; i++) {
+                            if (youtubeVideos[i].snippet.resourceId.videoId === currentVideoID) {
+                                doesTheVideoExist = true;
+                                break;
+                            }
+                        }
+                        if (!doesTheVideoExist) {
+                            addVideoToPlaylist(currentVideoID);
                         }
                     }
-                    if (!doesTheVideoExist) {
-                        addVideoToPlaylist(currentVideoID);
-                    }
+                    // Add videos to queue
+                    fetchYoutubeVideosIntoQueue();
                 }
-                // Add videos to queue
-                fetchYoutubeVideosIntoQueue();
             }
-        }
-    });
+        });
+    }
 }
+
 
 /**
  * This function uses the filled youtubeVideos array and fills the UI videos queue
@@ -852,10 +855,8 @@ function handleAPILoaded() {
         checkIfUserAlreadyHasZapYoutubePlaylist();
     }
     // Get user videos and store them into array
-    if (localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY) && !youtubeVideos && !getCurrentSearchQuery()) {
-        getUserVideosFromZapPlaylist();
-    }
-    else if (getCurrentSearchQuery()) {
+    getUserVideosFromZapPlaylist();
+    if (getCurrentSearchQuery()) {
         $(".queue").hide(); // Hide queue in case of search keyword exists
     }
 }
@@ -877,6 +878,7 @@ function checkIfUserAlreadyHasZapYoutubePlaylist() {
                 break;
             }
         }
+        getUserVideosFromZapPlaylist();
         if (!isZenPlaylistFound) {
             addNewPlaylistToYoutube();
         }
@@ -904,6 +906,7 @@ function addNewPlaylistToYoutube() {
         if (result) { // get and store playlist ID
             var playlistId = result.id;
             localStorage.setItem(LOCALSTORAGE_PLAYLIST_ID_KEY, playlistId);
+            getUserVideosFromZapPlaylist();
         }
         else {
             alert("Could not create Zen Audio Player playlist");
