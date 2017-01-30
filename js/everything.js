@@ -580,9 +580,8 @@ $(function () {
                     $("#search-results ul").html("");
 
                     var start = "<li><h4><a href=?v=";
-                    var end = "</a></h4></li>";
-                    $.each(data.items, function (index, result) {
-                        $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title + end);
+                    $.each(data.items, function(index, result) {
+                        $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title + "</a></h4><a href=?v=" + result.id.videoId + "><img src=" + result.snippet.thumbnails.medium.url + " alt='" + result.snippet.title + "'></a></li>");
                     });
                 },
                 function (jqXHR, textStatus, errorThrown) {
