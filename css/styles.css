@@ -271,10 +271,10 @@ a {
 }
 
 .queue::-webkit-scrollbar-thumb {
-    border: 4px solid rgba(0, 0, 0, 0);
+    border: 4px solid transparent;
     background-clip: padding-box;
     border-radius: 7px;
-    background-color: rgba(255, 255, 255, 1);
+    background-color: #ffffff;
 }
 
 .queue::-webkit-scrollbar-button {
@@ -314,12 +314,12 @@ a {
 }
 
 .queue__vid:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgb(57, 57, 57);
     transition: 0.5s;
 }
 
 .queue__vid:not(:last-child) {
-    border-right: 1px rgba(255, 255, 255, 0.15) solid;
+    border-right: 1px rgb(57, 57, 57) solid;
 }
 
 .queue__vid__span {
@@ -336,7 +336,7 @@ a {
 }
 
 .queue__vid__cancel {
-    color: rgba(255, 255, 255, 0.92);
+    color: #efefef;
     font-size: 15px;
     width: 18px;
     height: 18px;
@@ -344,7 +344,7 @@ a {
     right: 4px;
     bottom: 8px;
     border-radius: 5px;
-    background: rgba(0, 0, 0, 0.55);
+    background: #101010;
     visibility: hidden;
 }
 
