@@ -789,7 +789,7 @@ function fetchYoutubeVideosIntoQueue() {
 		});
 		$div.append($("<span class='queue__vid__span'>" + video.snippet.title + "</span>"));
 		$div.append($("<img class='queue__vid__img' src='" + video.snippet.thumbnails.default.url + "'/>"));
-		$div.append($("<i class='queue__vid__cancel fa fa-trash' data-vidid='" + video.id + "' data-vidindex='"+i+"'></i>"));
+		$div.append($("<i class='queue__vid__cancel fa fa-trash' data-vidid='" + video.id + "' data-vidindex='" + i + "'></i>"));
 
 		$div.click(function () {
 			window.location.href = makeListenURL(video.snippet.resourceId.videoId, 0);
@@ -798,12 +798,14 @@ function fetchYoutubeVideosIntoQueue() {
 		i++;
 	});
 	$(".queue__vid__cancel").click(function (e) {
-		youtubeVideos.splice($(this).data('vidindex'), 1);
-		$(this).parent().hide();
-		if(youtubeVideos.length==0){
-			$(".queue").hide();
+		if (confirm("Do you want to delete it for sure ?")) {
+			youtubeVideos.splice($(this).data('vidindex'), 1);
+			$(this).parent().hide();
+			if (youtubeVideos.length == 0) {
+				$(".queue").hide();
+			}
+			removeYoutubeVideoFromPlaylist($(this).data('vidid'));
 		}
-		removeYoutubeVideoFromPlaylist($(this).data('vidid'));
 		e.stopPropagation();
 		return true;
 	});
@@ -825,8 +827,8 @@ function handleAPILoaded() {
 	// Get user videos and store them into array
 	if (localStorage.getItem(LOCALSTORAGE_PLAYLIST_ID_KEY) && !youtubeVideos && !getCurrentSearchQuery()) {
 		getUserVideosFromZapPlaylist();
-	}else if(getCurrentSearchQuery()){
-		$(".queue").hide();//Hide queue in case of search keyword exists
+	} else if (getCurrentSearchQuery()) {
+		$(".queue").hide(); //Hide queue in case of search keyword exists
 	}
 }
 /**
