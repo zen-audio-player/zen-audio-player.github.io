@@ -6,6 +6,7 @@ var fs = require("fs");
 var _js = "";
 
 const browser = new Browser();
+
 var indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
 /** Utilities **/

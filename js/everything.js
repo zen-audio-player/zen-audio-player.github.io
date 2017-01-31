@@ -718,7 +718,9 @@ var youtubeVideos;
 /* eslint-disable no-unused-vars */
 function handleClientLoad() {
     // Load the API client and auth library
-    gapi.load("client:auth2", checkAuth);
+    if (!isFileProtocol()) {
+        gapi.load("client:auth2", checkAuth);
+    }
 }
 /* eslint-enable no-unused-vars */
 
