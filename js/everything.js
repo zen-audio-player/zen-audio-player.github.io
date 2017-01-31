@@ -705,7 +705,6 @@ $(function () {
         }
     });
 });
-
 // Youtube Authentication and Playlist code
 var OAUTH2_CLIENT_ID = "763547295554-ubbn5qqth37ov4j11a2jt8mjl95eqm2l.apps.googleusercontent.com"; // ToDo: use another client id
 var OAUTH2_SCOPES = "https://www.googleapis.com/auth/youtube";
