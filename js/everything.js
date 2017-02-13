@@ -58,6 +58,12 @@ var plyrPlayer;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
 
+// global playlist, this is populated with an ajax call
+var playList = [];
+
+
+
+
 var errorMessage = {
     init: function() {
         // nothing for now
@@ -209,11 +215,63 @@ var ZenPlayer = {
                     seconds: plyrPlayer.plyr.embed.getDuration(),
                     youtubeID: plyrPlayer.plyr.embed.getVideoData().video_id
                 });
-
                 // Show player
                 that.show();
                 updateTweetMessage();
             });
+			// when player has finished playing
+            plyrPlayer.addEventListener("ended", function() {
+                plyrPlayer.removeEventListener("ended");
+                /*
+                 idMap is dict- history of all songs played till now, of the form
+                 <key=videoId>: <value=true>. It is stored in the session storage of the
+                 browser. When the player has finished playing, the last entry from the playlist
+                 is picked as a possible candidate and checked for presence in idMap. If its present ie its
+                 already been played, we pop() and get the new last entry from playlist, looking for a new song. Whatever
+                 is a valid new entry gets added to the dict which is then written to session storage again
+                */
+				// if playList songs left
+                if (playList.length !== 0)
+                {
+                    // get autoplay candidate from playlist
+                    var newId = playList[playList.length - 1];
+                    // load 'history' dict from storage
+                    var idMap  = window.sessionStorage.getItem("idMap");
+                    idMap = JSON.parse(idMap);
+                    // first time?
+                    if (idMap !== null && newId !== "")
+                    {
+                               // keep popping till unique next song found
+                        while ( (newId in idMap) && (playList.length !== 0))
+                        {
+                            playList.pop();
+                            if (playList.length >= 1)
+							{
+                                newId = playList[playList.length - 1];
+                            }
+                        }
+				// nothing to be played if empty playlist
+                        if (playList.length === 0)
+                        {
+                            newId = null;
+                        }
+                        else {
+                            // write 'history' dict to storage
+                            idMap[newId] = true;
+                            window.sessionStorage.setItem("idMap", JSON.stringify(idMap));
+                        }
+                    }
+                    else {
+                        idMap = {};
+                        idMap[newId] = true;
+                        window.sessionStorage.setItem("idMap", JSON.stringify(idMap));
+                    }
+                    // play the new song from autoplay
+                    that.playNext(newId);
+                }
+
+            });
+
 
             plyrPlayer.addEventListener("timeupdate", function() {
                 // Store the current time of the video.
@@ -261,6 +319,12 @@ var ZenPlayer = {
             });
         }
     },
+    // play next song from autoplay
+    playNext:function(videoID) {
+        $("#v").attr("value", videoID);
+        $("#form").submit();
+    },
+
     show: function() {
         $("#audioplayer").show();
     },
@@ -555,6 +619,30 @@ $(function() {
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
         $("#v").attr("value", currentVideoID);
+                            // get similar videos, populate playList
+        $.ajax({
+            url: "https://www.googleapis.com/youtube/v3/search",
+            dataType: "json",
+            async: false,
+            data: {
+                key: youTubeDataApiKey,
+                part: "snippet",
+                type: "video",
+                relatedToVideoId: currentVideoID
+            },
+            success: function(data) {
+				// push items into playlist
+                for (var i = 0;i < data.items.length;i ++ )
+				{
+                    playList.push(data.items[i].id.videoId);
+                }
+            }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            logError(jqXHR, textStatus, errorThrown, "Lookup error");
+        });
+
+
+
     }
     else {
         var currentSearchQuery = getCurrentSearchQuery();
