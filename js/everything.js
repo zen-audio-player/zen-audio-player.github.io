@@ -180,6 +180,7 @@ var ZenPlayer = {
                 that.setupTitle();
                 that.setupVideoDescription(videoID);
                 that.setupPlyrToggle();
+		that.setupSongSave();
             });
 
             plyrPlayer.addEventListener("playing", function() {
@@ -290,8 +291,21 @@ var ZenPlayer = {
         // Show player button click event
         $("#togglePlayer").click(function(event) {
             toggleElement(event, ".plyr__video-wrapper", "Player");
+            	
         });
     },
+    setupSongSave: function() {
+    	$("#save").click(function() {
+    		var mySongs = JSON.parse(localStorage.getItem("mySongs"));
+    		if (mySongs === null) {
+    			localStorage.setItem("mySongs", JSON.stringify([getCurrentVideoID()]));
+    		}
+    		else {
+    			mySongs.push(getCurrentVideoID());
+    			localStorage.setItem("mySongs", JSON.stringify(mySongs));
+    		}
+    	});
+    }
     getVideoDescription: function(videoID) {
         var description = "";
 
