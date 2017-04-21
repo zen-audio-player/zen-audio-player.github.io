@@ -651,6 +651,11 @@ $(function() {
         $("#demo").hide();
     }
 
+    // Reverts to Home when there is no text in input
+    if ($(".tt-menu").hasClass("tt-empty")) {
+        $(".tt-menu > .tt-dataset").hide();
+    }
+
     // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
