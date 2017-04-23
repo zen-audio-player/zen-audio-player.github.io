@@ -57,6 +57,13 @@ a {
     margin: 10px auto 0;
 }
 
+#toggleLoopLabel{
+  font-size: 16px;
+}
+#toggleLoop {
+  margin-left: 10px;
+}
+
 @media all and (min-width: 480px) {
 
     #container {

@@ -133,6 +133,8 @@ function handleYouTubeError(details) {
 var ZenPlayer = {
     updated: false,
     isPlaying: false,
+    isLoop: false,
+
     init: function(videoID) {
         // Inject svg with control icons
         $("#plyr-svg").load("../bower_components/plyr/dist/plyr.svg");
@@ -229,6 +231,11 @@ var ZenPlayer = {
                     // will end a few seconds before the video duration.
                     if (currentTime < videoDuration - 3) {
                         resumeTime = currentTime;
+                    }
+                    //check time and if isLoop == true
+                    if(currentTime >= videoDuration && that.isLoop) {
+                      resumeTime = 0;
+                      plyrPlayer.plyr.embed.seekTo(resumeTime);
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
@@ -650,6 +657,15 @@ $(function() {
     if ($.inArray(currentVideoID, demos) !== -1) {
         $("#demo").hide();
     }
+
+    $("input[name='toggleLoop']").change(function(){
+      if($(this).is(':checked')) {
+        ZenPlayer.isLoop = true;
+      }
+      else {
+        ZenPlayer.isLoop = false;
+      }
+    });
 
     // Handle demo link click
     $("#demo").click(function(event) {
