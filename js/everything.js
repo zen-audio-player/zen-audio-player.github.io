@@ -232,10 +232,10 @@ var ZenPlayer = {
                     if (currentTime < videoDuration - 3) {
                         resumeTime = currentTime;
                     }
-                    //check time and if isLoop == true
-                    if(currentTime >= videoDuration && that.isLoop) {
-                      resumeTime = 0;
-                      plyrPlayer.plyr.embed.seekTo(resumeTime);
+                    // check time and if isLoop == true
+                    if (currentTime >= videoDuration && that.isLoop) {
+                        resumeTime = 0;
+                        plyrPlayer.plyr.embed.seekTo(resumeTime);
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
@@ -658,13 +658,13 @@ $(function() {
         $("#demo").hide();
     }
 
-    $("input[name='toggleLoop']").change(function(){
-      if($(this).is(':checked')) {
-        ZenPlayer.isLoop = true;
-      }
-      else {
-        ZenPlayer.isLoop = false;
-      }
+    $("input[name='toggleLoop']").change(function() {
+        if ($(this).is(":checked")) {
+            ZenPlayer.isLoop = true;
+        }
+        else {
+            ZenPlayer.isLoop = false;
+        }
     });
 
     // Handle demo link click
