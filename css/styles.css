@@ -57,11 +57,11 @@ a {
     margin: 10px auto 0;
 }
 
-#toggleLoopLabel {
+#toggleRepeatLabel {
     font-size: 16px;
 }
 
-#toggleLoop {
+#toggleRepeat {
     margin-left: 10px;
 }
 
