@@ -1,9 +1,21 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 body {
-    background-color: #f9f9f9;
+    background: linear-gradient(to left,#185a9d,#43cea2);
+    font-family: 'Open Sans',sans-serif;
 }
-
+#themeselector1 {
+    position: fixed;
+    left: 0;
+    top:300px;
+}
+#themeselector2 {
+    position: fixed;
+    left: 0;
+    top:330px;
+}
 header, footer {
     text-align: center;
+    color: white;
 }
 
 header {
@@ -24,7 +36,6 @@ header {
 }
 
 footer {
-    border-top: 1px solid #eeeeee;
     margin-top: 50px;
     padding: 50px 0;
 }
@@ -261,4 +272,46 @@ a {
 
 #audioplayer .plyr__volume--display, #audioplayer .plyr__progress--buffer {
     background-color: #f9f9f9;
+}
+.mybtn {
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+	bacskground: #F77593;
+	overflow: hidden;
+	color: white;
+    border: none;
+	border-radius: 2px;
+	-webkit-transition:all .3s;
+    background: linear-gradient(to left, #F77593 50%, #1b92f9 50%);
+	background-size: 200% 100%;
+	background-position:right bottom;
+}
+.mybtn:hover {
+    background-position: left bottom;
+}
+.myinput {
+    font-family: 'Montserrat', sans-serif;
+	padding: 10px 20px;
+	font-size: 20px;
+	background: white;
+	border: none;
+	border-radius: 5px;
+	color: #2980b9;
+	text-align: center;
+	min-width: 350px;
+}
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: teal;
+}
+.icon {
+    color: teal;
+}
+#container a {
+    color: white;
+}
+.btn
+{
+    background-image: none;
+    background-color: white !important;
 }

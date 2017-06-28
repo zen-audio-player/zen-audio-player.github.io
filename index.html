@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="bower_components/primer-css/css/primer.css">
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="bower_components/plyr/dist/plyr.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" id= "cssselector" href="css/style2.css">
 
     <script type="text/javascript">window._trackJs = { token: "f58d0b7c4b4248939fddc582f9e55c9d" };</script>
     <script src="bower_components/trackjs/tracker.js"></script>
@@ -30,6 +30,8 @@
 
 </head>
 <body>
+    <button id="themeselector1">Basic Theme</button>
+    <button id="themeselector2">Gradient Theme</button>
     <header>
         <!-- The logo & description -->
         <figure>
@@ -40,18 +42,18 @@
 
         <hgroup>
             <h1>Zen Audio Player</h1>
-            <h2 class="color-grey">Listen to YouTube videos, without the distracting visuals.</h2>
+            <h2 class="">Listen to YouTube videos, without the distracting visuals.</h2>
             <h2 class="color-grey hide flash" id="mobile-message"></h2>
         </hgroup>
     </header>
     <div id="container">
         <!-- The form -->
         <form id="form">
-            <div class="input-group">
-                <input type="text" id="v" name="v" class="input-search color-grey" placeholder="Search, YouTube video ID, or URL">
+            <div id = "shadow" class="input-group">
+                <input type="text" id="v" name="v" class="input-search myinput" placeholder="Search, YouTube video ID, or URL">
                 <span class="input-group-button">
                     <button class="btn btn-search" id="submit">
-                        <i class="fa fa-search"></i>
+                        <i class="fa fa-search icon"></i>
                     </button>
                 </span>
             </div>
@@ -68,8 +70,9 @@
             </h3>
 
             <div id="playerControls">
-                <button class="btn" id="togglePlayer">
+                <button class="mybtn" id="togglePlayer">
                     Show Player
+
                 </button>
                 <button class="btn" id="toggleDescription">
                     Show Description
@@ -88,8 +91,8 @@
             <div id="zen-video-description"></div>
             <br>
         </div>
-        <button id="demo" class="btn">
-            <i class="fa fa-mouse-pointer"></i>
+        <button id="demo" class="mybtn">
+            <i class="fa fa-play"></i>
             Click for Demo
         </button>
     </div>
@@ -128,5 +131,20 @@
             "logo": "https://zenplayer.audio/img/zen-audio-player-905.png"
         }
     </script>
+    <script>
+    var basic = document.getElementById("themeselector1");
+    var gradient = document.getElementById("themeselector2");    
+        basic.onclick = function()
+        {
+            var css = document.getElementById("cssselector");
+            css.href = "css/style1.css";
+        };
+        gradient.onclick = function ()
+        {
+            var css = document.getElementById("cssselector");
+            css.href = "css/style2.css";
+        };
+    </script>
+    
 </body>
 </html>
