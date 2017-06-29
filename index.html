@@ -11,13 +11,13 @@
 
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
     <link rel="stylesheet" href="bower_components/primer-css/css/primer.css">
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="bower_components/plyr/dist/plyr.css">
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" id= "cssselector" href="css/style1.css">
+    <link rel="stylesheet" href="css/basic.css" id="cssselector">
 
     <script type="text/javascript">window._trackJs = { token: "f58d0b7c4b4248939fddc582f9e55c9d" };</script>
     <script src="bower_components/trackjs/tracker.js"></script>
@@ -32,8 +32,8 @@
 
 </head>
 <body>
-    <button id="themeselector1">Basic Theme</button>
-    <button id="themeselector2">Gradient Theme</button>
+    <button id="themeSelectorBasic">Basic Theme</button>
+    <button id="themeSelectorGradient">Gradient Theme</button>
     <header>
         <!-- The logo & description -->
         <figure>
@@ -44,14 +44,14 @@
 
         <hgroup>
             <h1>Zen Audio Player</h1>
-            <h2 class="">Listen to YouTube videos, without the distracting visuals.</h2>
+            <h2>Listen to YouTube videos, without the distracting visuals.</h2>
             <h2 class="color-grey hide flash" id="mobile-message"></h2>
         </hgroup>
     </header>
     <div id="container">
         <!-- The form -->
         <form id="form">
-            <div id = "shadow" class="input-group">
+            <div id="shadow" class="input-group">
                 <input type="text" id="v" name="v" class="input-search myinput" placeholder="Search, YouTube video ID, or URL">
                 <span class="input-group-button">
                     <button class="btn btn-search" id="submit">
@@ -134,17 +134,17 @@
         }
     </script>
     <script>
-    var basic = document.getElementById("themeselector1");
-    var gradient = document.getElementById("themeselector2");    
+    var basic = document.getElementById("themeSelectorBasic");
+    var gradient = document.getElementById("themeSelectorGradient");    
         basic.onclick = function()
         {
             var css = document.getElementById("cssselector");
-            css.href = "css/style1.css";
+            css.href = "css/basic.css";
         };
         gradient.onclick = function ()
         {
             var css = document.getElementById("cssselector");
-            css.href = "css/style2.css";
+            css.href = "css/gradient.css";
         };
     </script>
     

@@ -1,0 +1,33 @@
+body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: "Open Sans" ,sans-serif;
+}
+#themeSelectorBasic {
+    position: fixed;
+    left: 0;
+    top: 300px;
+    color: #000000;
+}
+#themeSelectorGradient {
+    position: fixed;
+    left: 0;
+    top: 330px;
+    color: #000000;
+}
+h2 {
+    color: #dcdada;
+}
+.mybtn {
+    border: none;
+    padding: 10px;
+    color: #000000;
+    background-image: none;
+    background-color: #ffffff;
+}
+#shadow{
+    transition: all 0.2s ease-in-out;
+}
+#shadow:hover {
+    box-shadow: 0 6px 13px rgba(255, 255, 255, 0.4);
+}

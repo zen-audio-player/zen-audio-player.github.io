@@ -1,0 +1,60 @@
+body {
+    background: linear-gradient(to left, #185a9d, #43cea2);
+    font-family: "Open Sans", sans-serif;
+}
+#themeSelectorBasic {
+    position: fixed;
+    left: 0;
+    top: 300px;
+}
+#themeSelectorGradient {
+    position: fixed;
+    left: 0;
+    top: 330px;
+}
+header, footer {
+    color: #ffffff;
+}
+footer {
+    border-top: none;
+}
+.mybtn {
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+	overflow: hidden;
+	color: white;
+    border: none;
+	border-radius: 2px;
+    background: linear-gradient(to left, #f77593 50%, #1b92f9 50%);
+	background-size: 200% 100%;
+	background-position: right bottom;
+	transition: all 0.3s;
+}
+.mybtn:hover {
+    background-position: left bottom;
+}
+.myinput {
+    font-family: "Montserrat", sans-serif;
+	padding: 10px 20px;
+	font-size: 20px;
+	background: #ffffff;
+	border: none;
+	border-radius: 5px;
+	color: #2980b9;
+	text-align: center;
+	min-width: 350px;
+}
+.myinput::placeholder { /* Chrome/Opera/Safari */
+  color: #008080;
+}
+.icon {
+    color: #008080;
+}
+#container a {
+    color: #ffffff;
+}
+.btn {
+    background-image: none;
+    background-color: #ffffff;
+}
