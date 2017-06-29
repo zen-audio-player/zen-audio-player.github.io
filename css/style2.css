@@ -28,10 +28,12 @@ footer {
 	color: white;
     border: none;
 	border-radius: 2px;
-	-webkit-transition:all .3s;
     background: linear-gradient(to left, #F77593 50%, #1b92f9 50%);
 	background-size: 200% 100%;
 	background-position:right bottom;
+	-webkit-transition:all .3s;
+    -moz-transition: all .3s;
+    -o-transition: all .3s;
 }
 .mybtn:hover {
     background-position: left bottom;
