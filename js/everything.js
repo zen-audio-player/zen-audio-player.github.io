@@ -704,12 +704,12 @@ $(function() {
     });
 });
 
-//Theme Selecting options
-    $('#themeSelectorBasic').click(function () {
-        $('#cssselector').href = 'css/basic.css';
+//  Theme Selecting options
+$("#themeSelectorBasic").click(function () {
+    $("#cssselector").href = "css/basic.css";
     });
-    $('#themeSelectorGradient').click(function () {
-        $('#cssselector').href = 'css/gradient.css';
+    $("#themeSelectorGradient").click(function () {
+        $("#cssselector").href = "css/gradient.css";
     });
 
 /*eslint-disable */
