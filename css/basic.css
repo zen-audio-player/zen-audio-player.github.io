@@ -1,7 +1,7 @@
 body {
     background-color: #000000;
     color: #ffffff;
-    font-family: "Open Sans" ,sans-serif;
+    font-family: "Open Sans", sans-serif;
 }
 #themeSelectorBasic {
     position: fixed;
@@ -25,7 +25,7 @@ h2 {
     background-image: none;
     background-color: #ffffff;
 }
-#shadow{
+#shadow {
     transition: all 0.2s ease-in-out;
 }
 #shadow:hover {

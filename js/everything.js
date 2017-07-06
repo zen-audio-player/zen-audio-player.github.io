@@ -704,6 +704,14 @@ $(function() {
     });
 });
 
+//Theme Selecting options
+    $('#themeSelectorBasic').click(function () {
+        $('#cssselector').href = 'css/basic.css';
+    });
+    $('#themeSelectorGradient').click(function () {
+        $('#cssselector').href = 'css/gradient.css';
+    });
+
 /*eslint-disable */
 // Google Analytics goodness
 (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
