@@ -707,8 +707,8 @@ $(function() {
 //  Theme Selecting options
 $("#themeSelectorBasic").click(function () {
     $("#cssselector").href = "css/basic.css";
-    });
-    $("#themeSelectorGradient").click(function () {
+});
+$("#themeSelectorGradient").click(function () {
         $("#cssselector").href = "css/gradient.css";
     });
 
