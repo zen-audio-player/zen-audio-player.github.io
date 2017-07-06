@@ -709,8 +709,8 @@ $("#themeSelectorBasic").click(function () {
     $("#cssselector").href = "css/basic.css";
 });
 $("#themeSelectorGradient").click(function () {
-        $("#cssselector").href = "css/gradient.css";
-    });
+    $("#cssselector").href = "css/gradient.css";
+});
 
 /*eslint-disable */
 // Google Analytics goodness
