@@ -193,6 +193,9 @@ var ZenPlayer = {
                 if (window.sessionStorage && window.sessionStorage.hasOwnProperty(videoID)) {
                     var resumeTime = window.sessionStorage[videoID];
                     var videoDuration = plyrPlayer.plyr.embed.getDuration();
+                    if (videoDuration === 0) {
+                        return;
+                    }
                     if (!isNaN(resumeTime) && resumeTime < videoDuration - 3) {
                         plyrPlayer.plyr.embed.seekTo(resumeTime);
                     }
@@ -223,6 +226,9 @@ var ZenPlayer = {
                 if (window.sessionStorage) {
                     var currentTime = plyrPlayer.plyr.embed.getCurrentTime();
                     var videoDuration = plyrPlayer.plyr.embed.getDuration();
+                    if (videoDuration === 0) {
+                        return;
+                    }
 
                     // Only store the current time if the video isn't done
                     // playing yet. If the video finished already, then it
