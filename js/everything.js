@@ -618,7 +618,7 @@ $(function() {
     $("#form").submit(function(event) {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
-        var formValueTime = /&t=(\d*)$/g.exec(formValue);
+        var formValueTime = /[?&]t=(\d*)$/g.exec(formValue);
         if (formValueTime && formValueTime.length > 1) {
             formValueTime = parseInt(formValueTime[1], 10);
             formValue = formValue.replace(/&t=\d*$/g, "");
