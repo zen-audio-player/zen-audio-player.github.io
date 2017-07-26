@@ -173,7 +173,8 @@ var ZenPlayer = {
                 // Updates the time position by a given argument in URL
                 // IE https://zenplayer.audio/?v=koJv-j1usoI&t=30 starts at 0:30
                 var t = getCurrentTimePosition();
-                if (t) {
+                // If played for the first time during session and there's 't' option in query
+                if (t && window.sessionStorage[videoID] === undefined) {
                     that.videoPosition = t;
                     window.sessionStorage[videoID] = t;
                 }
@@ -641,6 +642,8 @@ $(function() {
                         else {
                             window.location.href = makeListenURL(videoID, formValueTime);
                         }
+                        // Hold value for resume time from the argument in URL
+                        window.sessionStorage[videoID] = formValueTime;
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     logError(jqXHR, textStatus, errorThrown, "Lookup error");
