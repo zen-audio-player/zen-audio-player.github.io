@@ -185,17 +185,14 @@ var ZenPlayer = {
             });
 
             plyrPlayer.addEventListener("playing", function() {
-                if (that.updated) {
+                var videoDuration = plyrPlayer.plyr.embed.getDuration();
+                if (that.updated || videoDuration === 0) {
                     return;
                 }
 
                 // Start video from where we left off, if it makes sense
                 if (window.sessionStorage && window.sessionStorage.hasOwnProperty(videoID)) {
                     var resumeTime = window.sessionStorage[videoID];
-                    var videoDuration = plyrPlayer.plyr.embed.getDuration();
-                    if (videoDuration === 0) {
-                        return;
-                    }
                     if (!isNaN(resumeTime) && resumeTime < videoDuration - 3) {
                         plyrPlayer.plyr.embed.seekTo(resumeTime);
                     }
@@ -223,13 +220,9 @@ var ZenPlayer = {
             plyrPlayer.addEventListener("timeupdate", function() {
                 // Store the current time of the video.
                 var resumeTime = 0;
-                if (window.sessionStorage) {
+                var videoDuration = plyrPlayer.plyr.embed.getDuration();
+                if (window.sessionStorage && videoDuration > 0) {
                     var currentTime = plyrPlayer.plyr.embed.getCurrentTime();
-                    var videoDuration = plyrPlayer.plyr.embed.getDuration();
-                    if (videoDuration === 0) {
-                        return;
-                    }
-
                     // Only store the current time if the video isn't done
                     // playing yet. If the video finished already, then it
                     // should start off at the beginning next time.
@@ -618,7 +611,7 @@ $(function() {
     $("#form").submit(function(event) {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
-        var formValueTime = /&t=(\d*)$/g.exec(formValue);
+        var formValueTime = /[?&]t=(\d*)/g.exec(formValue);
         if (formValueTime && formValueTime.length > 1) {
             formValueTime = parseInt(formValueTime[1], 10);
             formValue = formValue.replace(/&t=\d*$/g, "");
