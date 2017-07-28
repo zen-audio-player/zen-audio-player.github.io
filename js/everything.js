@@ -58,6 +58,11 @@ var plyrPlayer;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
 
+// global playlist, this is populated with an ajax call
+var playList = [];
+var autoplayState = false;
+var videoMetadata = {};
+
 var errorMessage = {
     init: function() {
         // nothing for now
@@ -177,11 +182,11 @@ var ZenPlayer = {
                     that.videoPosition = t;
                     window.sessionStorage[videoID] = t;
                 }
-
                 // Initialize UI
                 that.setupTitle();
                 that.setupVideoDescription(videoID);
                 that.setupPlyrToggle();
+                that.setupAutoplayToggle();
             });
 
             plyrPlayer.addEventListener("playing", function() {
@@ -215,6 +220,38 @@ var ZenPlayer = {
                 // Show player
                 that.show();
                 updateTweetMessage();
+            });
+
+            // when player has finished playing
+            plyrPlayer.addEventListener("ended", function() {
+                videoMetadata = getParsedVideoMetadata();
+                if (videoMetadata) {
+                    var isInItems = false;
+                    for (var i = 0; i < videoMetadata["items"].length; i++) {
+                        if (videoMetadata["items"][i]["id"] === currentVideoID) {
+                            isInItems = true;
+                        }
+                    }
+                    if (!isInItems) {
+                        videoMetadata["items"].push({"type": "youtube", "id": currentVideoID, "played": true });
+                    }
+                    videoMetadata["autoplayState"] = autoplayState;
+                }
+                else {
+                    videoMetadata = {
+                        "autoplayState": autoplayState,
+                        "items": [{
+                            "type": "youtube",
+                            "id": currentVideoID,
+                            "played": true
+                        }]
+                    };
+                }
+                window.sessionStorage.setItem("videoMetadata", JSON.stringify(videoMetadata));
+                if (autoplayState) {
+                    var newId = getNewVideoID();
+                    that.playNext(newId);
+                }
             });
 
             plyrPlayer.addEventListener("timeupdate", function() {
@@ -267,6 +304,13 @@ var ZenPlayer = {
             });
         }
     },
+
+    // play next song from autoplay
+    playNext: function(videoID) {
+        $("#v").attr("value", videoID);
+        $("#form").submit();
+    },
+
     show: function() {
         $("#audioplayer").show();
     },
@@ -298,6 +342,28 @@ var ZenPlayer = {
             toggleElement(event, ".plyr__video-wrapper", "Player");
         });
     },
+
+    setupAutoplayToggle: function() {
+        // toggle auto next song playing
+        $("#toggleAutoplay").click(function(event) {
+            var toggleTextElement = $("#" + event.currentTarget.id);
+            if (!autoplayState) {
+                autoplayState = true;
+                toggleTextElement.text("Stop autoplay");
+            }
+            else {
+                if (autoplayState === true) {
+                    toggleTextElement.text("Start autoplay");
+                    autoplayState = false;
+                }
+                else {
+                    toggleTextElement.text("Stop autoplay");
+                    autoplayState = true;
+                }
+            }
+        });
+    },
+
     getVideoDescription: function(videoID) {
         var description = "";
 
@@ -539,6 +605,37 @@ function pickDemo() {
     return demos[Math.floor(Math.random() * demos.length)];
 }
 
+function updateAutoplayToggle(state) {
+    if (state) {
+        $("#toggleAutoplay").text("Stop autoplay");
+    }
+    else {
+        $("#toggleAutoplay").text("Start autoplay");
+    }
+}
+
+function getParsedVideoMetadata() {
+    videoMetadata = window.sessionStorage.getItem("videoMetadata");
+    if (videoMetadata) {
+        videoMetadata = JSON.parse(videoMetadata);
+    }
+    return videoMetadata;
+}
+
+function getNewVideoID() {
+    var nextID = null;
+    nextID = playList.pop();
+    for (var i = 0; i < videoMetadata["items"].length && nextID; i++) {
+        var curVideo = videoMetadata["items"][i];
+        if (curVideo["id"] === nextID) {
+            // restart the for loop
+            nextID = playList.pop();
+            i = -1;
+        }
+    }
+    return nextID;
+}
+
 $(function() {
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         $("#container").hide();
@@ -556,11 +653,43 @@ $(function() {
 
     errorMessage.init();
 
+    videoMetadata = getParsedVideoMetadata();
+
+    if (videoMetadata) {
+        autoplayState = videoMetadata["autoplayState"];
+    }
+    if (autoplayState) {
+        updateAutoplayToggle(autoplayState);
+    }
+
     // How do we know if the value is truly invalid?
     // Preload the form from the URL
     var currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
         $("#v").attr("value", currentVideoID);
+        // get similar videos, populate playList
+        if (!isFileProtocol()) {
+            $.ajax({
+                url: "https://www.googleapis.com/youtube/v3/search",
+                dataType: "json",
+                async: false,
+                data: {
+                    key: youTubeDataApiKey,
+                    part: "snippet",
+                    type: "video",
+                    relatedToVideoId: currentVideoID
+                },
+                success: function(data) {
+                    // push items into playlist
+                    for (var i = 0; i < data.items.length; i++) {
+                        playList.push(data.items[i].id.videoId);
+                    }
+                    playList = playList.reverse();
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                logError(jqXHR, textStatus, errorThrown, "Related video lookup error");
+            });
+        }
     }
     else {
         var currentSearchQuery = getCurrentSearchQuery();
