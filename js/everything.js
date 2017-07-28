@@ -657,6 +657,13 @@ $(function() {
         $("#demo").hide();
     }
 
+    // Reverts to Home when there is no text in input
+    $("#v").on("input", function() {
+        if ($("#v").val() === "") {
+            $("#search-results").hide();
+        }
+    });
+
     $("input[name='toggleRepeat']").change(function() {
         ZenPlayer.isRepeat = $(this).is(":checked");
     });
