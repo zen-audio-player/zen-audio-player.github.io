@@ -1,5 +1,13 @@
 /* global URI getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
 
+var keyCodes = {
+    SPACEBAR: 32
+};
+
+var timeIntervals = {
+    SECONDS: 60
+};
+
 // Pointer to Keen client
 var client;
 /**
@@ -223,11 +231,13 @@ var ZenPlayer = {
                 var videoDuration = plyrPlayer.plyr.embed.getDuration();
                 if (window.sessionStorage && videoDuration > 0) {
                     var currentTime = plyrPlayer.plyr.embed.getCurrentTime();
-                    // Only store the current time if the video isn't done
-                    // playing yet. If the video finished already, then it
-                    // should start off at the beginning next time.
-                    // There is a fuzzy 3 seconds because sometimes the video
-                    // will end a few seconds before the video duration.
+                    /**
+                     * Only store the current time if the video isn't done
+                     * playing yet. If the video finished already, then it
+                     * should start off at the beginning next time.
+                     * There is a fuzzy 3 seconds because sometimes the video
+                     * will end a few seconds before the video duration.
+                     */
                     if (currentTime < videoDuration - 3) {
                         resumeTime = currentTime;
                     }
@@ -498,15 +508,27 @@ function convertTimestamp(timestamp) {
     var hours = 0;
     var timeComponents = timestamp.split(":");
     if (timeComponents.length === 3) {
-        hours = parseInt(timeComponents[0], 10) * 60 * 60; // convert hours to seocnds
-        minutes = parseInt(timeComponents[1], 10) * 60; // convert minutes to seconds
-        seconds = parseInt(timeComponents[2], 10); // add remaining seconds
+        hours = convertHoursToSeconds(timeComponents[0]);
+        minutes = convertMinutesToSeconds(timeComponents[1]);
+        seconds = parseBase10Int(timeComponents[2]);
     }
     else {
-        minutes = parseInt(timeComponents[0], 10) * 60; // convert minutes to seconds
-        seconds = parseInt(timeComponents[1], 10); // add remaining seconds
+        minutes = convertMinutesToSeconds(timeComponents[0]);
+        seconds = parseBase10Int(timeComponents[1]);
     }
     return hours + minutes + seconds;
+}
+
+function convertHoursToSeconds(hours) {
+    return parseBase10Int(hours) * timeIntervals.SECONDS * timeIntervals.SECONDS;
+}
+
+function convertMinutesToSeconds(minutes) {
+    return parseBase10Int(minutes) * timeIntervals.SECONDS;
+}
+
+function parseBase10Int(value) {
+    return parseInt(value, 10);
 }
 
 function wrapParseYouTubeVideoID(url) {
@@ -690,8 +712,8 @@ $(function() {
     ZenPlayer.init(currentVideoID);
 
     $(document).on("keyup", function(evt) {
-        // 32 = spacebar, toggle play/pause if not typing in the search box
-        if (evt.keyCode === 32 && !$("#v").is(":focus")) {
+        // Toggle play/pause if not typing in the search box
+        if (evt.keyCode === keyCodes.SPACEBAR && !$("#v").is(":focus")) {
             evt.preventDefault();
             if (ZenPlayer.isPlaying) {
                 ZenPlayer.pause();
@@ -703,8 +725,8 @@ $(function() {
     });
 
     $(document).on("keydown", function(evt) {
-        // 32 = spacebar, if not typing in the search prevent "page down" scrolling
-        if (evt.keyCode === 32 && !$("#v").is(":focus")) {
+        // If not typing in the search prevent "page down" scrolling
+        if (evt.keyCode === keyCodes.SPACEBAR && !$("#v").is(":focus")) {
             evt.preventDefault();
         }
     });
