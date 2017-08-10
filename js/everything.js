@@ -231,12 +231,12 @@ var ZenPlayer = {
                 var videoDuration = plyrPlayer.plyr.embed.getDuration();
                 if (window.sessionStorage && videoDuration > 0) {
                     var currentTime = plyrPlayer.plyr.embed.getCurrentTime();
-                    /* 
+                    /*
                         Only store the current time if the video isn't done
                         playing yet. If the video finished already, then it
                         should start off at the beginning next time.
                         There is a fuzzy 3 seconds because sometimes the video
-                        will end a few seconds before the video duration. 
+                        will end a few seconds before the video duration.
                     */
                     if (currentTime < videoDuration - 3) {
                         resumeTime = currentTime;
