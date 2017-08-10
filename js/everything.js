@@ -231,13 +231,13 @@ var ZenPlayer = {
                 var videoDuration = plyrPlayer.plyr.embed.getDuration();
                 if (window.sessionStorage && videoDuration > 0) {
                     var currentTime = plyrPlayer.plyr.embed.getCurrentTime();
-                    /*
-                        Only store the current time if the video isn't done
-                        playing yet. If the video finished already, then it
-                        should start off at the beginning next time.
-                        There is a fuzzy 3 seconds because sometimes the video
-                        will end a few seconds before the video duration.
-                    */
+                    /**
+                     * Only store the current time if the video isn't done
+                     * playing yet. If the video finished already, then it
+                     * should start off at the beginning next time.
+                     * There is a fuzzy 3 seconds because sometimes the video
+                     * will end a few seconds before the video duration.
+                     */
                     if (currentTime < videoDuration - 3) {
                         resumeTime = currentTime;
                     }
@@ -510,25 +510,25 @@ function convertTimestamp(timestamp) {
     if (timeComponents.length === 3) {
         hours = convertHoursToSeconds(timeComponents[0]);
         minutes = convertMinutesToSeconds(timeComponents[1]);
-        seconds = getSeconds(timeComponents[2]);
+        seconds = parseBase10Int(timeComponents[2]);
     }
     else {
         minutes = convertMinutesToSeconds(timeComponents[0]);
-        seconds = getSeconds(timeComponents[1]);
+        seconds = parseBase10Int(timeComponents[1]);
     }
     return hours + minutes + seconds;
 }
 
 function convertHoursToSeconds(hours) {
-    return parseInt(hours, 10) * timeIntervals.SECONDS * timeIntervals.SECONDS;
+    return parseBase10Int(hours) * timeIntervals.SECONDS * timeIntervals.SECONDS;
 }
 
 function convertMinutesToSeconds(minutes) {
-    return parseInt(minutes, 10) * timeIntervals.SECONDS;
+    return parseBase10Int(minutes) * timeIntervals.SECONDS;
 }
 
-function getSeconds(seconds) {
-    return parseInt(seconds, 10);
+function parseBase10Int(value) {
+    return parseInt(value, 10);
 }
 
 function wrapParseYouTubeVideoID(url) {
