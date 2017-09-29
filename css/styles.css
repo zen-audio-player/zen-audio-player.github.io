@@ -9,6 +9,7 @@ header, footer {
 header {
     width: 80%;
     margin: 50px auto 0 auto;
+    margin-top: -1vh;
 }
 
 @media all and (min-width: 480px) {
@@ -40,7 +41,7 @@ h2 {
 }
 
 a {
-    color: #3498db;
+    color: #ff7d7d;
 }
 
 .hide {
@@ -59,6 +60,7 @@ a {
 
 #toggleRepeatLabel {
     font-size: 16px;
+    color: #ffffff;
 }
 
 #toggleRepeat {
@@ -79,6 +81,8 @@ a {
     text-align: center;
     font-size: 16px;
     padding-left: 50px;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
 }
 
 #v::-ms-clear {
@@ -251,14 +255,44 @@ a {
 
 #audioplayer .plyr__controls {
     padding: 10px;
-    border-radius: inherit;
+    border-radius: 25px;
     border: 1px solid #dbe3e8;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
     color: #565d64;
     position: relative;
-    background: #ffffff;
+    background: #d3dae6;
 }
 
 #audioplayer .plyr__volume--display, #audioplayer .plyr__progress--buffer {
     background-color: #f9f9f9;
+}
+
+.gradient-background {
+    background-image: linear-gradient(to left top, #000000, #519dff);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.organize-landing-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+
+h1 {
+    color: #ffffff;
+}
+
+.btn {
+    background-color: #d3dae6;
+    background-image: none;
+    border-radius: 25px;
+}
+
+.color-white {
+    color: #ffffff;
 }
