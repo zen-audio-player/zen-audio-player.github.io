@@ -22,10 +22,10 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 2. Name your bookmark.  
 3. Click on "Edit".  
 4. Paste
-```
-javascript: (function () { window.location.href = 'https://zenplayer.audio/?v=' + location.href; }());
-```
-in the URL field.  
+    ```
+    javascript: (function () { window.location.href = 'https://zenplayer.audio/?v=' + location.href; }());
+    ```
+    in the URL field.  
 5. Click on "Save".  
 
 ## Demo
