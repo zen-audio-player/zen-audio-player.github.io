@@ -21,11 +21,10 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 1. Click on a star at the right side of the omnibox (you can also press Ctrl+D (CMD+D on Mac) or choose "Bookmark this page..." from the menu).  
 2. Name your bookmark.  
 3. Click on "Edit".  
-4. Paste
+4. Paste the following snippet into the URL field
     ```
     javascript: (function () { window.location.href = 'https://zenplayer.audio/?v=' + location.href; }());
     ```
-    in the URL field.  
 5. Click on "Save".  
 
 ## Demo
