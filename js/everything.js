@@ -245,6 +245,7 @@ var ZenPlayer = {
                     if (currentTime >= videoDuration && that.isRepeat) {
                         resumeTime = 0;
                         plyrPlayer.plyr.embed.seekTo(resumeTime);
+                        ZenPlayer.play();
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
