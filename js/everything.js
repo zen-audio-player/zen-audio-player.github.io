@@ -687,8 +687,16 @@ $(function() {
         }
     });
 
-    $("input[name='toggleRepeat']").change(function() {
-        ZenPlayer.isRepeat = $(this).is(":checked");
+    $("#toggleRepeat").click(function() {
+        $(this).toggleClass("toggleRepeatActive");
+        var active = $(this).hasClass("toggleRepeatActive");
+        if (active) {
+            $(this).html("&#10004; Repeat Track");
+        }
+        else {
+            $(this).html("Repeat Track");
+        }
+        ZenPlayer.isRepeat = $(this).hasClass("toggleRepeatActive");
     });
 
     // Handle demo link click
