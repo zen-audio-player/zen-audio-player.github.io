@@ -385,7 +385,7 @@ function toggleElement(event, toggleID, buttonText) {
     event.preventDefault();
 
     var toggleElement = $(toggleID);
-    toggleElement.toggle();
+    toggleElement.toggle("fast");
 
     var toggleTextElement = $("#" + event.currentTarget.id);
 
