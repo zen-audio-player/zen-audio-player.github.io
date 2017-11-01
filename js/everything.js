@@ -234,17 +234,14 @@ var ZenPlayer = {
                 videoMetadata = getParsedvideoMetadata();
                 var index = -1;
                 if (videoMetadata) {
-                    var hasDuplicates=function (arr) {
-
+                    var hasDuplicates = function (arr) {
                         var len = arr.length;
                         for (var i = 0; i < len; i++) {
                             if (arr[i].id === currentVideoID) {
                                 return i;
                             }
-
                         }
                         return -1;
-
                     };
                     index = hasDuplicates(videoMetadata.items);
 
@@ -757,15 +754,15 @@ $(function () {
         minLength: 1
     }, {
         source: function (query, processSync, processAsync) {
-                getAutocompleteSuggestions(query, function (data) {
-                    return processAsync($.map(data[1], function (item) {
-                        return item[0];
-                    }));
-                });
-            }
+            getAutocompleteSuggestions(query, function (data) {
+                return processAsync($.map(data[1], function (item) {
+                    return item[0];
+                }));
+            });
+        }
     }).bind("typeahead:selected", function (obj, datum) {
-            window.location.href = makeSearchURL(datum);
-        });
+        window.location.href = makeSearchURL(datum);
+    });
 
     // Handle form submission
     $("#form").submit(function (event) {
