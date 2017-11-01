@@ -71,10 +71,10 @@ var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
 
 var errorMessage = {
-    init: function() {
+    init: function () {
         // nothing for now
     },
-    show: function(message) {
+    show: function (message) {
         $("#zen-error").text("ERROR: " + message);
         $("#zen-error").show();
 
@@ -86,9 +86,9 @@ var errorMessage = {
 
         // Send the error to Google Analytics
         ga("send", "event", "error", message);
-        sendKeenEvent("error", {"message": message});
+        sendKeenEvent("error", { "message": message });
     },
-    hide: function() {
+    hide: function () {
         $("#zen-error").text("").hide();
         ZenPlayer.show();
     }
@@ -134,7 +134,7 @@ function handleYouTubeError(details) {
         // Update the UI w/ error
         errorMessage.show(message);
         ga("send", "event", "YouTube iframe API error", verboseMessage);
-        sendKeenEvent("YouTube iframe API error", {verbose: verboseMessage, message: message, code: details.code});
+        sendKeenEvent("YouTube iframe API error", { verbose: verboseMessage, message: message, code: details.code });
 
         // Log debug info
         console.log("Verbose debug error message: ", verboseMessage);
@@ -147,7 +147,7 @@ var ZenPlayer = {
     isPlaying: false,
     isRepeat: false,
 
-    init: function(videoID) {
+    init: function (videoID) {
         // Inject svg with control icons
         $("#plyr-svg").load("../bower_components/plyr/dist/plyr.svg");
 
@@ -162,14 +162,14 @@ var ZenPlayer = {
         // Load video into Plyr player
         if (plyrPlayer.plyr) {
             var that = this;
-            plyrPlayer.addEventListener("error", function(event) {
+            plyrPlayer.addEventListener("error", function (event) {
                 if (event && event.detail && typeof event.detail.code === "number") {
                     handleYouTubeError(event.detail);
                     ZenPlayer.hide();
                 }
             });
 
-            plyrPlayer.addEventListener("ready", function() {
+            plyrPlayer.addEventListener("ready", function () {
                 // Noop if we have nothing to play
                 if (!currentVideoID || currentVideoID.length === 0) {
                     return;
@@ -197,7 +197,7 @@ var ZenPlayer = {
                 that.setupAutoplayToggle();
             });
 
-            plyrPlayer.addEventListener("playing", function() {
+            plyrPlayer.addEventListener("playing", function () {
                 var videoDuration = plyrPlayer.plyr.embed.getDuration();
                 if (that.updated || videoDuration === 0) {
                     return;
@@ -303,11 +303,11 @@ var ZenPlayer = {
                 $("#zen-video-title").attr("href", updatedUrl);
             });
 
-            plyrPlayer.addEventListener("playing", function() {
+            plyrPlayer.addEventListener("playing", function () {
                 this.isPlaying = true;
             }.bind(this));
 
-            plyrPlayer.addEventListener("pause", function() {
+            plyrPlayer.addEventListener("pause", function () {
                 this.isPlaying = false;
             }.bind(this));
 
@@ -328,10 +328,10 @@ var ZenPlayer = {
     show: function () {
         $("#audioplayer").show();
     },
-    hide: function() {
+    hide: function () {
         $("#audioplayer").hide();
     },
-    setupTitle: function() {
+    setupTitle: function () {
         // Prepend music note only if title does not already begin with one.
         var tmpVideoTitle = this.videoTitle;
         if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(tmpVideoTitle)) {
@@ -340,19 +340,19 @@ var ZenPlayer = {
         $("#zen-video-title").html(tmpVideoTitle);
         $("#zen-video-title").attr("href", this.videoUrl);
     },
-    setupVideoDescription: function(videoID) {
+    setupVideoDescription: function (videoID) {
         var description = anchorURLs(this.videoDescription);
         description = anchorTimestamps(description, videoID);
         $("#zen-video-description").html(description);
         $("#zen-video-description").hide();
 
-        $("#toggleDescription").click(function(event) {
+        $("#toggleDescription").click(function (event) {
             toggleElement(event, "#zen-video-description", "Description");
         });
     },
-    setupPlyrToggle: function() {
+    setupPlyrToggle: function () {
         // Show player button click event
-        $("#togglePlayer").click(function(event) {
+        $("#togglePlayer").click(function (event) {
             toggleElement(event, ".plyr__video-wrapper", "Player");
         });
     },
@@ -376,7 +376,7 @@ var ZenPlayer = {
             }
         });
     },
-    getVideoDescription: function(videoID) {
+    getVideoDescription: function (videoID) {
         var description = "";
 
         if (isFileProtocol()) {
@@ -387,7 +387,7 @@ var ZenPlayer = {
             getYouTubeVideoDescription(
                 videoID,
                 youTubeDataApiKey,
-                function(data) {
+                function (data) {
                     if (data.items.length === 0) {
                         errorMessage.show("Video description not found");
                     }
@@ -395,7 +395,7 @@ var ZenPlayer = {
                         description = data.items[0].snippet.description;
                     }
                 },
-                function(jqXHR, textStatus, errorThrown) {
+                function (jqXHR, textStatus, errorThrown) {
                     logError(jqXHR, textStatus, errorThrown, "Video Description error");
                 }
             );
@@ -408,10 +408,10 @@ var ZenPlayer = {
 
         return description;
     },
-    play: function() {
+    play: function () {
         plyrPlayer.plyr.embed.playVideo();
     },
-    pause: function() {
+    pause: function () {
         plyrPlayer.plyr.embed.pauseVideo();
     }
 };
@@ -565,7 +565,7 @@ function anchorTimestamps(text, videoID) {
     (?:$|\:[0-5]\d)) either the string ends or is a a number between 00-59
     */
     var re = /((?:[0-5]\d|\d|)(?:\d|\:[0-5]\d)(?:$|\:[0-5]\d))/g;
-    return text.replace(re, function(match) {
+    return text.replace(re, function (match) {
         return "<a href=\"" + makeListenURL(videoID, convertTimestamp(match)) + "\">" + match + "</a>";
     });
 }
@@ -727,7 +727,7 @@ $(function () {
             getSearchResults(
                 currentSearchQuery,
                 youTubeDataApiKey,
-                function(data) {
+                function (data) {
                     if (data.pageInfo.totalResults === 0) {
                         errorMessage.show("No results.");
                         return;
@@ -737,11 +737,11 @@ $(function () {
                     $("#search-results ul").html("");
 
                     var start = "<li><h4><a href=?v=";
-                    $.each(data.items, function(index, result) {
+                    $.each(data.items, function (index, result) {
                         $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title + "</a></h4><a href=?v=" + result.id.videoId + "><img src=" + result.snippet.thumbnails.medium.url + " alt='" + result.snippet.title + "'></a></li>");
                     });
                 },
-                function(jqXHR, textStatus, errorThrown) {
+                function (jqXHR, textStatus, errorThrown) {
                     logError(jqXHR, textStatus, errorThrown, "Search error");
                 }
             );
@@ -754,19 +754,19 @@ $(function () {
         highlight: true,
         minLength: 1
     }, {
-        source: function (query, processSync, processAsync) {
-            getAutocompleteSuggestions(query, function(data) {
-                return processAsync($.map(data[1], function(item) {
-                    return item[0];
-                }));
-            });
-        }
-    }).bind("typeahead:selected", function(obj, datum) {
-        window.location.href = makeSearchURL(datum);
-    });
+            source: function (query, processSync, processAsync) {
+                getAutocompleteSuggestions(query, function (data) {
+                    return processAsync($.map(data[1], function (item) {
+                        return item[0];
+                    }));
+                });
+            }
+        }).bind("typeahead:selected", function (obj, datum) {
+            window.location.href = makeSearchURL(datum);
+        });
 
     // Handle form submission
-    $("#form").submit(function(event) {
+    $("#form").submit(function (event) {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
         var formValueTime = /[?&]t=(\d*)/g.exec(formValue);
@@ -777,7 +777,7 @@ $(function () {
         if (formValue) {
             var videoID = wrapParseYouTubeVideoID(formValue, true);
             ga("send", "event", "form submitted", videoID);
-            sendKeenEvent("Form submitted", {videoID: videoID});
+            sendKeenEvent("Form submitted", { videoID: videoID });
             if (isFileProtocol()) {
                 errorMessage.show("Skipping video lookup request as we're running the site locally.");
             }
@@ -792,7 +792,7 @@ $(function () {
                         fields: "items/snippet/description",
                         id: videoID
                     },
-                    success: function(data) {
+                    success: function (data) {
                         if (data.items.length === 0) {
                             window.location.href = makeSearchURL(formValue);
                         }
@@ -800,7 +800,7 @@ $(function () {
                             window.location.href = makeListenURL(videoID, formValueTime);
                         }
                     }
-                }).fail(function(jqXHR, textStatus, errorThrown) {
+                }).fail(function (jqXHR, textStatus, errorThrown) {
                     logError(jqXHR, textStatus, errorThrown, "Lookup error");
                 });
             }
@@ -816,13 +816,13 @@ $(function () {
     }
 
     // Reverts to Home when there is no text in input
-    $("#v").on("input", function() {
+    $("#v").on("input", function () {
         if ($("#v").val() === "") {
             $("#search-results").hide();
         }
     });
 
-    $("#toggleRepeat").click(function() {
+    $("#toggleRepeat").click(function () {
         $(this).toggleClass("toggleRepeatActive");
         var active = $(this).hasClass("toggleRepeatActive");
         if (active) {
@@ -835,10 +835,10 @@ $(function () {
     });
 
     // Handle demo link click
-    $("#demo").click(function(event) {
+    $("#demo").click(function (event) {
         event.preventDefault();
         ga("send", "event", "demo", "clicked");
-        sendKeenEvent("Demo", {action: "clicked"});
+        sendKeenEvent("Demo", { action: "clicked" });
 
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
@@ -848,14 +848,14 @@ $(function () {
         }
         else {
             ga("send", "event", "demo", "already had video ID in URL");
-            sendKeenEvent("demo", {action: "already had video ID in URL"});
+            sendKeenEvent("demo", { action: "already had video ID in URL" });
         }
     });
 
     // Load the player
     ZenPlayer.init(currentVideoID);
 
-    $(document).on("keyup", function(evt) {
+    $(document).on("keyup", function (evt) {
         // Toggle play/pause if not typing in the search box
         if (evt.keyCode === keyCodes.SPACEBAR && !$("#v").is(":focus")) {
             evt.preventDefault();
@@ -868,7 +868,7 @@ $(function () {
         }
     });
 
-    $(document).on("keydown", function(evt) {
+    $(document).on("keydown", function (evt) {
         // If not typing in the search prevent "page down" scrolling
         if (evt.keyCode === keyCodes.SPACEBAR && !$("#v").is(":focus")) {
             evt.preventDefault();
@@ -878,10 +878,12 @@ $(function () {
 
 /*eslint-disable */
 // Google Analytics goodness
-(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,"script","//www.google-analytics.com/analytics.js","ga");
+(function (i, s, o, g, r, a, m) {
+    i["GoogleAnalyticsObject"] = r; i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
 ga("create", "UA-62983413-1", "auto");
 ga("send", "pageview");
 /*eslint-enable */
