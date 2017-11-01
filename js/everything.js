@@ -234,7 +234,7 @@ var ZenPlayer = {
                 videoMetadata = getParsedvideoMetadata();
                 var index = -1;
                 if (videoMetadata) {
-                    var has_duplicates = function (arr) {
+                    var hasDuplicates=function (arr) {
 
                         var len = arr.length;
                         for (var i = 0; i < len; i++) {
@@ -245,10 +245,12 @@ var ZenPlayer = {
                         }
                         return -1;
 
-                    }
-                    index = has_duplicates(videoMetadata.items);
+                    };
+                    index = hasDuplicates(videoMetadata.items);
 
-                    if (index != -1) videoMetadata["items"].splice(index, 1);
+                    if (index !== -1) {
+                        videoMetadata["items"].splice(index, 1);
+                    }
                     videoMetadata["items"].push({ "type": "youtube", "id": currentVideoID, "played": true });
                     videoMetadata["autoplayState"] = autoplayState;
                 }
@@ -754,14 +756,14 @@ $(function () {
         highlight: true,
         minLength: 1
     }, {
-            source: function (query, processSync, processAsync) {
+        source: function (query, processSync, processAsync) {
                 getAutocompleteSuggestions(query, function (data) {
                     return processAsync($.map(data[1], function (item) {
                         return item[0];
                     }));
                 });
             }
-        }).bind("typeahead:selected", function (obj, datum) {
+    }).bind("typeahead:selected", function (obj, datum) {
             window.location.href = makeSearchURL(datum);
         });
 
