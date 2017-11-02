@@ -9,7 +9,7 @@ var timeIntervals = {
 };
 
 // global playlist, this is populated with an ajax call
-var playList = [];
+var suggestedPlayList = [];
 var autoplayState = false;
 var videoMetadata = {};
 // Pointer to Keen client
@@ -356,22 +356,16 @@ var ZenPlayer = {
         });
     },
     setupAutoplayToggle: function () {
-        // toggle auto next song playing
-        $("#toggleAutoplay").click(function (event) {
-            var toggleTextElement = $("#" + event.currentTarget.id);
-            if (!autoplayState) {
+        $("#toggleAutoplay").click(function () {
+            $(this).toggleClass("toggleAutoplayActive");
+            var active = $(this).hasClass("toggleAutoplayActive");
+            if (active) {
                 autoplayState = true;
-                toggleTextElement.text("Stop autoplay");
+                event.currentTarget.innerHTML = ("&#10004; Stop Autoplay");
             }
             else {
-                if (autoplayState === true) {
-                    toggleTextElement.text("Start autoplay");
-                    autoplayState = false;
-                }
-                else {
-                    toggleTextElement.text("Stop autoplay");
-                    autoplayState = true;
-                }
+                event.currentTarget.innerHTML = ("Start autoplay");
+                autoplayState = false;
             }
         });
     },
@@ -630,10 +624,14 @@ function pickDemo() {
 
 function updateAutoplayToggle(state) {
     if (state === true) {
-        $("#toggleAutoplay").text("Stop autoplay");
+        $("#toggleAutoplay")[0].innerHTML = ("&#10004; Stop Autoplay");
+
+        $("#toggleAutoplay").addClass("toggleAutoplayActive");
+        autoplayState = true;
     }
     else {
         $("#toggleAutoplay").text("Start autoplay");
+        autoplayState = false;
     }
 }
 
@@ -652,13 +650,13 @@ function getNewVideoID() {
     */
     // if playList songs left
     var nextID = null;
-    while (playList.length > 0) {
-        nextID = playList.pop();
+    while (suggestedPlayList.length > 0) {
+        nextID = suggestedPlayList.pop();
         for (var i = 0; i < videoMetadata["items"].length && nextID; i++) {
             var curVideo = videoMetadata["items"][i];
             if (curVideo["id"] === nextID) {
                 // restart the for loop
-                nextID = playList.pop();
+                nextID = suggestedPlayList.pop();
                 i = -1;
             }
         }
@@ -711,7 +709,7 @@ $(function () {
                 success: function (data) {
                     // push items into playlist
                     for (var i = 0; i < data.items.length; i++) {
-                        playList.push(data.items[i].id.videoId);
+                        suggestedPlayList.push(data.items[i].id.videoId);
                     }
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -825,9 +823,15 @@ $(function () {
         $(this).toggleClass("toggleRepeatActive");
         var active = $(this).hasClass("toggleRepeatActive");
         if (active) {
+            autoplayState = false;
             $(this).html("&#10004; Repeat Track");
+            $("#toggleAutoplay").addClass("disable");
         }
         else {
+            if ($("#toggleAutoplay").hasClass("toggleAutoplayActive")) {
+                autoplayState = true;
+            }
+            $("#toggleAutoplay").removeClass("disable");
             $(this).html("Repeat Track");
         }
         ZenPlayer.isRepeat = $(this).hasClass("toggleRepeatActive");

@@ -69,10 +69,22 @@ a {
     border: 1px solid #617f94;
 }
 
+.toggleAutoplayActive {
+    color: #ffffff;
+    background-color: #428bca;
+    background-image: linear-gradient(#3174ac, #428bca);
+    border: 1px solid #738896;
+}
+
+.toggleAutoplayActive:hover {
+    background-image: linear-gradient(#194468, #3174ac);
+    border: 1px solid #617f94;
+}
+
 @media all and (min-width: 480px) {
 
     #container {
-        max-width: 450px;
+        max-width: 501px;
     }
 
 }
@@ -265,4 +277,9 @@ a {
 
 #audioplayer .plyr__volume--display, #audioplayer .plyr__progress--buffer {
     background-color: #e8e8e8;
+}
+.disable{
+    pointer-events: none;
+    background: none;
+    color: #738896;
 }
