@@ -278,7 +278,8 @@ a {
 #audioplayer .plyr__volume--display, #audioplayer .plyr__progress--buffer {
     background-color: #e8e8e8;
 }
-.disable{
+
+.disable {
     pointer-events: none;
     background: none;
     color: #738896;
