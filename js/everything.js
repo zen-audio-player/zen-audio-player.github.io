@@ -1,4 +1,4 @@
-/* global URI getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
+/* global URI getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getAutoplayList, getYouTubeVideoDescription */
 
 var keyCodes = {
     SPACEBAR: 32
@@ -61,6 +61,16 @@ function sendKeenEvent(_msg, _data) {
         d[_d] = _data[_d];
     }
     client.addEvent(_msg, d);
+}
+
+function getDuplicates(arr) {
+    var len = arr.length;
+    for (var i = 0; i < len; i++) {
+        if (arr[i].id === currentVideoID) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 /**
@@ -140,6 +150,7 @@ function handleYouTubeError(details) {
         console.log("Verbose debug error message: ", verboseMessage);
     }
 }
+
 
 // One day, try to move all globals under the ZenPlayer object
 var ZenPlayer = {
@@ -234,16 +245,7 @@ var ZenPlayer = {
                 videoMetadata = getParsedvideoMetadata();
                 var index = -1;
                 if (videoMetadata) {
-                    var hasDuplicates = function (arr) {
-                        var len = arr.length;
-                        for (var i = 0; i < len; i++) {
-                            if (arr[i].id === currentVideoID) {
-                                return i;
-                            }
-                        }
-                        return -1;
-                    };
-                    index = hasDuplicates(videoMetadata.items);
+                    index = getDuplicates(videoMetadata.items);
 
                     if (index !== -1) {
                         videoMetadata["items"].splice(index, 1);
@@ -264,7 +266,9 @@ var ZenPlayer = {
                 window.sessionStorage.setItem("videoMetadata", JSON.stringify(videoMetadata));
                 if (autoplayState) {
                     var newId = getNewVideoID();
-                    that.playNext(newId);
+                    if (newId !== null) {
+                        that.playNext(newId);
+                    }
                 }
             });
             plyrPlayer.addEventListener("timeupdate", function () {
@@ -361,10 +365,10 @@ var ZenPlayer = {
             var active = $(this).hasClass("toggleAutoplayActive");
             if (active) {
                 autoplayState = true;
-                event.currentTarget.innerHTML = ("&#10004; Stop Autoplay");
+                event.currentTarget.innerHTML = ("&#10004; Autoplay");
             }
             else {
-                event.currentTarget.innerHTML = ("Start autoplay");
+                event.currentTarget.innerHTML = ("Autoplay");
                 autoplayState = false;
             }
         });
@@ -624,13 +628,13 @@ function pickDemo() {
 
 function updateAutoplayToggle(state) {
     if (state === true) {
-        $("#toggleAutoplay")[0].innerHTML = ("&#10004; Stop Autoplay");
+        $("#toggleAutoplay")[0].innerHTML = ("&#10004; Autoplay");
 
         $("#toggleAutoplay").addClass("toggleAutoplayActive");
         autoplayState = true;
     }
     else {
-        $("#toggleAutoplay").text("Start autoplay");
+        $("#toggleAutoplay").text("Autoplay");
         autoplayState = false;
     }
 }
@@ -650,18 +654,23 @@ function getNewVideoID() {
     */
     // if playList songs left
     var nextID = null;
-    while (suggestedPlayList.length > 0) {
+    if (suggestedPlayList.length > 0) {
         nextID = suggestedPlayList.pop();
-        for (var i = 0; i < videoMetadata["items"].length && nextID; i++) {
-            var curVideo = videoMetadata["items"][i];
-            if (curVideo["id"] === nextID) {
-                // restart the for loop
-                nextID = suggestedPlayList.pop();
-                i = -1;
-            }
+    }
+    for (var i = 0; i < videoMetadata["items"].length && nextID; i++) {
+        var curVideo = videoMetadata["items"][i];
+        if (curVideo["id"] === nextID) {
+            nextID = suggestedPlayList.pop();
+            i = -1;
         }
     }
     return nextID;
+}
+
+function createSuggestionList(data) {
+    for (var i = 0; i < data.items.length; i++) {
+        suggestedPlayList.push(data.items[i].id.videoId);
+    }
 }
 
 $(function () {
@@ -696,23 +705,7 @@ $(function () {
         $("#v").attr("value", currentVideoID);
         // get similar videos, populate playList
         if (!isFileProtocol()) {
-            $.ajax({
-                url: "https://www.googleapis.com/youtube/v3/search",
-                dataType: "json",
-                async: false,
-                data: {
-                    key: youTubeDataApiKey,
-                    part: "snippet",
-                    type: "video",
-                    relatedToVideoId: currentVideoID
-                },
-                success: function (data) {
-                    // push items into playlist
-                    for (var i = 0; i < data.items.length; i++) {
-                        suggestedPlayList.push(data.items[i].id.videoId);
-                    }
-                }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
+            getAutoplayList(currentVideoID, youTubeDataApiKey, suggestedPlayList, createSuggestionList, function (jqXHR, textStatus, errorThrown) {
                 logError(jqXHR, textStatus, errorThrown, "Related video lookup error");
             });
         }

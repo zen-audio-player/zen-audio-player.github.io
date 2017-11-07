@@ -82,3 +82,18 @@ function parseYoutubeVideoID(uri) {
         return videoInfo;
     }
 }/* eslint-enable */
+
+function getAutoplayList(currentVideoID, youTubeDataApiKey, suggestedPlayList, successCallback, onFail) {
+    $.ajax({
+        url: "https://www.googleapis.com/youtube/v3/search",
+        dataType: "json",
+        async: false,
+        data: {
+            key: youTubeDataApiKey,
+            part: "snippet",
+            type: "video",
+            relatedToVideoId: currentVideoID
+        },
+        success: successCallback
+    }).fail(onFail);
+}
