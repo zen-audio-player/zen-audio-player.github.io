@@ -37,10 +37,7 @@
             2,
             "all"
         ],
-        "linebreak-style": [
-            2,
-            "unix"
-        ],
+        "linebreak-style": "off",
         "camelcase": [
             2,
             {

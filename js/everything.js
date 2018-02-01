@@ -246,6 +246,7 @@ var ZenPlayer = {
                     if (currentTime >= videoDuration && that.isRepeat) {
                         resumeTime = 0;
                         plyrPlayer.plyr.embed.seekTo(resumeTime);
+                        ZenPlayer.play();
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
@@ -385,7 +386,7 @@ function toggleElement(event, toggleID, buttonText) {
     event.preventDefault();
 
     var toggleElement = $(toggleID);
-    toggleElement.toggle();
+    toggleElement.toggle("fast");
 
     var toggleTextElement = $("#" + event.currentTarget.id);
 
@@ -689,8 +690,16 @@ $(function() {
         }
     });
 
-    $("input[name='toggleRepeat']").change(function() {
-        ZenPlayer.isRepeat = $(this).is(":checked");
+    $("#toggleRepeat").click(function() {
+        $(this).toggleClass("toggleRepeatActive");
+        var active = $(this).hasClass("toggleRepeatActive");
+        if (active) {
+            $(this).html("&#10004; Repeat Track");
+        }
+        else {
+            $(this).html("Repeat Track");
+        }
+        ZenPlayer.isRepeat = $(this).hasClass("toggleRepeatActive");
     });
 
     // Handle demo link click
