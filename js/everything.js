@@ -390,7 +390,13 @@ function toggleElement(event, toggleID, buttonText) {
     var toggleTextElement = $("#" + event.currentTarget.id);
 
     if (toggleElement.is(":visible")) {
-        toggleTextElement.text("Hide " + buttonText);
+         // Check for current state(Hide/Show) and toggle it
+        if(toggleTextElement.is(":contains(Hide)")){
+            toggleTextElement.text("Show " + buttonText);
+        }
+        else if(toggleTextElement.is(":contains(Show)")){
+            toggleTextElement.text("Hide " + buttonText);
+        }
     }
     else {
         toggleTextElement.text("Show " + buttonText);
