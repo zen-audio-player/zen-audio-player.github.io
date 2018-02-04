@@ -682,7 +682,7 @@ $(function() {
     });
 
     // Hide the demo link if playing any of the demo video's audio
-    if ($.inArray(currentVideoID, demos) !== -1) {
+    if ($.inArray(currentVideoID, demos) !== -1 || ZenPlayer.isPlaying) {
         $("#demo").hide();
     }
 
