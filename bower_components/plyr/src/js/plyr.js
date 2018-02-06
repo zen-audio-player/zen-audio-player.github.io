@@ -767,7 +767,7 @@
                 html.push(
                     '<span class="plyr__time">',
                         '<span class="plyr__sr-only">' + config.i18n.duration + '</span>',
-                        '<span class="plyr__time--duration">00:00</span>',
+                        '<span class="plyr__time">00:00</span>',
                     '</span>'
                 );
             }
