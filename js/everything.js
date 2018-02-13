@@ -280,9 +280,13 @@ var ZenPlayer = {
     },
     show: function() {
         $("#audioplayer").show();
+        // Hide the demo link as some video is playing
+        $("#demo").hide();
     },
     hide: function() {
         $("#audioplayer").hide();
+        // Show the demo link as no video is playing
+        $("#demo").show();
     },
     setupTitle: function() {
         // Prepend music note only if title does not already begin with one.
@@ -681,10 +685,6 @@ $(function() {
         }
     });
 
-    // Hide the demo link if playing any of the demo video's audio
-    if ($.inArray(currentVideoID, demos) !== -1) {
-        $("#demo").hide();
-    }
 
     // Reverts to Home when there is no text in input
     $("#v").on("input", function() {
