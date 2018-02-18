@@ -49,10 +49,15 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 
 ## Contributing to Zen Audio Player
 
-If you would like to contribute to this project please read the [guidelines on contributing](.github/CONTRIBUTING.md) before doing so.
+If you would like to contribute to this project please read the [Making Contributions](https://github.com/zen-audio-player/zen-audio-player.github.io/wiki/Making-Contributions) section of our wiki pages before doing so.
 
 ## Project Sponsors
 |Sponsor|Description|
 |:---:|---|
 |[![KeenIO](img/keen_logo.png)](https://keen.io/)     				      |Deliver fast, flexible analytics to your teams & customers. With Keen’s developer-friendly APIs, it’s easy to embed custom dashboards and reports in any app or website.|
 |[![TrackJS](img/trackjs_logo.png)](https://trackjs.com/)                 |Track Better Errors. Actually Fix Bugs. Know when your users run into errors and fix bugs before they report them.|
+
+## Contact
+
+Join the chat room on Gitter
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/zen-audio-player/zen-audio-player.github.io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
