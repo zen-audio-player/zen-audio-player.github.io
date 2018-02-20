@@ -7,8 +7,8 @@ header, footer {
 }
 
 header {
-    width: 80%;
     margin: 50px auto 0 auto;
+    width: 80%;
 }
 
 @media all and (min-width: 480px) {
@@ -78,11 +78,11 @@ a {
 }
 
 #v {
-    margin: 0 auto;
-    width: 100%;
-    text-align: center;
     font-size: 16px;
+    margin: 0 auto;
     padding-left: 50px;
+    text-align: center;
+    width: 100%;
 }
 
 #v::-ms-clear {
@@ -143,8 +143,8 @@ a {
 }
 
 #search-results {
-    text-align: center;
     display: none;
+    text-align: center;
 }
 
 #search-results li {
@@ -211,9 +211,9 @@ a {
 }
 
 .sponsor-a {
-    width: 100%;
     display: block;
     margin-top: 20px;
+    width: 100%;
 }
 
 .sponsor-a:first-of-type {
