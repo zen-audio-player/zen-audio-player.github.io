@@ -58,10 +58,10 @@ a {
 }
 
 .toggleRepeatActive {
-    color: #ffffff;
     background-color: #428bca;
     background-image: linear-gradient(#3174ac, #428bca);
     border: 1px solid #738896;
+    color: #ffffff;
 }
 
 .toggleRepeatActive:hover {
@@ -90,8 +90,8 @@ a {
 }
 
 #player {
-    text-align: center;
     min-width: 100%;
+    text-align: center;
     width: 100%;
 }
 
@@ -100,8 +100,8 @@ a {
 }
 
 #zen-video-title, #demo {
-    margin-top: 5px;
     font-weight: bold;
+    margin-top: 5px;
     word-wrap: break-word;
 }
 
@@ -177,12 +177,12 @@ a {
 }
 
 .zen-logo {
-    width: 100px;
-    height: 100px;
-    display: block;
-    overflow: hidden;
     border-radius: 6px;
+    display: block;
+    height: 100px;
     margin: 0 auto;
+    overflow: hidden;
+    width: 100px;
 }
 
 .btn-search {
@@ -206,8 +206,8 @@ a {
 }
 
 .sponsor {
-    width: 70%;
     margin: 30px 30px 0 auto;
+    width: 70%;
 }
 
 .sponsor-a {
