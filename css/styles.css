@@ -34,8 +34,8 @@ hgroup {
 }
 
 h2 {
-    font-weight: normal;
     font-size: 16px;
+    font-weight: normal;
     line-height: 150%;
 }
 
@@ -48,20 +48,20 @@ a {
 }
 
 #audioplayer {
-    text-align: center;
     display: none;
+    text-align: center;
 }
 
 #container {
-    width: 80%;
     margin: 10px auto 0;
+    width: 80%;
 }
 
 .toggleRepeatActive {
-    color: #ffffff;
     background-color: #428bca;
     background-image: linear-gradient(#3174ac, #428bca);
     border: 1px solid #738896;
+    color: #ffffff;
 }
 
 .toggleRepeatActive:hover {
@@ -90,8 +90,8 @@ a {
 }
 
 #player {
-    text-align: center;
     min-width: 100%;
+    text-align: center;
     width: 100%;
 }
 
@@ -100,8 +100,8 @@ a {
 }
 
 #zen-video-title, #demo {
-    margin-top: 5px;
     font-weight: bold;
+    margin-top: 5px;
     word-wrap: break-word;
 }
 
@@ -134,8 +134,8 @@ a {
 
 #volumeSliderControl .slider-handle.custom::before {
     /* Unicode bar */
-    content: "\258C";
     color: #000000;
+    content: "\258C";
 }
 
 #timeSeekSliderControl {
@@ -158,14 +158,14 @@ a {
 }
 
 .twitter-typeahead input {
-    border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
 }
 
 .tt-menu {
     border: 1px solid #cccccc;
-    width: 100%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+    width: 100%;
 }
 
 .tt-suggestion {
@@ -177,12 +177,12 @@ a {
 }
 
 .zen-logo {
-    width: 100px;
-    height: 100px;
-    display: block;
-    overflow: hidden;
     border-radius: 6px;
+    display: block;
+    height: 100px;
     margin: 0 auto;
+    overflow: hidden;
+    width: 100px;
 }
 
 .btn-search {
@@ -206,8 +206,8 @@ a {
 }
 
 .sponsor {
-    width: 70%;
     margin: 30px 30px 0 auto;
+    width: 70%;
 }
 
 .sponsor-a {
@@ -223,10 +223,10 @@ a {
 @media all and (min-width: 640px) {
 
     .sponsor-a {
-        width: 30.666666667%;
         float: left;
         margin-left: 4%;
         margin-top: 0;
+        width: 30.666666667%;
     }
 
     .sponsor-a:first-of-type {
@@ -254,13 +254,13 @@ a {
 }
 
 #audioplayer .plyr__controls {
-    padding: 10px;
-    border-radius: inherit;
+    background: #ffffff;
     border: 1px solid #dbe3e8;
+    border-radius: inherit;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
     color: #565d64;
+    padding: 10px;
     position: relative;
-    background: #ffffff;
 }
 
 #audioplayer .plyr__volume--display, #audioplayer .plyr__progress--buffer {
