@@ -266,3 +266,7 @@ a {
 #audioplayer .plyr__volume--display, #audioplayer .plyr__progress--buffer {
     background-color: #e8e8e8;
 }
+
+#audioplayer .plyr__time--duration {
+    font-size: 14.01px;
+}
