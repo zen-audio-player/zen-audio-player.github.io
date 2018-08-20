@@ -12,7 +12,7 @@ var indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 /** Utilities **/
 // TODO: with refactor into a node module, this can go away!
 function getParameterByName(url, name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]"); // eslint-disable-line no-useless-escape
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(url);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
@@ -42,27 +42,27 @@ describe("Page Structure", function () {
         assert.equal(browser.query("title").text, "Zen Audio Player");
     });
     it("should have favicon configured correctly", function () {
-        var faviconPath = path.join(__filename, "..", "..", "img", "favicon.ico");
+        var faviconPath = path.join("img", "favicon.ico");
         assert.ok(fs.existsSync(faviconPath));
-        assert.equal(browser.query("link").href, "img/favicon.ico");
+        assert.ok(browser.query("link").href.endsWith("img/favicon.ico"));
         assert.equal(browser.query("link").type, "image/x-icon");
         assert.equal(browser.query("link").rel, "shortcut icon");
-        assert.equal(browser.query("link ~ link").href, "img/favicon.ico");
+        assert.ok(browser.query("link ~ link").href.endsWith("img/favicon.ico"));
         assert.equal(browser.query("link ~ link").type, "image/x-icon");
         assert.equal(browser.query("link ~ link").rel, "icon");
     });
     it("should have CSS files configured correctly", function () {
         assert.equal(browser.query("link ~ link ~ link").rel, "stylesheet");
-        assert.equal(browser.query("link ~ link ~ link").href, "bower_components/primer-css/css/primer.css");
+        assert.ok(browser.query("link ~ link ~ link").href.endsWith("bower_components/primer-css/css/primer.css"));
 
         assert.equal(browser.query("link ~ link ~ link ~ link").rel, "stylesheet");
-        assert.equal(browser.query("link ~ link ~ link ~ link").href, "bower_components/font-awesome/css/font-awesome.min.css");
+        assert.ok(browser.query("link ~ link ~ link ~ link").href.endsWith("bower_components/font-awesome/css/font-awesome.min.css"));
 
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link").rel, "stylesheet");
-        assert.equal(browser.query("link ~ link ~ link ~ link ~ link").href, "bower_components/plyr/dist/plyr.css");
+        assert.ok(browser.query("link ~ link ~ link ~ link ~ link").href.endsWith("bower_components/plyr/dist/plyr.css"));
 
         assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").rel, "stylesheet");
-        assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").href, "css/styles.css");
+        assert.ok(browser.query("link ~ link ~ link ~ link ~ link ~ link").href.endsWith("css/styles.css"));
     });
     it("should have logo configured correctly", function () {
         var imgFolderPath = path.join(__filename, "..", "..", "img") + path.sep;
