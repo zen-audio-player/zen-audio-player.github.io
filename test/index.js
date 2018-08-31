@@ -20,7 +20,7 @@ function getParameterByName(url, name) {
 
 describe("Page Structure", function () {
     it("should have required HTML elements", function (done) {
-        browser.visit(indexHTMLURL, function (e) {
+        browser.visit(indexHTMLURL, function () {
             // TODO: getting an error from the underlying YouTube embed script from plyr... but only in CI
             // assert.ok(!e);
             assert.ok(browser.query("html"), "Couldn't find <html>, wow!");
