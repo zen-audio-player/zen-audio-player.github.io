@@ -21,6 +21,7 @@ function getParameterByName(url, name) {
 describe("Page Structure", function () {
     it("should have required HTML elements", function (done) {
         browser.visit(indexHTMLURL, function (e) {
+            console.log(e);
             assert.ok(!e);
             assert.ok(browser.query("html"), "Couldn't find <html>, wow!");
             assert.ok(browser.query("head"), "Couldn't find <head>, wow!");
