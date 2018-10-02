@@ -611,9 +611,24 @@ $(function() {
                     // Clear out results
                     $("#search-results ul").html("");
 
-                    var start = "<li><h4><a href=?v=";
+                    var start = "<li style='margin-bottom:20px'><h4><a href=?v=";
                     $.each(data.items, function(index, result) {
-                        $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title + "</a></h4><a href=?v=" + result.id.videoId + "><img src=" + result.snippet.thumbnails.medium.url + " alt='" + result.snippet.title + "'></a></li>");
+                        $("#search-results ul")
+                        .append(
+                            start
+                            + result.id.videoId + ">"
+                            + result.snippet.title
+                            + "</a></h4><a href=?v=" + result.id.videoId + ">"
+                            + "<img src=" + result.snippet.thumbnails.medium.url + " alt='" + result.snippet.title + "'>"
+                            + "</a>"
+                            + "<br>"
+                            + "<button id='watch_later' data-title='"
+                                + result.snippet.title
+                                + "' data-videoId='"
+                                + result.id.videoId
+                            + "'> Watch Later </button>"
+                            + "</li>"
+                         );
                     });
                 },
                 function(jqXHR, textStatus, errorThrown) {
@@ -685,6 +700,31 @@ $(function() {
         }
     });
 
+    /** Function to add any song to playlist
+     ** Using localstorage to save the list
+     ** playListLength: saves the current length of the list
+     ** video_object: saves title and videoId from the video
+     ** I choose to save all video_objects, separately and not in an array
+     ** to make insert and search faster.
+    **/
+    $(document).click("#watch_later", function(event) {
+        // Add the object to the playlist by storing first in localstorage
+        var playListLength = 0;
+        var localStorageLength = localStorage.length;
+        if(localStorage.getItem("playListLength") !== null){
+            playListLength = parseInt(localStorage.getItem("playListLength")) + 1;
+        }
+        var title = $(event.target).data("title");
+        var videoId = $(event.target).data("videoid");
+        var video_object = {
+            "title": title,
+            "videoId": videoId
+        }
+        localStorage.setItem(videoId, JSON.stringify(video_object));
+        if(localStorage.length === localStorageLength + 1){
+            localStorage.setItem("playListLength", playListLength);
+        }
+     });
 
     // Reverts to Home when there is no text in input
     $("#v").on("input", function() {
@@ -745,9 +785,59 @@ $(function() {
             evt.preventDefault();
         }
     });
+
+    /**
+     ** Function to load the playlist if there are any added by the user
+     ** Load all the names of the songs you have saved
+     ** as links from where you can redirect to player.
+    **/
+    $("#submit-playlist").click(function(event) {
+        event.preventDefault();
+        if (ZenPlayer.isPlaying) {
+            // Pause the song
+            ZenPlayer.pause();
+         }
+         // also hide the player
+         ZenPlayer.hide();
+
+        // find the length of the playlist
+        var playListLength = parseInt(localStorage.getItem("playListLength"));
+
+        if(playListLength > 0){
+            // Show the place where we will show the playlist
+            $("#search-results").show();
+            // Clear out results
+            $("#search-results ul").html("");
+
+            // Building the playlist to show
+            var start = "<li style='margin-bottom:20px'><h4><a href=?v=";
+            $.each(localStorage, function(index, result) {
+                var videoObject = JSON.parse(result);
+                // Since there can be other elements also in the localstorage, so I am putting a check
+                if(String(videoObject.title) !== "undefined"){
+                    $("#search-results ul")
+                    .append(
+                        start
+                        + videoObject.videoId + ">"
+                        + videoObject.title
+                        + "</a></h4>"
+//                        TODO: Add Remove from playlist button
+//                        + "<button id='remove_watch_later'"
+//                            + "' data-videoId='"
+//                            + videoObject.videoId
+//                        + "'> Remove from List </button>"
+                        + "</li>"
+                     );
+                 }
+            });
+        } else {
+            // If there are no songs in the playlist
+            errorMessage.show("Playlist is empty!!");
+        }
+    });
 });
 
-/*eslint-disable */
+/* eslint-disable */
 // Google Analytics goodness
 (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -755,4 +845,4 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,"script","//www.google-analytics.com/analytics.js","ga");
 ga("create", "UA-62983413-1", "auto");
 ga("send", "pageview");
-/*eslint-enable */
+/* eslint-enable */
