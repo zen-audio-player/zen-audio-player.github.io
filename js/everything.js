@@ -613,24 +613,36 @@ $(function() {
 
                     var start = "<li style='margin-bottom:20px'><h4><a href=?v=";
                     $.each(data.items, function(index, result) {
-                        $("#search-results ul")
-                        .append(
-                            start
+                        var base_string = start
                             + result.id.videoId + ">"
                             + result.snippet.title
                             + "</a></h4><a href=?v=" + result.id.videoId + ">"
                             + "<img src=" + result.snippet.thumbnails.medium.url + " alt='" + result.snippet.title + "'>"
                             + "</a>"
-                            + "<br>"
-                            + "<button id='watch_later' data-title='"
+                            + "<br>";
+                        var button_string = "";
+                        if(localStorage.getItem(result.id.videoId) === null){
+                            button_string =
+                                "<button id='watch_later' data-title='"
                                 + result.snippet.title
                                 + "' data-videoId='"
                                 + result.id.videoId
-                            + "'> Watch Later </button>"
-                            + "</li>"
-                         );
-                    });
-                },
+                                + "'> Watch Later </button>";
+                           } else {
+                                button_string =
+                                    "<button id='watch_later' data-title='"
+                                    + result.snippet.title
+                                    + "' data-videoId='"
+                                    + result.id.videoId
+                                    + "' style='display: none;' "
+                                    + " disabled='disabled' "
+                                    + "> Watch Later </button>"
+                                    + "<p>Added successfully!</p>";
+                           }
+                           var close_list = "</li>";
+                           $("#search-results ul").append(base_string + button_string + close_list);
+                        });
+                 },
                 function(jqXHR, textStatus, errorThrown) {
                     logError(jqXHR, textStatus, errorThrown, "Search error");
                 }
@@ -707,22 +719,38 @@ $(function() {
      ** I choose to save all video_objects, separately and not in an array
      ** to make insert and search faster.
     **/
-    $(document).click("#watch_later", function(event) {
-        // Add the object to the playlist by storing first in localstorage
-        var playListLength = 0;
-        var localStorageLength = localStorage.length;
-        if(localStorage.getItem("playListLength") !== null){
-            playListLength = parseInt(localStorage.getItem("playListLength")) + 1;
-        }
-        var title = $(event.target).data("title");
-        var videoId = $(event.target).data("videoid");
-        var video_object = {
-            "title": title,
-            "videoId": videoId
-        }
-        localStorage.setItem(videoId, JSON.stringify(video_object));
-        if(localStorage.length === localStorageLength + 1){
-            localStorage.setItem("playListLength", playListLength);
+    $(document).click(function(event) {
+        if(event.target.id === "watch_later"){
+            // Add the object to the playlist by storing first in localstorage
+            var playListLength = 0;
+
+            var localStorageLength = localStorage.length;
+            if(localStorage.getItem("playListLength") !== null){
+                playListLength = parseInt(localStorage.getItem("playListLength")) + 1;
+            }
+
+            // creating video_object
+            var title = $(event.target).data("title");
+            var videoId = $(event.target).data("videoid");
+            var video_object = {
+                "title": title,
+                "videoId": videoId
+            }
+
+            // converting the json object to string object
+            localStorage.setItem(videoId, JSON.stringify(video_object));
+            if(localStorage.length === localStorageLength + 1){
+                localStorage.setItem("playListLength", playListLength);
+            }
+
+            if(localStorage.getItem(videoId).length > 0){
+                // showing success message once added successfully
+                $(event.target).parent().append("<p>Added successfully!</p>");
+
+                // hiding and disabling the add to playlist button
+                $(event.target).hide();
+                $(event.target).attr("disabled","disabled");
+            }
         }
      });
 
