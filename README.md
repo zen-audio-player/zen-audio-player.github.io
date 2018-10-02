@@ -34,6 +34,11 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 * Clone the project and open `index.html`.
 * To run the site locally, run `npm install` then `npm start` and a webpage will open in your default browser.
 
+## Create a Playlist
+
+* To add songs to **Watch Later** playlist, click on **Watch Later**.
+* To play from the playlist, click on _Playlist_ button, next to _Search_ bar and play the song.
+
 ## Screenshot
 
 ![screenshot](img/screenshot.png)
