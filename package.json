@@ -33,14 +33,14 @@
   "homepage": "https://zen-audio-player.github.io",
   "devDependencies": {
     "csslint": "^1.0.5",
-    "eslint": "3.x",
+    "eslint": "^5.4.0",
     "htmlhint": "0.9.x",
-    "mocha": "^2.3.4",
-    "stylelint": "3.2.x",
+    "mocha": "^5.2.0",
+    "stylelint": "^9.5.0",
     "zombie": "4.x"
   },
   "engines": {
-    "node": ">=4.x"
+    "node": ">=8.x"
   },
   "dependencies": {
     "http-server": "^0.10.0"

@@ -394,7 +394,7 @@ function toggleElement(event, toggleID, buttonText) {
     var toggleTextElement = $("#" + event.currentTarget.id);
 
     if (toggleElement.is(":visible")) {
-         // Check for current state(Hide/Show) and toggle it
+        // Check for current state(Hide/Show) and toggle it
         if (toggleTextElement.is(":contains(Hide)")) {
             toggleTextElement.text("Show " + buttonText);
         }
@@ -490,7 +490,7 @@ function anchorURLs(text) {
     * Ends capture when:
     *    (1) it encounters a TLD
     *    (2) it encounters a period (.) or whitespace, if the TLD was followed by a forwardslash (/) */
-    var re = /((?:http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*[^\.\s])?)/g;
+    var re = /((?:http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*[^\.\s])?)/g; // eslint-disable-line no-useless-escape
     /* Wraps all found URLs in <a> tags */
     return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
 }
@@ -507,7 +507,7 @@ function anchorTimestamps(text, videoID) {
     (?:\d|\:[0-5]\d) either the string is "colon 0-9" or "colon 00-59"
     (?:$|\:[0-5]\d)) either the string ends or is a a number between 00-59
     */
-    var re = /((?:[0-5]\d|\d|)(?:\d|\:[0-5]\d)(?:$|\:[0-5]\d))/g;
+    var re = /((?:[0-5]\d|\d|)(?:\d|\:[0-5]\d)(?:$|\:[0-5]\d))/g; // eslint-disable-line no-useless-escape
     return text.replace(re, function(match) {
         return "<a href=\"" + makeListenURL(videoID, convertTimestamp(match)) + "\">" + match + "</a>";
     });
