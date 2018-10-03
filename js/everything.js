@@ -850,11 +850,10 @@ $(function() {
                             + videoObject.videoId + ">"
                             + videoObject.title
                             + "</a></h4>"
-                            //  TODO: Add Remove from playlist button
                             //  + "<button id='remove_watch_later'"
                             //  + "' data-videoId='"
                             //  + videoObject.videoId
-                            + "'> Remove from List </button>"
+                            //  + "'> Remove from List </button>"
                             + "</li>"
                         );
                 }
