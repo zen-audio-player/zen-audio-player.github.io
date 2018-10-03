@@ -613,23 +613,24 @@ $(function() {
 
                     var start = "<li style='margin-bottom:20px'><h4><a href=?v=";
                     $.each(data.items, function(index, result) {
-                        var base_string = start
+                        var baseString = start
                             + result.id.videoId + ">"
                             + result.snippet.title
                             + "</a></h4><a href=?v=" + result.id.videoId + ">"
                             + "<img src=" + result.snippet.thumbnails.medium.url + " alt='" + result.snippet.title + "'>"
                             + "</a>"
                             + "<br>";
-                        var button_string = "";
-                        if(localStorage.getItem(result.id.videoId) === null){
-                            button_string =
+                        var buttonString = "";
+                        if (localStorage.getItem(result.id.videoId) === null) {
+                            buttonString =
                                 "<button id='watch_later' data-title='"
                                 + result.snippet.title
                                 + "' data-videoId='"
                                 + result.id.videoId
                                 + "'> Watch Later </button>";
-                           } else {
-                                button_string =
+                        }
+                        else {
+                            buttonString =
                                     "<button id='watch_later' data-title='"
                                     + result.snippet.title
                                     + "' data-videoId='"
@@ -638,11 +639,11 @@ $(function() {
                                     + " disabled='disabled' "
                                     + "> Watch Later </button>"
                                     + "<p>Added successfully!</p>";
-                           }
-                           var close_list = "</li>";
-                           $("#search-results ul").append(base_string + button_string + close_list);
-                        });
-                 },
+                        }
+                        var closeList = "</li>";
+                        $("#search-results ul").append(baseString + buttonString + closeList);
+                    });
+                },
                 function(jqXHR, textStatus, errorThrown) {
                     logError(jqXHR, textStatus, errorThrown, "Search error");
                 }
@@ -715,44 +716,44 @@ $(function() {
     /** Function to add any song to playlist
      ** Using localstorage to save the list
      ** playListLength: saves the current length of the list
-     ** video_object: saves title and videoId from the video
-     ** I choose to save all video_objects, separately and not in an array
+     ** videoObject: saves title and videoId from the video
+     ** I choose to save all videoObjects, separately and not in an array
      ** to make insert and search faster.
     **/
     $(document).click(function(event) {
-        if(event.target.id === "watch_later"){
+        if (event.target.id === "watch_later") {
             // Add the object to the playlist by storing first in localstorage
             var playListLength = 0;
 
             var localStorageLength = localStorage.length;
-            if(localStorage.getItem("playListLength") !== null){
+            if (localStorage.getItem("playListLength") !== null) {
                 playListLength = parseInt(localStorage.getItem("playListLength")) + 1;
             }
 
-            // creating video_object
+            // creating videoObject
             var title = $(event.target).data("title");
             var videoId = $(event.target).data("videoid");
-            var video_object = {
+            var videoObject = {
                 "title": title,
                 "videoId": videoId
-            }
+            };
 
             // converting the json object to string object
-            localStorage.setItem(videoId, JSON.stringify(video_object));
-            if(localStorage.length === localStorageLength + 1){
+            localStorage.setItem(videoId, JSON.stringify(videoObject));
+            if (localStorage.length === localStorageLength + 1) {
                 localStorage.setItem("playListLength", playListLength);
             }
 
-            if(localStorage.getItem(videoId).length > 0){
+            if (localStorage.getItem(videoId).length > 0) {
                 // showing success message once added successfully
                 $(event.target).parent().append("<p>Added successfully!</p>");
 
                 // hiding and disabling the add to playlist button
                 $(event.target).hide();
-                $(event.target).attr("disabled","disabled");
+                $(event.target).attr("disabled", "disabled");
             }
         }
-     });
+    });
 
     // Reverts to Home when there is no text in input
     $("#v").on("input", function() {
@@ -824,14 +825,14 @@ $(function() {
         if (ZenPlayer.isPlaying) {
             // Pause the song
             ZenPlayer.pause();
-         }
-         // also hide the player
-         ZenPlayer.hide();
+        }
+        // also hide the player
+        ZenPlayer.hide();
 
         // find the length of the playlist
         var playListLength = parseInt(localStorage.getItem("playListLength"));
 
-        if(playListLength > 0){
+        if (playListLength > 0) {
             // Show the place where we will show the playlist
             $("#search-results").show();
             // Clear out results
@@ -842,23 +843,24 @@ $(function() {
             $.each(localStorage, function(index, result) {
                 var videoObject = JSON.parse(result);
                 // Since there can be other elements also in the localstorage, so I am putting a check
-                if(String(videoObject.title) !== "undefined"){
+                if (String(videoObject.title) !== "undefined") {
                     $("#search-results ul")
-                    .append(
-                        start
-                        + videoObject.videoId + ">"
-                        + videoObject.title
-                        + "</a></h4>"
-//                        TODO: Add Remove from playlist button
-//                        + "<button id='remove_watch_later'"
-//                            + "' data-videoId='"
-//                            + videoObject.videoId
-//                        + "'> Remove from List </button>"
-                        + "</li>"
-                     );
-                 }
+                        .append(
+                            start
+                            + videoObject.videoId + ">"
+                            + videoObject.title
+                            + "</a></h4>"
+                            //  TODO: Add Remove from playlist button
+                            //  + "<button id='remove_watch_later'"
+                            //  + "' data-videoId='"
+                            //  + videoObject.videoId
+                            + "'> Remove from List </button>"
+                            + "</li>"
+                        );
+                }
             });
-        } else {
+        }
+        else {
             // If there are no songs in the playlist
             errorMessage.show("Playlist is empty!!");
         }
@@ -867,7 +869,7 @@ $(function() {
 
 /* eslint-disable */
 // Google Analytics goodness
-(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
+(function(i,s,o,g,r,a,m) {i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function() {
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,"script","//www.google-analytics.com/analytics.js","ga");
