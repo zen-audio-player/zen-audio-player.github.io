@@ -122,7 +122,10 @@ a {
     margin-bottom: 20px;
 }
 
-/* Media controls */
+/**
+ * Media controls
+ */
+
 #pause {
     display: none;
 }
@@ -151,9 +154,12 @@ a {
     list-style-type: none;
 }
 
-/* Input field fixes and search suggestion style.
- * typeahead conflicts with primercss */
+
 .twitter-typeahead {
+    /**
+     * Input field fixes and search suggestion style.
+     * typeahead conflicts with primercss
+     */
     width: 100%;
 }
 
