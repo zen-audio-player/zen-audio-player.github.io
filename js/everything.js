@@ -753,6 +753,21 @@ $(function() {
                 $(event.target).attr("disabled", "disabled");
             }
         }
+        else if (event.target.id === "remove_watch_later") {
+            playListLength = localStorage.getItem("playListLength");
+            videoId = $(event.target).data("videoid");
+            var videoString = localStorage.getItem(videoId);
+            if (playListLength !== null && playListLength > 0 && videoString !== null) {
+                localStorage.removeItem(videoId);
+                localStorage.setItem("playListLength", playListLength - 1);
+                if (playListLength > 1) {
+                    $("#submit-playlist").trigger("click");
+                }
+                else {
+                    $("#submit").trigger("click");
+                }
+            }
+        }
     });
 
     // Reverts to Home when there is no text in input
@@ -829,15 +844,15 @@ $(function() {
         // also hide the player
         ZenPlayer.hide();
 
+        // Show the place where we will show the playlist
+        $("#search-results").show();
+        // Clear out results
+        $("#search-results ul").html("");
+
         // find the length of the playlist
         var playListLength = parseInt(localStorage.getItem("playListLength"));
 
         if (playListLength > 0) {
-            // Show the place where we will show the playlist
-            $("#search-results").show();
-            // Clear out results
-            $("#search-results ul").html("");
-
             // Building the playlist to show
             var start = "<li style='margin-bottom:20px'><h4><a href=?v=";
             $.each(localStorage, function(index, result) {
@@ -850,10 +865,10 @@ $(function() {
                             + videoObject.videoId + ">"
                             + videoObject.title
                             + "</a></h4>"
-                            //  + "<button id='remove_watch_later'"
-                            //  + "' data-videoId='"
-                            //  + videoObject.videoId
-                            //  + "'> Remove from List </button>"
+                            + "<button id='remove_watch_later'"
+                            + "' data-videoId='"
+                            + videoObject.videoId
+                            + "'> Remove from List </button>"
                             + "</li>"
                         );
                 }
