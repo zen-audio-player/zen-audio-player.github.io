@@ -269,7 +269,7 @@ var ZenPlayer = {
             }.bind(this));
 
             plyrPlayer.plyr.source({
-                type: "audio",
+                type: "video",
                 title: "Title",
                 sources: [{
                     src: currentVideoID,
