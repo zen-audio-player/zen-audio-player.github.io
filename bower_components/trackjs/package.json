@@ -1,20 +1,25 @@
 {
-	"author": "TrackJS <hello@trackjs.com>",
-	"name": "trackjs",
-	"url": "http://trackjs.com",
-	"homepage": "http://trackjs.com",
-	"description": "A JavaScript error tracking service for modern web applications. Signup at http://trackjs.com",
-	"version": "2.1.16",
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/trackjs/trackjs-package.git"
-	},
-	"main": "tracker.js",
-	"keywords": [
-		"error",
-		"exception",
-		"tracking",
-		"logging"
-	],
-	"license": "COPYRIGHT (c) 2014 TrackJS LLC ALL RIGHTS RESERVED"
+  "name": "trackjs",
+  "version": "2.10.2",
+  "description": "TrackJS JavaScript error monitoring agent.",
+  "main": "tracker.js",
+  "typings": "tracker.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/TrackJs/trackjs-package.git"
+  },
+  "author": "TrackJS LLC",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "bugs": {
+    "url": "https://github.com/TrackJs/trackjs-package/issues"
+  },
+  "homepage": "https://trackjs.com/",
+  "dependencies": {},
+  "files": [
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE.md",
+    "tracker.js",
+    "tracker.d.ts"
+  ]
 }
