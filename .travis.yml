@@ -1,4 +1,13 @@
 language: node_js
+#env:
+#    - SNYK_TOKEN
+install:
+    - npm install
+after_success:
+    - snyk monitor
+cache:
+  directories:
+  - "$HOME/.npm"
 notifications:
   email: false
   webhooks:
