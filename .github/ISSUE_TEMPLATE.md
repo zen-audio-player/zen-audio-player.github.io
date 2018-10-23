@@ -17,4 +17,4 @@ Mark with [x] to select. Leave as [ ] to unselect.
 - [ ] Include a description of the problem you're trying to solve and information on _why_ you think this is a problem
 - [ ] \(optional) If you have an solution, include information on how your solution is an improvement and describe your solution
 
-<!-- I would even suggest removing more of this information, adding a Wiki page that details the thought process you would like contributors to have and linking the Wiki page here; I'm happy to work on adding a Wiki page for you if you think that is appropriate-->
+<!-- I would even suggest removing more of this information, adding a Wiki page that details the thought process you would like contributors to have and linking the Wiki page here; I'm happy to work on adding a Wiki page for you or adjusting a current one if you think that is appropriate-->
