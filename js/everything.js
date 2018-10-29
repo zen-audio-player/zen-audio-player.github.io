@@ -745,6 +745,25 @@ $(function() {
             evt.preventDefault();
         }
     });
+
+    /**
+     * Skip the current video forward user entered amount of seconds
+     */
+    $('#skiptotime').on("click", function(evt) {
+      var skip = $('#skiptotimevalue').val();
+      if( skip ) {
+        var parseToNumber = parseInt( skip );
+        if( typeof parseToNumber == "number") {
+
+          var splitUrl = window.location.href.split( '&' );
+          if(splitUrl[1]) {
+            splitUrl.splice(1, 1);
+          }
+          splitUrl = splitUrl+'&t=' + skip;
+          window.location.replace( splitUrl );
+        }
+      }
+    });
 });
 
 /*eslint-disable */
