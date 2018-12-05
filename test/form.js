@@ -2,6 +2,8 @@ const nock = require("nock");
 var path = require("path");
 var Browser = require("zombie");
 
+require("../js/everything");
+
 const browser = new Browser();
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
@@ -39,5 +41,15 @@ describe("Form", function () {
         //     browser.assert.elements("#search-result");
         //     done();
         // });
+    });
+});
+
+describe("printResults", function() {
+    it("should error when there are no results", function() {
+        let data;
+        data.pageInfo.totalResults = 0;
+
+        PrintResults(data);
+        browser.assert.text("#zen-error", "ERROR: Skipping video lookup request as we're running the site locally.");
     });
 });

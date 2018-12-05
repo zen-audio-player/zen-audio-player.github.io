@@ -603,18 +603,7 @@ $(function() {
                 currentSearchQuery,
                 youTubeDataApiKey,
                 function(data) {
-                    if (data.pageInfo.totalResults === 0) {
-                        errorMessage.show("No results.");
-                        return;
-                    }
-                    $("#search-results").show();
-                    // Clear out results
-                    $("#search-results ul").html("");
-
-                    var start = "<li><h4><a href=?v=";
-                    $.each(data.items, function(index, result) {
-                        $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title + "</a></h4><a href=?v=" + result.id.videoId + "><img src=" + result.snippet.thumbnails.medium.url + " alt='" + result.snippet.title + "'></a></li>");
-                    });
+                    PrintResults(data);
                 },
                 function(jqXHR, textStatus, errorThrown) {
                     logError(jqXHR, textStatus, errorThrown, "Search error");
@@ -746,6 +735,22 @@ $(function() {
         }
     });
 });
+
+
+function PrintResults(data) {
+    if (data.pageInfo.totalResults === 0) {
+        errorMessage.show("No results.");
+        return;
+    }
+    $("#search-results").show();
+    // Clear out results
+    $("#search-results ul").html("");
+
+    var start = "<li id=\"search-result\"><h4><a href=?v=";
+    $.each(data.items, function(index, result) {
+        $("#search-results ul").append(start + result.id.videoId + ">" + result.snippet.title + "</a></h4><a href=?v=" + result.id.videoId + "><img src=" + result.snippet.thumbnails.medium.url + " alt='" + result.snippet.title + "'></a></li>");
+    });
+}
 
 /*eslint-disable */
 // Google Analytics goodness
