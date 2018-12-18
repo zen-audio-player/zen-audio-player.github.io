@@ -11,7 +11,7 @@
     "stylelint:css": "stylelint css/*.css",
     "lint": "npm run lint:js && npm run lint:html && npm run lint:css && npm run lint:tests",
     "pretest": "npm run stylelint:css && npm run lint",
-    "test": "snyk test && mocha",
+    "test": "mocha",
     "exp-fix:js": "eslint js/everything.js --fix",
     "start": "http-server --cors -o -a localhost",
     "snyk-monitor": "snyk monitor"
