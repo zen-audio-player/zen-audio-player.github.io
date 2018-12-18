@@ -4,6 +4,6 @@ version: v1.13.1
 ignore:
   'npm:qs:20170213':
     - http-server > union > qs:
-        reason: No available patch
-        expires: '2018-12-31T01:33:01.270Z'
+        reason: 'No Patch or Upgrade available '
+        expires: '2018-12-28T00:04:54.899Z'
 patch: {}
