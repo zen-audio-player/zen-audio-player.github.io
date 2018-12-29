@@ -260,8 +260,8 @@ a {
 }
 
 .alignToCenter {
+    left: 170px;
     position: relative;
-    left: 170px; 
 }
 
 #audioplayer .plyr__controls {
