@@ -259,6 +259,13 @@ a {
     display: none;
 }
 
+.alignToCenter {
+    position: relative;
+    left: 170px;
+
+  
+}
+
 #audioplayer .plyr__controls {
     background: #ffffff;
     border: 1px solid #dbe3e8;
