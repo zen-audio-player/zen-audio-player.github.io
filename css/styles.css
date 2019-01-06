@@ -260,8 +260,9 @@ a {
 }
 
 .alignToCenter {
-    left: 170px;
-    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #audioplayer .plyr__controls {
