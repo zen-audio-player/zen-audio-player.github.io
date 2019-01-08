@@ -653,6 +653,17 @@ $(function() {
         }
     });
 
+    // Handle focus link click
+    $("#focus").click(function(event) {
+        event.preventDefault();
+        ga("send", "event", "focus", "clicked");
+
+        // Redirect to the favorite "focus" URL
+        var favorite_id = "pJ5FD9_Orbg";
+        // By Using the make listen function
+        window.location.href = makeListenURL(favorite_id);
+    });
+
     // Load the player
     ZenPlayer.init(currentVideoID);
 

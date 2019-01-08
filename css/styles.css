@@ -113,7 +113,12 @@ a {
     display: block;
     margin: 0 auto;
 }
-
+#focus {
+    min-width: 4vw;
+    width: 6vw;
+    display: block;
+    margin: 0 auto;
+}
 #zen-video-description {
     white-space: pre-line;
 }
