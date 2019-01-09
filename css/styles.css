@@ -116,8 +116,6 @@ a {
 #focus {
     display: block;
     margin: 0 auto;
-    min-width: 4vw;
-    width: 6vw;
 }
 #zen-video-description {
     white-space: pre-line;
