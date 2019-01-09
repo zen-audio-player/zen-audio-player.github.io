@@ -212,8 +212,10 @@ a {
 }
 
 .sponsor {
-    margin: 30px 30px 0 auto;
-    width: 70%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
 }
 
 .sponsor-a {
@@ -229,14 +231,13 @@ a {
 @media all and (min-width: 640px) {
 
     .sponsor-a {
-        float: left;
-        margin-left: 4%;
         margin-top: 0;
         width: 30.666666667%;
     }
 
     .sponsor-a:first-of-type {
-        margin: 0;
+        margin-left: auto;
+        margin-right: auto;
     }
 
 }
@@ -252,6 +253,9 @@ a {
 }
 
 .img-100 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
     width: 100%;
 }
 
