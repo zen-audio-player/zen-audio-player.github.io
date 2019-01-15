@@ -1,34 +1,25 @@
 var assert = require("assert");
-var Browser = require("zombie");
-var path = require("path");
 var fs = require("fs");
-
-var _js = "";
+var path = require("path");
+var Browser = require("zombie");
 
 const browser = new Browser();
 
 var indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
-/** Utilities **/
-// TODO: with refactor into a node module, this can go away!
-function getParameterByName(url, name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]"); // eslint-disable-line no-useless-escape
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(url);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
-
 describe("Page Structure", function () {
-    it("should have required HTML elements", function (done) {
+    before(function(done) {
         browser.visit(indexHTMLURL, function () {
-            // TODO: getting an error from the underlying YouTube embed script from plyr... but only in CI
-            // assert.ok(!e);
-            assert.ok(browser.query("html"), "Couldn't find <html>, wow!");
-            assert.ok(browser.query("head"), "Couldn't find <head>, wow!");
-            assert.ok(browser.query("body"), "Couldn't find <body>, wow!");
-            assert.ok(browser.query("title"), "Couldn't find <title>, wow!");
             done();
         });
+    });
+    it("should have required HTML elements", function () {
+        // TODO: getting an error from the underlying YouTube embed script from plyr... but only in CI
+        // assert.ok(!e);
+        assert.ok(browser.query("html"), "Couldn't find <html>, wow!");
+        assert.ok(browser.query("head"), "Couldn't find <head>, wow!");
+        assert.ok(browser.query("body"), "Couldn't find <body>, wow!");
+        assert.ok(browser.query("title"), "Couldn't find <title>, wow!");
     });
     it("should have expected metadata", function () {
         assert.equal(browser.url, indexHTMLURL);
@@ -101,66 +92,5 @@ describe("Page Structure", function () {
         assert.ok(!browser.query("for"), "Found unexpected <for> element");
         assert.ok(!browser.query("the"), "Found unexpected <the> element");
         assert.ok(!browser.query("code"), "Found unexpected <code> element");
-    });
-});
-
-describe("JavaScript components", function() {
-    before(function () {
-        _js = fs.readFileSync(path.join(__dirname, "../js", "everything.js"), "utf8");
-    });
-
-    it("should load TrackJS token", function() {
-        var trackjs = browser.evaluate("window._trackJs");
-        assert.strictEqual(Object.keys(trackjs).length, 1);
-        assert.ok(trackjs.token);
-        assert.strictEqual(trackjs.token.length, 32);
-    });
-    it("should load jQuery", function() {
-        assert.ok(browser.evaluate("$"));
-    });
-    it("should make all requests over https, not http", function() {
-        assert.strictEqual(-1, _js.indexOf("http://"), "Please use HTTPS for all scripts");
-    });
-});
-
-describe("Demo", function () {
-    it("should play the demo when demo button is clicked", function (done) {
-        var oldUrl = browser.location.href;
-        browser.click("#demo", function() {
-            // Make sure the URL changed
-            assert.notEqual(oldUrl, browser.location.href);
-            // Check for any of the demo videos ID in the URL
-            var demos = [
-                "koJv-j1usoI", // The Glitch Mob - Starve the Ego, Feed the Soul
-                "EBerFisqduk", // Cazzette - Together (Lost Kings Remix)
-                "jxKjOOR9sPU", // The Temper Trap - Sweet Disposition
-                "03O2yKUgrKw"  // Mike Mago & Dragonette - Outlines
-            ];
-            assert.notEqual(demos.indexOf(getParameterByName(browser.location.search, "v")), -1);
-            // Check for any of the demo videos ID in the textbox
-            assert.notEqual(demos.indexOf(browser.query("#v").value), -1);
-
-            // TODO: once upon a time, using browser.evaluate("player") would give meaningful
-            //     : info. But there's a race condition where sometimes the player object isn't ready yet...?
-            //     : looks like can't rely on global variables.
-            // TODO: How do we inspect the player object (title, etc.)?
-            browser.assert.element(".plyr");
-            assert.ok(browser.evaluate("window.plyrPlayer"));
-            browser.assert.text("#togglePlayer", "Show Player");
-            browser.assert.text("#zen-error", "");
-            done();
-        });
-    });
-});
-
-describe("Form", function () {
-    it("should break with nonsense input", function (done) {
-        browser.assert.text("#zen-error", "");
-        browser.fill("#v", "absolute rubbish");
-        browser.pressButton("#submit", function() {
-            // TODO: add tests for the error message, time, play/pause button, etc
-            browser.assert.text("#zen-error", "ERROR: Skipping video lookup request as we're running the site locally.");
-            done();
-        });
     });
 });
