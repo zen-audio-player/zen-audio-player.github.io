@@ -500,6 +500,9 @@ function wrapParseYouTubeVideoID(url) {
     }
 }
 
+// The focus video ID
+var focusId = "pJ5FD9_Orbg";
+
 // Some demo video's audio, feel free to add more
 var demos = [
     "koJv-j1usoI", // The Glitch Mob - Starve the Ego, Feed the Soul
@@ -613,6 +616,8 @@ $(function() {
             }
         }
         else {
+            // Show the Focus button If there is no search
+            $("#focus-btn").show();
             errorMessage.show("Try entering a YouTube video ID or URL!");
         }
     });
@@ -652,6 +657,27 @@ $(function() {
             ga("send", "event", "demo", "already had video ID in URL");
         }
     });
+
+    // Handle focus link click
+    $("#focus-btn").click(function(event) {
+        event.preventDefault();
+        ga("send", "event", "focus", "clicked");
+        // Redirect to the favorite "focus" URL
+        window.location.href = makeListenURL(focusId);
+    });
+
+    // Check if the current ID is the focus ID
+    $(window).on("load", function() {
+        // Show Focus Button
+        if (window.location.href.indexOf(focusId) === -1) {
+            $("#focus-btn").show();
+        }
+        else {
+            // Hide Focus Button
+            $("#focus-btn").hide();
+        }
+    });
+
 
     // Load the player
     ZenPlayer.init(currentVideoID);
