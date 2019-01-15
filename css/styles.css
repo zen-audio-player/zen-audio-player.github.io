@@ -113,7 +113,8 @@ a {
     display: block;
     margin: 0 auto;
 }
-#focus {
+#focus-btn {
+    width:fit-content;
     display: block;
     margin: 0 auto;
 }

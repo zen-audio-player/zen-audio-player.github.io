@@ -617,7 +617,7 @@ $(function() {
         }
         else {
             // Show the Focus button If there is no search
-            $("#focus").css("display", "block");
+            $("#focus-btn").show();
             errorMessage.show("Try entering a YouTube video ID or URL!");
         }
     });
@@ -659,7 +659,7 @@ $(function() {
     });
 
     // Handle focus link click
-    $("#focus").click(function(event) {
+    $("#focus-btn").click(function(event) {
         event.preventDefault();
         ga("send", "event", "focus", "clicked");
         // Redirect to the favorite "focus" URL
@@ -670,10 +670,10 @@ $(function() {
     $(window).on('load', function(){
       // Show Focus button
       if (window.location.href.indexOf(focus_id) === -1) {
-        $("#focus").css("display", "block");
+        $("#focus-btn").show();
       }else{
         // Hide Focus button
-        $("#focus").css("display", "none");
+        $("#focus-btn").hide();
       }
     });
 
