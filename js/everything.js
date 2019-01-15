@@ -501,7 +501,7 @@ function wrapParseYouTubeVideoID(url) {
 }
 
 // The focus video ID
-var focus_id = "pJ5FD9_Orbg";
+var focusId = "pJ5FD9_Orbg";
 
 // Some demo video's audio, feel free to add more
 var demos = [
@@ -663,17 +663,18 @@ $(function() {
         event.preventDefault();
         ga("send", "event", "focus", "clicked");
         // Redirect to the favorite "focus" URL
-        window.location.href = makeListenURL(focus_id);
+        window.location.href = makeListenURL(focusId);
     });
 
     // Check if the current ID is the focus ID
-    $(window).on('load', function(){
-      // Show Focus button
-      if (window.location.href.indexOf(focus_id) === -1) {
-        $("#focus-btn").show();
-      }else{
-        // Hide Focus button
-        $("#focus-btn").hide();
+    $(window).on("load", function() {
+      // Show Focus Button
+      if (window.location.href.indexOf(focusId) === -1) {
+          $("#focus-btn").show();
+      }
+      else {
+          // Hide Focus Button
+          $("#focus-btn").hide();
       }
     });
 
