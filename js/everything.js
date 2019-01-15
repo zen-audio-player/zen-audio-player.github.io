@@ -668,14 +668,14 @@ $(function() {
 
     // Check if the current ID is the focus ID
     $(window).on("load", function() {
-      // Show Focus Button
-      if (window.location.href.indexOf(focusId) === -1) {
-          $("#focus-btn").show();
-      }
-      else {
-          // Hide Focus Button
-          $("#focus-btn").hide();
-      }
+        // Show Focus Button
+        if (window.location.href.indexOf(focusId) === -1) {
+            $("#focus-btn").show();
+        }
+        else {
+            // Hide Focus Button
+            $("#focus-btn").hide();
+        }
     });
 
 
