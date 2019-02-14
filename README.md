@@ -54,4 +54,4 @@ If you would like to contribute to this project please read the [guidelines on c
 ## Project Sponsors
 |Sponsor|Description|
 |:---:|---|
-|[![trackjs_logo](https://user-images.githubusercontent.com/10409032/52751772-a0d33a00-2fbe-11e9-922f-ab2d30e27253.png)](https://trackjs.com/)                 |Track Better Errors. Actually Fix Bugs. Know when your users run into errors and fix bugs before they report them.| 
+|[![trackjs_logo](img/trackjs_logo.png)](https://trackjs.com/)                 |Track Better Errors. Actually Fix Bugs. Know when your users run into errors and fix bugs before they report them.| 
