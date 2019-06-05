@@ -372,8 +372,12 @@ function getCurrentVideoID() {
  */
 function getCurrentTimePosition() {
     var t = parseInt(URI(window.location).search(true).t, 10);
+    var timeContinue = parseInt(URI(window.location).search(true).time_continue, 10);
     if (t > 0 && t < Number.MAX_VALUE) {
         return t;
+    }
+    else if (timeContinue > 0 && timeContinue < Number.MAX_VALUE) {
+        return timeContinue;
     }
     return 0;
 }
@@ -581,9 +585,14 @@ $(function() {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
         var formValueTime = /[?&]t=(\d*)/g.exec(formValue);
+        var formValueTimeContinue = /[?&]time_continue=(\d*)/g.exec(formValue);
         if (formValueTime && formValueTime.length > 1) {
             formValueTime = parseInt(formValueTime[1], 10);
             formValue = formValue.replace(/&t=\d*$/g, "");
+        }
+        if (formValueTimeContinue && formValueTimeContinue.length > 1) {
+            formValueTimeContinue = parseInt(formValueTimeContinue[1], 10);
+            formValue = formValue.replace(/&time_continue=\d*$/g, "");
         }
         if (formValue) {
             var videoID = wrapParseYouTubeVideoID(formValue, true);
@@ -607,7 +616,7 @@ $(function() {
                             window.location.href = makeSearchURL(formValue);
                         }
                         else {
-                            window.location.href = makeListenURL(videoID, formValueTime);
+                            window.location.href = makeListenURL(videoID, formValueTime || formValueTimeContinue);
                         }
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
