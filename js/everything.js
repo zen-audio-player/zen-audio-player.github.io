@@ -584,15 +584,16 @@ $(function() {
     $("#form").submit(function(event) {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
-        var formValueTime = /[?&]t=(\d*)/g.exec(formValue);
-        var formValueTimeContinue = /[?&]time_continue=(\d*)/g.exec(formValue);
-        if (formValueTime && formValueTime.length > 1) {
-            formValueTime = parseInt(formValueTime[1], 10);
-            formValue = formValue.replace(/&t=\d*$/g, "");
-        }
-        if (formValueTimeContinue && formValueTimeContinue.length > 1) {
-            formValueTimeContinue = parseInt(formValueTimeContinue[1], 10);
-            formValue = formValue.replace(/&time_continue=\d*$/g, "");
+        var formValueTime = /[?&]t=(\d+)|[?&]time_continue=(\d+)/g.exec(formValue);
+        if (formValueTime && formValueTime.length > 2) {
+            if (typeof formValueTime[1] !== "undefined") {
+                formValueTime = parseInt(formValueTime[1], 10);
+            }
+            else {
+                formValueTime = parseInt(formValueTime[2], 10);
+            }
+            formValue = formValue.replace(/[?&]t=\d+/g, "");
+            formValue = formValue.replace(/[?&]time_continue=\d+/g, "");
         }
         if (formValue) {
             var videoID = wrapParseYouTubeVideoID(formValue, true);
@@ -616,7 +617,7 @@ $(function() {
                             window.location.href = makeSearchURL(formValue);
                         }
                         else {
-                            window.location.href = makeListenURL(videoID, formValueTime || formValueTimeContinue);
+                            window.location.href = makeListenURL(videoID, formValueTime);
                         }
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
