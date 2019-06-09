@@ -584,16 +584,11 @@ $(function() {
     $("#form").submit(function(event) {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
-        var formValueTime = /[?&]t=(\d+)|[?&]time_continue=(\d+)/g.exec(formValue);
+        var formValueTime = /[?&](t|time_continue)=(\d+)/g.exec(formValue);
         if (formValueTime && formValueTime.length > 2) {
-            if (typeof formValueTime[1] !== "undefined") {
-                formValueTime = parseInt(formValueTime[1], 10);
-            }
-            else {
-                formValueTime = parseInt(formValueTime[2], 10);
-            }
-            formValue = formValue.replace(/[?&]t=\d+/g, "");
-            formValue = formValue.replace(/[?&]time_continue=\d+/g, "");
+            formValueTime = parseInt(formValueTime[2], 10);
+            formValue = formValue.replace(/[?&]t=\d*/g, "");
+            formValue = formValue.replace(/[?&]time_continue=\d*/g, "");
         }
         if (formValue) {
             var videoID = wrapParseYouTubeVideoID(formValue, true);
