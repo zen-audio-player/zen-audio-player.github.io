@@ -372,8 +372,12 @@ function getCurrentVideoID() {
  */
 function getCurrentTimePosition() {
     var t = parseInt(URI(window.location).search(true).t, 10);
+    var timeContinue = parseInt(URI(window.location).search(true).time_continue, 10);
     if (t > 0 && t < Number.MAX_VALUE) {
         return t;
+    }
+    else if (timeContinue > 0 && timeContinue < Number.MAX_VALUE) {
+        return timeContinue;
     }
     return 0;
 }
@@ -580,10 +584,10 @@ $(function() {
     $("#form").submit(function(event) {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
-        var formValueTime = /[?&]t=(\d*)/g.exec(formValue);
-        if (formValueTime && formValueTime.length > 1) {
-            formValueTime = parseInt(formValueTime[1], 10);
-            formValue = formValue.replace(/&t=\d*$/g, "");
+        var formValueTime = /[?&](t|time_continue)=(\d+)/g.exec(formValue);
+        if (formValueTime && formValueTime.length > 2) {
+            formValue = formValue.replace(formValueTime[0], "");
+            formValueTime = parseInt(formValueTime[2], 10);
         }
         if (formValue) {
             var videoID = wrapParseYouTubeVideoID(formValue, true);
