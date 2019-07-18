@@ -97,7 +97,6 @@ var ZenPlayer = {
         plyrPlayer = document.querySelector(".plyr");
 
         plyr.setup(plyrPlayer, {
-            autoplay: true,
             controls: ["play", "progress", "current-time", "duration", "mute", "volume"],
             hideControls: false
         });
@@ -137,6 +136,7 @@ var ZenPlayer = {
                 that.setupTitle();
                 that.setupVideoDescription(videoID);
                 that.setupPlyrToggle();
+                that.show();
             });
 
             plyrPlayer.addEventListener("playing", function() {
