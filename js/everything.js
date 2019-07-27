@@ -138,10 +138,10 @@ var ZenPlayer = {
                 that.setupPlyrToggle();
                 ZenPlayer.play();
                 window.setTimeout(() => {
-                    if(!ZenPlayer.isPlaying) { // player is not playing after 2 second, consider autoplay disabled
+                    if (!ZenPlayer.isPlaying) { // player is not playing after 2 second, consider autoplay disabled
                         that.show();
                     }
-                }, 2000)
+                }, 2000);
             });
 
             plyrPlayer.addEventListener("playing", function() {
