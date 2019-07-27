@@ -136,7 +136,12 @@ var ZenPlayer = {
                 that.setupTitle();
                 that.setupVideoDescription(videoID);
                 that.setupPlyrToggle();
-                that.show();
+                ZenPlayer.play();
+                window.setTimeout(() => {
+                    if(!ZenPlayer.isPlaying) { // player is not playing after 2 second, consider autoplay disabled
+                        that.show();
+                    }
+                }, 2000)
             });
 
             plyrPlayer.addEventListener("playing", function() {
