@@ -267,7 +267,7 @@ a {
 }
 
 .plyr__video-wrapper {
-    display: block;
+    display: none;
 }
 
 #audioplayer .plyr__controls {
