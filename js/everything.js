@@ -199,6 +199,11 @@ var ZenPlayer = {
                 else if (resumeTime <= 0 && $("#zen-video-title").attr("href") !== that.videoUrl) {
                     updatedUrl = that.videoUrl;
                 }
+                else if (resumeTime <= 0 && $("#zen-video-title").attr("href") === that.videoUrl && that.isRepeat) {
+                    resumeTime = 0;
+                    plyrPlayer.plyr.embed.seekTo(resumeTime);
+                    ZenPlayer.play();
+                }
                 $("#zen-video-title").attr("href", updatedUrl);
             });
 
