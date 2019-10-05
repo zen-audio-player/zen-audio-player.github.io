@@ -89,6 +89,7 @@ var ZenPlayer = {
     updated: false,
     isPlaying: false,
     isRepeat: false,
+    autoplayBrowser: false,
 
     init: function(videoID) {
         // Inject svg with control icons
@@ -137,6 +138,7 @@ var ZenPlayer = {
                 that.setupTitle();
                 that.setupVideoDescription(videoID);
                 that.setupPlyrToggle();
+                that.show();
             });
 
             plyrPlayer.addEventListener("playing", function() {
@@ -206,6 +208,13 @@ var ZenPlayer = {
 
             plyrPlayer.addEventListener("pause", function() {
                 this.isPlaying = false;
+            }.bind(this));
+
+            plyrPlayer.addEventListener("statechange", function() {
+                if (event.detail.code === 1 && this.autoplayBrowser === false) {
+                    $("#togglePlayer").click();
+                    this.autoplayBrowser = true;
+                }
             }.bind(this));
 
             plyrPlayer.plyr.source({
