@@ -137,7 +137,6 @@ var ZenPlayer = {
                 that.setupTitle();
                 that.setupVideoDescription(videoID);
                 that.setupPlyrToggle();
-                that.show();
             });
 
             plyrPlayer.addEventListener("playing", function() {
