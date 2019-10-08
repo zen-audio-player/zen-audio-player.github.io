@@ -304,15 +304,13 @@ var ZenPlayer = {
                 autoplayState = true;
                 toggleTextElement.text("Stop autoplay");
             }
-            else {
-                if (autoplayState === true) {
+            else if (autoplayState === true) {
                     toggleTextElement.text("Start autoplay");
                     autoplayState = false;
-                }
-                else {
-                    toggleTextElement.text("Stop autoplay");
-                    autoplayState = true;
-                }
+            }
+            else {
+                toggleTextElement.text("Stop autoplay");
+                autoplayState = true;
             }
         });
     },
