@@ -305,8 +305,8 @@ var ZenPlayer = {
                 toggleTextElement.text("Stop autoplay");
             }
             else if (autoplayState === true) {
-                    toggleTextElement.text("Start autoplay");
-                    autoplayState = false;
+                toggleTextElement.text("Start autoplay");
+                autoplayState = false;
             }
             else {
                 toggleTextElement.text("Stop autoplay");
