@@ -649,10 +649,9 @@ $(function() {
                 },
                 success: function(data) {
                     // push items into playlist
-                    for (var i = 0; i < data.items.length; i++) {
+                    for (var i = data.items.length - 1; i > -1; i--) {
                         playList.push(data.items[i].id.videoId);
                     }
-                    playList = playList.reverse();
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 logError(jqXHR, textStatus, errorThrown, "Related video lookup error");
