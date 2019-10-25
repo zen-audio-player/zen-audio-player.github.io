@@ -291,3 +291,122 @@ a {
     }
 
 }
+
+/* Playlist  */
+
+.plyr-playlist-wrapper ul::-webkit-scrollbar {
+    width: 6px;
+}
+
+.plyr-playlist-wrapper ul::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.plyr-playlist-wrapper ul::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    /*  background: #fff; */
+    background: #3498db;
+}
+
+.plyr-playlist-wrapper {
+    background: rgba(0, 0, 0, 0.8);
+    position: relative;
+    padding: 0.5em 0.5em 0.5em 0.25em;
+}
+
+.plyr-playlist-wrapper .plyr-playlist {
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    /* position: absolute;
+    right: 65px;
+    bottom: 100%; */
+    position: relative;
+    margin-top: 0;
+    padding: 6px 4px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 6px 8px 0 inset;
+}
+
+.plyr-playlist-wrapper ul {
+    padding: 0;
+    margin: 0;
+    max-height: 12em;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+.plyr-playlist-wrapper ul li {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.plyr-playlist-wrapper .plyr-playlist li {
+    list-style: none;
+    background-color: rgba(255, 255, 255, 0.03);
+    padding: 0;
+    margin-bottom: 3px;
+    font-size: 90%;
+}
+
+.plyr-playlist-wrapper .plyr-playlist li.pls-playing {
+    color: #3498db;
+    background-color: rgba(255, 255, 255, 0.09);
+}
+
+.plyr-playlist-wrapper .plyr-playlist li:hover {
+    color: #3498db;
+    background-color: rgba(255, 255, 255, 0.09);
+}
+
+.plyr-playlist-wrapper .plyr-playlist li.pls-playing a {
+    color: #3498db;
+}
+
+/* .plyr-playlist li:hover {
+    background-color: rgba(255, 255, 255, 0.09);
+  } */
+
+.plyr-playlist-wrapper .plyr-playlist li a {
+    text-decoration: none;
+    font-family: arial;
+    color: #c9c9c9;
+    display: block;
+    outline: none;
+    padding: 0.5em 0.25em 0.5em 0.75em;
+    /* margin-right: 0.5em; */
+    font-size: 90%;
+    vertical-align: middle;
+}
+
+.plyr-playlist-wrapper .plyr-playlist li:last-child a {
+    border-bottom: 0;
+}
+
+.plyr-playlist li a:hover {
+    color: #04a9f3;
+    /*  color: #00c85f; */
+    /*   text-decoration: none; */
+}
+
+.plyr-playlist li a:focus, .plyr-playlist li a:active {
+    color: #04a9f3;
+}
+
+.plyr-miniposter {
+    width: auto;
+    height: 22px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    float: left;
+    margin-right: 10px;
+    border-radius: 0;
+}
+
+.plyr-type-playlist plyr-playlist a.plyr-playlist-item-remove {
+    float: right;
+    margin-right: 15px;
+    /* font-weight: bold; */
+    background-color: transparent;
+}

@@ -89,6 +89,9 @@ var ZenPlayer = {
     updated: false,
     isPlaying: false,
     isRepeat: false,
+    playlist: [],
+    currentVideoObj: {},
+    globalThis: this,
 
     init: function(videoID) {
         // Inject svg with control icons
@@ -122,8 +125,42 @@ var ZenPlayer = {
                 that.videoTitle = plyrPlayer.plyr.embed.getVideoData().title;
                 that.videoAuthor = plyrPlayer.plyr.embed.getVideoData().author;
                 that.videoDuration = plyrPlayer.plyr.embed.getDuration();
-                that.videoDescription = that.getVideoDescription(videoID);
+                that.videoDescription = that.getVideoDescription(currentVideoID);
                 that.videoUrl = plyrPlayer.plyr.embed.getVideoUrl();
+
+                that.currentVideoObj = {
+                    type: "youtube",
+                    title: that.videoTitle,
+                    author: that.videoAuthor,
+                    sources: [{
+                        src: currentVideoID,
+                        type: "youtube"
+                    }],
+                    src: currentVideoID,
+                    poster: "https://img.youtube.com/vi/" + currentVideoID + "/hqdefault.jpg"
+                };
+
+                History.pushState(null, null, "?v=" + currentVideoID);
+
+                $("#v")[0].value = currentVideoID;
+
+                // Add video to playlist
+                // localStorage.setItem("playlist", JSON.stringify([]));
+                that.playlist = JSON.parse(localStorage.getItem("playlist"));
+                if (that.playlist) {
+                    that.playlist.unshift(
+                        that.currentVideoObj
+                    );
+                }
+                else {
+                    that.playlist = [
+                        that.currentVideoObj
+                    ];
+                }
+
+                // remove duplicates from playlist and store
+                that.playlist = Array.from(new Set(that.playlist.map(JSON.stringify))).map(JSON.parse);
+                localStorage.setItem("playlist", JSON.stringify(that.playlist));
 
                 // Updates the time position by a given argument in URL
                 // IE https://zenplayer.audio/?v=koJv-j1usoI&t=30 starts at 0:30
@@ -137,6 +174,7 @@ var ZenPlayer = {
                 that.setupTitle();
                 that.setupVideoDescription(videoID);
                 that.setupPlyrToggle();
+                that.globalThis.loadPlaylist(30, that.playlist);
             });
 
             plyrPlayer.addEventListener("playing", function() {
@@ -646,6 +684,14 @@ $(function() {
         ZenPlayer.isRepeat = $(this).hasClass("toggleRepeatActive");
     });
 
+    // handle clearing playlist history
+    $("#toggleHistory").click(function() {
+        ZenPlayer.playlist = [ ZenPlayer.currentVideoObj ];
+        localStorage.setItem("playlist", JSON.stringify(ZenPlayer.playlist));
+        $(".plyr-playlist-wrapper").remove();
+        loadPlaylist(30, ZenPlayer.playlist);
+    });
+
     // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
@@ -716,3 +762,87 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga("create", "UA-62983413-1", "auto");
 ga("send", "pageview");
 /* eslint-enable */
+
+// The following code below has been adapted from https://codepen.io/onigetoc/pen/veWNbP
+function loadPlaylist(limit = 30, myPlaylist) {
+    $("li.pls-playing").removeClass("pls-playing");
+    $(".plyr-playlist-wrapper").remove();
+
+    if (myPlaylist) {
+        PlyrPlaylist(".plyr-playlist", myPlaylist, limit - 1);
+    }
+}
+
+function PlyrPlaylist(target, myPlaylist, limit) {
+    $("<div class=\"plyr-playlist-wrapper\"><ul class=\"plyr-playlist\"></ul></div>").insertAfter(".plyr");
+
+    // var startwith = 0; // Maybe a playlist option to start with choosen video
+
+    var playingclass = "";
+    var items = [];
+    // var playing == 1 ;
+    $.each(myPlaylist, function(id, val) {
+        // items.push('<li>' + option.title + '</li>');
+        // alert(id)
+
+        // console.log(val);
+
+        if (0 === id) {
+            playingclass = "pls-playing";
+        }
+        else {
+            playingclass = "";
+        }
+
+        items.push(
+            "<li class=\"" + playingclass + "\"><a href=\"#\" data-type=\"" + val.sources[0].type + "\" data-video-id=\"" + val.sources[0].src + "\"><img class=\"plyr-miniposter\" src=\"" + val.poster + "\"> " +
+val.title + " - " + val.author + "</a></li> ");
+
+        if (id === limit) {
+            return false;
+        }
+    });
+    $(target).html(items.join(""));
+}
+
+$(document).on("click", "ul.plyr-playlist li a", function(event) {
+    // $("ul.plyr-playlist li a").on("click", function(event) {
+    event.preventDefault();
+
+    $("li.pls-playing").removeClass("pls-playing");
+    $(this)
+        .parent()
+        .addClass("pls-playing");
+
+    var pvideoID = $(this).data("video-id");
+    var pvideoType = $(this).data("type");
+    var pvideoTitle = $(this).text();
+
+    // alert(pvideoID);
+
+    currentVideoID = pvideoID;
+
+    document.querySelector(".plyr").plyr.source({
+        type: pvideoType,
+        title: pvideoTitle,
+        sources: [{ src: pvideoID, type: pvideoType }]
+    });
+
+    $(".plyr-playlist").scrollTo(".pls-playing", 300);
+});
+
+/** **** GC ScrollTo **********/
+// mine: https://jsfiddle.net/onigetoc/5kh0e5f4/
+// https://stackoverflow.com/questions/2346011/how-do-i-scroll-to-an-element-within-an-overflowed-div
+jQuery.fn.scrollTo = function(elem, speed) {
+    jQuery(this).animate(
+        {
+            scrollTop:
+          jQuery(this).scrollTop() -
+          jQuery(this).offset().top +
+          jQuery(elem).offset().top
+        },
+        speed === undefined ? 1000 : speed
+    );
+    return this;
+};
