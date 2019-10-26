@@ -91,6 +91,7 @@ var ZenPlayer = {
     isRepeat: false,
     playlist: [],
     currentVideoObj: {},
+    toggleSet: false,
     globalThis: this,
 
     init: function(videoID) {
@@ -140,7 +141,7 @@ var ZenPlayer = {
                     poster: "https://img.youtube.com/vi/" + currentVideoID + "/hqdefault.jpg"
                 };
 
-                History.pushState(null, null, "?v=" + currentVideoID);
+                History.replaceState(null, "Zen Audio Player", "?v=" + currentVideoID);
 
                 $("#v")[0].value = currentVideoID;
 
@@ -173,7 +174,10 @@ var ZenPlayer = {
                 // Initialize UI
                 that.setupTitle();
                 that.setupVideoDescription(videoID);
-                that.setupPlyrToggle();
+                if (!that.toggleSet) {
+                    that.setupPlyrToggle();
+                    that.toggleSet = true;
+                }
                 that.globalThis.loadPlaylist(30, that.playlist);
             });
 
@@ -280,15 +284,16 @@ var ZenPlayer = {
         description = anchorTimestamps(description, videoID);
         $("#zen-video-description").html(description);
         $("#zen-video-description").hide();
-
-        $("#toggleDescription").click(function(event) {
-            toggleElement(event, "#zen-video-description", "Description");
-        });
     },
     setupPlyrToggle: function() {
         // Show player button click event
         $("#togglePlayer").click(function(event) {
             toggleElement(event, ".plyr__video-wrapper", "Player");
+        });
+
+        // show description button click event
+        $("#toggleDescription").click(function(event) {
+            toggleElement(event, "#zen-video-description", "Description");
         });
     },
     getVideoDescription: function(videoID) {
@@ -383,6 +388,7 @@ function toggleElement(event, toggleID, buttonText) {
     else {
         toggleTextElement.text("Show " + buttonText);
     }
+    return false;
 }
 
 /**

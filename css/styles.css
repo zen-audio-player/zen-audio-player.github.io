@@ -386,9 +386,9 @@ a {
 }
 
 .plyr-miniposter {
+    background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center center;
     border-radius: 0;
     float: left;
     height: 22px;
