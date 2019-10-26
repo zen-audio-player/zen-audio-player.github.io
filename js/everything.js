@@ -165,6 +165,12 @@ var ZenPlayer = {
                 updateTweetMessage();
             });
 
+            plyrPlayer.addEventListener("ended", function() {
+                if (that.isRepeat) {
+                    plyrPlayer.plyr.play();
+                }
+            });
+
             plyrPlayer.addEventListener("timeupdate", function() {
                 // Store the current time of the video.
                 var resumeTime = 0;
@@ -185,7 +191,7 @@ var ZenPlayer = {
                     if (currentTime >= videoDuration && that.isRepeat) {
                         resumeTime = 0;
                         plyrPlayer.plyr.embed.seekTo(resumeTime);
-                        ZenPlayer.play();
+                        plyrPlayer.plyr.play();
                     }
                     window.sessionStorage[videoID] = resumeTime;
                 }
@@ -196,6 +202,11 @@ var ZenPlayer = {
                 }
                 else if (resumeTime <= 0 && $("#zen-video-title").attr("href") !== that.videoUrl) {
                     updatedUrl = that.videoUrl;
+                }
+                else if (resumeTime <= 0 && $("#zen-video-title").attr("href") === that.videoUrl && that.isRepeat) {
+                    resumeTime = 0;
+                    plyrPlayer.plyr.embed.seekTo(resumeTime);
+                    plyrPlayer.plyr.play();
                 }
                 $("#zen-video-title").attr("href", updatedUrl);
             });
@@ -644,6 +655,7 @@ $(function() {
             $(this).html("Repeat Track");
         }
         ZenPlayer.isRepeat = $(this).hasClass("toggleRepeatActive");
+        document.querySelector(".plyr").plyr.loop = !document.querySelector(".plyr").plyr.loop;
     });
 
     // Handle demo link click
