@@ -655,6 +655,7 @@ $(function() {
             $(this).html("Repeat Track");
         }
         ZenPlayer.isRepeat = $(this).hasClass("toggleRepeatActive");
+        document.querySelector(".plyr").plyr.loop = !document.querySelector(".plyr").plyr.loop;
     });
 
     // Handle demo link click
