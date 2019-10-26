@@ -299,7 +299,7 @@ a {
 }
 
 .plyr-playlist-wrapper ul::-webkit-scrollbar-track {
-    background: #000000 rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
 }
 
@@ -309,35 +309,35 @@ a {
 }
 
 .plyr-playlist-wrapper {
-    background: #000000 rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.8);
     padding: 0.5em 0.5em 0.5em 0.25em;
     position: relative;
 }
 
 .plyr-playlist-wrapper .plyr-playlist {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     box-shadow: rgba(0, 0, 0, 0.2) 0 6px 8px 0 inset;
     margin-top: 0;
     padding: 6px 4px;
     position: relative;
     user-select: none;
     width: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 .plyr-playlist-wrapper ul {
-    -webkit-overflow-scrolling: touch;
     margin: 0;
     max-height: 12em;
     overflow-y: scroll;
     padding: 0;
+    -webkit-overflow-scrolling: touch;
 }
 
 .plyr-playlist-wrapper ul li {
-    border-bottom: 1px solid #000000 rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid  rgba(0, 0, 0, 0.05);
 }
 
 .plyr-playlist-wrapper .plyr-playlist li {
-    background-color: #ffffff rgba(255, 255, 255, 0.03);
+    background-color: rgba(255, 255, 255, 0.03);
     font-size: 90%;
     list-style: none;
     margin-bottom: 3px;
@@ -345,12 +345,12 @@ a {
 }
 
 .plyr-playlist-wrapper .plyr-playlist li.pls-playing {
-    background-color: #ffffff rgba(255, 255, 255, 0.09);
+    background-color: rgba(255, 255, 255, 0.09);
     color: #3498db;
 }
 
 .plyr-playlist-wrapper .plyr-playlist li:hover {
-    background-color: #ffffff rgba(255, 255, 255, 0.09);
+    background-color: rgba(255, 255, 255, 0.09);
     color: #3498db;
 }
 
@@ -367,13 +367,8 @@ a {
     display: block;
     font-family: arial;
     font-size: 90%;
-    outline: none;
     padding: 0.5em 0.25em 0.5em 0.75em;
     text-decoration: none;
-}
-
-.plyr-playlist-wrapper .plyr-playlist li a:focus {
-    outline: none;
 }
 
 .plyr-playlist-wrapper .plyr-playlist li:last-child a {
@@ -391,8 +386,8 @@ a {
 }
 
 .plyr-miniposter {
-    background-size: cover;
     background-repeat: no-repeat;
+    background-size: cover;
     background-position: center center;
     border-radius: 0;
     float: left;
