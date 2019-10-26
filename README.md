@@ -30,7 +30,7 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 ## Demo
 
 * Listen to [Starve the Ego, Feed the Soul by The Glitch Mob](http://zenplayer.audio/?v=koJv-j1usoI)
-* Try it out on [zenplayer.audio](http://zenplayer.audio/)
+* Try it out on [zenplayer.audio](http://zenplayer.audio/).
 * Clone the project and open `index.html`.
 * To run the site locally, run `npm install` then `npm start` and a webpage will open in your default browser.
 
@@ -54,4 +54,4 @@ If you would like to contribute to this project please read the [guidelines on c
 ## Project Sponsors
 |Sponsor|Description|
 |:---:|---|
-|[![trackjs_logo](img/trackjs_logo.png)](https://trackjs.com/)                 |Track Better Errors. Actually Fix Bugs. Know when your users run into errors and fix bugs before they report them.| 
+|[![trackjs_logo](img/trackjs_logo.png)](https://trackjs.com/)                 |Track Better Errors. Actually Fix Bugs. Know when your users run into errors and fix bugs before they report them.|
