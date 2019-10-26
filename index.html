@@ -26,6 +26,8 @@
     <script src="js/zap-common.js"></script>
     <script src="js/everything.js"></script>
     <script src="bower_components/plyr/dist/plyr.js"></script>
+    <script src="bower_components/history.js/scripts/bundled/html4+html5/jquery.history.js"></script>
+
 
 </head>
 <body>
@@ -76,6 +78,9 @@
                 <button class="btn" id="toggleRepeat">
                     Repeat Track
                 </button>
+                <button class="btn" id="toggleHistory">
+                    Clear History
+                </button>
             </div>
 
             <!-- Plyr controls' icons and Plyr player itself -->
@@ -84,6 +89,7 @@
             <div class="plyr">
                 <audio></audio>
             </div>
+            <div class="plyr-playlist-wrapper"><ul class="plyr-playlist"></ul></div>
             <br>
             <div id="zen-video-description"></div>
             <br>

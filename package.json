@@ -9,6 +9,7 @@
     "lint:html": "htmlhint index.html",
     "lint:css": "csslint --format=compact --warnings=box-model,ids css/",
     "stylelint:css": "stylelint css/*.css",
+    "css-fix": "stylelint css/*.css --fix",
     "lint": "npm run lint:js && npm run lint:html && npm run lint:css && npm run lint:tests",
     "pretest": "npm run stylelint:css && npm run lint",
     "test": "mocha",
@@ -38,7 +39,7 @@
     "htmlhint": "^0.10.1",
     "mocha": "^5.2.0",
     "snyk": "^1.194.0",
-    "stylelint": "^9.5.0",
+    "stylelint": "^9.10.1",
     "zombie": "^6.1.3"
   },
   "engines": {
