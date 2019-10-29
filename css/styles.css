@@ -218,12 +218,12 @@ a {
 }
 
 .sponsor {
-    align-items: center;
     align-content: center;
+    align-items: center;
     display: flex;
     margin-left: auto;
-    margin-right: auto;
     margin-top: 15px;
+    margin-right: auto;
     width: 100%;
 }
 
