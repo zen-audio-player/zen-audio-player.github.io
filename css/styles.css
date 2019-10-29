@@ -218,13 +218,13 @@ a {
 }
 
 .sponsor {
+    align-items: center;
+    align-content: center;
+    display: flex;
     margin-left: auto;
     margin-right: auto;
     margin-top: 15px;
     width: 100%;
-    display: flex;
-    align-items: center;
-    align-content: center;
 }
 
 .sponsor-a {
