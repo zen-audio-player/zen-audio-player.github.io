@@ -5,7 +5,6 @@
 [![Build Status](https://travis-ci.org/zen-audio-player/zen-audio-player.github.io.svg?branch=master)](https://travis-ci.org/zen-audio-player/zen-audio-player.github.io)
 [![Code Climate](https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io/badges/gpa.svg)](https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io)
 [![Issue Count](https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io/badges/issue_count.svg)](https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io)
-[![Known Vulnerabilities](https://snyk.io/test/github/zen-audio-player/zen-audio-player.github.io/badges/badge.svg)](https://snyk.io/test/github/zen-audio-player/zen-audio-player.github.io/badges)
 
 Listen to YouTube videos, without the distracting visuals.
 
