@@ -199,7 +199,6 @@ a {
 
 .btn-search {
     width: 50px;
-    height: 30px;
 }
 
 @media all and (min-width: 480px) {
@@ -221,6 +220,10 @@ a {
 @media all and (max-width: 480px) {
 
     .input-search {
+        height: 30px;
+    }
+
+    .btn-search {
         height: 30px;
     }
 }
