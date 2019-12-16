@@ -199,6 +199,7 @@ a {
 
 .btn-search {
     width: 50px;
+    height: 30px;
 }
 
 @media all and (min-width: 480px) {
@@ -215,6 +216,13 @@ a {
         font-size: 20px;
     }
 
+}
+
+@media all and (max-width: 480px) {
+
+    .input-search {
+        height: 30px;
+    }
 }
 
 .sponsor {
