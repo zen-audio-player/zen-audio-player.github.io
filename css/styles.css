@@ -217,6 +217,17 @@ a {
 
 }
 
+@media all and (max-width: 480px) {
+
+    .input-search {
+        height: 30px;
+    }
+
+    .btn-search {
+        height: 30px;
+    }
+}
+
 .sponsor {
     display: block;
     margin-left: auto;
