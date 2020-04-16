@@ -1,4 +1,4 @@
-/* global URI getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
+/* global URI getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription, getYouTubeVideoPlaylist */
 
 var keyCodes = {
     SPACEBAR: 32
@@ -300,17 +300,14 @@ var ZenPlayer = {
         // toggle auto next song playing
         $("#toggleAutoplay").click(function(event) {
             var toggleTextElement = $("#" + event.currentTarget.id);
+
             if (!autoplayState) {
                 autoplayState = true;
-                toggleTextElement.text("Stop autoplay");
-            }
-            else if (autoplayState === true) {
-                toggleTextElement.text("Start autoplay");
-                autoplayState = false;
+                toggleTextElement.text("Stop Autoplay");
             }
             else {
-                toggleTextElement.text("Stop autoplay");
-                autoplayState = true;
+                toggleTextElement.text("Autoplay");
+                autoplayState = false;
             }
         });
     },
@@ -582,10 +579,10 @@ function pickDemo() {
 
 function updateAutoplayToggle(state) {
     if (state) {
-        $("#toggleAutoplay").text("Stop autoplay");
+        $("#toggleAutoplay").text("Stop Autoplay");
     }
     else {
-        $("#toggleAutoplay").text("Start autoplay");
+        $("#toggleAutoplay").text("Autoplay");
     }
 }
 
@@ -637,25 +634,19 @@ $(function() {
         $("#v").attr("value", currentVideoID);
         // get similar videos, populate playList
         if (!isFileProtocol()) {
-            $.ajax({
-                url: "https://www.googleapis.com/youtube/v3/search",
-                dataType: "json",
-                async: false,
-                data: {
-                    key: youTubeDataApiKey,
-                    part: "snippet",
-                    type: "video",
-                    relatedToVideoId: currentVideoID
-                },
-                success: function(data) {
+            getYouTubeVideoPlaylist(
+                currentVideoID,
+                youTubeDataApiKey,
+                function(data) {
                     // push items into playlist
                     for (var i = data.items.length - 1; i > -1; i--) {
                         playList.push(data.items[i].id.videoId);
                     }
+                },
+                function(jqXHR, textStatus, errorThrown) {
+                    logError(jqXHR, textStatus, errorThrown, "Related video lookup error");
                 }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                logError(jqXHR, textStatus, errorThrown, "Related video lookup error");
-            });
+            );
         }
     }
     else {
