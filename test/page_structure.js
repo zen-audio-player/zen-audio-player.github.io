@@ -78,6 +78,8 @@ describe("Page Structure", function () {
         assert.ok(browser.query("#zen-video-title"), "Couldn't find #zen-video-title");
         assert.ok(browser.query("h3 > a#zen-video-title"), "Couldn't find a h3 > a#zen-video-title");
         assert.ok(browser.query("#audioplayer"), "Couldn't find #audioplayer");
+        assert.ok(browser.query("#audioplayer > div#playerControls"), "Couldn't find #audioplayer  > div#playerControls");
+        assert.ok(browser.query("#audioplayer > div#playerControls > button#toggleAutoplay"), "Couldn't find #audioplayer  > div#playerControls > button#toggleAutoplay");
         assert.ok(browser.query("#audioplayer > div.plyr"), "Couldn't find #audioplayer > div.plyr");
 
         assert.ok(browser.query("footer"), "Couldn't find footer");
