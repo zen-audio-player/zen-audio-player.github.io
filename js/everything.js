@@ -595,8 +595,7 @@ function getParsedVideoMetadata() {
 }
 
 function getNewVideoID() {
-    var nextID = null;
-    nextID = playList.pop();
+    var nextID = playList.pop();
     for (var i = 0; i < videoMetadata["items"].length && nextID; i++) {
         var curVideo = videoMetadata["items"][i];
         if (curVideo["id"] === nextID) {
@@ -634,19 +633,25 @@ $(function() {
         $("#v").attr("value", currentVideoID);
         // get similar videos, populate playList
         if (!isFileProtocol()) {
-            getYouTubeVideoPlaylist(
-                currentVideoID,
-                youTubeDataApiKey,
-                function(data) {
+            $.ajax({
+                url: "https://www.googleapis.com/youtube/v3/search",
+                dataType: "json",
+                async: false,
+                data: {
+                    key: youTubeDataApiKey,
+                    part: "snippet",
+                    type: "video",
+                    relatedToVideoId: currentVideoID
+                },
+                success: function(data) {
                     // push items into playlist
                     for (var i = data.items.length - 1; i > -1; i--) {
                         playList.push(data.items[i].id.videoId);
                     }
-                },
-                function(jqXHR, textStatus, errorThrown) {
-                    logError(jqXHR, textStatus, errorThrown, "Related video lookup error");
                 }
-            );
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                logError(jqXHR, textStatus, errorThrown, "Related video lookup error");
+            });
         }
     }
     else {

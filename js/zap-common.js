@@ -34,21 +34,6 @@ function getYouTubeVideoDescription(videoID, youTubeDataApiKey, onSuccess, onFai
     }).fail(onFail);
 }
 
-function getYouTubeVideoPlaylist(videoID, youTubeDataApiKey, onSuccess, onFail) {
-    $.ajax({
-        url: "https://www.googleapis.com/youtube/v3/search",
-        dataType: "json",
-        async: false,
-        data: {
-            key: youTubeDataApiKey,
-            part: "snippet",
-            type: "video",
-            relatedToVideoId: videoID
-        },
-        success: onSuccess
-    }).fail(onFail);
-}
-
 /**
  * Given a YouTube video ID, YouTube.com video URL, or YouTu.Be video URL, return an object
  * containing the method used to derive the ID, and the ID itself. The following were used to test;
