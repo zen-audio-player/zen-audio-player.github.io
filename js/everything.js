@@ -1,4 +1,4 @@
-/* global URI getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription, getYouTubeVideoPlaylist */
+/* global URI getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
 
 var keyCodes = {
     SPACEBAR: 32
