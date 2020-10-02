@@ -303,12 +303,8 @@ a {
 
 }
 
-/* img.img-40 {
+img.img-40 {
     width: 60%;
-} */
-
-@media(max-width: 768px) {
-    img.img-40{
-        width: 60%;
-    }
 }
+
+
