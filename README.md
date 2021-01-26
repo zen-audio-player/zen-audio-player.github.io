@@ -15,7 +15,7 @@ Install the [Chrome extension](https://chrome.google.com/webstore/detail/zen-you
 
 ## Bookmark
 
-Create a bookmark with `javascript: (function () { window.location.href = 'https://zenplayer.audio/?v=' + location.href; }());` as an URL to quickly redirect your YouTube video to this app!
+Create a bookmark with `javascript: (function () { window.location.href = 'https://zen-audio-player.github.io/?v=' + location.href; }());` as an URL to quickly redirect your YouTube video to this app!
 
 ### How to create a custom bookmark in Chrome:  
 1. Click on a star at the right side of the omnibox (you can also press Ctrl+D (CMD+D on Mac) or choose "Bookmark this page..." from the menu).  
@@ -23,14 +23,14 @@ Create a bookmark with `javascript: (function () { window.location.href = 'https
 3. Click on "Edit".  
 4. Paste the following snippet into the URL field
     ```
-    javascript: (function () { window.location.href = 'https://zenplayer.audio/?v=' + location.href; }());
+    javascript: (function () { window.location.href = 'https://zen-audio-player.github.io/?v=' + location.href; }());
     ```
 5. Click on "Save".  
 
 ## Demo
 
-* Listen to [Starve the Ego, Feed the Soul by The Glitch Mob](http://zenplayer.audio/?v=koJv-j1usoI)
-* Try it out on [zenplayer.audio](http://zenplayer.audio/).
+* Listen to [Starve the Ego, Feed the Soul by The Glitch Mob](https://zen-audio-player.github.io/?v=koJv-j1usoI)
+* Try it out on [zen-audio-player.github.io](https://zen-audio-player.github.io/).
 * Clone the project and open `index.html`.
 * To run the site locally, run `npm install` then `npm start` and a webpage will open in your default browser.
 
