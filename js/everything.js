@@ -297,7 +297,7 @@ var ZenPlayer = {
  * Create a twitter message with current song if we have one.
  */
 function updateTweetMessage() {
-    var url = URI("https://ZenPlayer.Audio");
+    var url = URI("https://zen-audio-player.github.io");
 
     var opts = {
         text: "Listen to YouTube videos without the distracting visuals",
