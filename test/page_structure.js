@@ -61,7 +61,7 @@ describe("Page Structure", function () {
         assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-113.png");
         assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-453.png");
         assert.ok(fs.existsSync(imgFolderPath) + "zen-audio-player-905.png");
-        assert.equal(browser.query("header > figure > a").href, "https://zenplayer.audio/");
+        assert.equal(browser.query("header > figure > a").href, "https://zen-audio-player.github.io/");
         assert.ok(browser.query("header > figure > a.zen-logo > img.img-100").src.indexOf("img/zen-audio-player-905.png") !== -1);
         assert.equal(browser.query("header > figure > a.zen-logo > img.img-100").alt, "Zen Audio Player logo");
     });
