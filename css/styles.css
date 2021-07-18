@@ -29,6 +29,36 @@ footer {
     padding: 50px 0;
 }
 
+/* social media icons */
+
+footer .fa {
+    padding: 20px;
+    font-size: 36px;
+    width: 30px;
+    text-align: center;
+    text-decoration: none;
+    margin: 5px 2px;
+    border-radius: 20%;
+    
+  }
+  
+.fa:hover {
+      opacity: 0.7;
+  }
+
+.fa-facebook {
+    color: royalblue;
+  }
+  
+.fa-twitter {
+    color: deepskyblue;
+  }
+
+.fa-github {
+    color: black;
+}
+
+
 hgroup {
     margin-top: 30px;
 }
@@ -154,6 +184,7 @@ a {
 #search-results {
     display: none;
     text-align: center;
+    
 }
 
 #search-results li {
@@ -199,6 +230,7 @@ a {
 
 .btn-search {
     width: 50px;
+    
 }
 
 @media all and (min-width: 480px) {
