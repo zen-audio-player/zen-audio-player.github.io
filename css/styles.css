@@ -1,6 +1,14 @@
 body {
-    background-color: #f9f9f9;
+
+    transition: background-image 1s ease-in-out;
+    background-image: url("/img/bg1.jpg");
 }
+
+body:hover {
+
+    background-image: url("/img/bg2.jpg");
+}
+
 
 header, footer {
     text-align: center;
@@ -19,15 +27,19 @@ header {
 
 }
 
-.tt-menu, footer {
+.tt-menu {
     background-color: #ffffff;
 }
 
 footer {
-    border-top: 1px solid #eeeeee;
     margin-top: 50px;
     padding: 50px 0;
 }
+
+footer > div {
+    flex: 1;
+}
+
 
 hgroup {
     margin-top: 30px;
@@ -121,7 +133,13 @@ a {
 }
 
 #zen-video-description {
+    padding: 10px;
     white-space: pre-line;
+    background-color: #cccccc;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    border-radius: 25px;
+    border: 2px solid #e8e8e8;
 }
 
 #form {
@@ -231,17 +249,15 @@ a {
 .sponsor {
     align-content: center;
     align-items: center;
-    display: flex;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 15px;
     width: 100%;
 }
 
 .sponsor-a {
-    display: block;
     margin: auto;
 }
+
 
 .color-grey {
     color: #666666;
@@ -259,6 +275,7 @@ a {
     margin-right: auto;
     width: 100%;
 }
+
 
 .plyr__video-wrapper {
     display: none;

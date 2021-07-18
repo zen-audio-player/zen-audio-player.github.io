@@ -1,5 +1,4 @@
 /* global URI getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
-
 var keyCodes = {
     SPACEBAR: 32
 };
@@ -111,7 +110,6 @@ var ZenPlayer = {
                     ZenPlayer.hide();
                 }
             });
-
             plyrPlayer.addEventListener("ready", function() {
                 // Noop if we have nothing to play
                 if (!currentVideoID || currentVideoID.length === 0) {
@@ -716,3 +714,5 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga("create", "UA-62983413-1", "auto");
 ga("send", "pageview");
 /* eslint-enable */
+
+
