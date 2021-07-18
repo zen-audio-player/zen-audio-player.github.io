@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="description" content="Listen to YouTube videos, without the distracting visuals">
@@ -28,6 +29,7 @@
     <script src="bower_components/plyr/dist/plyr.js"></script>
 
 </head>
+
 <body>
     <header>
         <!-- The logo & description -->
@@ -47,7 +49,8 @@
         <!-- The form -->
         <form id="form">
             <div class="input-group">
-                <input type="text" id="v" name="v" class="input-search color-grey" placeholder="Search, YouTube video ID, or URL">
+                <input type="text" id="v" name="v" class="input-search color-grey"
+                    placeholder="Search, YouTube video ID, or URL">
                 <span class="input-group-button">
                     <button class="btn btn-search" id="submit">
                         <i class="fa fa-search"></i>
@@ -94,23 +97,28 @@
         </button>
 
         <div>
-          <br>
-          <button class="btn" id="focus-btn">
-              <i class="fa fa-headphones"></i>
-              Focus
-          </button>
+            <br>
+            <button class="btn" id="focus-btn">
+                <i class="fa fa-headphones"></i>
+                Focus
+            </button>
         </div>
     </div>
 
     <footer>
         <!-- Twitter hashtag button: #ZenAudioPlayer -->
         <div id="tweetButton"></div>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?"http":"https";if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document, "script", "twitter-wjs");</script>
+        <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? "http" : "https"; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + "://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
         <!-- Attribution, and links -->
         <div class="color-grey">
-            <p>Created by <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a> and <a href="https://github.com/zen-audio-player/zen-audio-player.github.io/graphs/contributors" target="_blank">others.</a></p>
-            <p>Source available on <a href="https://github.com/zen-audio-player/zen-audio-player.github.io" target="_blank">GitHub</a></p>
-            <p><a href="https://chrome.google.com/webstore/detail/zen-youtube-audio-player/jlkomkpeedajclllhhfkloddbihmcjlm" target="_blank">Get the Chrome extension</a> - (<a href="https://github.com/zen-audio-player/extension-chrome" target="_blank">source</a>)</p>
+            <p>Created by <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a> and <a
+                    href="https://github.com/zen-audio-player/zen-audio-player.github.io/graphs/contributors"
+                    target="_blank">others.</a></p>
+            <p>Source available on <a href="https://github.com/zen-audio-player/zen-audio-player.github.io"
+                    target="_blank">GitHub</a></p>
+            <p><a href="https://chrome.google.com/webstore/detail/zen-youtube-audio-player/jlkomkpeedajclllhhfkloddbihmcjlm"
+                    target="_blank">Get the Chrome extension</a> - (<a
+                    href="https://github.com/zen-audio-player/extension-chrome" target="_blank">source</a>)</p>
         </div>
 
         <br>
@@ -123,6 +131,14 @@
             </a>
             <div class="clear-both"></div>
         </div>
+
+        <!-- social media icons -->
+        <div>
+            <a href="https://facebook.com" class="fa fa-facebook" target="_blank"></a>
+            <a href="https://twitter.com/_Shakeel" class="fa fa-twitter" target="_blank"></a>
+            <a href="https://github.com/zen-audio-player/zen-audio-player.github.io" class="fa fa-github"
+                target="_blank"></a>
+        </div>
     </footer>
     <!-- Schema.org structured data -->
     <script type="application/ld+json">
@@ -134,4 +150,5 @@
         }
     </script>
 </body>
+
 </html>
