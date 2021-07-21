@@ -163,7 +163,6 @@ var ZenPlayer = {
                 // Show player
                 that.show();
                 updateTweetMessage();
-                updateFacebookMessage();
             });
 
             plyrPlayer.addEventListener("timeupdate", function () {
@@ -244,13 +243,13 @@ var ZenPlayer = {
         $("#zen-video-description").html(description);
         $("#zen-video-description").hide();
 
-        $("#toggleDescription").trigger(function (event) {
+        $("#toggleDescription").click(function (event) {
             toggleElement(event, "#zen-video-description", "Description");
         });
     },
     setupPlyrToggle: function () {
         // Show player button click event
-        $("#togglePlayer").trigger(function (event) {
+        $("#togglePlayer").click(function (event) {
             toggleElement(event, ".plyr__video-wrapper", "Player");
         });
     },
@@ -635,7 +634,7 @@ $(function () {
         }
     });
 
-    $("#toggleRepeat").trigger(function () {
+    $("#toggleRepeat").click(function () {
         $(this).toggleClass("toggleRepeatActive");
         var active = $(this).hasClass("toggleRepeatActive");
         if (active) {
@@ -648,7 +647,7 @@ $(function () {
     });
 
     // Handle demo link click
-    $("#demo").trigger(function (event) {
+    $("#demo").click(function (event) {
         event.preventDefault();
         ga("send", "event", "demo", "clicked");
 
@@ -664,7 +663,7 @@ $(function () {
     });
 
     // Handle focus link click
-    $("#focus-btn").trigger(function (event) {
+    $("#focus-btn").click(function (event) {
         event.preventDefault();
         ga("send", "event", "focus", "clicked");
         // Redirect to the favorite "focus" URL
