@@ -32,13 +32,13 @@ footer {
 /* social media icons */
 
 footer .fa {
-    padding: 20px;
+    border-radius: 20%;
     font-size: 36px;
-    width: 30px;
+    margin: 5px 2px;
+    padding: 20px;
     text-align: center;
     text-decoration: none;
-    margin: 5px 2px;
-    border-radius: 20%;
+    width: 30px;
 }
 
 .fa:hover {
