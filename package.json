@@ -35,7 +35,7 @@
   "devDependencies": {
     "csslint": "^1.0.5",
     "eslint": "^5.4.0",
-    "htmlhint": "^0.15.1",
+    "htmlhint": "^0.15.2",
     "mocha": "^8.4.0",
     "snyk": "^1.618.0",
     "stylelint": "^13.13.1",

@@ -30,7 +30,7 @@ var errorMessage = {
         ZenPlayer.hide();
 
         // Send the error to Google Analytics
-        ga("send", "event", "error", message);
+        gtag("send", "event", "error", message);
     },
     hide: function() {
         $("#zen-error").text("").hide();
@@ -77,7 +77,7 @@ function handleYouTubeError(details) {
 
         // Update the UI w/ error
         errorMessage.show(message);
-        ga("send", "event", "YouTube iframe API error", verboseMessage);
+        gtag("send", "event", "YouTube iframe API error", verboseMessage);
 
         // Log debug info
         console.log("Verbose debug error message: ", verboseMessage);
@@ -118,7 +118,7 @@ var ZenPlayer = {
                     return;
                 }
 
-                // Gather video info
+                // gtagther video info
                 that.videoTitle = plyrPlayer.plyr.embed.getVideoData().title;
                 that.videoAuthor = plyrPlayer.plyr.embed.getVideoData().author;
                 that.videoDuration = plyrPlayer.plyr.embed.getDuration();
@@ -156,9 +156,9 @@ var ZenPlayer = {
                 that.updated = true;
 
                 // Analytics
-                ga("send", "event", "Playing YouTube video title", that.videoTitle);
-                ga("send", "event", "Playing YouTube video author", that.videoAuthor);
-                ga("send", "event", "Playing YouTube video duration (seconds)", that.videoDuration);
+                gtag("send", "event", "Playing YouTube video title", that.videoTitle);
+                gtag("send", "event", "Playing YouTube video author", that.videoAuthor);
+                gtag("send", "event", "Playing YouTube video duration (seconds)", that.videoDuration);
 
                 // Show player
                 that.show();
@@ -496,7 +496,7 @@ function wrapParseYouTubeVideoID(url) {
 
     if (info.id) {
         currentVideoID = info.id;
-        ga("send", "event", "video ID format", info.format);
+        gtag("send", "event", "video ID format", info.format);
         return info.id;
     }
     else {
@@ -520,7 +520,7 @@ function pickDemo() {
 }
 
 $(function() {
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigtagtor.userAgent)) {
         $("#container").hide();
         $("#mobile-message").html("Sorry, we don't support mobile devices.");
         $("#mobile-message").show();
@@ -591,7 +591,7 @@ $(function() {
         }
         if (formValue) {
             var videoID = wrapParseYouTubeVideoID(formValue, true);
-            ga("send", "event", "form submitted", videoID);
+            gtag("send", "event", "form submitted", videoID);
             if (isFileProtocol()) {
                 errorMessage.show("Skipping video lookup request as we're running the site locally.");
             }
@@ -649,7 +649,7 @@ $(function() {
     // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
-        ga("send", "event", "demo", "clicked");
+        gtag("send", "event", "demo", "clicked");
 
         // Don't continue appending to the URL if it appears "good enough".
         // This is likely only a problem if the demo link didn't work right the first time
@@ -658,14 +658,14 @@ $(function() {
             window.location.href = makeListenURL(pickedDemo);
         }
         else {
-            ga("send", "event", "demo", "already had video ID in URL");
+            gtag("send", "event", "demo", "already had video ID in URL");
         }
     });
 
     // Handle focus link click
     $("#focus-btn").click(function(event) {
         event.preventDefault();
-        ga("send", "event", "focus", "clicked");
+        gtag("send", "event", "focus", "clicked");
         // Redirect to the favorite "focus" URL
         window.location.href = makeListenURL(focusId);
     });
@@ -706,13 +706,3 @@ $(function() {
         }
     });
 });
-
-/*eslint-disable */
-// Google Analytics goodness
-(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,"script","//www.google-analytics.com/analytics.js","ga");
-ga("create", "UA-62983413-1", "auto");
-ga("send", "pageview");
-/* eslint-enable */
