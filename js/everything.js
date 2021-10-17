@@ -146,7 +146,7 @@ var ZenPlayer = {
                 }
 
                 // Start video from where we left off, if it makes sense
-                if (window.sessionStorage && window.sessionStorage.hasOwnProperty(videoID)) {
+                if (window.sessionStorage && videoID in window.sessionStorage) {
                     var resumeTime = window.sessionStorage[videoID];
                     if (!isNaN(resumeTime) && resumeTime < videoDuration - 3) {
                         plyrPlayer.plyr.embed.seekTo(resumeTime);

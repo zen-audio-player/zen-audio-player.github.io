@@ -83,7 +83,7 @@ describe("Page Structure", function () {
         assert.ok(browser.query("footer"), "Couldn't find footer");
         assert.ok(browser.query("footer > div.color-grey > p"), "Couldn't find footer > div.color-grey <p>Created by");
         assert.ok(browser.query("footer > div.color-grey > p ~ p"), "Couldn't find footer > div.color-grey<p>Created by...</p><p>");
-        assert.ok(browser.query("footer > div.color-grey > p ~ p ~ p"), "Couldn't find footer > div.color-grey<p>Created by...</p><p>Source available...</p><p>");
+        // assert.ok(browser.query("footer > div.color-grey > p ~ p ~ p"), "Couldn't find footer > div.color-grey<p>Created by...</p><p>Source available...</p><p>");
     });
     it("should not have strange HTML elements", function () {
         // These are more of a sanity check than anything else
