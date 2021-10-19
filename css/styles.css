@@ -39,6 +39,8 @@ footer .fa {
     text-align: center;
     text-decoration: none;
     width: 30px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .fa:hover {
@@ -55,6 +57,8 @@ footer .fa {
 
 .fa-github {
     color: #000000;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 hgroup {
