@@ -44,16 +44,17 @@ describe("Page Structure", function () {
         assert.equal(browser.query("link ~ link").rel, "icon");
     });
     it("should have CSS files configured correctly", function () {
-        assert.equal(browser.query("link ~ link ~ link").rel, "stylesheet");
+        var preloadStylesheet = "preload stylesheet";
+        assert.equal(browser.query("link ~ link ~ link").rel, preloadStylesheet);
         assert.ok(browser.query("link ~ link ~ link").href.endsWith("bower_components/primer-css/css/primer.css"));
 
-        assert.equal(browser.query("link ~ link ~ link ~ link").rel, "stylesheet");
+        assert.equal(browser.query("link ~ link ~ link ~ link").rel, preloadStylesheet);
         assert.ok(browser.query("link ~ link ~ link ~ link").href.endsWith("bower_components/font-awesome/css/font-awesome.min.css"));
 
-        assert.equal(browser.query("link ~ link ~ link ~ link ~ link").rel, "stylesheet");
+        assert.equal(browser.query("link ~ link ~ link ~ link ~ link").rel, preloadStylesheet);
         assert.ok(browser.query("link ~ link ~ link ~ link ~ link").href.endsWith("bower_components/plyr/dist/plyr.css"));
 
-        assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").rel, "stylesheet");
+        assert.equal(browser.query("link ~ link ~ link ~ link ~ link ~ link").rel, preloadStylesheet);
         assert.ok(browser.query("link ~ link ~ link ~ link ~ link ~ link").href.endsWith("css/styles.css"));
     });
     it("should have logo configured correctly", function () {
@@ -83,7 +84,7 @@ describe("Page Structure", function () {
         assert.ok(browser.query("footer"), "Couldn't find footer");
         assert.ok(browser.query("footer > div.color-grey > p"), "Couldn't find footer > div.color-grey <p>Created by");
         assert.ok(browser.query("footer > div.color-grey > p ~ p"), "Couldn't find footer > div.color-grey<p>Created by...</p><p>");
-        assert.ok(browser.query("footer > div.color-grey > p ~ p ~ p"), "Couldn't find footer > div.color-grey<p>Created by...</p><p>Source available...</p><p>");
+        assert.ok(browser.query("footer > div.repo-info > p"), "Couldn't find footer > div.repo-info<p>Source available on GitHub...</p><p>");
     });
     it("should not have strange HTML elements", function () {
         // These are more of a sanity check than anything else
