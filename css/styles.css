@@ -141,16 +141,19 @@ a {
     display: block;
     margin: 0 auto;
 }
+
 #com-fav-btn {
     display: flex;
     justify-content: center;
 }
+
 #fav-btn {
     display: block;
     margin: 0 auto;
     width: fit-content;
 }
-#focus-btn, #lofi-btn  {
+
+#focus-btn, #lofi-btn {
     margin-right: 5px;
     width: fit-content;
     text-align: center;

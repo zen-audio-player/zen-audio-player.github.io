@@ -669,11 +669,12 @@ $(function() {
         }
     });
 
-    //Handle community favorites click
+    // Handle community favorites click
     $("#fav-btn").click(function(event) {
+        event.preventDefault();
         $( "#focus-btn" ).toggle();
         $( "#lofi-btn" ).toggle();
-    })
+    });
 
     // Handle focus link click
     $("#focus-btn").click(function(event) {
@@ -698,7 +699,7 @@ $(function() {
             $("#fav-btn").show();
         }
         // Show Lofi Button
-        else if (window.location.href.indexOf(d) === -1){
+        else if (window.location.href.indexOf(lofiId) === -1) {
             $("#fav-btn").show();
         }
         else {
@@ -706,7 +707,6 @@ $(function() {
             $("#fav-btn").hide();
         }
     });
-
 
     // Load the player
     ZenPlayer.init(currentVideoID);
