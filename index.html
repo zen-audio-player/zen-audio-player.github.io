@@ -30,12 +30,12 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script src="https://www.googletagmanager.com/gtag/js?id=UA-62983413-1"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag("js", new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag("js", new Date());
 
-      gtag("config", "UA-62983413-1");
-      gtag("send", "pageview");
+        gtag("config", "UA-62983413-1");
+        gtag("send", "pageview");
     </script>
 
     <script src="js/zap-common.js"></script>
@@ -110,47 +110,59 @@
 
         <div>
             <br>
-            <button class="btn" id="focus-btn">
+            <button class="btn" id="fav-btn">
                 <i class="fa fa-headphones"></i>
-                Focus
+                Community favorites
             </button>
-        </div>
-    </div>
-    <!-- footer -->
-    <footer>
-        <!-- Twitter hashtag button: #ZenAudioPlayer -->
-        <div id="tweetButton"></div>
-        <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? "http" : "https"; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + "://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
-        <!-- Attribution, and links -->
-        <div class="color-grey">
-            <p>Created by <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a> and <a
-                    href="https://github.com/zen-audio-player/zen-audio-player.github.io/graphs/contributors"
-                    target="_blank">others.</a></p>
-            <p><a href="https://chrome.google.com/webstore/detail/zen-youtube-audio-player/jlkomkpeedajclllhhfkloddbihmcjlm"
-                    target="_blank">Get the Chrome extension</a> - (<a
-                    href="https://github.com/zen-audio-player/extension-chrome" target="_blank">source</a>)</p>
-        </div>
-
-        <br>
-
-        <!-- Sponsor links -->
-        <h3>Sponsored by:</h3>
-        <div class="sponsor">
-            <a href="https://trackjs.com/" class="sponsor-a" target="_blank">
-                <img src="img/trackjs_logo.png" alt="TrackJS Logo" class="img-40">
-            </a>
-            <div class="clear-both"></div>
-        </div>
-
-        <!-- social media icons -->
-        <div class="repo-info">
             <br>
-            <p>Source available on GitHub: <br><a href="https://github.com/zen-audio-player/zen-audio-player.github.io"
-                    class="fa fa-github" target="_blank"></a></p>
-        </div>
-    </footer>
-    <!-- Schema.org structured data -->
-    <script type="application/ld+json">
+            <div id="com-fav-btn">
+                <button class="btn" id="focus-btn">
+                    <i class="fa fa-headphones"></i>
+                    Focus
+                </button>
+                <button class="btn" id="lofi-btn">
+                    <i class="fa fa-headphones"></i>
+                    Lofi
+                </button>
+                <div>
+                </div>
+            </div>
+            <!-- footer -->
+            <footer>
+                <!-- Twitter hashtag button: #ZenAudioPlayer -->
+                <div id="tweetButton"></div>
+                <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? "http" : "https"; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + "://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
+                <!-- Attribution, and links -->
+                <div class="color-grey">
+                    <p>Created by <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a> and <a
+                            href="https://github.com/zen-audio-player/zen-audio-player.github.io/graphs/contributors"
+                            target="_blank">others.</a></p>
+                    <p><a href="https://chrome.google.com/webstore/detail/zen-youtube-audio-player/jlkomkpeedajclllhhfkloddbihmcjlm"
+                            target="_blank">Get the Chrome extension</a> - (<a
+                            href="https://github.com/zen-audio-player/extension-chrome" target="_blank">source</a>)</p>
+                </div>
+
+                <br>
+
+                <!-- Sponsor links -->
+                <h3>Sponsored by:</h3>
+                <div class="sponsor">
+                    <a href="https://trackjs.com/" class="sponsor-a" target="_blank">
+                        <img src="img/trackjs_logo.png" alt="TrackJS Logo" class="img-40">
+                    </a>
+                    <div class="clear-both"></div>
+                </div>
+
+                <!-- social media icons -->
+                <div class="repo-info">
+                    <br>
+                    <p>Source available on GitHub: <br><a
+                            href="https://github.com/zen-audio-player/zen-audio-player.github.io" class="fa fa-github"
+                            target="_blank"></a></p>
+                </div>
+            </footer>
+            <!-- Schema.org structured data -->
+            <script type="application/ld+json">
         {
             "@context": "http://schema.org",
             "@type": "Organization",

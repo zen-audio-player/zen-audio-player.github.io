@@ -511,6 +511,8 @@ function wrapParseYouTubeVideoID(url) {
 
 // The focus video ID
 var focusId = "pJ5FD9_Orbg";
+// The lofi video ID
+var lofiId = "5qap5aO4i9A";
 
 // Some demo video's audio, feel free to add more
 var demos = [
@@ -667,6 +669,12 @@ $(function() {
         }
     });
 
+    //Handle community favorites click
+    $("#fav-btn").click(function(event) {
+        $( "#focus-btn" ).toggle();
+        $( "#lofi-btn" ).toggle();
+    })
+
     // Handle focus link click
     $("#focus-btn").click(function(event) {
         event.preventDefault();
@@ -675,15 +683,27 @@ $(function() {
         window.location.href = makeListenURL(focusId);
     });
 
-    // Check if the current ID is the focus ID
+    // Handle lofi link click
+    $("#lofi-btn").click(function(event) {
+        event.preventDefault();
+        gtag("send", "event", "lofi", "clicked");
+        // Redirect to the favorite "lofi" URL
+        window.location.href = makeListenURL(lofiId);
+    });
+
+    // Check if the current ID is the community focus ID
     $(window).on("load", function() {
         // Show Focus Button
         if (window.location.href.indexOf(focusId) === -1) {
-            $("#focus-btn").show();
+            $("#fav-btn").show();
+        }
+        // Show Lofi Button
+        else if (window.location.href.indexOf(d) === -1){
+            $("#fav-btn").show();
         }
         else {
-            // Hide Focus Button
-            $("#focus-btn").hide();
+            // Hide community favorites Button
+            $("#fav-btn").hide();
         }
     });
 
