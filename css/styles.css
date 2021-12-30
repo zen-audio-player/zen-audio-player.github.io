@@ -281,6 +281,10 @@ a {
     overflow: hidden;
 }
 
+.img-40 {
+    width: 100%;
+}
+
 .img-100 {
     display: block;
     margin-left: auto;
