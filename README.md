@@ -10,6 +10,8 @@
   <a href="https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io"><img src="https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io/badges/gpa.svg"></a>
 	<a href="https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io"><img src="https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io/badges/issue_count.svg"/></a>
 	<a href="https://snyk.io/test/github/zen-audio-player/zen-audio-player.github.io/badges"><img src="https://snyk.io/test/github/zen-audio-player/zen-audio-player.github.io/badges/badge.svg"/></a>
+	<a href="https://snyk.io/test/github/zen-audio-player/zen-audio-player.github.io"><img src="https://snyk.io/test/github/zen-audio-player/zen-audio-player.github.io/badge.svg"/></a>
+
 </p>
 
 <h2 align="center">Listen to YouTube videos, without the distracting visuals.</h2>
