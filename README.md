@@ -1,13 +1,18 @@
-![Zen Audio Player](img/zen-audio-player-113.png)
-# Zen Audio Player
+<p align="center">
+<img width="20%" src="img/zen-audio-player-113.png">
+<h1 align="center">Zen Audio Player</h1>
+</p>
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/zen-audio-player/zen-audio-player.github.io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Build Status](https://travis-ci.org/zen-audio-player/zen-audio-player.github.io.svg?branch=master)](https://travis-ci.org/zen-audio-player/zen-audio-player.github.io)
-[![Code Climate](https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io/badges/gpa.svg)](https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io)
-[![Issue Count](https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io/badges/issue_count.svg)](https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io)
-[![Known Vulnerabilities](https://snyk.io/test/github/zen-audio-player/zen-audio-player.github.io/badges/badge.svg)](https://snyk.io/test/github/zen-audio-player/zen-audio-player.github.io/badges)
 
-Listen to YouTube videos, without the distracting visuals.
+<p align="center">
+	<a href="https://gitter.im/zen-audio-player/zen-audio-player.github.io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"/></a>
+	<a href="https://travis-ci.org/zen-audio-player/zen-audio-player.github.io"><img src="https://travis-ci.org/zen-audio-player/zen-audio-player.github.io.svg?branch=master"/></a>
+  <a href="https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io"><img src="https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io/badges/gpa.svg"></a>
+	<a href="https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io"><img src="https://codeclimate.com/github/zen-audio-player/zen-audio-player.github.io/badges/issue_count.svg"/></a>
+	<a href="https://snyk.io/test/github/zen-audio-player/zen-audio-player.github.io/badges"><img src="https://snyk.io/test/github/zen-audio-player/zen-audio-player.github.io/badges/badge.svg"/></a>
+</p>
+
+<h2 align="center">Listen to YouTube videos, without the distracting visuals.</h2>
 
 ## Chrome Extension
 
