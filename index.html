@@ -1,34 +1,64 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="description" content="Listen to YouTube videos, without the distracting visuals">
-    <meta name="author" content="Shakeel Mohamed">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="google-site-verification" content="D3SjNR3tmNYOusESQijh_oH5SGmU9QsAIVwlqizwRBU" />
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="Listen to YouTube videos, without the distracting visuals"
+    />
+    <meta name="author" content="Shakeel Mohamed" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="google-site-verification"
+      content="D3SjNR3tmNYOusESQijh_oH5SGmU9QsAIVwlqizwRBU"
+    />
 
     <title>Zen Audio Player</title>
 
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon" />
 
-    <link rel="preload stylesheet" as="style" href="bower_components/primer-css/css/primer.css">
-    <link rel="preload stylesheet" as="style" href="bower_components/font-awesome/css/font-awesome.min.css">
-    <link rel="preload stylesheet" as="style" href="bower_components/plyr/dist/plyr.css">
-    <link rel="preload stylesheet" as="style" href="css/styles.css">
+    <link
+      rel="preload stylesheet"
+      as="style"
+      href="bower_components/primer-css/css/primer.css"
+    />
+    <link
+      rel="preload stylesheet"
+      as="style"
+      href="bower_components/font-awesome/css/font-awesome.min.css"
+    />
+    <link
+      rel="preload stylesheet"
+      as="style"
+      href="bower_components/plyr/dist/plyr.css"
+    />
+    <link rel="preload stylesheet" as="style" href="css/styles.css" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@300&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- CSS only -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-<!-- JavaScript Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <!-- JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"
+    ></script>
 
-
-    <script type="text/javascript">window._trackJs = { token: "f58d0b7c4b4248939fddc582f9e55c9d" };</script>
+    <script type="text/javascript">
+      window._trackJs = { token: "f58d0b7c4b4248939fddc582f9e55c9d" };
+    </script>
     <script src="bower_components/trackjs/tracker.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
@@ -40,7 +70,9 @@
     <script src="https://www.googletagmanager.com/gtag/js?id=UA-62983413-1"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag() {
+        dataLayer.push(arguments);
+      }
       gtag("js", new Date());
 
       gtag("config", "UA-62983413-1");
@@ -49,156 +81,171 @@
 
     <script src="js/zap-common.js"></script>
     <script src="js/everything.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-
-        
-        <!-- The logo & description -->
-        <!-- <section class="header-section"> -->
-            <!-- <div class="header-container"> -->
-                    <div class="zen-logo">
-                        <a href="https://zen-audio-player.github.io/" title="Zen Audio Player" >
-                            <img src="img/zen-audio-player-905.png" class="img-100" alt="Zen Audio Player logo">
-                        </a>
-                </div>
-                <div class="brand-name">
-                    <h1>Zen Audio Player</h1>
-                </div>
-                
-                
-            <!-- </div> -->
-        <!-- </section> -->
-        <!-- <figure>
-            <a href="https://zen-audio-player.github.io/" title="Zen Audio Player" class="zen-logo">
-                <img src="img/zen-audio-player-905.png" class="img-100" alt="Zen Audio Player logo">
-            </a>
-        </figure>
- -->
-        
+      <!-- The logo & description -->
+      <div class="zen-logo">
+        <a href="https://zen-audio-player.github.io/" title="Zen Audio Player">
+          <img
+            src="img/zen-audio-player-905.png"
+            class="img-100"
+            alt="Zen Audio Player logo"
+          />
+        </a>
+      </div>
+      <div class="brand-name">
+        <h1>Zen Audio Player</h1>
+      </div>
     </header>
     <div id="container">
-        <div >
-            <hgroup>
-                <!-- <h1>Zen Audio Player</h1> -->
-                <h2 class="color-grey">Listen to YouTube videos, without the distracting visuals.</h2>
-                <h2 class="color-grey hide flash" id="mobile-message"></h2>
-            </hgroup>
-        </div>
-        <div class="form-div"           >
-            <!-- The form -->
+      <div>
+        <hgroup>
+          <!-- <h1>Zen Audio Player</h1> -->
+          <h2 class="color-grey">
+            Listen to YouTube videos, without the distracting visuals.
+          </h2>
+          <h2 class="color-grey hide flash" id="mobile-message"></h2>
+        </hgroup>
+      </div>
+      <div class="form-div">
+        <!-- The form -->
         <form id="form">
-            <div class="input-group">
-                <div class="input-bar">
-                    <input type="text" id="v" name="v" class="input-search color-grey"
-                    placeholder="Search, YouTube video ID, or URL">
-                </div>
-                <div class="submit-btn">
-                    <span class="input-group-button">
-                        
-                        <button class="btn btn-search" id="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </span>
-                </div>
-                    
-                    
-                
-                
+          <div class="input-group">
+            <div class="input-bar">
+              <input
+                type="text"
+                id="v"
+                name="v"
+                class="input-search color-grey"
+                placeholder="Search, YouTube video ID, or URL"
+              />
             </div>
+            <div class="submit-btn">
+              <span class="input-group-button">
+                <button class="btn btn-search" id="submit">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+          </div>
         </form>
-        </div>
-       
-        
-        <div id="search-results">
-            <h3>Search Results</h3>
-            <ul></ul>
-        </div>
-        <div id="zen-error" class="hide flash flash-error"></div>
-        <!-- The video, along with related content & messages -->
-        <div id="audioplayer">
-            <h3>
-                <a id="zen-video-title" class="plyr__cite plyr__cite--video"></a>
-            </h3>
+      </div>
 
-            <div id="playerControls">
-                <button class="btn" id="togglePlayer">
-                    Show Player
-                </button>
-                <button class="btn" id="toggleDescription">
-                    Show Description
-                </button>
-                <button class="btn" id="toggleRepeat">
-                    Repeat Track
-                </button>
-            </div>
+      <div id="search-results">
+        <h3>Search Results</h3>
+        <ul></ul>
+      </div>
+      <div id="zen-error" class="hide flash flash-error"></div>
+      <!-- The video, along with related content & messages -->
+      <div id="audioplayer">
+        <h3>
+          <a id="zen-video-title" class="plyr__cite plyr__cite--video"></a>
+        </h3>
 
-            <!-- Plyr controls' icons and Plyr player itself -->
-            <div id="plyr-svg" hidden>
-            </div>
-            <div class="plyr">
-                <audio></audio>
-            </div>
-            <br>
-            <div id="zen-video-description"></div>
-            <br>
+        <div id="playerControls">
+          <button class="btn" id="togglePlayer">Show Player</button>
+          <button class="btn" id="toggleDescription">Show Description</button>
+          <button class="btn" id="toggleRepeat">Repeat Track</button>
         </div>
-        <button id="demo" class="btn">
-            <i class="fa fa-mouse-pointer"></i>
-            Click for Demo
+
+        <!-- Plyr controls' icons and Plyr player itself -->
+        <div id="plyr-svg" hidden></div>
+        <div class="plyr">
+          <audio></audio>
+        </div>
+        <br />
+        <div id="zen-video-description"></div>
+        <br />
+      </div>
+      <button id="demo" class="btn">
+        <i class="fa fa-mouse-pointer"></i>
+        Click for Demo
+      </button>
+
+      <div>
+        <br />
+        <button class="btn" id="focus-btn">
+          <i class="fa fa-headphones"></i>
+          Focus
         </button>
-
-        <div>
-            <br>
-            <button class="btn" id="focus-btn">
-                <i class="fa fa-headphones"></i>
-                Focus
-            </button>
-        </div>
+      </div>
     </div>
     <!-- footer -->
     <footer>
-        <!-- Twitter hashtag button: #ZenAudioPlayer -->
-        <div id="tweetButton"></div>
-        <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? "http" : "https"; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + "://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
-        <!-- Attribution, and links -->
-        <div class="color-grey">
-            <p>Created by <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a> and <a
-                    href="https://github.com/zen-audio-player/zen-audio-player.github.io/graphs/contributors"
-                    target="_blank">others.</a></p>
-            <p><a href="https://chrome.google.com/webstore/detail/zen-youtube-audio-player/jlkomkpeedajclllhhfkloddbihmcjlm"
-                    target="_blank">Get the Chrome extension</a> - (<a
-                    href="https://github.com/zen-audio-player/extension-chrome" target="_blank">source</a>)</p>
-        </div>
+      <!-- Twitter hashtag button: #ZenAudioPlayer -->
+      <div id="tweetButton"></div>
+      <script>
+        !(function (d, s, id) {
+          var js,
+            fjs = d.getElementsByTagName(s)[0],
+            p = /^http:/.test(d.location) ? "http" : "https";
+          if (!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p + "://platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js, fjs);
+          }
+        })(document, "script", "twitter-wjs");
+      </script>
+      <!-- Attribution, and links -->
+      <div class="color-grey">
+        <p>
+          Created by
+          <a href="https://twitter.com/_Shakeel" target="_blank">@_Shakeel</a>
+          and
+          <a
+            href="https://github.com/zen-audio-player/zen-audio-player.github.io/graphs/contributors"
+            target="_blank"
+            >others.</a
+          >
+        </p>
+        <p>
+          <a
+            href="https://chrome.google.com/webstore/detail/zen-youtube-audio-player/jlkomkpeedajclllhhfkloddbihmcjlm"
+            target="_blank"
+            >Get the Chrome extension</a
+          >
+          - (<a
+            href="https://github.com/zen-audio-player/extension-chrome"
+            target="_blank"
+            >source</a
+          >)
+        </p>
+      </div>
 
-        <br>
+      <br />
 
-        <!-- Sponsor links -->
-        <h3>Sponsored by:</h3>
-        <div class="sponsor">
-            <a href="https://trackjs.com/" class="sponsor-a" target="_blank">
-                <img src="img/trackjs_logo.png" alt="TrackJS Logo" class="img-40">
-            </a>
-            <div class="clear-both"></div>
-        </div>
+      <!-- Sponsor links -->
+      <h3>Sponsored by:</h3>
+      <div class="sponsor">
+        <a href="https://trackjs.com/" class="sponsor-a" target="_blank">
+          <img src="img/trackjs_logo.png" alt="TrackJS Logo" class="img-40" />
+        </a>
+        <div class="clear-both"></div>
+      </div>
 
-        <!-- social media icons -->
-        <div class="repo-info">
-            <br>
-            <p>Source available on GitHub: <br><a href="https://github.com/zen-audio-player/zen-audio-player.github.io"
-                    class="fa fa-github" target="_blank"></a></p>
-        </div>
+      <!-- social media icons -->
+      <div class="repo-info">
+        <br />
+        <p>
+          Source available on GitHub: <br /><a
+            href="https://github.com/zen-audio-player/zen-audio-player.github.io"
+            class="fa fa-github"
+            target="_blank"
+          ></a>
+        </p>
+      </div>
     </footer>
     <!-- Schema.org structured data -->
     <script type="application/ld+json">
-        {
-            "@context": "http://schema.org",
-            "@type": "Organization",
-            "url": "https://zenplayer.audio",
-            "logo": "https://zenplayer.audio/img/zen-audio-player-905.png"
-        }
+      {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "url": "https://zenplayer.audio",
+        "logo": "https://zenplayer.audio/img/zen-audio-player-905.png"
+      }
     </script>
-</body>
-
+  </body>
 </html>
