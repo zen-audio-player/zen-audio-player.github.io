@@ -1,5 +1,6 @@
 body {
     background-color: #f9f9f9;
+    font-family: Inter,san-serif;
 }
 
 header, footer {
@@ -7,39 +8,129 @@ header, footer {
 }
 
 header {
-    margin: 50px auto 0 auto;
-    width: 80%;
+    /* margin: 50px auto 0 auto; */
+    /* font-family: Roboto,san-serif; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 15px ;
+    padding-bottom: 2px;
+    
+    width: 100%;
+    background-color: #D8D3CD;
 }
 
-@media all and (min-width: 480px) {
+/* @media all and (min-width: 480px) {
 
     header {
         max-width: 450px;
     }
 
+} */
+
+
+ .zen-logo {
+    /* border-radius: 6px; */
+    display: block;
+    align-items: center;
+    height: 100%;
+    /* margin: 0 auto; */
+    /* overflow: hidden; */
+    /* margin-top: 5%; */
+    margin-left: 20px;
+    margin-right: 10px;
+    /* width: 100%; */
 }
 
+.img-100 {
+    border-radius: 45%;
+    display: block;
+    margin-bottom: 8px;
+    /* margin-left: 10%; */
+    /* margin-right: 100%; */
+    width: 50px;
+    height: 50px;
+    transition: transform .3s ease-in-out;
+}
+
+
+
+.img-100:hover{
+    transform:rotate(360deg);
+}
+
+#form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    margin-right: 10px;
+    /* margin-top: 10px; */
+    /* margin-bottom: 10px; */
+    /* padding: 10px; */
+    /* border: 1px solid #000; */
+    /* border-radius: 5px; */
+    /* background-color: #D8D3CD; */
+}
+
+.input-search{
+    width:80%;
+}
+
+.form-div{
+    width:60%;
+}
+
+.input-group{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    /* border-radius: 10px; */
+    /* padding: 10px; */
+    /* border: 1px solid #000; */
+    /* border-radius: 5px; */
+    /* background-color: #D8D3CD; */
+}
+
+ .input-bar{
+    width: 80%;
+    /* border-radius: 30px; */
+   
+}
+/*
+.submit-btn{
+    border: 1px solid #000000;
+    border-radius: 10px;
+} */
+
 .tt-menu, footer {
-    background-color: #ffffff;
+    background-color:#E0ECE4;
 }
 
 footer {
     border-top: 1px solid #eeeeee;
-    margin-top: 50px;
-    padding: 50px 0;
+    margin-top: 0;
+    padding-top: 50px;
+    padding-bottom: 20px;
 }
 
 /* social media icons */
 
-footer .fa {
+ footer .fa {
     border-radius: 20%;
     font-size: 36px;
     margin: 5px 2px;
     padding: 20px 0 20px 0;
     text-align: center;
     text-decoration: none;
-    width: 30px;
-}
+     width: 30px;
+} 
 
 .fa:hover {
     opacity: 0.7;
@@ -55,7 +146,7 @@ footer .fa {
 
 .fa-github {
     color: #000000;
-}
+} 
 
 hgroup {
     margin-top: 30px;
@@ -81,8 +172,13 @@ a {
 }
 
 #container {
-    margin: 10px auto 0;
-    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto 0;
+    width: 100%;
+    background-color: #F7F2E7;
+    
 }
 
 .toggleRepeatActive {
@@ -96,19 +192,19 @@ a {
     background-image: linear-gradient(#194468, #3174ac);
     border: 1px solid #617f94;
 }
-
+/* 
 @media all and (min-width: 480px) {
 
     #container {
         max-width: 450px;
     }
 
-}
+} */
 
 #v {
     font-size: 16px;
     margin: 0 auto;
-    padding-left: 50px;
+    padding-left: 30px;
     text-align: center;
     width: 100%;
 }
@@ -144,7 +240,7 @@ a {
 
 #focus-btn {
     display: block;
-    margin: 0 auto;
+    margin: 0 auto 40px;
     width: fit-content;
 }
 
@@ -216,14 +312,7 @@ a {
     background-color: #efefef;
 }
 
-.zen-logo {
-    border-radius: 6px;
-    display: block;
-    height: 100px;
-    margin: 0 auto;
-    overflow: hidden;
-    width: 100px;
-}
+
 
 .btn-search {
     width: 50px;
@@ -281,12 +370,6 @@ a {
     overflow: hidden;
 }
 
-.img-100 {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-}
 
 .plyr__video-wrapper {
     display: none;
