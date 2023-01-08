@@ -1,5 +1,38 @@
+
+/* Declaring Color Variables: */
+:root{
+    --primary-back-color:#f9f9f9;
+    --secondary-back-color:#ffffff;
+    --footer-border:#eeeeee;
+
+    --font-color:#333333;
+    --font-secondory-color:#6c7885;
+    --git-color:#000000;
+        
+ 
+
+}
+
+.dark-theme{
+       
+    --primary-back-color:#00002b;
+    --secondary-back-color:#001c3c;
+    --footer-border:#eeeeee;
+
+    --font-color:#ffffff;
+    --font-secondory-color:#9fafc0;
+    --git-color:#ffffff;
+        
+}
+
 body {
-    background-color: #f9f9f9;
+    background-color: var(--primary-back-color);
+    color:var(--font-color);
+    transition:300ms;
+}
+
+h2.color-grey, p{
+    color:var(--font-secondory-color);
 }
 
 header, footer {
@@ -20,7 +53,7 @@ header {
 }
 
 .tt-menu, footer {
-    background-color: #ffffff;
+    background-color: var(--secondary-back-color);
 }
 
 footer {
@@ -54,11 +87,24 @@ footer .fa {
 }
 
 .fa-github {
-    color: #000000;
+    color: var(--git-color);
 }
 
 hgroup {
     margin-top: 30px;
+}
+
+/* DarkMode */
+#modeIcon{
+    position: relative;
+    cursor: pointer;
+    width:25px;
+    top:-8%;
+    left:125%;
+    border: none;
+    border-radius: 50%;
+    background-color:#f9f9f9;
+    padding: 2px;;
 }
 
 h2 {
@@ -89,7 +135,7 @@ a {
     background-color: #428bca;
     background-image: linear-gradient(#3174ac, #428bca);
     border: 1px solid #738896;
-    color: #ffffff;
+    color: var(--secondary-back-color);
 }
 
 .toggleRepeatActive:hover {
@@ -293,7 +339,7 @@ a {
 }
 
 #audioplayer .plyr__controls {
-    background: #ffffff;
+    background: var(--secondary-back-color);
     border: 1px solid #dbe3e8;
     border-radius: inherit;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);

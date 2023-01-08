@@ -1,3 +1,18 @@
+// DarkTheme Function:
+
+var modeIcon = document.getElementById("modeIcon");
+
+modeIcon.onclick = function(){
+    
+    document.body.classList.toggle("dark-theme");
+
+    if(document.body.classList.contains("dark-theme")){
+        modeIcon.src = "img/icons/brightness_5_FILL1_wght700_GRAD0_opsz48.png";
+    }else{
+        modeIcon.src = "img/icons/nightlight_FILL0_wght700_GRAD0_opsz48.png";
+    }
+}   
+
 /* global gtag, URI, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
 
 var keyCodes = {
