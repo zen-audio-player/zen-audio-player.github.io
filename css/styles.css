@@ -1,3 +1,8 @@
+
+html {
+    scroll-behavior: smooth;
+  }
+
 body {
     background-color: #f9f9f9;
 }
@@ -11,13 +16,152 @@ header {
     width: 80%;
 }
 
+/*  */
+
+.nav-bar{
+    background-color: #f9f9f9;
+    height: 70px;
+    width: 96vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1.9px solid #777;
+    /* gap: 26vw; */
+    margin: 0 2vw;
+    user-select: none;
+   
+}
+
+.nav-bar .logo a img    {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-left: 3vw;
+}
+
+
+
+.nav-last-div {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 3vw;
+}
+
+.nav-last-div .nav-about-div{
+    background-color: transparent;
+    height: 75%;
+    outline: none;
+    border: none;
+    box-shadow: none;
+    /* border: 1px solid black; */
+    margin: 8px 0;
+    padding: 0 10px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    text-transform: capitalize;
+    font-size: 1.5vw;
+    border-radius: 0px;
+    transition: 100ms;
+
+
+}
+
+.nav-last-div .nav-about-div:hover{
+    color: white;
+    background-color: black;
+    transition: 100ms;
+    
+}
+
+.nav-last-div .nav-about-div:active{
+    color: black;
+    background-color: white;
+
+}
+
+.nav-last-div .nav-git-div{
+    background-color: transparent;
+    height: 75%;
+    outline: none;
+    border: none;
+    box-shadow: none;
+    /* border: 1px solid black; */
+    margin: 8px 0;
+    padding: 0 10px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    text-transform: capitalize;
+    font-size: 1.5vw;
+    border-radius: 0px;
+    transition: 100ms;
+    
+}
+
+.nav-last-div .nav-git-div a{
+    color: #222;
+    text-decoration: none;
+
+}
+
+.nav-last-div .nav-git-div:hover{
+    background-color: black;
+
+}
+
+.nav-last-div .nav-git-div:hover a{
+    color: white;
+}
+
+.nav-last-div .nav-git-div:active{
+    color: black;
+    background-color: white;
+
+}
+
+/* adding screen size to main-contents */
+#main-content{
+    height: calc(100vh - 85px);
+}
+
+
 @media all and (min-width: 480px) {
 
     header {
         max-width: 450px;
     }
 
+
 }
+
+
+@media (max-width: 600px) {
+
+    .nav-bar{
+        gap: 57vw;
+    }
+    
+    .nav-bar .nav-mid-div{
+        display: none;
+     }
+
+     .nav-bar .logo{
+        justify-self: center;
+     }
+
+     .nav-bar .nav-last-div .nav-about-div{
+        font-size: 4vw;
+     }
+
+     
+.nav-last-div a:active{
+    color: #777;
+    text-decoration: none;
+
+}
+}
+
 
 .tt-menu, footer {
     background-color: #ffffff;
@@ -109,8 +253,9 @@ a {
     font-size: 16px;
     margin: 0 auto;
     padding-left: 50px;
-    text-align: center;
+    text-align: center; 
     width: 100%;
+
 }
 
 #v::-ms-clear {
@@ -227,6 +372,8 @@ a {
 
 .btn-search {
     width: 50px;
+    border-radius: 50%;
+   
 }
 
 @media all and (min-width: 480px) {
@@ -241,6 +388,7 @@ a {
 
     .fa-search {
         font-size: 20px;
+        
     }
 
 }

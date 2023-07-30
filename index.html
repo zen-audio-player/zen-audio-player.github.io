@@ -18,6 +18,11 @@
     <link rel="preload stylesheet" as="style" href="bower_components/plyr/dist/plyr.css">
     <link rel="preload stylesheet" as="style" href="css/styles.css">
 
+    <!-- google font link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&family=Roboto&display=swap" rel="stylesheet">
+
 
     <script type="text/javascript">window._trackJs = { token: "f58d0b7c4b4248939fddc582f9e55c9d" };</script>
     <script src="bower_components/trackjs/tracker.js"></script>
@@ -40,9 +45,30 @@
 
     <script src="js/zap-common.js"></script>
     <script src="js/everything.js"></script>
+
+
+      
+
 </head>
 
 <body>
+    <nav class="nav-bar">
+        <div class="logo">
+            <a href="https://zen-audio-player.github.io/">
+                <img src="img/zen-audio-player-905.png" alt="">
+            </a>
+        </div>
+
+
+            <div class="nav-last-div">
+                <button class="nav-about-div">About</button>
+                <button class="nav-git-div">
+                    <a href="https://github.com/zen-audio-player" target="_blank">Contribute</a>
+                </button>
+            </div>
+
+    </nav>
+<div id="main-content">
     <header>
         <!-- The logo & description -->
         <figure>
@@ -116,6 +142,7 @@
             </button>
         </div>
     </div>
+</div>
     <!-- footer -->
     <footer>
         <!-- Twitter hashtag button: #ZenAudioPlayer -->
@@ -158,6 +185,20 @@
             "logo": "https://zenplayer.audio/img/zen-audio-player-905.png"
         }
     </script>
+
+        <!-- To scroll to bottom after clicking about button -->
+
+        <script>
+            document.getElementsByClassName('nav-about-div')[0].addEventListener('click', function() {
+              
+                const targetElement = document.documentElement;
+
+// Scroll to the target element smoothly
+targetElement.scrollIntoView({ behavior: 'smooth' });
+                
+              window.scrollTo(0, document.body.scrollHeight);
+            });
+          </script>
 </body>
 
 </html>
