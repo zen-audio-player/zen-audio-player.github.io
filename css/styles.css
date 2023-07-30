@@ -1,7 +1,7 @@
 
 html {
     scroll-behavior: smooth;
-  }
+}
 
 body {
     background-color: #f9f9f9;
@@ -12,34 +12,38 @@ header, footer {
 }
 
 header {
-    margin: 50px auto 0 auto;
-    width: 80%;
+    margin: 10px auto 0 auto;
+    width: 85%;
+}
+
+
+.zen-logo {
+    border-radius: 6px;
+    display: block;
+    height: 100px;
+    margin: auto auto;
+    width: 120px;
 }
 
 /*  */
 
-.nav-bar{
+.nav-bar {
     background-color: #f9f9f9;
     height: 70px;
     width: 96vw;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1.9px solid #777;
-    /* gap: 26vw; */
     margin: 0 2vw;
     user-select: none;
-   
 }
 
-.nav-bar .logo a img    {
+.nav-bar .logo a img {
     height: 50px;
     width: 50px;
     border-radius: 50%;
     margin-left: 3vw;
 }
-
-
 
 .nav-last-div {
     height: 100%;
@@ -49,7 +53,7 @@ header {
     margin-right: 3vw;
 }
 
-.nav-last-div .nav-about-div{
+.nav-last-div .nav-about-div {
     background-color: transparent;
     height: 75%;
     outline: none;
@@ -58,70 +62,67 @@ header {
     margin: 8px 0;
     padding: 0 10px;
     cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-    text-transform: capitalize;
-    font-size: 1.5vw;
-    border-radius: 0px;
+    font-family: "Poppins", sans-serif;
+    text-transform: "capitalize";
+    font-size: 1.2vw;
+    /* border-radius: 0px; */
     transition: 100ms;
-
-
 }
 
-.nav-last-div .nav-about-div:hover{
-    color: white;
-    background-color: black;
+.nav-last-div .nav-about-div:hover {
+    color: #ffffff;
+    background-color: #000000;
     transition: 100ms;
-    
 }
 
-.nav-last-div .nav-about-div:active{
-    color: black;
-    background-color: white;
-
+.nav-last-div .nav-about-div:active {
+    color: #000000;
+    background-color: #ffffff;
 }
 
-.nav-last-div .nav-git-div{
+.nav-last-div .nav-git-div {
     background-color: transparent;
     height: 75%;
     outline: none;
     border: none;
     box-shadow: none;
-    /* border: 1px solid black; */
+    /* border: 1px solid #000000; */
     margin: 8px 0;
     padding: 0 10px;
     cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-    text-transform: capitalize;
-    font-size: 1.5vw;
-    border-radius: 0px;
+    font-family: "Poppins", sans-serif;
+    text-transform: "capitalize";
+    font-size: 1.2vw;
+    /* border-radius: 0px; */
     transition: 100ms;
-    
 }
 
-.nav-last-div .nav-git-div a{
-    color: #222;
+.nav-last-div .nav-git-div a {
+    color: #222222;
     text-decoration: none;
-
 }
 
-.nav-last-div .nav-git-div:hover{
-    background-color: black;
-
+.nav-last-div .nav-git-div:hover {
+    background-color: #000000;
 }
 
-.nav-last-div .nav-git-div:hover a{
-    color: white;
+.nav-last-div .nav-git-div:hover a {
+    color: #ffffff;
 }
 
-.nav-last-div .nav-git-div:active{
-    color: black;
-    background-color: white;
-
+.nav-last-div .nav-git-div:active {
+    color: #000000;
+    background-color: #ffffff;
 }
-
 /* adding screen size to main-contents */
-#main-content{
+
+
+#main-content {
     height: calc(100vh - 85px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
 
@@ -130,38 +131,30 @@ header {
     header {
         max-width: 450px;
     }
-
-
 }
-
 
 @media (max-width: 600px) {
 
-    .nav-bar{
-        
-    }
-    
-    .nav-bar .nav-mid-div{
+    .nav-bar .nav-mid-div {
         display: none;
-     }
+    }
 
-     .nav-bar .logo{
+    .nav-bar .logo {
         justify-self: center;
-     }
+    }
 
-     .nav-bar .nav-last-div .nav-about-div{
+    .nav-bar .nav-last-div .nav-about-div {
         font-size: 4vw;
-     }
-     .nav-bar .nav-last-div .nav-git-div{
+    }
+
+    .nav-bar .nav-last-div .nav-git-div {
         font-size: 4vw;
-     }
+    }
 
-     
-.nav-last-div a:active{
-    color: #777;
-    text-decoration: none;
-
-}
+    .nav-last-div a:active {
+        color: #777777;
+        text-decoration: none;
+    }
 }
 
 
@@ -255,7 +248,7 @@ a {
     font-size: 16px;
     margin: 0 auto;
     padding-left: 50px;
-    text-align: center; 
+    text-align: center;
     width: 100%;
 
 }
@@ -296,16 +289,12 @@ a {
 }
 
 #zen-video-description {
-    white-space: pre-line;
+    #ffffff-space: pre-line;
 }
 
 #form {
     margin-bottom: 20px;
 }
-
-/**
- * Media controls
- */
 
 #pause {
     display: none;
@@ -363,19 +352,9 @@ a {
     background-color: #efefef;
 }
 
-.zen-logo {
-    border-radius: 6px;
-    display: block;
-    height: 100px;
-    margin: 0 auto;
-    overflow: hidden;
-    width: 100px;
-}
-
 .btn-search {
     width: 50px;
     border-radius: 50%;
-   
 }
 
 @media all and (min-width: 480px) {
@@ -390,9 +369,7 @@ a {
 
     .fa-search {
         font-size: 20px;
-        
     }
-
 }
 
 @media all and (max-width: 480px) {
