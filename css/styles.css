@@ -55,7 +55,6 @@ header {
     outline: none;
     border: none;
     box-shadow: none;
-    /* border: 1px solid black; */
     margin: 8px 0;
     padding: 0 10px;
     cursor: pointer;
@@ -139,7 +138,7 @@ header {
 @media (max-width: 600px) {
 
     .nav-bar{
-        gap: 57vw;
+        
     }
     
     .nav-bar .nav-mid-div{
@@ -151,6 +150,9 @@ header {
      }
 
      .nav-bar .nav-last-div .nav-about-div{
+        font-size: 4vw;
+     }
+     .nav-bar .nav-last-div .nav-git-div{
         font-size: 4vw;
      }
 
