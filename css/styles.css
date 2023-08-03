@@ -3,10 +3,6 @@ html {
     scroll-behavior: smooth;
 }
 
-body {
-    background-color: #f9f9f9;
-}
-
 header, footer {
     text-align: center;
 }
@@ -14,6 +10,11 @@ header, footer {
 header {
     margin: 10px auto 0 auto;
     width: 85%;
+}
+
+/* adding background color #fffcf5 */
+body, .nav-bar, #main-content{
+    background-color: #fffcf5;
 }
 
 
@@ -28,7 +29,7 @@ header {
 /*  */
 
 .nav-bar {
-    background-color: #f9f9f9;
+    /* background-color: #f9f9f9; */
     height: 70px;
     width: 96vw;
     display: flex;
@@ -160,12 +161,24 @@ header {
 
 .tt-menu, footer {
     background-color: #ffffff;
+    background-image: linear-gradient(to right, rgb(67, 67, 67) 0%, black 100%);
+    color: white;
 }
 
 footer {
     border-top: 1px solid #eeeeee;
     margin-top: 50px;
     padding: 50px 0;
+}
+
+footer p{
+    color: white;
+    font-family: "Roboto Mono'", monospace;
+}
+
+footer h3{
+    font-family: "Poppins";
+    text-transform: capitalize;
 }
 
 /* social media icons */
@@ -178,6 +191,8 @@ footer .fa {
     text-align: center;
     text-decoration: none;
     width: 30px;
+    color: white;
+    
 }
 
 .fa:hover {
@@ -245,11 +260,17 @@ a {
 }
 
 #v {
+    background-color: transparent;
+    font-family: 'Roboto Mono', monospace;
+    color: #333333;
     font-size: 16px;
     margin: 0 auto;
     padding-left: 50px;
     text-align: center;
     width: 100%;
+    border: 1px solid #333333;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
 
 }
 
@@ -268,6 +289,9 @@ a {
 }
 
 #zen-video-title, #demo {
+    color: #333333;
+    border: 1px solid #333333;
+    border-radius: 30px;
     font-weight: bold;
     margin-top: 5px;
     word-wrap: break-word;
@@ -275,6 +299,8 @@ a {
 
 #zen-video-error, #zen-error {
     text-align: center;
+    border-radius: 30px;
+    margin-bottom: 10px;
 }
 
 #demo {
@@ -283,13 +309,16 @@ a {
 }
 
 #focus-btn {
+    color: #333333;
+    border: 1px solid #333333;
+    border-radius: 30px;
     display: block;
     margin: 0 auto;
     width: fit-content;
 }
 
 #zen-video-description {
-    #ffffff-space: pre-line;
+        space: pre-line;
 }
 
 #form {
@@ -353,6 +382,7 @@ a {
 }
 
 .btn-search {
+    border: 1px solid #333333;
     width: 50px;
     border-radius: 50%;
 }
