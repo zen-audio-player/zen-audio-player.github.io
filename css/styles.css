@@ -262,6 +262,7 @@ a {
 
 #v {
     background-color: transparent;
+    outline: none;
     font-family: "Roboto Mono", monospace;
     color: #333333;
     font-size: 16px;
