@@ -11,9 +11,9 @@ header {
     margin: 10px auto 0 auto;
     width: 85%;
 }
-
 /* adding background color #fffcf5 */
-body, .nav-bar, #main-content{
+
+body, .nav-bar, #main-content {
     background-color: #fffcf5;
 }
 
@@ -161,9 +161,10 @@ body, .nav-bar, #main-content{
 
 .tt-menu, footer {
     background-color: #ffffff;
-    background-image: linear-gradient(to right, rgb(67, 67, 67) 0%, black 100%);
-    color: white;
+    background-image: linear-gradient(to right, #434343 0%, #000000 100%);
+    color: #ffffff;
 }
+
 
 footer {
     border-top: 1px solid #eeeeee;
@@ -171,12 +172,12 @@ footer {
     padding: 50px 0;
 }
 
-footer p{
-    color: white;
+footer p {
+    color: #ffffff;
     font-family: "Roboto Mono'", monospace;
 }
 
-footer h3{
+footer h3 {
     font-family: "Poppins";
     text-transform: capitalize;
 }
@@ -191,8 +192,8 @@ footer .fa {
     text-align: center;
     text-decoration: none;
     width: 30px;
-    color: white;
-    
+    color: #ffffff;
+
 }
 
 .fa:hover {
@@ -261,7 +262,7 @@ a {
 
 #v {
     background-color: transparent;
-    font-family: 'Roboto Mono', monospace;
+    font-family: "Roboto Mono", monospace;
     color: #333333;
     font-size: 16px;
     margin: 0 auto;
@@ -318,7 +319,7 @@ a {
 }
 
 #zen-video-description {
-        space: pre-line;
+    space: pre-line;
 }
 
 #form {
