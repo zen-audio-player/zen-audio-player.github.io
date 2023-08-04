@@ -17,6 +17,67 @@ body, .nav-bar, #main-content {
     background-color: #fffcf5;
 }
 
+.fa-moon {
+    color: #000000;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5vw;
+    padding: 10px;
+    cursor: pointer;
+    margin-left: 20px;
+    transition: 200ms;
+}
+
+.fa-moon:hover {
+    background-color: #dadada;
+
+}
+
+.fa-moon:active {
+    background-color: transparent;
+
+}
+
+.fa-sun {
+    display: none;
+    color: #fffcf5;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5vw;
+    padding: 10px;
+    cursor: pointer;
+    margin-left: 20px;
+    transition: 200ms;
+}
+
+
+.fa-sun:hover {
+    background-color: #555555;
+
+}
+
+.fa-sun:active {
+    background-color: transparent;
+
+}
+
+.dark {
+    position: absolute;
+    z-index: 5;
+}
+
+.dark-nav {
+    height: 70px;
+    background-color: #000000;
+    right: 0;
+}
+
+.dark-main {
+    background-color: #111111;
+    left: 0;
+    height: calc(100vh - 35px);
+
+}
 
 .zen-logo {
     border-radius: 6px;
@@ -55,12 +116,13 @@ body, .nav-bar, #main-content {
 }
 
 .nav-last-div .nav-about-div {
-    background-color: transparent;
+    background-color: #fffcf5;
     height: 75%;
     outline: none;
     border: none;
     box-shadow: none;
-    margin: 8px 0;
+    margin: 8px 1px;
+    border-radius: 5px;
     padding: 0 10px;
     cursor: pointer;
     font-family: "Poppins", sans-serif;
@@ -78,17 +140,18 @@ body, .nav-bar, #main-content {
 
 .nav-last-div .nav-about-div:active {
     color: #000000;
-    background-color: #ffffff;
+    background-color: #dedede;
 }
 
 .nav-last-div .nav-git-div {
-    background-color: transparent;
+    background-color: #fffcf5;
     height: 75%;
     outline: none;
     border: none;
     box-shadow: none;
     /* border: 1px solid #000000; */
-    margin: 8px 0;
+    margin: 8px 1px;
+    border-radius: 5px;
     padding: 0 10px;
     cursor: pointer;
     font-family: "Poppins", sans-serif;
@@ -103,19 +166,22 @@ body, .nav-bar, #main-content {
     text-decoration: none;
 }
 
+.nav-last-div .nav-git-div:hover a {
+    color: #fffcf5;
+    /* text-decoration: none; */
+}
+
 .nav-last-div .nav-git-div:hover {
     background-color: #000000;
 }
 
-.nav-last-div .nav-git-div:hover a {
-    color: #ffffff;
+.nav-last-div .nav-git-div:active {
+    background-color: #dedede;
 }
 
-.nav-last-div .nav-git-div:active {
+.nav-last-div .nav-git-div:active a {
     color: #000000;
-    background-color: #ffffff;
 }
-/* adding screen size to main-contents */
 
 
 #main-content {
@@ -131,6 +197,21 @@ body, .nav-bar, #main-content {
 
     header {
         max-width: 450px;
+    }
+}
+
+@media (max-width: 1130px) {
+
+    .nav-bar .nav-about-div {
+        font-size: 2.3vw;
+    }
+
+    .nav-bar .nav-git-div {
+        font-size: 2.3vw;
+    }
+
+    .nav-bar i {
+        font-size: 2.3vw;
     }
 }
 
@@ -150,6 +231,10 @@ body, .nav-bar, #main-content {
 
     .nav-bar .nav-last-div .nav-git-div {
         font-size: 4vw;
+    }
+
+    .nav-bar i {
+        font-size: 4.5vw;
     }
 
     .nav-last-div a:active {
@@ -464,6 +549,77 @@ a {
 #audioplayer .plyr__volume--display, #audioplayer .plyr__progress--buffer {
     background-color: #e8e8e8;
 }
+
+/* added z-indexes for each class/id separately to get rid of npm errors */
+
+.nav-bar .logo {
+    z-index: 20;
+}
+
+.nav-bar .nav-last-div {
+    z-index: 20;
+}
+
+header {
+    z-index: 20;
+}
+
+.zen-logo {
+    z-index: 20;
+}
+
+.img-100 {
+    z-index: 20;
+}
+
+h1 {
+    z-index: 20;
+}
+
+h2 {
+    z-index: 20;
+}
+
+.input-search {
+    z-index: 20;
+}
+
+.btn {
+    z-index: 20;
+}
+
+#search-result {
+    z-index: 20;
+}
+
+.hide {
+    z-index: 20;
+}
+
+#zen-video-title {
+    z-index: 20;
+}
+
+#playerControls {
+    z-index: 20;
+}
+
+.plyr-svg {
+    z-index: 20;
+}
+
+#zen-video-description {
+    z-index: 20;
+}
+
+.color-grey {
+    z-index: 20;
+}
+
+a {
+    z-index: 20;
+}
+
 
 @-moz-document url-prefix("") {
 

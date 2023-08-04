@@ -1,3 +1,5 @@
+// all the animations on the website (especially with GSAP) and code related to dark mode are on this file
+
 var tl = gsap.timeline();
 
 // adding nav bar animation
@@ -40,3 +42,69 @@ gsap.from("footer .color-grey p", {
         scrub: true
     },
 });
+
+// dark mode:
+
+// insitializing variables
+var moonIcon = document.querySelector(".fa-moon");
+var sunIcon = document.querySelector(".fa-sun");
+// var darkNav = document.querySelector(".dark-nav");
+// var darkMain = document.querySelector(".dark-main");
+// var navAboutBtn = document.querySelector(".nav-about-div");
+// var navGitBtn = document.querySelector(".nav-git-div a");
+
+moonIcon.onclick = ()=>{
+    moonIcon.style.display = "none";
+    sunIcon.style.display = "inline-block";
+
+    gsap.from(".fa-moon, .fa-sun", {
+        rotate: 360,
+        duration: 0.3
+    });
+
+    gsap.to(".dark-nav,.dark-main", {
+        width: "100vw",
+    });
+
+    gsap.to("h1, h2",{
+        color:"#fffcf5"
+    });
+
+    gsap.to("#v", {
+        color: "#dedede",
+    });
+
+    gsap.to("#v, .btn-search", {
+        borderColor: "#dedede"
+    });
+
+    gsap.to(".demo, #focus-btn", {
+        borderColor: "transparent"
+    });
+};
+
+sunIcon.onclick = ()=> {
+    sunIcon.style.display = "none";
+    moonIcon.style.display = "inline-block";
+
+    gsap.from(".fa-moon, .fa-sun", {
+        rotate: - 360,
+        duration: 0.1
+    });
+
+    gsap.to(".dark-nav, .dark-main", {
+        width: "0vw"
+    });
+
+    gsap.to("h1, h2",{
+        color:"#333333",
+    });
+
+    gsap.to("#v", {
+        color: "#333333",
+    });
+
+    gsap.to("#v, .btn-search, demo, #focus-btn", {
+        borderColor: "#333333"
+    });
+};
