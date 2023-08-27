@@ -9,8 +9,8 @@ const indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
         global.browser = await puppeteer.launch();
     });
 
-    describe("hehe", async function() {
-        it("hi", async function() {
+    describe("Form", async function() {
+        it("should error when running locally", async function() {
             const page = await browser.newPage();
             await page.goto(indexHTMLURL);
 
