@@ -12,7 +12,8 @@
         "ga": true,
         "twttr": true,
         "time": true,
-        "plyr": true
+        "plyr": true,
+        "browser": true
     },
     "rules": {
         "brace-style": [
@@ -78,6 +79,9 @@
         ],
         "no-irregular-whitespace": 2,
         "spaced-comment": 2
+    },
+    "parserOptions": {
+        "ecmaVersion": 2017
     },
     "extends": "eslint:recommended"
 }

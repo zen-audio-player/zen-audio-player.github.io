@@ -1,12 +1,9 @@
-var assert = require("assert");
-var path = require("path");
-var Browser = require("zombie");
+const path = require("path");
+const assert = require("assert");
+const puppeteer = require("puppeteer");
 
-const browser = new Browser({
-    waitDuration: 29 * 1000
-});
+const indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
-var indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
 /** Utilities **/
 // TODO: with refactor into a node module, this can go away!
@@ -17,38 +14,59 @@ function getParameterByName(url, name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-describe("Demo", function () {
-    before(function(done) {
-        browser.visit(indexHTMLURL, function () {
-            browser.assert.element(".plyr");
-            done();
-        });
+const demos = [
+    "koJv-j1usoI", // The Glitch Mob - Starve the Ego, Feed the Soul
+    "EBerFisqduk", // Cazzette - Together (Lost Kings Remix)
+    "jxKjOOR9sPU", // The Temper Trap - Sweet Disposition
+    "03O2yKUgrKw"  // Mike Mago & Dragonette - Outlines
+];
+
+(async () => {
+    before(async function() {
+        global.browser = global.browser || await puppeteer.launch();
     });
-    it("should play the demo when demo button is clicked", function (done) {
-        var oldUrl = browser.location.href;
-        browser.click("#demo", function() {
+
+    describe("Demo", async function() {
+        it("should play the demo when demo button is clicked", async function() {
+            const page = await browser.newPage();
+            await page.goto(indexHTMLURL);
+
+            const plyrLoaded = await page.waitForSelector(".plyr");
+            assert.ok(plyrLoaded);
+
+            const oldUrl = page.url();
+            await page.click("#demo");
+
             // Make sure the URL changed
-            assert.notEqual(oldUrl, browser.location.href);
+            assert.notEqual(oldUrl, page.url());
+
             // Check for any of the demo videos ID in the URL
-            var demos = [
-                "koJv-j1usoI", // The Glitch Mob - Starve the Ego, Feed the Soul
-                "EBerFisqduk", // Cazzette - Together (Lost Kings Remix)
-                "jxKjOOR9sPU", // The Temper Trap - Sweet Disposition
-                "03O2yKUgrKw"  // Mike Mago & Dragonette - Outlines
-            ];
-            assert.notEqual(demos.indexOf(getParameterByName(browser.location.search, "v")), -1);
+            assert.notEqual(demos.indexOf(getParameterByName(page.url(), "v")), -1);
+
             // Check for any of the demo videos ID in the textbox
-            assert.notEqual(demos.indexOf(browser.query("#v").value), -1);
+            const textBox = await page.waitForSelector("#v");
+            let textBoxValue = await textBox.evaluate(el => el.value);
+            assert.notEqual(demos.indexOf(textBoxValue), -1);
 
             // TODO: once upon a time, using browser.evaluate("player") would give meaningful
             //     : info. But there's a race condition where sometimes the player object isn't ready yet...?
             //     : looks like can't rely on global variables.
             // TODO: How do we inspect the player object (title, etc.)?
-            browser.assert.element(".plyr");
-            assert.ok(browser.evaluate("window.plyrPlayer"));
-            browser.assert.text("#togglePlayer", "Show Player");
-            browser.assert.text("#zen-error", "");
-            done();
+
+            const plyPlayer = await page.evaluate(() => {
+                return window.plyrPlayer;
+            });
+            assert.ok(plyPlayer);
+
+            const toggleButton = await page.waitForSelector("#togglePlayer");
+            let toggleButtonText = await toggleButton.evaluate(el => el.textContent);
+            assert.equal(toggleButtonText.trim(), "Show Player");
+
+            const zenError = await page.waitForSelector("#zen-error");
+            let zenErrorText = await zenError.evaluate(el => el.textContent);
+            assert.equal(zenErrorText, "");
         });
     });
-});
+
+    after(async () => browser.close());
+})();
