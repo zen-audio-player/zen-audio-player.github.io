@@ -1,3 +1,4 @@
+const fs = require("fs");
 const path = require("path");
 const assert = require("assert");
 const puppeteer = require("puppeteer");
@@ -44,16 +45,21 @@ async function getProperty(page, selector, property) {
             assert.equal(await getProperty(page, "title", "text"), "Zen Audio Player");
         });
 
-        // it("should have favicon configured correctly", function () {
-        //         var faviconPath = path.join("img", "favicon.ico");
-        //         assert.ok(fs.existsSync(faviconPath));
-        //         assert.ok(browser.query("link").href.endsWith("img/favicon.ico"));
-        //         assert.equal(browser.query("link").type, "image/x-icon");
-        //         assert.equal(browser.query("link").rel, "shortcut icon");
-        //         assert.ok(browser.query("link ~ link").href.endsWith("img/favicon.ico"));
-        //         assert.equal(browser.query("link ~ link").type, "image/x-icon");
-        //         assert.equal(browser.query("link ~ link").rel, "icon");
-        //     });
+        it("should have favicon configured correctly", async function () {
+            const page = await browser.newPage();
+            await page.goto(indexHTMLURL);
+
+            const faviconPath = path.join("img", "favicon.ico");
+            assert.ok(fs.existsSync(faviconPath));
+
+            assert.ok((await getProperty(page, "link", "href")).endsWith("img/favicon.ico"));
+            assert.equal(await getProperty(page, "link", "type"), "image/x-icon");
+            assert.equal(await getProperty(page, "link", "rel"), "shortcut icon");
+
+            assert.ok((await getProperty(page, "link ~ link", "href")).endsWith("img/favicon.ico"));
+            assert.equal(await getProperty(page, "link ~ link", "type"), "image/x-icon");
+            assert.equal(await getProperty(page, "link ~ link", "rel"), "icon");
+        });
         //     it("should have CSS files configured correctly", function () {
         //         var preloadStylesheet = "preload stylesheet";
         //         assert.equal(browser.query("link ~ link ~ link").rel, preloadStylesheet);
