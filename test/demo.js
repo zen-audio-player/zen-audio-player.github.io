@@ -26,7 +26,7 @@ const demos = [
         global.browser = global.browser || await puppeteer.launch();
     });
 
-    describe("Demo", async function(done) {
+    describe("Demo", async function() {
         it("should play the demo when demo button is clicked", async function() {
             const page = await browser.newPage();
             await page.goto(indexHTMLURL);
@@ -52,16 +52,16 @@ const demos = [
             //     : info. But there's a race condition where sometimes the player object isn't ready yet...?
             //     : looks like can't rely on global variables.
             // TODO: How do we inspect the player object (title, etc.)?
-            
+
             const plyPlayer = await page.evaluate(() => {
                 return window.plyrPlayer;
             });
             assert.ok(plyPlayer);
-            
+
             const toggleButton = await page.waitForSelector("#togglePlayer");
             let toggleButtonText = await toggleButton.evaluate(el => el.textContent);
             assert.equal(toggleButtonText.trim(), "Show Player");
-            
+
             const zenError = await page.waitForSelector("#zen-error");
             let zenErrorText = await zenError.evaluate(el => el.textContent);
             assert.equal(zenErrorText, "");

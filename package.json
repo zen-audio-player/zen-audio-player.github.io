@@ -12,7 +12,7 @@
     "lint": "npm run lint:js && npm run lint:html && npm run lint:css && npm run lint:tests",
     "pretest": "npm run stylelint:css && npm run lint",
     "test": "mocha",
-    "exp-fix:js": "eslint js/everything.js --fix",
+    "fix": "eslint js/everything.js test/*.js --fix",
     "start": "http-server --cors -o -a localhost",
     "snyk-monitor": "snyk monitor"
   },
