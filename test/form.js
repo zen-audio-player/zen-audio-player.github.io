@@ -1,22 +1,30 @@
-var path = require("path");
-var Browser = require("zombie");
+const path = require("path");
+const assert = require("assert");
+const puppeteer = require("puppeteer");
 
+const indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
-const browser = new Browser();
-var indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
+(async () => {
+    before(async function() {
+        global.browser = global.browser || await puppeteer.launch();
+    });
 
-describe("Form", function () {
-    before(function(done) {
-        browser.visit(indexHTMLURL, function () {
-            done();
+    describe("Form", async function() {
+        it("should error when running locally", async function() {
+            const page = await browser.newPage();
+            await page.goto(indexHTMLURL);
+
+            const zenError = await page.waitForSelector("#zen-error");
+            let errorValue = await zenError.evaluate(el => el.textContent);
+            assert.equal(errorValue, "");
+
+            await page.type("#v", "absolute rubbish");
+            await page.click("#submit");
+
+            errorValue = await zenError.evaluate(el => el.textContent);
+            assert.equal(errorValue, "ERROR: Skipping video lookup request as we're running the site locally.");
         });
     });
-    it("should error when running locally", function (done) {
-        browser.assert.text("#zen-error", "");
-        browser.fill("#v", "absolute rubbish");
-        browser.pressButton("#submit", function() {
-            browser.assert.text("#zen-error", "ERROR: Skipping video lookup request as we're running the site locally.");
-            done();
-        });
-    });
-});
+
+    after(async () => browser.close());
+})();

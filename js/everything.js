@@ -166,6 +166,11 @@ var ZenPlayer = {
             });
 
             plyrPlayer.addEventListener("timeupdate", function() {
+                // Nothing is playing
+                if (!plyrPlayer.plyr || !plyrPlayer.plyr.embed) {
+                    return;
+                }
+
                 // Store the current time of the video.
                 var resumeTime = 0;
                 var videoDuration = plyrPlayer.plyr.embed.getDuration();
