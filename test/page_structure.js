@@ -4,6 +4,10 @@ const puppeteer = require("puppeteer");
 
 const indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
+async function getProperty(page, selector, property) {
+    return await (await (await page.waitForSelector(selector)).getProperty(property)).jsonValue();
+}
+
 (async () => {
     before(async function() {
         global.browser = global.browser || await puppeteer.launch();
@@ -25,18 +29,19 @@ const indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
             assert.equal(page.url(), indexHTMLURL);
 
-            // TODO: port
+            assert.equal(await getProperty(page, "meta ~ meta", "name"), "description");
+            assert.equal(await getProperty(page, "meta ~ meta", "content"), "Listen to YouTube videos, without the distracting visuals");
 
-            // assert.equal(browser.query("meta ~ meta").name, "description");
+            assert.equal(await getProperty(page, "meta ~ meta ~ meta", "name"), "author");
+            assert.equal(await getProperty(page, "meta ~ meta ~ meta", "content"), "Shakeel Mohamed");
 
-            // assert.equal(browser.query("meta ~ meta").content, "Listen to YouTube videos, without the distracting visuals");
-            // assert.equal(browser.query("meta ~ meta ~ meta").name, "author");
-            // assert.equal(browser.query("meta ~ meta ~ meta").content, "Shakeel Mohamed");
-            // assert.equal(browser.query("meta ~ meta ~ meta ~ meta").name, "viewport");
-            // assert.equal(browser.query("meta ~ meta ~ meta ~ meta").content, "width=device-width, initial-scale=1");
-            // assert.equal(browser.query("meta ~ meta ~ meta ~ meta ~ meta").name, "google-site-verification");
-            // assert.equal(browser.query("meta ~ meta ~ meta ~ meta ~ meta").content, "D3SjNR3tmNYOusESQijh_oH5SGmU9QsAIVwlqizwRBU");
-            // assert.equal(browser.query("title").text, "Zen Audio Player");
+            assert.equal(await getProperty(page, "meta ~ meta ~ meta ~ meta", "name"), "viewport");
+            assert.equal(await getProperty(page, "meta ~ meta ~ meta ~ meta", "content"), "width=device-width, initial-scale=1");
+            
+            assert.equal(await getProperty(page, "meta ~ meta ~ meta ~ meta ~ meta", "name"), "google-site-verification");
+            assert.equal(await getProperty(page, "meta ~ meta ~ meta ~ meta ~ meta", "content"), "D3SjNR3tmNYOusESQijh_oH5SGmU9QsAIVwlqizwRBU");
+            
+            assert.equal(await getProperty(page, "title", "text"), "Zen Audio Player");
         });
 
         // it("should have favicon configured correctly", function () {
