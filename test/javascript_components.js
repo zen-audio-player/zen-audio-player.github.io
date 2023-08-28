@@ -14,7 +14,7 @@ let _js = "";
         it("should load TrackJS token", async function() {
             const page = await browser.newPage();
             await page.goto(indexHTMLURL);
-            // var trackjs = browser.evaluate("window._trackJs");
+            
             const trackjs = await page.evaluate(() => {
                 return window._trackJs;
             });
