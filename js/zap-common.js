@@ -27,7 +27,6 @@ function getYouTubeVideoDescription(videoID, youTubeDataApiKey, onSuccess, onFai
         data: {
             key: youTubeDataApiKey,
             part: "snippet",
-            fields: "items/snippet/description",
             id: videoID
         },
         success: onSuccess
