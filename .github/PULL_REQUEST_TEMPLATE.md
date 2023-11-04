@@ -8,6 +8,5 @@
 [Reference any related issues or pull requests by linking them here.]
 
 ## Checklist
-[] I have read and followed the project's contributing guidelines.
-
-[] I have made necessary updates to the documentation.
+- [] I have read and followed the project's contributing guidelines.
+- [] I have made necessary updates to the documentation.
