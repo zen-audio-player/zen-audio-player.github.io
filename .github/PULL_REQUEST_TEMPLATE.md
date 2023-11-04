@@ -1,28 +1,13 @@
-<!--
-Provide a general summary of your changes in the **Title** above.
+## Description
+[Please provide a brief summary of the purpose and context of this pull request, along with a detailed explanation of the changes you've made.]
 
-### Important
-Mark with [x] to select. Leave as [ ] to unselect.
+## Screenshots (if applicable)
+[include screenshots or GIFs to illustrate your changes, if relevant.]
 
-### Motivation and Context
-- [ ] Why is this change required? What problem does it solve?
-- [ ] If it fixes an open issue, include the text `Closes #1` (where 1 would be the issue number) to your commit message.
+## Related Issues
+[Reference any related issues or pull requests by linking them here.]
 
-### Types of changes
-What types of changes does your code introduce? Check all the boxes that apply:
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to change)
+## Checklist
+[] I have read and followed the project's contributing guidelines.
 
-### Description
-- [ ] Describe your changes in detail.
-
-### Final checklist:
-Go over all the following points and check all the boxes that apply  
-If you're unsure about any of these, don't hesitate to ask. We're here to help!
-- [ ] My code follows the code style of this project.
-- [ ] My change requires a change to the documentation.
-- [ ] I have updated the documentation accordingly.
-- [ ] I have read the [**CONTRIBUTING**](.github/CONTRIBUTING.md) guidelines.
-- [ ] All tests passed.
--->
+[] I have made necessary updates to the documentation.
