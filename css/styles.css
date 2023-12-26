@@ -140,12 +140,20 @@ a {
 #demo {
     display: block;
     margin: 0 auto;
+    margin-bottom: 15px;
+}
+
+.fav-panel {
+    display: flex;
+    justify-content: center;
 }
 
 #focus-btn {
-    display: block;
-    margin: 0 auto;
-    width: fit-content;
+    margin-right: 8px;
+}
+
+#lofi-btn {
+    margin-left: 8px;
 }
 
 #zen-video-description {

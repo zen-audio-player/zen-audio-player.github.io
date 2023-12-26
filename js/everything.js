@@ -511,6 +511,8 @@ function wrapParseYouTubeVideoID(url) {
 
 // The focus video ID
 var focusId = "pJ5FD9_Orbg";
+// The lofi video ID
+var lofiId = "i43tkaTXtwI";
 
 // Some demo video's audio, feel free to add more
 var demos = [
@@ -627,6 +629,7 @@ $(function() {
         else {
             // Show the Focus button If there is no search
             $("#focus-btn").show();
+            $("#focus-btn").css("display", "inline");
             errorMessage.show("Try entering a YouTube video ID or URL!");
         }
     });
@@ -680,6 +683,7 @@ $(function() {
         // Show Focus Button
         if (window.location.href.indexOf(focusId) === -1) {
             $("#focus-btn").show();
+            $("#focus-btn").css("display", "inline");
         }
         else {
             // Hide Focus Button
@@ -687,6 +691,26 @@ $(function() {
         }
     });
 
+    // Handle lofi link click
+    $("#lofi-btn").click(function(event) {
+        event.preventDefault();
+        gtag("send", "event", "lofi", "clicked");
+        // Redirect to the favorite "lofi" URL
+        window.location.href = makeListenURL(lofiId);
+    });
+
+    // Check if the current ID is the lofi ID
+    $(window).on("load", function() {
+        // Show Lofi Button
+        if (window.location.href.indexOf(lofiId) === -1) {
+            $("#lofi-btn").show();
+            $("#lofi-btn").css("display", "inline");
+        }
+        else {
+            // Hide Lofi Button
+            $("#lofi-btn").hide();
+        }
+    });
 
     // Load the player
     ZenPlayer.init(currentVideoID);
