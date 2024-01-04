@@ -441,7 +441,13 @@ function anchorURLs(text) {
     *    (2) it encounters a period (.) or whitespace, if the TLD was followed by a forwardslash (/) */
     var re = /((?:http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*[^\.\s])?)/g; // eslint-disable-line no-useless-escape
     /* Wraps all found URLs in <a> tags */
-    return text.replace(re, "<a href=\"$1\" target=\"_blank\">$1</a>");
+    // Use a function to replace matches
+    return text.replace(re, function(match) {
+        // Escape the match to prevent XSS
+        var url = encodeURIComponent(match);
+        // Wrap the URL in an anchor tag
+        return "<a href=\"" + url + "\" target=\"_blank\">" + match + "</a>";
+    });
 }
 
 function anchorTimestamps(text, videoID) {
