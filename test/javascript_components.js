@@ -38,7 +38,7 @@ let _js = "";
             assert.ok(j);
         });
 
-        it("should load DOMPurify", async function() {
+        it("should load DOMPurify and sanitize", async function() {
             const page = await browser.newPage();
             await page.goto(indexHTMLURL);
 
@@ -48,10 +48,10 @@ let _js = "";
             assert.ok(dp, "DOMPurify should be loaded on the page.");
 
             const sanitizedOutput = await page.evaluate(() => {
-                const dirty = '<img src="x" onerror="alert(1)">';
-                return DOMPurify.sanitize(dirty);
+                const dirty = "<img src=\"x\" onerror=\"alert(1)\">";
+                return window.DOMPurify.sanitize(dirty);
             });
-            assert.strictEqual(sanitizedOutput, '<img src="x">', "DOMPurify should sanitize malicious scripts correctly.");
+            assert.strictEqual(sanitizedOutput, "<img src=\"x\">", "DOMPurify should sanitize malicious scripts correctly.");
         });
 
         // TODO: implement this test! _js is always empty
