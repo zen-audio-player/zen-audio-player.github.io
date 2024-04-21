@@ -32,10 +32,26 @@ let _js = "";
             const page = await browser.newPage();
             await page.goto(indexHTMLURL);
 
-            const jQuery = await page.evaluate(() => {
+            const j = await page.evaluate(() => {
                 return Object.keys(window).includes("jQuery");
             });
-            assert.ok(jQuery);
+            assert.ok(j);
+        });
+
+        it("should load DOMPurify and sanitize", async function() {
+            const page = await browser.newPage();
+            await page.goto(indexHTMLURL);
+
+            const dp = await page.evaluate(() => {
+                return Object.keys(window).includes("DOMPurify");
+            });
+            assert.ok(dp, "DOMPurify should be loaded on the page.");
+
+            const sanitizedOutput = await page.evaluate(() => {
+                const dirty = "<img src=\"x\" onerror=\"alert(1)\">";
+                return window.DOMPurify.sanitize(dirty);
+            });
+            assert.strictEqual(sanitizedOutput, "<img src=\"x\">", "DOMPurify should sanitize malicious scripts correctly.");
         });
 
         // TODO: implement this test! _js is always empty

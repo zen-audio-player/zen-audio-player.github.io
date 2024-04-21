@@ -1,0 +1,4 @@
+ignore:
+    - .github
+    - .idea
+    - bower_components

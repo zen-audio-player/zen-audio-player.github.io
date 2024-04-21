@@ -1,4 +1,4 @@
-/* global gtag, URI, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
+/* global gtag, URI, DOMPurify, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
 
 var keyCodes = {
     SPACEBAR: 32
@@ -239,13 +239,13 @@ var ZenPlayer = {
         if (!/^[\u2669\u266A\u266B\u266C\u266D\u266E\u266F]/.test(tmpVideoTitle)) {
             tmpVideoTitle = "<i class=\"fa fa-music\"></i> " + tmpVideoTitle;
         }
-        $("#zen-video-title").html(tmpVideoTitle);
+        $("#zen-video-title").html(DOMPurify.sanitize(tmpVideoTitle));
         $("#zen-video-title").attr("href", this.videoUrl);
     },
     setupVideoDescription: function(videoID) {
         var description = anchorURLs(this.videoDescription);
         description = anchorTimestamps(description, videoID);
-        $("#zen-video-description").html(description);
+        $("#zen-video-description").html(DOMPurify.sanitize(description));
         $("#zen-video-description").hide();
 
         $("#toggleDescription").click(function(event) {

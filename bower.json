@@ -17,10 +17,10 @@
     "font-awesome": "~4.4.0",
     "primer-css": "3.x.x",
     "jquery": "~1.11.x",
-    "keen-js": "~3.4.0",
     "trackjs": "~2.10.1",
     "typeahead.js": "~0.11.1",
     "plyr": "1.6.x",
-    "urijs": "1.18.1"
+    "urijs": "1.18.1",
+    "DOMPurify": "^3.1.0"
   }
 }
