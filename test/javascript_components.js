@@ -32,10 +32,20 @@ let _js = "";
             const page = await browser.newPage();
             await page.goto(indexHTMLURL);
 
-            const jQuery = await page.evaluate(() => {
+            const j = await page.evaluate(() => {
                 return Object.keys(window).includes("jQuery");
             });
-            assert.ok(jQuery);
+            assert.ok(j);
+        });
+
+        it("should load DOMPurify", async function() {
+            const page = await browser.newPage();
+            await page.goto(indexHTMLURL);
+
+            const dp = await page.evaluate(() => {
+                return Object.keys(window).includes("DOMPurify");
+            });
+            assert.ok(dp);
         });
 
         // TODO: implement this test! _js is always empty
