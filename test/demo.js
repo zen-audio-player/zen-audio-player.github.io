@@ -1,8 +1,9 @@
 const path = require("path");
 const assert = require("assert");
 const puppeteer = require("puppeteer");
+const http = require("http-server");
 
-const indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
+const indexHTMLURL = "http://localhost:8000/index.html";
 
 
 /** Utilities **/
@@ -21,9 +22,12 @@ const demos = [
     "03O2yKUgrKw"  // Mike Mago & Dragonette - Outlines
 ];
 
+let server;
 (async () => {
     before(async function() {
-        global.browser = global.browser || await puppeteer.launch();
+        server = http.createServer({root: path.join(__dirname, "..")});
+        server.listen(8000);
+        global.browser = global.browser || await puppeteer.launch({headless: "new"});
     });
 
     describe("Demo", async function() {
@@ -36,6 +40,9 @@ const demos = [
 
             const oldUrl = page.url();
             await page.click("#demo");
+
+            // wait for the page to load
+            await page.waitForNavigation({timeout: 0});
 
             // Make sure the URL changed
             assert.notEqual(oldUrl, page.url());
@@ -68,5 +75,8 @@ const demos = [
         });
     });
 
-    after(async () => browser.close());
+    after(async () => {
+        await server.close();
+        await browser.close();
+    });
 })();

@@ -6,7 +6,7 @@ const indexHTMLURL = "file://" + path.join(__dirname, "..", "index.html");
 
 (async () => {
     before(async function() {
-        global.browser = global.browser || await puppeteer.launch();
+        global.browser = global.browser || await puppeteer.launch({headless: "new"});
     });
 
     describe("Form", async function() {

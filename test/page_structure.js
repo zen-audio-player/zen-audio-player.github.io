@@ -11,7 +11,7 @@ async function getProperty(page, selector, property) {
 
 (async () => {
     before(async function() {
-        global.browser = global.browser || await puppeteer.launch();
+        global.browser = global.browser || await puppeteer.launch({headless: "new"});
     });
 
     describe("Page Structure", async function() {
