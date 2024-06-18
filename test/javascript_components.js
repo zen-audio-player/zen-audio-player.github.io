@@ -7,7 +7,7 @@ let _js = "";
 
 (async () => {
     before(async function() {
-        global.browser = global.browser || await puppeteer.launch({headless: "new"});
+        global.browser = global.browser || await puppeteer.launch();
     });
 
     describe("JavaScript components", async function() {

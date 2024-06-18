@@ -27,7 +27,7 @@ let server;
     before(async function() {
         server = http.createServer({root: path.join(__dirname, "..")});
         server.listen(8000);
-        global.browser = global.browser || await puppeteer.launch({headless: "new"});
+        global.browser = global.browser || await puppeteer.launch();
     });
 
     describe("Demo", async function() {
@@ -40,9 +40,6 @@ let server;
 
             const oldUrl = page.url();
             await page.click("#demo");
-
-            // wait for the page to load
-            await page.waitForNavigation({timeout: 0});
 
             // Make sure the URL changed
             assert.notEqual(oldUrl, page.url());
