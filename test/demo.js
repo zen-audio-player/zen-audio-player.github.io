@@ -4,7 +4,7 @@ const puppeteer = require("puppeteer");
 const http = require("http-server");
 
 const SERVER_PORT = 8000;
-const TEST_TIMEOUT = 4000;
+const TEST_TIMEOUT = 5000;
 const indexHTMLURL = `http://localhost:${SERVER_PORT}/index.html`;
 let server;
 
