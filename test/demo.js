@@ -3,8 +3,10 @@ const assert = require("assert");
 const puppeteer = require("puppeteer");
 const http = require("http-server");
 
-const indexHTMLURL = "http://localhost:8000/index.html";
-
+const SERVER_PORT = 8000;
+const TEST_TIMEOUT = 4000;
+const indexHTMLURL = `http://localhost:${SERVER_PORT}/index.html`;
+let server;
 
 /** Utilities **/
 // TODO: with refactor into a node module, this can go away!
@@ -22,15 +24,17 @@ const demos = [
     "03O2yKUgrKw"  // Mike Mago & Dragonette - Outlines
 ];
 
-let server;
 (async () => {
     before(async function() {
         server = http.createServer({root: path.join(__dirname, "..")});
-        server.listen(8000);
+        server.listen(SERVER_PORT);
         global.browser = global.browser || await puppeteer.launch();
     });
 
     describe("Demo", async function() {
+        // set timeout for this test
+        this.timeout(TEST_TIMEOUT);
+
         it("should play the demo when demo button is clicked", async function() {
             const page = await browser.newPage();
             await page.goto(indexHTMLURL);

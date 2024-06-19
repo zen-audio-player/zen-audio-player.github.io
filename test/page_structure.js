@@ -67,13 +67,13 @@ async function getProperty(page, selector, property) {
             const preloadStylesheet = "preload stylesheet";
 
             assert.equal(await getProperty(page, "link ~ link ~ link", "rel"), preloadStylesheet);
-            assert.ok((await getProperty(page, "link ~ link ~ link", "href")).startsWith("https://unpkg.com/primer-css@"));
+            assert.ok((await getProperty(page, "link ~ link ~ link", "href")).match("https:\\/\\/unpkg.com\\/primer-css@[~^]?\\d.+\\/css\\/primer.css"));
 
             assert.equal(await getProperty(page, "link ~ link ~ link ~ link", "rel"), preloadStylesheet);
-            assert.ok((await getProperty(page, "link ~ link ~ link ~ link", "href")).startsWith("https://unpkg.com/font-awesome@"));
+            assert.ok((await getProperty(page, "link ~ link ~ link ~ link", "href")).match("https:\\/\\/unpkg.com\\/font-awesome@[~^]?\\d.+\\/css\\/font-awesome.min.css"));
 
             assert.equal(await getProperty(page, "link ~ link ~ link ~ link ~ link", "rel"), preloadStylesheet);
-            assert.ok((await getProperty(page, "link ~ link ~ link ~ link ~ link", "href")).startsWith("https://unpkg.com/plyr@"));
+            assert.ok((await getProperty(page, "link ~ link ~ link ~ link ~ link", "href")).match("https:\\/\\/unpkg.com\\/plyr@[~^]?\\d.+\\/dist\\/plyr.css"));
 
             assert.equal(await getProperty(page, "link ~ link ~ link ~ link ~ link ~ link", "rel"), preloadStylesheet);
             assert.ok((await getProperty(page, "link ~ link ~ link ~ link ~ link ~ link", "href")).endsWith("css/styles.css"));
