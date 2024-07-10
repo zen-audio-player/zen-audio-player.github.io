@@ -6,6 +6,7 @@ function getSearchResults(query, youTubeDataApiKey, onData, onFail) {
         key: youTubeDataApiKey,
         part: "snippet",
         q: query,
+        maxResults: 10,
         type: "video"
     }, onData).fail(onFail);
 }
