@@ -75,6 +75,10 @@ a {
     display: none;
 }
 
+#loading-indicator {
+    display: none;
+}
+
 #audioplayer {
     display: none;
     text-align: center;

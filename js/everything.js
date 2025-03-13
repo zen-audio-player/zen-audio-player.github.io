@@ -84,6 +84,16 @@ function handleYouTubeError(details) {
     }
 }
 
+// Function to show the loading indicator
+function showLoading() {
+    $("#loading-indicator").show(); // Show the loading indicator
+}
+
+// Function to hide the loading indicator
+function hideLoading() {
+    $("#loading-indicator").hide(); // Hide the loading indicator
+}
+
 // One day, try to move all globals under the ZenPlayer object
 var ZenPlayer = {
     updated: false,
@@ -113,6 +123,7 @@ var ZenPlayer = {
             });
 
             plyrPlayer.addEventListener("ready", function() {
+                hideLoading();
                 // Noop if we have nothing to play
                 if (!currentVideoID || currentVideoID.length === 0) {
                     return;
@@ -140,6 +151,7 @@ var ZenPlayer = {
             });
 
             plyrPlayer.addEventListener("playing", function() {
+                hideLoading();
                 var videoDuration = plyrPlayer.plyr.embed.getDuration();
                 if (that.updated || videoDuration === 0) {
                     return;
@@ -526,6 +538,17 @@ function pickDemo() {
     return demos[Math.floor(Math.random() * demos.length)];
 }
 
+function hasValueInURL() {
+    var queryParams = URI(window.location).search(true);
+    return queryParams.v || queryParams.q; // Check for 'v' or 'q' parameter
+}
+
+$(document).ready(function () {
+    if (hasValueInURL()) {
+        showLoading(); // Show loading indicator if the URL contains a value
+    }
+});
+
 $(function() {
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         $("#container").hide();
@@ -545,11 +568,13 @@ $(function() {
     else {
         var currentSearchQuery = getCurrentSearchQuery();
         if (currentSearchQuery) {
+            showLoading();
             $("#v").attr("value", currentSearchQuery);
             getSearchResults(
                 currentSearchQuery,
                 youTubeDataApiKey,
                 function(data) {
+                    hideLoading();
                     if (data.pageInfo.totalResults === 0) {
                         errorMessage.show("No results.");
                         return;
@@ -592,6 +617,14 @@ $(function() {
         event.preventDefault();
         var formValue = $.trim($("#v").val());
         var formValueTime = /[?&](t|time_continue)=(\d+)/g.exec(formValue);
+        // Check if the input is empty
+        if (!formValue) {
+            errorMessage.show("Try entering a YouTube video ID or URL!"); // Show error message
+            return; // Exit the function early to avoid showing the loading indicator
+        }
+
+        // If the input is valid, proceed with showing the loading indicator
+        showLoading();
         if (formValueTime && formValueTime.length > 2) {
             formValue = formValue.replace(formValueTime[0], "");
             formValueTime = parseInt(formValueTime[2], 10);
@@ -601,6 +634,7 @@ $(function() {
             gtag("send", "event", "form submitted", videoID);
             if (isFileProtocol()) {
                 errorMessage.show("Skipping video lookup request as we're running the site locally.");
+                hideLoading();
             }
             else {
                 $.ajax({
@@ -657,6 +691,7 @@ $(function() {
     // Handle demo link click
     $("#demo").click(function(event) {
         event.preventDefault();
+        showLoading();
         gtag("send", "event", "demo", "clicked");
 
         // Don't continue appending to the URL if it appears "good enough".
@@ -666,6 +701,7 @@ $(function() {
             window.location.href = makeListenURL(pickedDemo);
         }
         else {
+            hideLoading();
             gtag("send", "event", "demo", "already had video ID in URL");
         }
     });
@@ -673,6 +709,7 @@ $(function() {
     // Handle focus link click
     $("#focus-btn").click(function(event) {
         event.preventDefault();
+        showLoading();
         gtag("send", "event", "focus", "clicked");
         // Redirect to the favorite "focus" URL
         window.location.href = makeListenURL(focusId);
@@ -694,6 +731,7 @@ $(function() {
     // Handle lofi link click
     $("#lofi-btn").click(function(event) {
         event.preventDefault();
+        showLoading();
         gtag("send", "event", "lofi", "clicked");
         // Redirect to the favorite "lofi" URL
         window.location.href = makeListenURL(lofiId);
