@@ -22,7 +22,6 @@ module.exports = [
                 ga: 'readonly',
                 twttr: 'readonly',
                 time: 'readonly',
-                plyr: 'readonly',
                 browser: 'readonly'
             }
         },
@@ -49,7 +48,6 @@ module.exports = [
                 ga: 'readonly',
                 twttr: 'readonly',
                 time: 'readonly',
-                plyr: 'readonly',
                 browser: 'readonly'
             }
         },

@@ -49,7 +49,7 @@ describe("Demo", async function() {
         const page = await browser.newPage();
         await page.goto(indexHTMLURL);
 
-        const plyrLoaded = await page.waitForSelector(".plyr", { state: "attached", timeout: 8000 });
+        const plyrLoaded = await page.waitForSelector("video-player", { state: "attached", timeout: 8000 });
         assert.ok(plyrLoaded);
 
         const oldUrl = page.url();
@@ -76,7 +76,7 @@ describe("Demo", async function() {
         // TODO: How do we inspect the player object (title, etc.)?
 
         const plyPlayer = await page.evaluate(() => {
-            return window.plyrPlayer;
+            return window.videoPlayer;
         });
         assert.ok(plyPlayer);
 
