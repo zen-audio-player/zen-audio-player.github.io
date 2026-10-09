@@ -117,7 +117,7 @@ describe("Page Structure", async function() {
 
         // Find all link elements and check for CSS configurations
         const links = await page.$$("link");
-        let foundPrimerCSS = false, foundFontAwesome = false, foundPlyrCSS = false, foundLocalCSS = false;
+        let foundPrimerCSS = false, foundFontAwesome = false, foundLocalCSS = false;
 
         for (const link of links) {
             const relValue = await link.getAttribute("rel");
@@ -129,9 +129,6 @@ describe("Page Structure", async function() {
             if (relValue === preloadStylesheet && hrefValue.match(/https:\/\/unpkg\.com\/font-awesome@[~^]?\d.+\/css\/font-awesome\.min\.css/)) {
                 foundFontAwesome = true;
             }
-            if (relValue === preloadStylesheet && hrefValue.match(/https:\/\/unpkg\.com\/plyr@\d+\.\d+\.\d+\/dist\/plyr\.css/)) {
-                foundPlyrCSS = true;
-            }
             if (relValue === preloadStylesheet && hrefValue.endsWith("css/styles.css")) {
                 foundLocalCSS = true;
             }
@@ -139,7 +136,6 @@ describe("Page Structure", async function() {
 
         assert.ok(foundPrimerCSS, "Primer CSS stylesheet not found");
         assert.ok(foundFontAwesome, "Font Awesome stylesheet not found");
-        assert.ok(foundPlyrCSS, "Plyr CSS stylesheet not found");
         assert.ok(foundLocalCSS, "Local CSS stylesheet not found");
 
         await page.close();
@@ -216,7 +212,7 @@ describe("Page Structure", async function() {
         assert.ok(await page.$(".video-title"), "Couldn't find .video-title");
         assert.ok(await page.$("h3 > a.video-title"), "Couldn't find a h3 > a.video-title");
         assert.ok(await page.$(".audio-player"), "Couldn't find .audio-player");
-        assert.ok(await page.$(".audio-player .plyr, .audio-player video"), "Couldn't find player element under .audio-player");
+        assert.ok(await page.$(".audio-player video-player"), "Couldn't find video-player element under .audio-player");
 
         assert.ok(await page.$("footer"), "Couldn't find footer");
         assert.ok(await page.$("footer > div.color-grey > p"), "Couldn't find footer > div.color-grey <p>Created by");

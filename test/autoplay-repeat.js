@@ -52,33 +52,31 @@ async function waitForCondition(page, conditionFn, timeout = 5000) {
  */
 async function getVideoState(page) {
     return await page.evaluate(() => {
-        const player = window.plyrPlayer;
-        if (!player) {
-            return { error: "Player not available", player: !!player };
+        const player = window.videoPlayer;
+        const ytVideo = window.ytVideo;
+        if (!player || !ytVideo) {
+            return { error: "Player not available", player: !!player, ytVideo: !!ytVideo };
         }
 
-        try {
-            return {
-                currentTime: typeof player.currentTime === "number" ? player.currentTime : 0,
-                duration: typeof player.duration === "number" ? player.duration : 0,
-                videoTitle: window.ZenPlayer ? window.ZenPlayer.videoTitle : "",
-                isPlaying: window.ZenPlayer ? window.ZenPlayer.isPlaying : false,
-                autoplayState: window.autoplayState || false,
-                repeatState: window.ZenPlayer ? window.ZenPlayer.isRepeat : false,
-                zenPlayer: !!window.ZenPlayer,
-                displayedTitle: (() => {
-                    const titleEl = document.querySelector(".video-title");
-                    if (!titleEl || !titleEl.textContent) {
-                        return "";
-                    }
-                    // Get text content (strips HTML, icon is CSS-based so won't appear)
-                    return titleEl.textContent.trim() || "";
-                })()
-            };
-        }
-        catch (_e) {
-            return { error: _e.message, player: !!player };
-        }
+        const displayedTitle = (() => {
+            const titleEl = document.querySelector(".video-title");
+            if (!titleEl || !titleEl.textContent) {
+                return "";
+            }
+            // Get text content (strips HTML, icon is CSS-based so won't appear)
+            return titleEl.textContent.trim() || "";
+        })();
+
+        return {
+            currentTime: typeof ytVideo.currentTime === "number" ? ytVideo.currentTime : 0,
+            duration: typeof ytVideo.duration === "number" ? ytVideo.duration : 0,
+            videoTitle: window.ZenPlayer ? window.ZenPlayer.videoTitle : "",
+            isPlaying: window.ZenPlayer ? window.ZenPlayer.isPlaying : false,
+            autoplayState: window.autoplayState || false,
+            repeatState: window.ZenPlayer ? window.ZenPlayer.isRepeat : false,
+            zenPlayer: !!window.ZenPlayer,
+            displayedTitle: displayedTitle
+        };
     });
 }
 
@@ -216,14 +214,14 @@ describe("Autoplay and Repeat Features", async function() {
         await page.goto(indexHTMLURL);
 
         // Wait for player to load
-        await page.waitForSelector(".plyr", { state: "attached", timeout: 30000 });
+        await page.waitForSelector("video-player", { state: "attached", timeout: 30000 });
 
         // Click demo button (default state should have autoplay and repeat off)
         await clickAndWait(page, ".demo-button", 2000);
 
         // Wait for video to start playing (buttons become visible then)
         await waitForCondition(page, () => {
-            const player = window.plyrPlayer;
+            const player = window.videoPlayer;
             const isPlaying = player &&
                               window.ZenPlayer && window.ZenPlayer.isPlaying;
             // console.log("Video playing check:", { player: !!player, zenPlayer: !!(window.ZenPlayer), isPlaying });
@@ -241,13 +239,13 @@ describe("Autoplay and Repeat Features", async function() {
 
         // Wait for video to reach the end
         await waitForCondition(page, () => {
-            const player = window.plyrPlayer;
-            if (!player) {
+            const ytVideo = window.ytVideo;
+            if (!ytVideo) {
                 return false;
             }
             try {
-                const currentTime = player.currentTime;
-                const duration = player.duration;
+                const currentTime = ytVideo.currentTime;
+                const duration = ytVideo.duration;
                 // Video is at the end when currentTime is very close to duration
                 return currentTime >= duration - 1;
             }
@@ -300,14 +298,14 @@ describe("Autoplay and Repeat Features", async function() {
         await page.goto(indexHTMLURL);
 
         // Wait for player to load
-        await page.waitForSelector(".plyr", { state: "attached", timeout: 30000 });
+        await page.waitForSelector("video-player", { state: "attached", timeout: 30000 });
 
         // Click demo button first to make buttons visible
         await clickAndWait(page, ".demo-button", 2000);
 
         // Wait for video to start playing and buttons to be visible
         await waitForCondition(page, () => {
-            const player = window.plyrPlayer;
+            const player = window.videoPlayer;
             return player &&
                    window.ZenPlayer && window.ZenPlayer.isPlaying;
         }, 10000);
@@ -315,8 +313,8 @@ describe("Autoplay and Repeat Features", async function() {
         // Ensure player is ready - simplify this check
         try {
             await page.waitForFunction(() => {
-                const player = window.plyrPlayer;
-                return player && typeof player.currentTime === "number";
+                const ytVideo = window.ytVideo;
+                return ytVideo && typeof ytVideo.currentTime === "number";
             }, { timeout: 15000 });
         }
         catch (_e) {
@@ -358,21 +356,21 @@ describe("Autoplay and Repeat Features", async function() {
 
         // Seek to 2 seconds before end to ensure repeat logic has time to trigger
         await page.evaluate((seekTime) => {
-            const player = window.plyrPlayer;
-            if (player && typeof player.currentTime === "number") {
-                player.currentTime = seekTime;
+            const ytVideo = window.ytVideo;
+            if (ytVideo && typeof ytVideo.currentTime === "number") {
+                ytVideo.currentTime = seekTime;
             }
         }, duration - 2);
 
         // Wait for repeat logic to trigger (video should restart)
         // The repeat logic checks in timeupdate when currentTime >= duration
         await waitForCondition(page, () => {
-            const player = window.plyrPlayer;
-            if (!player) {
+            const ytVideo = window.ytVideo;
+            if (!ytVideo) {
                 return false;
             }
             try {
-                const currentTime = player.currentTime;
+                const currentTime = ytVideo.currentTime;
                 // Check if video has restarted (time is much less than where we sought to)
                 return currentTime < (duration / 4);
             }
@@ -412,14 +410,14 @@ describe("Autoplay and Repeat Features", async function() {
         await page.goto(indexHTMLURL);
 
         // Wait for player to load
-        await page.waitForSelector(".plyr", { state: "attached", timeout: 30000 });
+        await page.waitForSelector("video-player", { state: "attached", timeout: 30000 });
 
         // Click demo button first to make buttons visible
         await clickAndWait(page, ".demo-button", 2000);
 
         // Wait for video to start playing and buttons to be visible
         await waitForCondition(page, () => {
-            const player = window.plyrPlayer;
+            const player = window.videoPlayer;
             return player &&
                    window.ZenPlayer && window.ZenPlayer.isPlaying;
         }, 10000);
@@ -443,8 +441,8 @@ describe("Autoplay and Repeat Features", async function() {
 
         // Verify we can interact with the player controls
         const playerReady = await page.evaluate(() => {
-            const player = window.plyrPlayer;
-            return player && typeof player.currentTime === "number";
+            const ytVideo = window.ytVideo;
+            return ytVideo && typeof ytVideo.currentTime === "number";
         });
         assert.ok(playerReady, "Player should be ready for autoplay test");
 

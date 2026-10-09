@@ -213,64 +213,66 @@ footer .fa {
 }
 
 .audio-player {
-    display: none;
     text-align: center;
+
 }
 
-.audio-player .plyr {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin: 0 auto 10px;
-    overflow: visible;
-    background: transparent;
-}
-
-.audio-player .plyr__progress {
-    background-color: transparent;
-}
-
-.audio-player .plyr__progress input[type="range"] {
-    color: #3498db;
-}
-
-.audio-player .plyr__progress__buffer {
-    color: #77BAE7;
-    background: #b9c8d4;
-}
-
-.audio-player .plyr__controls {
-    position: relative;
-    z-index: 10;
-    order: 2;
-    width: 100%;
-    padding: 10px;
-    margin: 0;
-    overflow: visible;
-    color: #565d64;
-    background: #ffffff;
-    border: 1px solid #dbe3e8;
-    border-radius: inherit;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-}
-
-.plyr__video-wrapper {
-    position: relative;
-    display: none;
-    order: 1;
-    width: 100%;
-    max-width: 100%;
-    aspect-ratio: 16 / 9;
-    margin: 0;
-    background: transparent;
-}
-
-.plyr__video-wrapper iframe,
-.plyr__video-wrapper video {
+/* youtube-video element must fill its container.
+   The neutral skin hardcodes a dark theme on its internal
+   .media-skin element, which would override these values via
+   normal inheritance, so js/everything.js injects a shadow-DOM
+   style that makes .media-skin inherit them. The values below
+   match the site's light theme (Primer colors, #3498db accent,
+   3.5px control radius). */
+video-neutral-skin {
     display: block;
     width: 100%;
-    height: 100%;
+
+    --media-background: #ffffff;
+    --media-foreground: #24292f;
+    --media-controls: #ffffff;
+    --media-backdrop: #ffffff;
+    --media-ring: #24292f;
+    --media-control-radius: 3.5px;
+    --media-border: #d0d7de;
+    --media-muted: rgba(36, 41, 47, 0.15);
+    --media-muted-foreground: rgba(36, 41, 47, 0.65);
+    --media-popover: rgba(36, 41, 47, 0.1);
+    --media-default-accent-color: #3498db;
+    --media-default-accent-text-color: #ffffff;
+    --media-accent-color: #3498db;
+    --media-accent-text-color: #ffffff;
+    --media-border-color: #d0d7de;
+    --media-border-radius: 0;
+    --media-font-family: -apple-system, system-ui, "Segoe UI", helvetica, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+/* The video carries its own 16:9 box so the skin's control bar can be
+   laid out beneath it (js/everything.js); the host itself is sized by
+   its content rather than locked to 16:9, which would clip that bar. */
+video-neutral-skin youtube-video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+}
+
+/* "audio mode" collapses the player to a persistent control bar,
+   like an audio player. The video frame and poster are hidden;
+   the skin's shadow-DOM control bar stays visible and always on.
+   The skin element is a grid whose only child is the skin's
+   media-container, so the skin height is the surface height.
+   The control bar wraps to multiple rows on narrow viewports,
+   so its height is dynamic: js/everything.js measures the
+   shadow-DOM control bar and sets the skin height to match.
+   The 4rem value is a no-JS fallback. */
+video-neutral-skin.audio-mode {
+    height: 4rem;
+    aspect-ratio: auto;
+    overflow: hidden;
+}
+
+video-neutral-skin.audio-mode youtube-video {
+    display: none;
 }
 
 .video-title {
@@ -323,13 +325,7 @@ footer .fa {
 
 /* ==== Browser-Specific Fixes ==== */
 
-@-moz-document url-prefix("") {
 
-    .audio-player .plyr__time--duration {
-        font-size: 14.01px;
-    }
-
-}
 
 /* ==== Media Queries ==== */
 

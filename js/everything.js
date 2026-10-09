@@ -1,5 +1,7 @@
-/* global gtag, URI, DOMPurify, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription, Plyr */
+/* global gtag, URI, DOMPurify, getSearchResults, getAutocompleteSuggestions, parseYoutubeVideoID, getYouTubeVideoDescription */
 
+var videoPlayer;
+var ytVideo;
 var keyCodes = {
     SPACEBAR: 32,
     ENTER: 13
@@ -12,15 +14,34 @@ var timeIntervals = {
 /**
  * YouTube iframe API required setup
  */
-var plyrPlayer;
 var youTubeDataApiKey = "AIzaSyCxVxsC5k46b8I-CLXlF3cZHjpiqP_myVk";
 var currentVideoID;
 
 // global playlist, this is populated with an ajax call
 var tags = [];
-var playList = new Set();
+var playList = [];
 var autoplayState = false;
 const MAX_TAGS = 10;
+
+// Custom properties the neutral skin hardcodes on its internal
+// .media-skin element. css/styles.css declares light-theme values
+// for these on the host; applySkinTheme() injects a shadow-DOM style
+// that makes .media-skin inherit them (the skin's own defaults would
+// otherwise win over host inheritance).
+const skinInheritVars = [
+    "--media-background",
+    "--media-foreground",
+    "--media-controls",
+    "--media-backdrop",
+    "--media-ring",
+    "--media-control-radius",
+    "--media-border",
+    "--media-muted",
+    "--media-muted-foreground",
+    "--media-popover",
+    "--media-default-accent-color",
+    "--media-default-accent-text-color"
+];
 
 var errorMessage = {
     init: function() {},
@@ -113,28 +134,31 @@ function handleYouTubeError(details) {
 }
 
 function getPlayerDuration() {
-    if (plyrPlayer && typeof plyrPlayer.duration === "number" && !isNaN(plyrPlayer.duration)) {
-        return plyrPlayer.duration;
+    if (ytVideo && typeof ytVideo.duration === "number" && !isNaN(ytVideo.duration)) {
+        return ytVideo.duration;
     }
 
     return 0;
 }
 
 function getPlayerCurrentTime() {
-    if (plyrPlayer && typeof plyrPlayer.currentTime === "number" && !isNaN(plyrPlayer.currentTime)) {
-        return plyrPlayer.currentTime;
+    if (ytVideo && typeof ytVideo.currentTime === "number" && !isNaN(ytVideo.currentTime)) {
+        return ytVideo.currentTime;
     }
 
     return 0;
 }
 
 function seekPlayerTo(seconds) {
-    if (!plyrPlayer || typeof seconds !== "number" || isNaN(seconds)) {
+    if (!ytVideo || typeof seconds !== "number" || isNaN(seconds)) {
         return;
     }
 
-    if (typeof plyrPlayer.currentTime === "number") {
-        plyrPlayer.currentTime = seconds;
+    try {
+        ytVideo.currentTime = seconds;
+    }
+    catch (e) {
+        void e;
     }
 }
 
@@ -171,8 +195,42 @@ function fetchOEmbedVideoTitle(videoID, onSuccess) {
             }
         }
     }).fail(function() {
-        // Best effort only; keep current title fallback when this fails.
+        // Best effort only; keep the engine title when this fails.
     });
+}
+
+/**
+ * Make the neutral skin inherit the light-theme custom properties
+ * declared on the host (css/styles.css). The skin hardcodes a dark
+ * theme on its internal .media-skin element, which would otherwise
+ * override host inheritance, so we inject a shadow-DOM style that
+ * resets those properties to inherit.
+ *
+ * The same style also fixes the layout of the skin's control bar:
+ *
+ * - media-controls-backdrop is the skin's gradient scrim. It is sized
+ *   to the whole surface and sits at z-index 10, so over the video it
+ *   covers the entire frame. It is removed in both modes: the control
+ *   bar paints its own opaque --media-controls surface, so the video
+ *   gets no gradient at all.
+ * - media-controls-content is absolutely positioned over the bottom of
+ *   the media. In video mode the bar is taken out of that overlay so it
+ *   flows after the media (which is already later in DOM order inside
+ *   media-container) and sits beneath the 16:9 video, and the
+ *   container stops clipping it. The bar is still the skin's own, not a
+ *   second row of controls.
+ *
+ * These rules are scoped with :host(.video-mode) because the injected
+ * style lives in the skin's shadow root, where :host() matches the
+ * classes JS toggles on the skin element.
+ */
+function applySkinTheme(skin) {
+    const style = document.createElement("style");
+    style.textContent = ".media-skin{" + skinInheritVars.map((name) => name + ":inherit").join(";") + "}"
+        + "media-controls-backdrop{display:none}"
+        + ":host(.video-mode) media-container{overflow:visible}"
+        + ":host(.video-mode) media-controls-content{position:static}";
+    skin.shadowRoot.appendChild(style);
 }
 
 // One day, try to move all globals under the ZenPlayer object
@@ -182,172 +240,167 @@ var ZenPlayer = {
     isRepeat: false,
 
     init: function() {
-        // Inject svg with control icons
-        $(".plyr-svg").load("https://unpkg.com/plyr@3.8.4/dist/plyr.svg");
-
-        const playerEl = document.querySelector(".plyr");
-        if (!playerEl) {
-            console.log("Plyr element not found; skipping player initialization.");
-            return;
-        }
-
-        playerEl.disablePictureInPicture = true;
-
-        plyrPlayer = new Plyr(playerEl, {
-            autoplay: true,
-            controls: ["play", "progress", "current-time", "duration", "mute", "volume"],
-            hideControls: false,
-            pip: false
-        });
-
-        // Set source immediately after creating the player when we have a video id
-        if (currentVideoID) {
-            plyrPlayer.source = {
-                type: "video",
-                title: "Title",
-                sources: [{
-                    src: currentVideoID,
-                    provider: "youtube"
-                }]
-            };
-        }
-
         const that = this;
 
-        plyrPlayer.on("error", function(event) {
-            if (event && event.detail && typeof event.detail.code === "number") {
-                handleYouTubeError(event.detail);
-                ZenPlayer.hide();
+        customElements.whenDefined('video-player').then(() => {
+            videoPlayer = document.querySelector('video-player');
+            if (!videoPlayer) {
+                console.log("Video.js player not found; skipping player initialization.");
                 return;
             }
 
-            errorMessage.show("we couldn't start playback. Please try another video or reload the page.");
-            console.log("Plyr error event details:", event && event.detail ? event.detail : event);
-            ZenPlayer.hide();
-        });
-
-        plyrPlayer.on("ready", function() {
-            // Noop if we have nothing to play
-            if (!currentVideoID || currentVideoID.length === 0) {
-                return;
-            }
-
-            // Gather video info
-            that.videoTitle = currentVideoID;
-            that.videoAuthor = "";
-            that.videoDuration = getPlayerDuration();
-            that.videoDescription = that.getVideoDescription(currentVideoID);
-            that.videoUrl = getPlayerVideoUrl();
-
-            // Updates the time position by a given argument in URL
-            // I.e. https://zenplayer.audio/?v=koJv-j1usoI&t=30 starts at 0:30
-            const t = getCurrentTimePosition();
-            if (t) {
-                that.videoPosition = t;
-                window.sessionStorage[currentVideoID] = t;
-            }
-
-            // Initialize UI
-            that.setupTitle();
-            that.setupVideoDescription(currentVideoID);
-            that.setupPlyrToggle();
+            // UI toggles work without video metadata; wire them once
+            that.setupPlayerToggle();
             that.setupAutoplayToggle();
 
-            fetchOEmbedVideoTitle(currentVideoID, function(title) {
-                that.videoTitle = title;
-                that.setupTitle();
+            // Wait for the media element to upgrade before touching its API
+            customElements.whenDefined('youtube-video').then(() => {
+                ytVideo = videoPlayer.querySelector('youtube-video');
+                if (!ytVideo) {
+                    return;
+                }
+
+                // Attach source after upgrade so the `src` accessor is live
+                if (currentVideoID) {
+                    ytVideo.src = "https://youtu.be/" + currentVideoID;
+                }
+
+                ytVideo.addEventListener("error", function() {
+                    const err = ytVideo.error;
+                    if (err && err.data && typeof err.data.youtubeErrorCode === "number") {
+                        handleYouTubeError({ code: err.data.youtubeErrorCode });
+                    }
+                    else {
+                        errorMessage.show("We couldn't start playback. Please try another video or reload the page.");
+                    }
+
+                    ZenPlayer.hide();
+                });
+
+                // loadedmetadata/loadcomplete fire before YT populates title/duration;
+                // the later durationchange carries the real data. Gather when duration is valid.
+                ytVideo.addEventListener("durationchange", function() {
+                    // Noop if we have nothing to play
+                    if (!currentVideoID || currentVideoID.length === 0) {
+                        return;
+                    }
+
+                    if (!(ytVideo.duration > 0)) {
+                        return;
+                    }
+
+                    const data = ytVideo.engine.getVideoData() || {};
+                    that.videoTitle = data.title || ytVideo.engine.videoTitle || currentVideoID;
+                    that.videoAuthor = data.author || "";
+                    that.videoDuration = ytVideo.engine.getDuration();
+                    that.videoUrl = ytVideo.engine.getVideoUrl();
+
+                    // Updates the time position by a given argument in URL
+                    // I.e. https://zenplayer.audio/?v=koJv-j1usoI&t=30 starts at 0:30
+                    const t = getCurrentTimePosition();
+                    if (t) {
+                        that.videoPosition = t;
+                        window.sessionStorage[currentVideoID] = t;
+                    }
+
+                    that.setupTitle();
+                    that.getVideoDescription(currentVideoID);
+
+                    // TODO: was this old behavior? If not, remove
+                    // Fall back to oEmbed for the title when the engine
+                    // did not provide one (title missing or just the video ID).
+                    if (!that.videoTitle || that.videoTitle === currentVideoID) {
+                        fetchOEmbedVideoTitle(currentVideoID, function(title) {
+                            if (title && title !== that.videoTitle) {
+                                that.videoTitle = title;
+                                that.setupTitle();
+                            }
+                        });
+                    }
+
+                    // Start playback - YouTube iframe is ready
+                    if (autoplayState) {
+                        ytVideo.play();
+                    }
+                });
+
+                ytVideo.addEventListener("playing", function() {
+                    that.isPlaying = true;
+                    if (that.updated) {
+                        return;
+                    }
+
+                    const videoDuration = getPlayerDuration();
+                    // Start video from where we left off, if it makes sense
+                    if (window.sessionStorage && currentVideoID in window.sessionStorage) {
+                        const resumeTime = window.sessionStorage[currentVideoID];
+                        if (!isNaN(resumeTime) && videoDuration > 0 && resumeTime < videoDuration - 3) {
+                            seekPlayerTo(resumeTime);
+                        }
+                    }
+
+                    that.updated = true;
+
+                    // Analytics
+                    gtag("send", "event", "Playing YouTube video title", that.videoTitle);
+                    gtag("send", "event", "Playing YouTube video author", that.videoAuthor);
+                    gtag("send", "event", "Playing YouTube video duration (seconds)", that.videoDuration);
+
+                    // Show player
+                    that.show();
+                    updateTweetMessage();
+                });
+
+                // when player has finished playing
+                ytVideo.addEventListener("ended", function() {
+                    if (that.isRepeat) {
+                        seekPlayerTo(0);
+                        ZenPlayer.play();
+                        return;
+                    }
+
+                    if (autoplayState) {
+                        if (playList.length === 0) {
+                            fetchSuggestedVideoIds();
+                        }
+                        const newId = getNewVideoID();
+                        that.playNext(newId);
+                    }
+                });
+
+                ytVideo.addEventListener("timeupdate", function() {
+                    // Store the current time of the video.
+                    let resumeTime = 0;
+                    const videoDuration = getPlayerDuration();
+                    if (window.sessionStorage && videoDuration > 0) {
+                        const currentTime = getPlayerCurrentTime();
+                        /**
+                         * Only store the current time if the video isn't done
+                         * playing yet. If the video finished already, then it
+                         * should start off at the beginning next time.
+                         * There is a fuzzy 3 seconds because sometimes the video
+                         * will end a few seconds before the video duration.
+                         */
+                        if (currentTime < videoDuration - 3) {
+                            resumeTime = currentTime;
+                        }
+                        // check time and if isRepeat == true
+                        if (currentTime >= videoDuration && that.isRepeat) {
+                            resumeTime = 0;
+                            seekPlayerTo(resumeTime);
+                            ZenPlayer.play();
+                        }
+                        window.sessionStorage[currentVideoID] = resumeTime;
+                    }
+                    const baseUrl = that.videoUrl || getPlayerVideoUrl();
+                    const href = resumeTime > 0 ? baseUrl + "&t=" + Math.round(resumeTime) : baseUrl;
+                    $(".video-title").attr("href", href);
+                });
+
+                ytVideo.addEventListener("pause", function() {
+                    that.isPlaying = false;
+                });
             });
-        });
-
-        plyrPlayer.on("playing", function() {
-            if (that.updated) {
-                return;
-            }
-
-            const videoDuration = getPlayerDuration();
-            // Start video from where we left off, if it makes sense
-            if (window.sessionStorage && currentVideoID in window.sessionStorage) {
-                const resumeTime = window.sessionStorage[currentVideoID];
-                if (!isNaN(resumeTime) && videoDuration > 0 && resumeTime < videoDuration - 3) {
-                    seekPlayerTo(resumeTime);
-                }
-            }
-
-            that.updated = true;
-
-            // Analytics
-            gtag("send", "event", "Playing YouTube video title", that.videoTitle);
-            gtag("send", "event", "Playing YouTube video author", that.videoAuthor);
-            gtag("send", "event", "Playing YouTube video duration (seconds)", that.videoDuration);
-
-            // Show player
-            that.show();
-            updateTweetMessage();
-        });
-
-        // when player has finished playing
-        plyrPlayer.on("ended", function() {
-            if (that.isRepeat) {
-                seekPlayerTo(0);
-                ZenPlayer.play();
-                return;
-            }
-
-            if (autoplayState) {
-                if (playList.length === 0 || playList.size === 0) {
-                    fetchSuggestedVideoIds();
-                }
-                const newId = getNewVideoID();
-                that.playNext(newId);
-            }
-        });
-
-        plyrPlayer.on("timeupdate", function() {
-            // Nothing is playing
-            if (!plyrPlayer) {
-                return;
-            }
-
-            // Store the current time of the video.
-            let resumeTime = 0;
-            const videoDuration = getPlayerDuration();
-            if (window.sessionStorage && videoDuration > 0) {
-                const currentTime = getPlayerCurrentTime();
-                /**
-                 * Only store the current time if the video isn't done
-                 * playing yet. If the video finished already, then it
-                 * should start off at the beginning next time.
-                 * There is a fuzzy 3 seconds because sometimes the video
-                 * will end a few seconds before the video duration.
-                 */
-                if (currentTime < videoDuration - 3) {
-                    resumeTime = currentTime;
-                }
-                // check time and if isRepeat == true
-                if (currentTime >= videoDuration && that.isRepeat) {
-                    resumeTime = 0;
-                    seekPlayerTo(resumeTime);
-                    ZenPlayer.play();
-                }
-                window.sessionStorage[currentVideoID] = resumeTime;
-            }
-            let updatedUrl = that.videoUrl;
-            if (resumeTime > 0) {
-                updatedUrl = that.videoUrl + "&t=" + Math.round(resumeTime);
-                $(".video-title").attr("href", updatedUrl);
-            }
-            else if (resumeTime <= 0 && $(".video-title").attr("href") !== that.videoUrl) {
-                updatedUrl = that.videoUrl;
-            }
-            $(".video-title").attr("href", updatedUrl);
-        });
-
-        plyrPlayer.on("playing", function() {
-            that.isPlaying = true;
-        });
-
-        plyrPlayer.on("pause", function() {
-            that.isPlaying = false;
         });
     },
     // play next song from autoplay
@@ -380,19 +433,110 @@ var ZenPlayer = {
         $(".video-description").html(DOMPurify.sanitize(description));
         $(".video-description").hide();
 
-        $(".toggle-description-btn").click(function(event) {
+        $(".toggle-description-btn").off("click").on("click", function(event) {
             toggleElement(event, ".video-description", "Description");
         });
     },
-    setupPlyrToggle: function() {
-        // Show player button click event
+    setupPlayerToggle: function() {
+        // The neutral skin renders its controls inside shadow DOM,
+        // absolutely positioned over the media. Global CSS can reach
+        // the skin element and the slotted <youtube-video>, but not
+        // the shadow-DOM poster or the control bar's box. So we:
+        //  - toggle an "audio-mode" class (CSS hides the video and
+        //    collapses the surface),
+        //  - poke the shadow DOM to hide the poster,
+        //  - hide the skin's control bar entirely in video mode so the
+        //    video stays free of its gradient backdrop,
+        //  - keep the control bar always visible in audio mode via the
+        //    controls element's public "visibility" attribute, and
+        //  - match the collapsed height to the control bar so the
+        //    bar is never clipped (the bar wraps to multiple rows
+        //    on narrow viewports, so its height is dynamic).
+        const skin = document.querySelector("video-neutral-skin");
+        let resizeObserver = null;
+
+        const setControlsAlwaysVisible = () => {
+            if (!skin || !skin.shadowRoot) {
+                return;
+            }
+            const controls = skin.shadowRoot.querySelector("media-controls");
+            if (controls) {
+                controls.setAttribute("visibility", "always");
+            }
+        };
+
+        const getControlsContent = () => {
+            return skin && skin.shadowRoot ?
+                skin.shadowRoot.querySelector("media-controls-content") : null;
+        };
+
+        const matchControlsHeight = () => {
+            const content = getControlsContent();
+            if (!content) {
+                return;
+            }
+            const height = content.getBoundingClientRect().height;
+            if (height > 0) {
+                skin.style.height = height + "px";
+            }
+        };
+
+        const setAudioMode = (audioMode) => {
+            if (!skin) {
+                return;
+            }
+            skin.classList.toggle("audio-mode", audioMode);
+            if (skin.shadowRoot) {
+                const poster = skin.shadowRoot.querySelector("media-poster");
+                if (poster) {
+                    poster.style.display = audioMode ? "none" : "";
+                }
+
+                skin.classList.toggle("video-mode", !audioMode);
+            }
+            if (audioMode) {
+                setControlsAlwaysVisible();
+                matchControlsHeight();
+                const content = getControlsContent();
+                if (content && !resizeObserver) {
+                    resizeObserver = new ResizeObserver(() => {
+                        if (skin.classList.contains("audio-mode")) {
+                            matchControlsHeight();
+                        }
+                    });
+                    resizeObserver.observe(content);
+                }
+            }
+            else {
+                skin.style.height = "";
+            }
+        };
+
+        const init = () => {
+            if (!skin || !skin.shadowRoot) {
+                customElements.whenDefined("video-neutral-skin").then(() => {
+                    Promise.resolve().then(init);
+                });
+                return;
+            }
+            setControlsAlwaysVisible();
+            applySkinTheme(skin);
+            // Start collapsed (audio-only) until "Show Player" is clicked.
+            setAudioMode(true);
+        };
+        init();
+
         $(".toggle-player-btn").off("click").on("click", function(event) {
-            toggleElement(event, ".plyr__video-wrapper", "Player");
+            event.preventDefault();
+            const target = document.querySelector("video-neutral-skin");
+            const audioMode = !target.classList.contains("audio-mode");
+            setAudioMode(audioMode);
+            $(event.currentTarget).text(audioMode ? "Show Player" : "Hide Player");
         });
     },
     setupAutoplayToggle: function() {
         // toggle auto next song playing
-        $(".toggle-autoplay-btn").click(function(event) {
+        $(".toggle-autoplay-btn").off("click").on("click", function(event) {
             const toggleTextElement = $(event.currentTarget);
             toggleTextElement.toggleClass("toggle-autoplay-active");
             const active = toggleTextElement.hasClass("toggle-autoplay-active");
@@ -411,46 +555,43 @@ var ZenPlayer = {
     },
 
     getVideoDescription: function(videoID) {
-        let description = "";
+        const that = this;
 
         if (shouldSkipYouTubeDataApi()) {
             console.log("Skipping video description request as we're running the site locally.");
             $(".toggle-description-btn").hide();
+            return "";
         }
-        else {
-            getYouTubeVideoDescription(
-                videoID,
-                youTubeDataApiKey,
-                function(data) {
-                    if (data.items.length === 0) {
-                        errorMessage.show("Video description not found");
-                    }
-                    else {
-                        description = data.items[0].snippet.description;
-                        tags = data.items[0].snippet.tags;
-                    }
-                },
-                function(jqXHR, textStatus, errorThrown) {
-                    logError(jqXHR, textStatus, errorThrown, "Video Description error");
+
+        getYouTubeVideoDescription(
+            videoID,
+            youTubeDataApiKey,
+            function(data) {
+                if (data.items.length === 0) {
+                    errorMessage.show("Video description not found");
+                    $(".toggle-description-btn").hide();
+                    return;
                 }
-            );
-        }
+                that.videoDescription = data.items[0].snippet.description;
+                tags = data.items[0].snippet.tags;
+                that.setupVideoDescription(videoID);
+            },
+            function(jqXHR, textStatus, errorThrown) {
+                logError(jqXHR, textStatus, errorThrown, "Video Description error");
+                $(".toggle-description-btn").hide();
+            }
+        );
 
-        // If there's no description to show, don't pretend there is
-        if (description.trim().length === 0) {
-            $(".toggle-description-btn").hide();
-        }
-
-        return description;
+        return that.videoDescription || "";
     },
     play: function() {
-        if (plyrPlayer && typeof plyrPlayer.play === "function") {
-            plyrPlayer.play();
+        if (ytVideo) {
+            ytVideo.play();
         }
     },
     pause: function() {
-        if (plyrPlayer && typeof plyrPlayer.pause === "function") {
-            plyrPlayer.pause();
+        if (ytVideo) {
+            ytVideo.pause();
         }
     }
 };
@@ -611,10 +752,10 @@ function anchorURLs(text) {
     *    (2) it encounters a period (.) or whitespace, if the TLD was followed by a forwardslash (/) */
     const re = /((?:http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*[^\.\s])?)/g; // eslint-disable-line no-useless-escape
     /* Wraps all found URLs in <a> tags, do not encode display text */
-    return text.replace(re, function(u) {
+    return text ? text.replace(re, function(u) {
         const uEncoded = encodeURI(u);
         return `<a href="${uEncoded}" target="_blank" rel="noopener noreferrer">${u}</a>`;
-    });
+    }) : "";
 }
 
 function anchorTimestamps(text, videoID) {
@@ -630,9 +771,9 @@ function anchorTimestamps(text, videoID) {
     (?:$|\:[0-5]\d)) either the string ends or is a a number between 00-59
     */
     const re = /((?:[0-5]\d|\d|)(?:\d|\:[0-5]\d)(?:$|\:[0-5]\d))/g; // eslint-disable-line no-useless-escape
-    return text.replace(re, function(match) {
+    return text ? text.replace(re, function(match) {
         return "<a href=\"" + makeListenURL(videoID, convertTimestamp(match)) + "\">" + match + "</a>";
-    });
+    }) : "";
 }
 
 function convertTimestamp(timestamp) {
@@ -713,7 +854,7 @@ function updateAutoplayToggle(state) {
 
 function getNewVideoID() {
     let nextID = playList.pop();
-    while (currentVideoID === nextID) {
+    while (nextID && currentVideoID === nextID) {
         nextID = playList.pop();
     }
     window.sessionStorage.setItem("playList", JSON.stringify(playList));
@@ -721,7 +862,7 @@ function getNewVideoID() {
 }
 
 function fetchSuggestedVideoIds() {
-    if ((playList.length === 0 || playList.size === 0) && tags.length && !shouldSkipYouTubeDataApi()) {
+    if (playList.length === 0 && tags.length && !shouldSkipYouTubeDataApi()) {
         for (let index = 0; index < tags.length && index < MAX_TAGS; index++) {
             // get similar videos, populate playList
             $.ajax({
@@ -741,15 +882,17 @@ function fetchSuggestedVideoIds() {
                 logError(jqXHR, textStatus, errorThrown, "Related video lookup error");
             });
         }
-        playList = Array.from(playList);
-        window.sessionStorage.setItem("playList", JSON.stringify(playList))
+        window.sessionStorage.setItem("playList", JSON.stringify(playList));
     }
 }
 
 function onRelatedVideoFetchSuccess(data) {
     // push items into playlist
     for (let i = 0; i < data.items.length; i++) {
-        playList.add(data.items[i].id.videoId);
+        const id = data.items[i].id.videoId;
+        if (id && id !== currentVideoID && !playList.includes(id)) {
+            playList.push(id);
+        }
     }
 }
 
@@ -760,14 +903,14 @@ function loadAutoPlayDetails() {
     }
 
     // fetch autoPlay from session storage on reload
-    if (window.sessionStorage.getItem("autoPlay")) {
-        autoplayState = window.sessionStorage.getItem("autoPlay");
+    if (window.sessionStorage.getItem("autoPlay") !== null) {
+        autoplayState = window.sessionStorage.getItem("autoPlay") === "true";
         updateAutoplayToggle(autoplayState);
     }
 }
 
 function resetAutoPlayList() {
-    playList = new Set();
+    playList = [];
     tags = [];
     window.sessionStorage.removeItem("playList");
 }
@@ -794,8 +937,12 @@ $(function() {
     const currentVideoID = getCurrentVideoID();
     if (currentVideoID) {
         $(".search-input").attr("value", currentVideoID);
+        // Show the player only when a video is loaded.
+        ZenPlayer.show();
     }
     else {
+        // Fully hide the player until a video is loaded.
+        ZenPlayer.hide();
         const currentSearchQuery = getCurrentSearchQuery();
         if (currentSearchQuery) {
             $(".search-input").attr("value", currentSearchQuery);
